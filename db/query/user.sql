@@ -5,3 +5,6 @@ INSERT INTO users (
 )VALUES(
     $1,$2
 )RETURNING *;
+
+-- name: GetUsers :one
+SELECT * FROM users WHERE email = $1;

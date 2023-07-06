@@ -45,7 +45,7 @@ CREATE TABLE "accounts" (
 
 CREATE TABLE "users" (
   "user_id" serial PRIMARY KEY,
-  "hashed_password" varchar NOT NULL,
+  "hashed_password" varchar,
   "email" varchar NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
 );
