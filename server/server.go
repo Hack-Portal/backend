@@ -2,9 +2,9 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/controller"
-	"github.com/hackhack-Geek-vol6/backend/db"
-	"github.com/hackhack-Geek-vol6/backend/util"
+	"github.com/hackhack-Geek-v6/backend/controller"
+	db "github.com/hackhack-Geek-v6/backend/db/sqlc"
+	"github.com/hackhack-Geek-v6/backend/util"
 )
 
 type Server struct {
@@ -26,10 +26,12 @@ func NewServer(config util.EnvConfig, store db.Store) (*Server, error) {
 	return server, nil
 }
 
+// ルーティングをセットアップする
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.GET("/v1/ping", server.controller.ping)
+	router.GET("/v1/ping", server.controller.Ping)
+
 	server.router = router
 }
 
