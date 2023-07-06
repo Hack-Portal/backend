@@ -6,6 +6,9 @@ import (
 	"fmt"
 )
 
+type Store interface {
+	Querier
+}
 type SQLStore struct {
 	*Queries
 	db *sql.DB

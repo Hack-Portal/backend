@@ -68,7 +68,7 @@ CREATE TABLE "hackathons" (
   "description" text NOT NULL,
   "link" varchar NOT NULL,
   "expired" date NOT NULL,
-  "start_Date" date NOT NULL,
+  "start_date" date NOT NULL,
   "term" int NOT NULL
 );
 
