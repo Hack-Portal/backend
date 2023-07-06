@@ -39,7 +39,7 @@ CREATE TABLE "accounts" (
   "locate_id" int NOT NULL,
   "rate" int NOT NULL,
   "show_locate" boolean NOT NULL,
-  "show_rate" boolena NOT NULL,
+  "show_rate" boolean NOT NULL,
   "update_at" timestamptz NOT NULL DEFAULT (now())
 );
 

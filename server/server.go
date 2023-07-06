@@ -35,21 +35,21 @@ func NewServer(config util.EnvConfig, store db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.New()
 
-	router.GET("/v1/ping", controller.Ping)
+	router.GET("/v1/ping", server.controller.Ping)
 
 	server.router = router
 }
 
 // 認証ミドルウェアの必要なルーティング
 func (server *Server) authRouter() error {
-	middleware, err := middleware.New("../credentials.json", nil)
+	middleware, err := middleware.New("./credentials.json", nil)
 	if err != nil {
 		return err
 	}
 
 	auth := server.router.Group("/auth")
 	auth.Use(middleware.MiddlewareFunc())
-	auth.GET("/v1/pong", controller.Pong)
+	auth.GET("/v1/pong", server.controller.Pong)
 
 	return nil
 }
