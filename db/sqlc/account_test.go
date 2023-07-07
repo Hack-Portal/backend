@@ -68,11 +68,9 @@ func TestGetAccount(t *testing.T) {
 
 func TestListAccount(t *testing.T) {
 	n := 10
-	var accounts []Accounts
 
 	for i := 0; i < n; i++ {
-		account := createAccountTest(t)
-		accounts = append(accounts, account)
+		createAccountTest(t)
 	}
 	arg := ListAccountsParams{
 		Limit:  int32(n),
