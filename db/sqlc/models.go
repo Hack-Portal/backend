@@ -23,7 +23,7 @@ type AccountTags struct {
 
 type Accounts struct {
 	UserID          string         `json:"user_id"`
-	Username        int32          `json:"username"`
+	Username        string         `json:"username"`
 	Icon            []byte         `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`

@@ -32,7 +32,7 @@ CREATE TABLE "tech_tags" (
 
 CREATE TABLE "accounts" (
   "user_id" varchar PRIMARY KEY,
-  "username" int NOT NULL,
+  "username" varchar NOT NULL,
   "icon" bytea,
   "explanatory_text" text,
   "locate_id" int NOT NULL,

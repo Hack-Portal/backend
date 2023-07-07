@@ -29,7 +29,7 @@ INSERT INTO accounts (
 
 type CreateAccountParams struct {
 	UserID          string         `json:"user_id"`
-	Username        int32          `json:"username"`
+	Username        string         `json:"username"`
 	Icon            []byte         `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`
@@ -96,7 +96,7 @@ WHERE
 
 type GetAccountRow struct {
 	UserID          string         `json:"user_id"`
-	Username        int32          `json:"username"`
+	Username        string         `json:"username"`
 	Icon            []byte         `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	Locate          string         `json:"locate"`
@@ -174,7 +174,7 @@ type ListAccountsParams struct {
 
 type ListAccountsRow struct {
 	UserID     string `json:"user_id"`
-	Username   int32  `json:"username"`
+	Username   string `json:"username"`
 	Icon       []byte `json:"icon"`
 	Locate     string `json:"locate"`
 	Rate       int32  `json:"rate"`

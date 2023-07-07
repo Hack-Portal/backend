@@ -25,6 +25,10 @@ func RandomString(n int) string {
 	return sb.String()
 }
 
+func Random(n int) int {
+	return rand.Intn(n)
+}
+
 // ランダムなEmailを返す
 func RandomEmail() string {
 	return fmt.Sprintf("%s@gmail.com", RandomString(10))
