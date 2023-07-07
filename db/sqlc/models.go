@@ -5,29 +5,35 @@
 package db
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type AccountPastWorks struct {
-	Opus      int32 `json:"opus"`
-	AccountID int32 `json:"account_id"`
+	Opus   int32  `json:"opus"`
+	UserID string `json:"user_id"`
 }
 
 type AccountTags struct {
-	AccountID int32 `json:"account_id"`
-	TechTagID int32 `json:"tech_tag_id"`
+	UserID    string `json:"user_id"`
+	TechTagID int32  `json:"tech_tag_id"`
 }
 
 type Accounts struct {
-	AccountID       int32  `json:"account_id"`
-	UserID          int32  `json:"user_id"`
-	Username        int32  `json:"username"`
-	Icon            []byte `json:"icon"`
-	ExplanatoryText string `json:"explanatory_text"`
-	LocateID        int32  `json:"locate_id"`
-	Rate            int32  `json:"rate"`
+	UserID          string         `json:"user_id"`
+	Username        string         `json:"username"`
+	Icon            []byte         `json:"icon"`
+	ExplanatoryText sql.NullString `json:"explanatory_text"`
+	LocateID        int32          `json:"locate_id"`
+	Rate            int32          `json:"rate"`
+	HashedPassword  sql.NullString `json:"hashed_password"`
+	Email           string         `json:"email"`
+	CreateAt        time.Time      `json:"create_at"`
+	ShowLocate      bool           `json:"show_locate"`
+	ShowRate        bool           `json:"show_rate"`
+	UpdateAt        time.Time      `json:"update_at"`
 }
 
 type Awards struct {
@@ -36,13 +42,13 @@ type Awards struct {
 }
 
 type Bookmarks struct {
-	HackathonID int32 `json:"hackathon_id"`
-	AccountID   int32 `json:"account_id"`
+	HackathonID int32  `json:"hackathon_id"`
+	UserID      string `json:"user_id"`
 }
 
 type Follows struct {
-	ToAccountID   int32 `json:"to_account_id"`
-	FromAccountID int32 `json:"from_account_id"`
+	ToUserID   string `json:"to_user_id"`
+	FromUserID string `json:"from_user_id"`
 }
 
 type HackathonStatusTags struct {
@@ -55,11 +61,10 @@ type Hackathons struct {
 	Name        string    `json:"name"`
 	Icon        []byte    `json:"icon"`
 	Description string    `json:"description"`
+	Link        string    `json:"link"`
 	Expired     time.Time `json:"expired"`
-	Available   bool      `json:"available"`
-	StartDate   time.Time `json:"start_Date"`
+	StartDate   time.Time `json:"start_date"`
 	Term        int32     `json:"term"`
-	IsOnline    bool      `json:"is_Online"`
 }
 
 type HackathonsData struct {
@@ -85,9 +90,9 @@ type PastWorks struct {
 }
 
 type RateEntries struct {
-	AccountID int32     `json:"account_id"`
-	Rate      int32     `json:"rate"`
-	CreateAt  time.Time `json:"create_at"`
+	UserID   string    `json:"user_id"`
+	Rate     int32     `json:"rate"`
+	CreateAt time.Time `json:"create_at"`
 }
 
 type Rooms struct {
@@ -96,12 +101,12 @@ type Rooms struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Limit       int32     `json:"limit"`
-	Status      bool      `json:"status"`
+	IsStatus    bool      `json:"is_status"`
 }
 
 type RoomsAccounts struct {
-	RoomID    uuid.UUID `json:"room_id"`
-	AccountID int32     `json:"account_id"`
+	UserID string    `json:"user_id"`
+	RoomID uuid.UUID `json:"room_id"`
 }
 
 type RoomsTechTags struct {
@@ -117,11 +122,4 @@ type StatusTags struct {
 type TechTags struct {
 	TechTagID int32  `json:"tech_tag_id"`
 	TechTag   string `json:"tech_tag"`
-}
-
-type Users struct {
-	UserID         int32     `json:"user_id"`
-	HashedPassword string    `json:"hashed_password"`
-	Email          string    `json:"email"`
-	CreateAt       time.Time `json:"create_at"`
 }
