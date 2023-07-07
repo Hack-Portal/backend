@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/middleware"
+	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
 func (controller *Controller) Ping(ctx *gin.Context) {
@@ -12,5 +13,6 @@ func (controller *Controller) Ping(ctx *gin.Context) {
 }
 
 func (controller *Controller) Pong(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"message": "ping", "claims": middleware.ExtractClaims(ctx)})
+	authClaims := ctx.MustGet(middleware.AuthorizationClaimsKey).(*token.CustomClaims)
+	ctx.JSON(http.StatusOK, gin.H{"message": "ping", "claims": authClaims})
 }

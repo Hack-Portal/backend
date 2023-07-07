@@ -1,6 +1,9 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/middleware"
+)
 
 // ルーティングをセットアップする
 func (server *Server) setupRouter() {
@@ -13,13 +16,8 @@ func (server *Server) setupRouter() {
 
 // 認証ミドルウェアの必要なルーティング
 func (server *Server) authRouter() error {
-	middleware, err := middleware.New("./credentials.json", nil)
-	if err != nil {
-		return err
-	}
-
 	auth := server.router.Group("/auth")
-	auth.Use(middleware.AuthMiddleware(server))
+	auth.Use(middleware.AuthMiddleware())
 	auth.GET("/v1/pong", server.controller.Pong)
 
 	return nil
