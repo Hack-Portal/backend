@@ -1,4 +1,4 @@
-module github.com/hackhack-Geek-v6/backend
+module github.com/hackhack-Geek-vol6/backend
 
 go 1.20
 
