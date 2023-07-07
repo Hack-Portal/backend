@@ -12,6 +12,7 @@ type Querier interface {
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
 	GetAccount(ctx context.Context, userID string) (GetAccountRow, error)
 	GetAccountAuth(ctx context.Context, userID string) (GetAccountAuthRow, error)
+	GetLocate(ctx context.Context, locateID int32) (Locates, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
 	ListLocates(ctx context.Context) ([]Locates, error)
 }

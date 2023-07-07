@@ -2,9 +2,9 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-v6/backend/controller"
-	db "github.com/hackhack-Geek-v6/backend/db/sqlc"
-	"github.com/hackhack-Geek-v6/backend/util"
+	"github.com/hackhack-Geek-vol6/backend/controller"
+	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/hackhack-Geek-vol6/backend/util"
 )
 
 type Server struct {

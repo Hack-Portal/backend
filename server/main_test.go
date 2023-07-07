@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	db "github.com/hackhack-Geek-v6/backend/db/sqlc"
-	"github.com/hackhack-Geek-v6/backend/util"
+	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/hackhack-Geek-vol6/backend/util"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/require"
 )

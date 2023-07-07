@@ -9,6 +9,17 @@ import (
 	"context"
 )
 
+const getLocate = `-- name: GetLocate :one
+SELECT locate_id, name FROM locates WHERE locate_id = $1
+`
+
+func (q *Queries) GetLocate(ctx context.Context, locateID int32) (Locates, error) {
+	row := q.db.QueryRowContext(ctx, getLocate, locateID)
+	var i Locates
+	err := row.Scan(&i.LocateID, &i.Name)
+	return i, err
+}
+
 const listLocates = `-- name: ListLocates :many
 SELECT locate_id, name FROM locates
 `
