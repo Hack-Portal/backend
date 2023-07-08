@@ -14,14 +14,7 @@ SELECT
     username,
     icon,
     explanatory_text,
-    (
-        SELECT 
-            name 
-        FROM 
-            locates 
-        WHERE 
-            locate_id = accounts.locate_id
-    ) as locate,
+    locate_id,
     rate,
     show_locate,
     show_rate
