@@ -3,7 +3,6 @@ package api
 import (
 	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/util/token"
@@ -12,7 +11,7 @@ import (
 const (
 	AuthorizationHeaderKey  = "authorization"
 	AuthorizationTypeBearer = "bearer"
-	AuthorizationClaimsKey  = "authorization_Claim"
+	AuthorizationClaimsKey  = "authorization_claim"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -24,20 +23,19 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		fields := strings.Fields(authorizationHeader)
-		if len(fields) < 2 {
-			err := errors.New("invalid authorization header format")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
-		accessToken := fields[1]
-
-		customClaims, err := token.CheckFirebaseJWT(accessToken)
+		hCS, err := token.JwtDecode.DecomposeFB(authorizationHeader)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
-		ctx.Set(AuthorizationClaimsKey, customClaims)
+
+		payload, err := token.JwtDecode.DecodeClaimFB(hCS[1])
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.Set(AuthorizationClaimsKey, payload)
 		ctx.Next()
 	}
 }

@@ -18,10 +18,7 @@ func NewServer(config util.EnvConfig, store db.Store) (*Server, error) {
 		config: config,
 		store:  store,
 	}
-
 	server.setupRouter()
-	server.authRouter()
-
 	return server, nil
 }
 
