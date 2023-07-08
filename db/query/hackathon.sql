@@ -1,4 +1,4 @@
---name: CreateHackathon :one
+-- name: CreateHackathon :one
 INSERT INTO hackathons (
     name,
     icon,
@@ -15,8 +15,7 @@ VALUES(
     $4,
     $5,
     $6,
-    $7,
-    $8
+    $7
   )
 RETURNING *;
 -- name: ListHackathons :many
