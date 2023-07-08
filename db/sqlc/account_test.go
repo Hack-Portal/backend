@@ -38,7 +38,7 @@ func createAccountTest(t *testing.T) Accounts {
 	return account
 }
 
-func TestCreateAccoutn(t *testing.T) {
+func TestCreateAccount(t *testing.T) {
 	createAccountTest(t)
 }
 
