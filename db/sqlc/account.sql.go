@@ -77,14 +77,7 @@ SELECT
     username,
     icon,
     explanatory_text,
-    (
-        SELECT 
-            name 
-        FROM 
-            locates 
-        WHERE 
-            locate_id = accounts.locate_id
-    ) as locate,
+    locate_id,
     rate,
     show_locate,
     show_rate
@@ -99,7 +92,7 @@ type GetAccountRow struct {
 	Username        string         `json:"username"`
 	Icon            []byte         `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	Locate          string         `json:"locate"`
+	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
 	ShowLocate      bool           `json:"show_locate"`
 	ShowRate        bool           `json:"show_rate"`
@@ -113,7 +106,7 @@ func (q *Queries) GetAccount(ctx context.Context, userID string) (GetAccountRow,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
-		&i.Locate,
+		&i.LocateID,
 		&i.Rate,
 		&i.ShowLocate,
 		&i.ShowRate,

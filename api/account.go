@@ -24,13 +24,13 @@ type CreateAccountRequestParam struct {
 
 // アカウントに関するレスポンス
 type AccountResponses struct {
-	UserID          string `json:"user_id"`
-	Username        string `json:"username"`
-	Icon            []byte `json:"icon"`
-	ExplanatoryText string `json:"explanatory_text"`
-	Locate          string `json:"locate"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate"`
+	UserID          string     `json:"user_id"`
+	Username        string     `json:"username"`
+	Icon            []byte     `json:"icon"`
+	ExplanatoryText string     `json:"explanatory_text"`
+	Locate          db.Locates `json:"locate"`
+	ShowLocate      bool       `json:"show_locate"`
+	ShowRate        bool       `json:"show_rate"`
 }
 
 // アカウント作成
@@ -88,7 +88,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		Username:        account.Username,
 		Icon:            account.Icon,
 		ExplanatoryText: account.ExplanatoryText.String,
-		Locate:          locate.Name,
+		Locate:          locate,
 		ShowLocate:      account.ShowLocate,
 		ShowRate:        account.ShowRate,
 	}
@@ -115,12 +115,18 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
+	locate, err := server.store.GetLocate(ctx, account.LocateID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	response := AccountResponses{
 		UserID:          account.UserID,
 		Username:        account.Username,
 		Icon:            account.Icon,
 		ExplanatoryText: account.ExplanatoryText.String,
-		Locate:          account.Locate,
+		Locate:          locate,
 		ShowLocate:      account.ShowLocate,
 		ShowRate:        account.ShowRate,
 	}
