@@ -12,6 +12,7 @@ import (
 
 // アカウントを作る時のリクエストパラメータ
 type CreateAccountRequestParam struct {
+	UserID          string `json:"user_id"`
 	Username        string `json:"username"`
 	Icon            []byte `json:"icon"`
 	ExplanatoryText string `json:"explanatory_text"`
@@ -40,7 +41,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	claims := ctx.MustGet(AuthorizationClaimsKey).(*token.CustomClaims)
+	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
 	if request.Password == "" {
 		var err error
 		request.Password, err = util.HashPassword(request.Password)
@@ -51,12 +52,12 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 	}
 
 	arg := db.CreateAccountParams{
-		UserID:   claims.UserId,
+		UserID:   request.UserID,
 		Username: request.Username,
 		Icon:     request.Icon,
 		ExplanatoryText: sql.NullString{
 			String: request.ExplanatoryText,
-			Valid:  false,
+			Valid:  true,
 		},
 		LocateID: request.LocateID,
 		Rate:     0,
@@ -64,7 +65,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 			String: request.Password,
 			Valid:  false,
 		},
-		Email:      claims.Email,
+		Email:      payload.Email,
 		ShowLocate: request.ShowLocate,
 		ShowRate:   request.ShowRate,
 	}
@@ -124,14 +125,4 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		ShowRate:        account.ShowRate,
 	}
 	ctx.JSON(http.StatusOK, response)
-}
-
-type ListAccountRequestParam struct {
-	Conditions string
-	PageSize   int32
-	PageID     int32
-}
-
-func (server *Server) ListAccount(ctx *gin.Context) {
-
 }

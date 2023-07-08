@@ -17,6 +17,7 @@ func (server *Server) setupRouter() {
 // 認証を必要としないルーティング
 func (server *Server) publicRouter() {
 	public := server.router.Group("/v1")
+
 	public.GET("/ping", server.Ping)
 	public.GET("/accounts/:id", server.GetAccount)
 }
@@ -27,5 +28,6 @@ func (server *Server) authRouter() {
 	auth.Use(AuthMiddleware())
 	auth.GET("/pong", server.Pong)
 	// アカウント作成
+
 	auth.POST("/accounts", server.CreateAccount)
 }

@@ -48,8 +48,9 @@ SELECT
     show_rate
 FROM
     accounts
-LIMIT $1
-OFFSET $2;
+WHERE username LIKE $1
+LIMIT $2
+OFFSET $3;
 
 -- name: CreateAccount :one
 INSERT INTO accounts (

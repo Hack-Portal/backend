@@ -67,18 +67,21 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestListAccount(t *testing.T) {
+	var lastaccount Accounts
 	n := 10
 
 	for i := 0; i < n; i++ {
-		createAccountTest(t)
-	}
-	arg := ListAccountsParams{
-		Limit:  int32(n),
-		Offset: 0,
+		lastaccount = createAccountTest(t)
 	}
 
-	result, err := testQueries.ListAccounts(context.Background(), arg)
+	username := util.Remove5Strings(lastaccount.Username)
+	arg := ListAccountsParams{
+		Username: "%" + username + "%",
+		Limit:    int32(n),
+		Offset:   0,
+	}
+
+	accounts, err := testQueries.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
-	require.NotEmpty(t, result)
-	require.Len(t, result, n)
+	require.NotEmpty(t, accounts)
 }
