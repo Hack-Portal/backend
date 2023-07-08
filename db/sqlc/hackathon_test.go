@@ -15,16 +15,20 @@ func createHackathonTest(t *testing.T) Hackathons {
 		Icon:        []byte(util.RandomString(8)),
 		Description: util.RandomString(8),
 		Link:        util.RandomString(8),
-		Expired:     util.RandomTime(),
-		StartDate:   util.RandomTime(),
-		Term:        int32(util.Random(100)),
+		// 時間を適当に生成すればいい
+		// 今から10時間後の時間を返す
+		// ex: time.Now().Add(time.Duration(time.Duration(10).Hours()))
+		Expired:   util.RandomTime(),
+		StartDate: util.RandomTime(),
+		Term:      int32(util.Random(100)),
 	}
 
 	hackathon, err := testQueries.CreateHackathon(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, hackathon)
-
+	// いらない
 	require.Equal(t, arg.HackathonID, hackathon.HackathonID)
+	//
 	require.Equal(t, arg.Name, hackathon.Name)
 	require.Equal(t, arg.Icon, hackathon.Icon)
 	require.Equal(t, arg.Description, hackathon.Description)
