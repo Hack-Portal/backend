@@ -1,6 +1,5 @@
 --name: CreateHackathon :one
 INSERT INTO hackathons (
-    hackathon_id,
     name,
     icon,
     description,
@@ -8,7 +7,8 @@ INSERT INTO hackathons (
     expired,
     start_date,
     term
-) VALUES(
+  )
+VALUES(
     $1,
     $2,
     $3,
@@ -17,10 +17,16 @@ INSERT INTO hackathons (
     $6,
     $7,
     $8
-) RETURNING *;
-
+  )
+RETURNING *;
 -- name: ListHackathons :many
-SELECT * FROM hackathons WHERE expired > $1 ORDER BY hackathon_id LIMIT $2 OFFSET $3; ;
+SELECT *
+FROM hackathons
+WHERE expired > $1
+ORDER BY hackathon_id
+LIMIT $2 OFFSET $3;
 
 -- name: GetHackathon :one
-SELECT * FROM hackathons WHERE hackathon_id = $1;
+SELECT *
+FROM hackathons
+WHERE hackathon_id = $1;
