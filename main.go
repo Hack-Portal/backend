@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/hackhack-Geek-vol6/backend/api"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
-	"github.com/hackhack-Geek-vol6/backend/server"
 	"github.com/hackhack-Geek-vol6/backend/util"
 	_ "github.com/lib/pq"
 )
@@ -21,7 +21,7 @@ func main() {
 	}
 	store := db.NewStore(conn)
 
-	server, err := server.NewServer(config, store)
+	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatal(err)
 	}

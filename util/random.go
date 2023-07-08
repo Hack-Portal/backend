@@ -26,7 +26,7 @@ func RandomString(n int) string {
 }
 
 func Random(n int) int {
-	return rand.Intn(n)
+	return rand.Intn(n) + 1
 }
 
 // ランダムなEmailを返す

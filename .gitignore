@@ -1,4 +1,3 @@
 *.env
 *.json
 
-config_test.go
