@@ -25,12 +25,12 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		fields := strings.Fields(authorizationHeader)
-		if len(fields) < 2 {
+		if len(fields) < 1 {
 			err := errors.New("invalid authorization header format")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
-		accessToken := fields[1]
+		accessToken := fields[0]
 
 		customClaims, err := token.CheckFirebaseJWT(accessToken)
 		if err != nil {
