@@ -27,7 +27,7 @@ CREATE TABLE "account_tags" (
 
 CREATE TABLE "tech_tags" (
   "tech_tag_id" serial PRIMARY KEY,
-  "tech_tag" varchar NOT NULL
+  "language" varchar NOT NULL
 );
 
 CREATE TABLE "accounts" (
@@ -111,6 +111,27 @@ CREATE TABLE "rooms_accounts" (
   "room_id" uuid NOT NULL
 );
 
+CREATE TABLE "frameworks" (
+  "framework_id" serial PRIMARY KEY,
+  "tech_tag_id" int NOT NULL,
+  "framework" varchar NOT NULL
+);
+
+CREATE TABLE "past_work_frameworks" (
+  "opus" int NOT NULL,
+  "framework_id" int NOT NULL
+);
+
+CREATE TABLE "account_frameworks" (
+  "account_id" varchar NOT NULL,
+  "framework_id" int NOT NULL
+);
+
+CREATE TABLE "rooms_frameworks" (
+  "room_id" uuid NOT NULL,
+  "framework_id" int NOT NULL
+);
+
 ALTER TABLE "accounts" ADD FOREIGN KEY ("locate_id") REFERENCES "locates" ("locate_id");
 
 ALTER TABLE "account_tags" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
@@ -154,6 +175,20 @@ ALTER TABLE "rooms_tech_tags" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("r
 ALTER TABLE "rooms_tech_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
 
 ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+
+ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
+
+ALTER TABLE "frameworks" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
+
+ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
+ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("user_id");
+
+ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
+
+ALTER TABLE "rooms_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
+
+ALTER TABLE "rooms_frameworks" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
 
 
 INSERT INTO locates (name) VALUES 
@@ -203,4 +238,42 @@ INSERT INTO locates (name) VALUES
 ('大分県'), 
 ('宮崎県'), 
 ('鹿児島県'), 
-('沖縄県')
+('沖縄県');
+
+INSERT INTO tech_tags (language) VALUES
+    ('Python'),
+    ('JavaScript'),
+    ('Java'),
+    ('C++'),
+    ('C#'),
+    ('PHP'),
+    ('Swift'),
+    ('Kotlin'),
+    ('Go'),
+    ('Rust'),
+    ('R'),
+    ('SQL'),
+    ('C'),
+    ('Objective-C'),
+    ('Perl'),
+    ('Ruby'),
+    ('Scala'),
+    ('D'),
+    ('Haskell'),
+    ('Erlang'),
+    ('MySQL'),
+    ('PostgreSQL'),
+    ('MongoDB'),
+    ('Oracle'),
+    ('SQL Server'),
+    ('Amazon RDS'),
+    ('Microsoft Azure SQL Database'),
+    ('Google Cloud SQL'),
+    ('Couchbase'),
+    ('Redis'),
+    ('Amazon Web Services (AWS)'),
+    ('Microsoft Azure'),
+    ('Google Cloud Platform (GCP)'),
+    ('Alibaba Cloud'),
+    ('IBM Cloud'),
+    ('Oracle Cloud');
