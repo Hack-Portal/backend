@@ -65,3 +65,37 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, response)
 }
+
+// ハッカソン取得
+// ハッカソンを取得する際のパラメータ
+type GetHackathonParams struct {
+	HackathonID int32 `uri:"hackathon_id"`
+}
+
+// ハッカソンを取得する
+func (server *Server) GetHackathon(ctx *gin.Context) {
+	var request GetHackathonParams
+	if err := ctx.ShouldBindUri(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	hackathon, err := server.store.GetHackathon(ctx, request.HackathonID)
+	if err != nil {
+		// ToDo: 既に登録されていた時の分岐
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	response := HackathonResponses{
+		HackathonID: hackathon.HackathonID,
+		Name:        hackathon.Name,
+		Icon:        hackathon.Icon,
+		Description: hackathon.Description,
+		Link:        hackathon.Link,
+		Expired:     hackathon.Expired,
+		StartDate:   hackathon.StartDate,
+		Term:        hackathon.Term,
+	}
+	ctx.JSON(http.StatusOK, response)
+}
