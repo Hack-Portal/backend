@@ -6,7 +6,6 @@ package db
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -30,7 +29,7 @@ type Querier interface {
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
 	ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathons, error)
 	ListLocates(ctx context.Context) ([]Locates, error)
-	ListRoom(ctx context.Context, expired time.Time) ([]Rooms, error)
+	ListRoom(ctx context.Context) ([]Rooms, error)
 	ListTechTag(ctx context.Context) ([]TechTags, error)
 }
 

@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -86,17 +85,11 @@ WHERE
         WHERE rooms_accounts.room_id = rooms.room_id
         ) 
     AND
-    hackathon_id IN (
-        SELECT hackathon_id
-        FROM hackathons
-        WHERE expired > $1
-    ) 
-    AND
     is_status = TRUE
 `
 
-func (q *Queries) ListRoom(ctx context.Context, expired time.Time) ([]Rooms, error) {
-	rows, err := q.db.QueryContext(ctx, listRoom, expired)
+func (q *Queries) ListRoom(ctx context.Context) ([]Rooms, error) {
+	rows, err := q.db.QueryContext(ctx, listRoom)
 	if err != nil {
 		return nil, err
 	}
