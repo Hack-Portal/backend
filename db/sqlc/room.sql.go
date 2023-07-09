@@ -85,11 +85,12 @@ WHERE
         WHERE rooms_accounts.room_id = rooms.room_id
         ) 
     AND
-    is_status = TRUE
+    is_status = TRUE 
+LIMIT $1
 `
 
-func (q *Queries) ListRoom(ctx context.Context) ([]Rooms, error) {
-	rows, err := q.db.QueryContext(ctx, listRoom)
+func (q *Queries) ListRoom(ctx context.Context, limit int32) ([]Rooms, error) {
+	rows, err := q.db.QueryContext(ctx, listRoom, limit)
 	if err != nil {
 		return nil, err
 	}
