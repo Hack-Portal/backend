@@ -26,11 +26,5 @@ WHERE
         WHERE rooms_accounts.room_id = rooms.room_id
         ) 
     AND
-    hackathon_id IN (
-        SELECT hackathon_id
-        FROM hackathons
-        WHERE expired > $1
-    ) 
-    AND
     is_status = TRUE ;
 

@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/hackhack-Geek-vol6/backend/util"
@@ -18,6 +19,7 @@ func createaRoomsTest(t *testing.T) Rooms {
 		Title:       util.RandomString(8),
 		Description: util.RandomString(100),
 		MemberLimit: 5,
+		IsStatus:    true,
 	}
 
 	room, err := testQueries.CreateRoom(context.Background(), arg)
@@ -29,9 +31,39 @@ func createaRoomsTest(t *testing.T) Rooms {
 	require.Equal(t, arg.Title, room.Title)
 	require.Equal(t, arg.Description, room.Description)
 	require.Equal(t, arg.MemberLimit, room.MemberLimit)
+	require.Equal(t, arg.IsStatus, room.IsStatus)
 	return room
 }
 
 func TestCreateRoom(t *testing.T) {
 	createaRoomsTest(t)
+}
+
+func TestGetRoom(t *testing.T) {
+	room1 := createaRoomsTest(t)
+
+	room2, err := testQueries.GetRoom(context.Background(), room1.RoomID)
+	require.NoError(t, err)
+	require.NotEmpty(t, room2)
+
+	require.Equal(t, room1.RoomID, room2.RoomID)
+	require.Equal(t, room1.HackathonID, room2.HackathonID)
+	require.Equal(t, room1.Title, room2.Title)
+	require.Equal(t, room1.Description, room2.Description)
+	require.Equal(t, room1.MemberLimit, room2.MemberLimit)
+	require.Equal(t, room1.IsStatus, room2.IsStatus)
+}
+
+func TestListRoom(t *testing.T) {
+	n := 5
+	for i := 0; i < n; i++ {
+		createaRoomsTest(t)
+	}
+
+	rooms, err := testQueries.ListRoom(context.Background(), time.Now())
+	require.NoError(t, err)
+	require.Len(t, rooms, n)
+	for _, room := range rooms {
+		require.NotEmpty(t, room)
+	}
 }
