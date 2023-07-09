@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/hackhack-Geek-vol6/backend/util"
@@ -60,7 +59,7 @@ func TestListRoom(t *testing.T) {
 		createaRoomsTest(t)
 	}
 
-	rooms, err := testQueries.ListRoom(context.Background(), time.Now())
+	rooms, err := testQueries.ListRoom(context.Background())
 	require.NoError(t, err)
 	require.Len(t, rooms, n)
 	for _, room := range rooms {

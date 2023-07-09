@@ -26,5 +26,6 @@ WHERE
         WHERE rooms_accounts.room_id = rooms.room_id
         ) 
     AND
-    is_status = TRUE ;
+    is_status = TRUE 
+LIMIT $1;
 
