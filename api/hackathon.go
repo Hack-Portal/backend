@@ -69,7 +69,7 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 // ハッカソン取得
 // ハッカソンを取得する際のパラメータ
 type GetHackathonParams struct {
-	HackathonID int32 `uri:"id"`
+	HackathonID int32 `uri:"hackathon_id"`
 }
 
 // ハッカソンを取得する

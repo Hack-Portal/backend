@@ -20,7 +20,7 @@ func (server *Server) publicRouter() {
 
 	public.GET("/ping", server.Ping)
 	public.POST("/hackathons", server.CreateHackathon)
-	public.GET("/hackathons:id", server.GetHackathon)
+	public.GET("/hackathons/:hackathon_id", server.GetHackathon)
 	public.GET("/accounts/:id", server.GetAccount)
 }
 
