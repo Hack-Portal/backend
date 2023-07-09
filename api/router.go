@@ -19,7 +19,8 @@ func (server *Server) publicRouter() {
 	public := server.router.Group("/v1")
 
 	public.GET("/ping", server.Ping)
-	public.GET("/hackathons", server.CreateHackathon)
+	public.POST("/hackathons", server.CreateHackathon)
+	public.GET("/hackathons:id", server.GetHackathon)
 	public.GET("/accounts/:id", server.GetAccount)
 }
 
