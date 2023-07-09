@@ -34,7 +34,7 @@ func (q *Queries) CreataAccountTags(ctx context.Context, arg CreataAccountTagsPa
 const getAccountTags = `-- name: GetAccountTags :many
 SELECT 
     tech_tags.tech_tag_id,
-    tech_tags.tech_tag
+    tech_tags.language
 FROM 
     account_tags
 LEFT OUTER JOIN 
@@ -47,7 +47,7 @@ WHERE
 
 type GetAccountTagsRow struct {
 	TechTagID sql.NullInt32  `json:"tech_tag_id"`
-	TechTag   sql.NullString `json:"tech_tag"`
+	Language  sql.NullString `json:"language"`
 }
 
 func (q *Queries) GetAccountTags(ctx context.Context, userID string) ([]GetAccountTagsRow, error) {
@@ -59,7 +59,7 @@ func (q *Queries) GetAccountTags(ctx context.Context, userID string) ([]GetAccou
 	items := []GetAccountTagsRow{}
 	for rows.Next() {
 		var i GetAccountTagsRow
-		if err := rows.Scan(&i.TechTagID, &i.TechTag); err != nil {
+		if err := rows.Scan(&i.TechTagID, &i.Language); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

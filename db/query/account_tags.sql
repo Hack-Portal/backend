@@ -10,7 +10,7 @@ INSERT INTO account_tags (
 -- name: GetAccountTags :many
 SELECT 
     tech_tags.tech_tag_id,
-    tech_tags.tech_tag
+    tech_tags.language
 FROM 
     account_tags
 LEFT OUTER JOIN 

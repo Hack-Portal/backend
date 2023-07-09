@@ -9,7 +9,7 @@ INSERT INTO rooms_tech_tags (
 -- name: GetRoomsTechTags :many
 SELECT 
     tech_tags.tech_tag_id,
-    tech_tags.tech_tag
+    tech_tags.language
 FROM 
     rooms_tech_tags
 LEFT OUTER JOIN 

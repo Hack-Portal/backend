@@ -36,7 +36,7 @@ func (q *Queries) CreateRoomsTechTag(ctx context.Context, arg CreateRoomsTechTag
 const getRoomsTechTags = `-- name: GetRoomsTechTags :many
 SELECT 
     tech_tags.tech_tag_id,
-    tech_tags.tech_tag
+    tech_tags.language
 FROM 
     rooms_tech_tags
 LEFT OUTER JOIN 
@@ -49,7 +49,7 @@ WHERE
 
 type GetRoomsTechTagsRow struct {
 	TechTagID sql.NullInt32  `json:"tech_tag_id"`
-	TechTag   sql.NullString `json:"tech_tag"`
+	Language  sql.NullString `json:"language"`
 }
 
 func (q *Queries) GetRoomsTechTags(ctx context.Context, roomID uuid.UUID) ([]GetRoomsTechTagsRow, error) {
@@ -61,7 +61,7 @@ func (q *Queries) GetRoomsTechTags(ctx context.Context, roomID uuid.UUID) ([]Get
 	items := []GetRoomsTechTagsRow{}
 	for rows.Next() {
 		var i GetRoomsTechTagsRow
-		if err := rows.Scan(&i.TechTagID, &i.TechTag); err != nil {
+		if err := rows.Scan(&i.TechTagID, &i.Language); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

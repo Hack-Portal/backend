@@ -11,6 +11,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type AccountFrameworks struct {
+	AccountID   string `json:"account_id"`
+	FrameworkID int32  `json:"framework_id"`
+}
+
 type AccountPastWorks struct {
 	Opus   int32  `json:"opus"`
 	UserID string `json:"user_id"`
@@ -51,6 +56,12 @@ type Follows struct {
 	FromUserID string `json:"from_user_id"`
 }
 
+type Frameworks struct {
+	FrameworkID int32  `json:"framework_id"`
+	TechTagID   int32  `json:"tech_tag_id"`
+	Framework   string `json:"framework"`
+}
+
 type HackathonStatusTags struct {
 	HackathonID int32 `json:"hackathon_id"`
 	StatusID    int32 `json:"status_id"`
@@ -76,6 +87,11 @@ type HackathonsData struct {
 type Locates struct {
 	LocateID int32  `json:"locate_id"`
 	Name     string `json:"name"`
+}
+
+type PastWorkFrameworks struct {
+	Opus        int32 `json:"opus"`
+	FrameworkID int32 `json:"framework_id"`
 }
 
 type PastWorkTags struct {
@@ -109,6 +125,11 @@ type RoomsAccounts struct {
 	RoomID uuid.UUID `json:"room_id"`
 }
 
+type RoomsFrameworks struct {
+	RoomID      uuid.UUID `json:"room_id"`
+	FrameworkID int32     `json:"framework_id"`
+}
+
 type RoomsTechTags struct {
 	RoomID    uuid.UUID `json:"room_id"`
 	TechTagID int32     `json:"tech_tag_id"`
@@ -121,5 +142,5 @@ type StatusTags struct {
 
 type TechTags struct {
 	TechTagID int32  `json:"tech_tag_id"`
-	TechTag   string `json:"tech_tag"`
+	Language  string `json:"language"`
 }
