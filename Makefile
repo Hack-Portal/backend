@@ -4,6 +4,9 @@ postgresRun:
 postgresStart:
 	docker start hackhack-postgres
 
+postgresStop:
+	docker stop hackhack-postgres
+
 connectdb:
 	docker exec -it hackhack-postgres psql hackhack
 
@@ -28,4 +31,4 @@ sqlc:
 test:
 	go test -v -cover ./...
 	
-.PHONY: postgresRun postgresStart connectDB createdb dropdb installmigrate migrateup migratedown sqlc test
+.PHONY: postgresRun postgresStart postgresStop connectDB createdb dropdb installmigrate migrateup migratedown sqlc test 

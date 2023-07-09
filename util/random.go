@@ -33,3 +33,9 @@ func Random(n int) int {
 func RandomEmail() string {
 	return fmt.Sprintf("%s@gmail.com", RandomString(10))
 }
+
+// 先頭から5文字削除する
+func Remove5Strings(strings string) string {
+	slicedString := []rune(strings)
+	return string(slicedString[5:])
+}

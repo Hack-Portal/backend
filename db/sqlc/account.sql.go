@@ -77,14 +77,7 @@ SELECT
     username,
     icon,
     explanatory_text,
-    (
-        SELECT 
-            name 
-        FROM 
-            locates 
-        WHERE 
-            locate_id = accounts.locate_id
-    ) as locate,
+    locate_id,
     rate,
     show_locate,
     show_rate
@@ -99,7 +92,7 @@ type GetAccountRow struct {
 	Username        string         `json:"username"`
 	Icon            []byte         `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	Locate          string         `json:"locate"`
+	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
 	ShowLocate      bool           `json:"show_locate"`
 	ShowRate        bool           `json:"show_rate"`
@@ -113,7 +106,7 @@ func (q *Queries) GetAccount(ctx context.Context, userID string) (GetAccountRow,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
-		&i.Locate,
+		&i.LocateID,
 		&i.Rate,
 		&i.ShowLocate,
 		&i.ShowRate,
@@ -163,13 +156,15 @@ SELECT
     show_rate
 FROM
     accounts
-LIMIT $1
-OFFSET $2
+WHERE username LIKE $1
+LIMIT $2
+OFFSET $3
 `
 
 type ListAccountsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	Username string `json:"username"`
+	Limit    int32  `json:"limit"`
+	Offset   int32  `json:"offset"`
 }
 
 type ListAccountsRow struct {
@@ -183,7 +178,7 @@ type ListAccountsRow struct {
 }
 
 func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listAccounts, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, listAccounts, arg.Username, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

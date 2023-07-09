@@ -4,9 +4,10 @@ INSERT INTO rooms (
     hackathon_id,
     title,
     description,
-    member_limit
+    member_limit,
+    is_status
 )VALUES(
-    $1,$2,$3,$4,$5
+    $1,$2,$3,$4,$5,$6
 )RETURNING *;
 
 -- name: GetRoom :one
@@ -29,5 +30,7 @@ WHERE
         SELECT hackathon_id
         FROM hackathons
         WHERE expired > $1
-    ) ;
+    ) 
+    AND
+    is_status = TRUE ;
 

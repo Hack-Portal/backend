@@ -12,6 +12,7 @@ import (
 
 // アカウントを作る時のリクエストパラメータ
 type CreateAccountRequestParam struct {
+	UserID          string `json:"user_id"`
 	Username        string `json:"username"`
 	Icon            []byte `json:"icon"`
 	ExplanatoryText string `json:"explanatory_text"`
@@ -23,13 +24,13 @@ type CreateAccountRequestParam struct {
 
 // アカウントに関するレスポンス
 type AccountResponses struct {
-	UserID          string `json:"user_id"`
-	Username        string `json:"username"`
-	Icon            []byte `json:"icon"`
-	ExplanatoryText string `json:"explanatory_text"`
-	Locate          string `json:"locate"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate"`
+	UserID          string     `json:"user_id"`
+	Username        string     `json:"username"`
+	Icon            []byte     `json:"icon"`
+	ExplanatoryText string     `json:"explanatory_text"`
+	Locate          db.Locates `json:"locate"`
+	ShowLocate      bool       `json:"show_locate"`
+	ShowRate        bool       `json:"show_rate"`
 }
 
 // アカウント作成
@@ -40,7 +41,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	claims := ctx.MustGet(AuthorizationClaimsKey).(*token.CustomClaims)
+	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
 	if request.Password == "" {
 		var err error
 		request.Password, err = util.HashPassword(request.Password)
@@ -51,12 +52,12 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 	}
 
 	arg := db.CreateAccountParams{
-		UserID:   claims.UserId,
+		UserID:   request.UserID,
 		Username: request.Username,
 		Icon:     request.Icon,
 		ExplanatoryText: sql.NullString{
 			String: request.ExplanatoryText,
-			Valid:  false,
+			Valid:  true,
 		},
 		LocateID: request.LocateID,
 		Rate:     0,
@@ -64,7 +65,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 			String: request.Password,
 			Valid:  false,
 		},
-		Email:      claims.Email,
+		Email:      payload.Email,
 		ShowLocate: request.ShowLocate,
 		ShowRate:   request.ShowRate,
 	}
@@ -87,7 +88,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		Username:        account.Username,
 		Icon:            account.Icon,
 		ExplanatoryText: account.ExplanatoryText.String,
-		Locate:          locate.Name,
+		Locate:          locate,
 		ShowLocate:      account.ShowLocate,
 		ShowRate:        account.ShowRate,
 	}
@@ -114,24 +115,20 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
+	locate, err := server.store.GetLocate(ctx, account.LocateID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	response := AccountResponses{
 		UserID:          account.UserID,
 		Username:        account.Username,
 		Icon:            account.Icon,
 		ExplanatoryText: account.ExplanatoryText.String,
-		Locate:          account.Locate,
+		Locate:          locate,
 		ShowLocate:      account.ShowLocate,
 		ShowRate:        account.ShowRate,
 	}
 	ctx.JSON(http.StatusOK, response)
-}
-
-type ListAccountRequestParam struct {
-	Conditions string
-	PageSize   int32
-	PageID     int32
-}
-
-func (server *Server) ListAccount(ctx *gin.Context) {
-
 }

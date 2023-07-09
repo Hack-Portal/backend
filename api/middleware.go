@@ -12,7 +12,7 @@ import (
 const (
 	AuthorizationHeaderKey  = "authorization"
 	AuthorizationTypeBearer = "bearer"
-	AuthorizationClaimsKey  = "authorization_Claim"
+	AuthorizationClaimsKey  = "authorization_claim"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -30,14 +30,17 @@ func AuthMiddleware() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
-		accessToken := fields[0]
 
-		customClaims, err := token.CheckFirebaseJWT(accessToken)
+		accessToken := fields[0]
+		hCS, err := token.JwtDecode.DecomposeFB(accessToken)
+
+		payload, err := token.JwtDecode.DecodeClaimFB(hCS[1])
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
-		ctx.Set(AuthorizationClaimsKey, customClaims)
+
+		ctx.Set(AuthorizationClaimsKey, payload)
 		ctx.Next()
 	}
 }
