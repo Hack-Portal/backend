@@ -16,6 +16,6 @@ FROM
 LEFT OUTER JOIN 
     accounts 
 ON 
-    rooms_accounts.tech_tag_id = tech_tag_id 
+    rooms_accounts.user_id = accounts.user_id 
 WHERE 
     rooms_accounts.room_id = $1 ;
