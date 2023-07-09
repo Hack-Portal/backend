@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createaRoomsTest(t *testing.T) Rooms {
+func createRoomsTest(t *testing.T) Rooms {
 	hackathon := createHackathonTest(t)
 
 	arg := CreateRoomParams{
@@ -35,11 +35,11 @@ func createaRoomsTest(t *testing.T) Rooms {
 }
 
 func TestCreateRoom(t *testing.T) {
-	createaRoomsTest(t)
+	createRoomsTest(t)
 }
 
 func TestGetRoom(t *testing.T) {
-	room1 := createaRoomsTest(t)
+	room1 := createRoomsTest(t)
 
 	room2, err := testQueries.GetRoom(context.Background(), room1.RoomID)
 	require.NoError(t, err)
@@ -56,7 +56,7 @@ func TestGetRoom(t *testing.T) {
 func TestListRoom(t *testing.T) {
 	n := 5
 	for i := 0; i < n; i++ {
-		createaRoomsTest(t)
+		createRoomsTest(t)
 	}
 
 	rooms, err := testQueries.ListRoom(context.Background(), int32(n))
