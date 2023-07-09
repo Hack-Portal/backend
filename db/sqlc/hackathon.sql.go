@@ -21,13 +21,7 @@ INSERT INTO hackathons (
     term
   )
 VALUES(
-    $1,
-    $2,
-    $3,
-    $4,
-    $5,
-    $6,
-    $7
+    $1,$2,$3,$4,$5,$6,$7
   )
 RETURNING hackathon_id, name, icon, description, link, expired, start_date, term
 `

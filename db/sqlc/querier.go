@@ -14,10 +14,10 @@ import (
 type Querier interface {
 	CreataAccountTags(ctx context.Context, arg CreataAccountTagsParams) (AccountTags, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
+	CreateHackathon(ctx context.Context, arg CreateHackathonParams) (Hackathons, error)
 	CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error)
 	CreateRoomsTechTag(ctx context.Context, arg CreateRoomsTechTagParams) (RoomsTechTags, error)
-	CreateHackathon(ctx context.Context, arg CreateHackathonParams) (Hackathons, error)
 	GetAccount(ctx context.Context, userID string) (GetAccountRow, error)
 	GetAccountAuth(ctx context.Context, userID string) (GetAccountAuthRow, error)
 	GetAccountTags(ctx context.Context, userID string) ([]GetAccountTagsRow, error)

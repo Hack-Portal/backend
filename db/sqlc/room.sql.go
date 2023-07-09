@@ -18,9 +18,10 @@ INSERT INTO rooms (
     hackathon_id,
     title,
     description,
-    member_limit
+    member_limit,
+    is_status
 )VALUES(
-    $1,$2,$3,$4,$5
+    $1,$2,$3,$4,$5,$6
 )RETURNING room_id, hackathon_id, title, description, member_limit, is_status
 `
 
@@ -30,6 +31,7 @@ type CreateRoomParams struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	MemberLimit int32     `json:"member_limit"`
+	IsStatus    bool      `json:"is_status"`
 }
 
 func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, error) {
@@ -39,6 +41,7 @@ func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, 
 		arg.Title,
 		arg.Description,
 		arg.MemberLimit,
+		arg.IsStatus,
 	)
 	var i Rooms
 	err := row.Scan(
@@ -87,7 +90,9 @@ WHERE
         SELECT hackathon_id
         FROM hackathons
         WHERE expired > $1
-    )
+    ) 
+    AND
+    is_status = TRUE
 `
 
 func (q *Queries) ListRoom(ctx context.Context, expired time.Time) ([]Rooms, error) {
