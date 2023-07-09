@@ -6,15 +6,29 @@ package db
 
 import (
 	"context"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
+	CreataAccountTags(ctx context.Context, arg CreataAccountTagsParams) (AccountTags, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
+	CreatePastWorkTag(ctx context.Context, arg CreatePastWorkTagParams) (PastWorkTags, error)
+	CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, error)
+	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error)
+	CreateRoomsTechTag(ctx context.Context, arg CreateRoomsTechTagParams) (RoomsTechTags, error)
 	GetAccount(ctx context.Context, userID string) (GetAccountRow, error)
 	GetAccountAuth(ctx context.Context, userID string) (GetAccountAuthRow, error)
+	GetAccountTags(ctx context.Context, userID string) ([]GetAccountTagsRow, error)
 	GetLocate(ctx context.Context, locateID int32) (Locates, error)
+	GetPastWorkTags(ctx context.Context, opus int32) ([]GetPastWorkTagsRow, error)
+	GetRoom(ctx context.Context, roomID uuid.UUID) (Rooms, error)
+	GetRoomsAccounts(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsRow, error)
+	GetRoomsTechTags(ctx context.Context, roomID uuid.UUID) ([]GetRoomsTechTagsRow, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
 	ListLocates(ctx context.Context) ([]Locates, error)
+	ListRoom(ctx context.Context, expired time.Time) ([]Rooms, error)
 }
 
 var _ Querier = (*Queries)(nil)

@@ -100,7 +100,7 @@ type Rooms struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
-	Limit       int32     `json:"limit"`
+	MemberLimit int32     `json:"member_limit"`
 	IsStatus    bool      `json:"is_status"`
 }
 

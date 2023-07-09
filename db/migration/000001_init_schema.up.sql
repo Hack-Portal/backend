@@ -97,7 +97,7 @@ CREATE TABLE "rooms" (
   "hackathon_id" int NOT NULL,
   "title" varchar NOT NULL,
   "description" text NOT NULL,
-  "limit" int NOT NULL,
+  "member_limit" int NOT NULL,
   "is_status" boolean NOT NULL
 );
 
