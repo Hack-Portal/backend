@@ -14,14 +14,7 @@ SELECT
     username,
     icon,
     explanatory_text,
-    (
-        SELECT 
-            name 
-        FROM 
-            locates 
-        WHERE 
-            locate_id = accounts.locate_id
-    ) as locate,
+    locate_id,
     rate,
     show_locate,
     show_rate
@@ -48,8 +41,9 @@ SELECT
     show_rate
 FROM
     accounts
-LIMIT $1
-OFFSET $2;
+WHERE username LIKE $1
+LIMIT $2
+OFFSET $3;
 
 -- name: CreateAccount :one
 INSERT INTO accounts (

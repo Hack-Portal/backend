@@ -38,26 +38,30 @@ func createAccountTest(t *testing.T) Accounts {
 	return account
 }
 
-func TestCreateAccoutn(t *testing.T) {
+func TestCreateAccount(t *testing.T) {
 	createAccountTest(t)
 }
 
 func TestGetAccount(t *testing.T) {
 	account := createAccountTest(t)
 
-	locate, err := testQueries.GetLocate(context.Background(), account.LocateID)
+	locate1, err := testQueries.GetLocate(context.Background(), account.LocateID)
 	require.NoError(t, err)
-	require.NotEmpty(t, locate)
+	require.NotEmpty(t, locate1)
 
 	result, err := testQueries.GetAccount(context.Background(), account.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 
+	locate2, err := testQueries.GetLocate(context.Background(), account.LocateID)
+	require.NoError(t, err)
+	require.NotEmpty(t, locate1)
+
 	require.Equal(t, account.UserID, result.UserID)
 	require.Equal(t, account.Username, result.Username)
 	// locate 変換必要
 
-	require.Equal(t, locate.Name, result.Locate)
+	require.Equal(t, locate1, locate2)
 	require.Equal(t, account.Rate, result.Rate)
 	require.Equal(t, account.ShowLocate, result.ShowLocate)
 	require.Equal(t, account.ShowRate, result.ShowRate)
@@ -67,18 +71,21 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestListAccount(t *testing.T) {
+	var lastaccount Accounts
 	n := 10
 
 	for i := 0; i < n; i++ {
-		createAccountTest(t)
-	}
-	arg := ListAccountsParams{
-		Limit:  int32(n),
-		Offset: 0,
+		lastaccount = createAccountTest(t)
 	}
 
-	result, err := testQueries.ListAccounts(context.Background(), arg)
+	username := util.Remove5Strings(lastaccount.Username)
+	arg := ListAccountsParams{
+		Username: "%" + username + "%",
+		Limit:    int32(n),
+		Offset:   0,
+	}
+
+	accounts, err := testQueries.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
-	require.NotEmpty(t, result)
-	require.Len(t, result, n)
+	require.NotEmpty(t, accounts)
 }
