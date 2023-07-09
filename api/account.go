@@ -72,7 +72,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil {
-		// ToDo: IDがなかったときの分岐を作る
+		// ToDo: すでに登録されている時のエラーの分岐を作る
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
