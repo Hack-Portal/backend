@@ -19,6 +19,7 @@ type CreateHackathonParams struct {
 }
 
 type HackathonResponses struct {
+	HackathonID int32     `json:"hackathon_id"`
 	Name        string    `json:"name"`
 	Icon        []byte    `json:"icon"`
 	Description string    `json:"description"`
@@ -32,7 +33,7 @@ type HackathonResponses struct {
 func (server *Server) CreateHackathon(ctx *gin.Context) {
 	var request CreateHackathonParams
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
@@ -48,11 +49,12 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 
 	hackathon, err := server.store.CreateHackathon(ctx, args)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
 	response := HackathonResponses{
+		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon,
 		Description: hackathon.Description,
