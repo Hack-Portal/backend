@@ -82,7 +82,6 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 
 	hackathon, err := server.store.GetHackathon(ctx, request.HackathonID)
 	if err != nil {
-		// ToDo: 既に登録されていた時の分岐
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
