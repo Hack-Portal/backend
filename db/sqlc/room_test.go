@@ -59,7 +59,7 @@ func TestListRoom(t *testing.T) {
 		createaRoomsTest(t)
 	}
 
-	rooms, err := testQueries.ListRoom(context.Background())
+	rooms, err := testQueries.ListRoom(context.Background(), int32(n))
 	require.NoError(t, err)
 	require.Len(t, rooms, n)
 	for _, room := range rooms {
