@@ -6,18 +6,39 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
+	CreataAccountTags(ctx context.Context, arg CreataAccountTagsParams) (AccountTags, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
+	CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFrameworks, error)
 	CreateHackathon(ctx context.Context, arg CreateHackathonParams) (Hackathons, error)
-	GetAccount(ctx context.Context, userID string) (GetAccountRow, error)
+	CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, error)
+	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error)
+	CreateRoomsFramework(ctx context.Context, arg CreateRoomsFrameworkParams) (RoomsFrameworks, error)
+	CreateRoomsTechTag(ctx context.Context, arg CreateRoomsTechTagParams) (RoomsTechTags, error)
+	GetAccount(ctx context.Context, userID string) (Accounts, error)
 	GetAccountAuth(ctx context.Context, userID string) (GetAccountAuthRow, error)
+	GetAccountTags(ctx context.Context, userID string) ([]GetAccountTagsRow, error)
+	GetAccountbyEmail(ctx context.Context, email string) (Accounts, error)
+	GetFrameworks(ctx context.Context, frameworkID int32) (Frameworks, error)
 	GetHackathon(ctx context.Context, hackathonID int32) (Hackathons, error)
 	GetLocate(ctx context.Context, locateID int32) (Locates, error)
+	GetRoom(ctx context.Context, roomID uuid.UUID) (Rooms, error)
+	GetRoomsAccounts(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsRow, error)
+	GetRoomsTechTags(ctx context.Context, roomID uuid.UUID) ([]GetRoomsTechTagsRow, error)
+	GetTechTag(ctx context.Context, techTagID int32) (TechTags, error)
+	ListAccountFrameworks(ctx context.Context, accountID string) ([]ListAccountFrameworksRow, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
+	ListFrameworks(ctx context.Context, limit int32) ([]Frameworks, error)
 	ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathons, error)
 	ListLocates(ctx context.Context) ([]Locates, error)
+	ListRoom(ctx context.Context, limit int32) ([]Rooms, error)
+	ListRoomsFrameworks(ctx context.Context, roomID uuid.UUID) ([]ListRoomsFrameworksRow, error)
+	ListTechTag(ctx context.Context) ([]TechTags, error)
+	RemoveAccountInRoom(ctx context.Context, arg RemoveAccountInRoomParams) (RoomsAccounts, error)
 }
 
 var _ Querier = (*Queries)(nil)

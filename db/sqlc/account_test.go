@@ -89,3 +89,31 @@ func TestListAccount(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, accounts)
 }
+
+func TestGetAccountByEmail(t *testing.T) {
+	account := createAccountTest(t)
+
+	locate1, err := testQueries.GetLocate(context.Background(), account.LocateID)
+	require.NoError(t, err)
+	require.NotEmpty(t, locate1)
+
+	result, err := testQueries.GetAccountbyEmail(context.Background(), account.Email)
+	require.NoError(t, err)
+	require.NotEmpty(t, result)
+
+	locate2, err := testQueries.GetLocate(context.Background(), account.LocateID)
+	require.NoError(t, err)
+	require.NotEmpty(t, locate1)
+
+	require.Equal(t, account.UserID, result.UserID)
+	require.Equal(t, account.Username, result.Username)
+	// locate 変換必要
+
+	require.Equal(t, locate1, locate2)
+	require.Equal(t, account.Rate, result.Rate)
+	require.Equal(t, account.ShowLocate, result.ShowLocate)
+	require.Equal(t, account.ShowRate, result.ShowRate)
+
+	require.NotZero(t, account.CreateAt)
+	require.NotZero(t, account.UpdateAt)
+}

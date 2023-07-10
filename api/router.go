@@ -18,7 +18,6 @@ func (server *Server) setupRouter() {
 func (server *Server) publicRouter() {
 	public := server.router.Group("/v1")
 
-	public.GET("/ping", server.Ping)
 	public.GET("/hackathons", server.CreateHackathon)
 	public.GET("/accounts/:id", server.GetAccount)
 }
@@ -27,8 +26,11 @@ func (server *Server) publicRouter() {
 func (server *Server) authRouter() {
 	auth := server.router.Group("/v1")
 	auth.Use(AuthMiddleware())
-	auth.GET("/pong", server.Pong)
 	// アカウント作成
 
 	auth.POST("/accounts", server.CreateAccount)
+	auth.POST("/rooms", server.CreateRoom)
+	auth.POST("/rooms/:room_id", server.AddAccountInRoom)
+	auth.GET("/rooms", server.ListRooms)
+	auth.GET("/rooms/:room_id", server.GetRoom)
 }
