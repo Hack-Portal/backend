@@ -10,14 +10,7 @@ WHERE
 
 -- name: GetAccount :one
 SELECT 
-    user_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    show_locate,
-    show_rate
+    *
 FROM
     accounts
 WHERE

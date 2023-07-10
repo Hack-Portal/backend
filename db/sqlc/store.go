@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-
-	"github.com/google/uuid"
 )
 
 type Store interface {
@@ -127,14 +125,9 @@ type CreateRoomTxParams struct {
 	RoomsFrameworks []int32
 }
 
-type MiniAccounts struct {
-	UserID   string `json:"user_id"`
-	Username string `json:"username"`
-	Icon     []byte `json:"icon"`
-}
 type CraeteRoomTxResult struct {
 	Rooms
-	RoomsAccounts   []MiniAccounts
+	RoomsAccounts   []GetRoomsAccountsRow
 	RoomsTechTags   []TechTags
 	RoomsFrameworks []Frameworks
 }
@@ -145,26 +138,65 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 		var err error
 
 		// ルームを登録する
-		room, err := q.CreateRoom(ctx, CreateRoomParams{
-			RoomID:      uuid.New(),
+		result.Rooms, err = q.CreateRoom(ctx, CreateRoomParams{
+			RoomID:      arg.RoomID,
 			HackathonID: arg.HackathonID,
 			Title:       arg.Title,
 			Description: arg.Description,
 			MemberLimit: arg.MemberLimit,
 			IsStatus:    true,
 		})
+
+		if err != nil {
+			return err
+		}
+		// ルームのオーナーを登録する
+		_, err = q.CreateRoomsAccounts(ctx, CreateRoomsAccountsParams{
+			UserID:  arg.UserID,
+			RoomID:  result.RoomID,
+			IsOwner: true,
+		})
+		if err != nil {
+			return err
+		}
+		result.RoomsAccounts, err = q.GetRoomsAccounts(ctx, result.RoomID)
 		if err != nil {
 			return err
 		}
 
-		roomAccount, err := q.CreateRoomsAccounts(ctx, CreateRoomsAccountsParams{
-			UserID: arg.UserID,
-			RoomID: room.RoomID,
-		})
-		if err != nil {
-			return nil
+		// ルームＩＤからテックタグのレコードを登録する
+		for _, techtag := range arg.RoomsTechTags {
+			accountTag, err := q.CreateRoomsTechTag(ctx, CreateRoomsTechTagParams{
+				RoomID:    result.RoomID,
+				TechTagID: techtag,
+			})
+			if err != nil {
+				return err
+			}
+			techtag, err := q.GetTechTag(ctx, accountTag.TechTagID)
+			if err != nil {
+				return err
+			}
+			result.RoomsTechTags = append(result.RoomsTechTags, techtag)
+		}
+
+		// ルームＩＤからフレームワークのレコードを登録する
+		for _, accountFrameworkTag := range arg.RoomsFrameworks {
+			accountFramework, err := q.CreateRoomsFramework(ctx, CreateRoomsFrameworkParams{
+				RoomID:      result.RoomID,
+				FrameworkID: accountFrameworkTag,
+			})
+			if err != nil {
+				return err
+			}
+			framework, err := q.GetFrameworks(ctx, accountFramework.FrameworkID)
+			if err != nil {
+				return err
+			}
+			result.RoomsFrameworks = append(result.RoomsFrameworks, framework)
 		}
 
 		return nil
 	})
+	return result, err
 }
