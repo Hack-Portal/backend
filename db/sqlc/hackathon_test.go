@@ -19,8 +19,8 @@ func createHackathonTest(t *testing.T) Hackathons {
 		// 時間を適当に生成すればいい
 		// 今から10時間後の時間を返す
 		// ex: time.Now().Add(time.Duration(time.Duration(10).Hours()))
-		Expired:   time.Now().Add(time.Duration(time.Duration(100).Hours())),
-		StartDate: time.Now().Add(time.Duration(time.Duration(200).Hours())),
+		Expired:   time.Now().Add(time.Hour * 100),
+		StartDate: time.Now().Add(time.Hour * 200),
 		Term:      int32(util.Random(100)),
 	}
 
@@ -68,10 +68,11 @@ func TestListHackathon(t *testing.T) {
 	arg := ListHackathonsParams{
 		Expired: time.Now(),
 		Limit:   int32(n),
-		Offset:  5,
+		Offset:  0,
 	}
 
 	hackathons, err := testQueries.ListHackathons(context.Background(), arg)
+
 	require.NoError(t, err)
 	require.NotEmpty(t, hackathons)
 	require.Len(t, hackathons, n)

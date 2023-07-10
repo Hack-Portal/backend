@@ -102,24 +102,22 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 // ハッカソン一覧取得
 // ハッカソン一覧を取得する際のパラメータ
 type ListHackathonsParams struct {
-	PageSize int32 `uri:"page_size"`
-	PageId   int32 `uri:"page_id"`
+	PageSize int32 `form:"page_size"`
+	PageId   int32 `form:"page_id"`
 }
 
 func (server *Server) ListHackathons(ctx *gin.Context) {
 	var request ListHackathonsParams
-	if err := ctx.ShouldBindUri(&request); err != nil {
+	if err := ctx.ShouldBindQuery(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
-	args := db.ListHackathonsParams{
+	hackathons, err := server.store.ListHackathons(ctx, db.ListHackathonsParams{
 		Expired: time.Now(),
 		Limit:   request.PageSize,
 		Offset:  (request.PageId - 1) * request.PageSize,
-	}
+	})
 
-	hackathons, err := server.store.ListHackathons(ctx, args)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
