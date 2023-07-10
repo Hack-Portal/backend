@@ -10,6 +10,8 @@ import (
 var statusData = []StatusTags{
 	{1, "オンライン"},
 	{2, "オフライン"},
+	{3, "初心者歓迎"},
+	{4, "急募"},
 }
 
 func TestListStatusTags(t *testing.T) {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/hackhack-Geek-vol6/backend/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,18 +31,21 @@ func TestCreateHackathonStatusTag(t *testing.T) {
 }
 
 func TestGetStatusTags(t *testing.T) {
-	Hackathons := createHackathonTest(t)
+	hackathons := createHackathonTest(t)
+	hackathonsIds := util.RandomSelection(len(hackathons), 10)
 	n := 5
 	for i := 0; i < n; i++ {
 		createHackathonStatusTagTest(t)
 	}
 
-	statusTag, err := testQueries.GetStatusTags(context.Background(), Hackathons.HackathonID)
+	statusTags, err := testQueries.GetStatusTags(context.Background(), hackathons.HackathonID)
 	require.NoError(t, err)
+	require.NotEmpty(t, statusTags)
+	require.Len(t, statusTags, n)
 
-	for _, statusTag := range statusTag {
+	for _, statusTag := range statusTags {
 		require.NotEmpty(t, statusTag)
-		require.Equal(t, Hackathons.HackathonID, statusTag.HackathonID)
-		require.Len(t, statusTag.StatusID, n)
+		require.Equal(t, hackathons.HackathonID, statusTag.HackathonID)
+
 	}
 }
