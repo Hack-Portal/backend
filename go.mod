@@ -5,7 +5,7 @@ go 1.20
 require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/gin-gonic/gin v1.9.1
-	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/gofrs/uuid/v5 v5.0.0
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.16.0

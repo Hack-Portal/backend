@@ -10,18 +10,19 @@ WHERE
 
 -- name: GetAccount :one
 SELECT 
-    user_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    show_locate,
-    show_rate
+    *
 FROM
     accounts
 WHERE
     user_id = $1;
+
+-- name: GetAccountbyEmail :one
+SELECT 
+    *
+FROM
+    accounts
+WHERE
+    email = $1;
 
 -- name: ListAccounts :many
 SELECT

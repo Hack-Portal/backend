@@ -73,34 +73,16 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 
 const getAccount = `-- name: GetAccount :one
 SELECT 
-    user_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    show_locate,
-    show_rate
+    user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at
 FROM
     accounts
 WHERE
     user_id = $1
 `
 
-type GetAccountRow struct {
-	UserID          string         `json:"user_id"`
-	Username        string         `json:"username"`
-	Icon            []byte         `json:"icon"`
-	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	LocateID        int32          `json:"locate_id"`
-	Rate            int32          `json:"rate"`
-	ShowLocate      bool           `json:"show_locate"`
-	ShowRate        bool           `json:"show_rate"`
-}
-
-func (q *Queries) GetAccount(ctx context.Context, userID string) (GetAccountRow, error) {
+func (q *Queries) GetAccount(ctx context.Context, userID string) (Accounts, error) {
 	row := q.db.QueryRowContext(ctx, getAccount, userID)
-	var i GetAccountRow
+	var i Accounts
 	err := row.Scan(
 		&i.UserID,
 		&i.Username,
@@ -108,8 +90,12 @@ func (q *Queries) GetAccount(ctx context.Context, userID string) (GetAccountRow,
 		&i.ExplanatoryText,
 		&i.LocateID,
 		&i.Rate,
+		&i.HashedPassword,
+		&i.Email,
+		&i.CreateAt,
 		&i.ShowLocate,
 		&i.ShowRate,
+		&i.UpdateAt,
 	)
 	return i, err
 }
@@ -135,6 +121,35 @@ func (q *Queries) GetAccountAuth(ctx context.Context, userID string) (GetAccount
 	row := q.db.QueryRowContext(ctx, getAccountAuth, userID)
 	var i GetAccountAuthRow
 	err := row.Scan(&i.UserID, &i.HashedPassword, &i.Email)
+	return i, err
+}
+
+const getAccountbyEmail = `-- name: GetAccountbyEmail :one
+SELECT 
+    user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at
+FROM
+    accounts
+WHERE
+    email = $1
+`
+
+func (q *Queries) GetAccountbyEmail(ctx context.Context, email string) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, getAccountbyEmail, email)
+	var i Accounts
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Icon,
+		&i.ExplanatoryText,
+		&i.LocateID,
+		&i.Rate,
+		&i.HashedPassword,
+		&i.Email,
+		&i.CreateAt,
+		&i.ShowLocate,
+		&i.ShowRate,
+		&i.UpdateAt,
+	)
 	return i, err
 }
 

@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/util/token"
@@ -23,11 +24,15 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		hCS, err := token.JwtDecode.DecomposeFB(authorizationHeader)
-		if err != nil {
+		fields := strings.Fields(authorizationHeader)
+		if len(fields) < 1 {
+			err := errors.New("invalid authorization header format")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
+
+		accessToken := fields[0]
+		hCS, err := token.JwtDecode.DecomposeFB(accessToken)
 
 		payload, err := token.JwtDecode.DecodeClaimFB(hCS[1])
 		if err != nil {
