@@ -30,12 +30,18 @@ func TestCreateHackathonStatusTag(t *testing.T) {
 }
 
 func TestGetStatusTags(t *testing.T) {
-	statusTag1 := createHackathonStatusTagTest(t)
+	Hackathons := createHackathonTest(t)
+	n := 5
+	for i := 0; i < n; i++ {
+		createHackathonStatusTagTest(t)
+	}
 
-	statusTag2, err := testQueries.GetStatusTags(context.Background(), int32(1))
+	statusTag, err := testQueries.GetStatusTags(context.Background(), Hackathons.HackathonID)
 	require.NoError(t, err)
-	require.NotEmpty(t, statusTag2)
 
-	require.Equal(t, statusTag1.HackathonID, statusTag2.HackathonID)
-	require.Equal(t, statusTag1.StatusID, statusTag2.StatusID)
+	for _, statusTag := range statusTag {
+		require.NotEmpty(t, statusTag)
+		require.Equal(t, Hackathons.HackathonID, statusTag.HackathonID)
+		require.Len(t, statusTag.StatusID, n)
+	}
 }
