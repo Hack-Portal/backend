@@ -12,7 +12,7 @@ func createHackathonStatusTagTest(t *testing.T) HackathonStatusTags {
 
 	arg := CreateHackathonStatusTagParams{
 		HackathonID: hackathon.HackathonID,
-		StatusID:    hackathon.HackathonID,
+		StatusID:    int32(1),
 	}
 
 	statusTag, err := testQueries.CreateHackathonStatusTag(context.Background(), arg)
@@ -29,13 +29,13 @@ func TestCreateHackathonStatusTag(t *testing.T) {
 	createHackathonStatusTagTest(t)
 }
 
-// func TestGetStatusTags(t *testing.T) {
-// 	statusTag1 := createHackathonStatusTagTest(t)
+func TestGetStatusTags(t *testing.T) {
+	statusTag1 := createHackathonStatusTagTest(t)
 
-// 	statusTag2, err := testQueries.GetStatusTags(context.Background(), statusTag1.HackathonID)
-// 	require.NoError(t, err)
-// 	require.NotEmpty(t, statusTag2)
+	statusTag2, err := testQueries.GetStatusTags(context.Background(), int32(1))
+	require.NoError(t, err)
+	require.NotEmpty(t, statusTag2)
 
-// 	require.Equal(t, statusTag1.HackathonID, statusTag2.HackathonID)
-// 	require.Equal(t, statusTag1.StatusID, statusTag2.StatusID)
-// }
+	require.Equal(t, statusTag1.HackathonID, statusTag2.HackathonID)
+	require.Equal(t, statusTag1.StatusID, statusTag2.StatusID)
+}

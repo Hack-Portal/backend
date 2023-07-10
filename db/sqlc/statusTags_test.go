@@ -9,10 +9,11 @@ import (
 
 var statusData = []StatusTags{
 	{1, "オンライン"},
+	{2, "オフライン"},
 }
 
 func TestListStatusTags(t *testing.T) {
-	statusTags, err := testQueries.ListStatusTags(context.Background(), int32(1))
+	statusTags, err := testQueries.ListStatusTags(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, statusTags)
 
