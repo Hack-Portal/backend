@@ -1,6 +1,6 @@
 -- name: CreateAccountFramework :one
 INSERT INTO account_frameworks (
-    user_id,
+    account_id,
     framework_id
 )VALUES(
     $1,$2
