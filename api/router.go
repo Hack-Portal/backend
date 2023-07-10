@@ -20,6 +20,9 @@ func (server *Server) publicRouter() {
 
 	public.GET("/hackathons", server.CreateHackathon)
 	public.GET("/accounts/:id", server.GetAccount)
+	public.GET("/locates", server.ListLocation)
+	public.GET("/tech_tags", server.ListTechTags)
+	public.GET("/frameworks", server.ListFrameworks)
 }
 
 // 認証ミドルウェアの必要なルーティング
