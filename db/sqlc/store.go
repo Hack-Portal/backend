@@ -4,11 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 type Store interface {
 	Querier
 	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
+	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error)
 }
 
 type SQLStore struct {
@@ -77,7 +80,7 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 		if err != nil {
 			return err
 		}
-
+		// アカウントＩＤからテックタグのレコードを登録する
 		for _, techtag := range arg.AccountTechTag {
 			accountTag, err := q.CreataAccountTags(ctx, CreataAccountTagsParams{
 				UserID:    arg.UserID,
@@ -92,7 +95,7 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 			}
 			result.AccountTechTags = append(result.AccountTechTags, techtag)
 		}
-
+		// アカウントＩＤからフレームワークのレコードを登録する
 		for _, accountFrameworkTag := range arg.AccountFrameworkTag {
 			accountFramework, err := q.CreateAccountFramework(ctx, CreateAccountFrameworkParams{
 				AccountID:   arg.UserID,
@@ -111,4 +114,57 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 		return nil
 	})
 	return result, err
+}
+
+type CreateRoomTxParams struct {
+	// ルーム登録部分
+	Rooms
+	// RoomsAccounts登録部分
+	UserID string
+	// テックタグ登録部分
+	RoomsTechTags []int32
+	// フレームワーク登録部分
+	RoomsFrameworks []int32
+}
+
+type MiniAccounts struct {
+	UserID   string `json:"user_id"`
+	Username string `json:"username"`
+	Icon     []byte `json:"icon"`
+}
+type CraeteRoomTxResult struct {
+	Rooms
+	RoomsAccounts   []MiniAccounts
+	RoomsTechTags   []TechTags
+	RoomsFrameworks []Frameworks
+}
+
+func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error) {
+	var result CraeteRoomTxResult
+	err := store.execTx(ctx, func(q *Queries) error {
+		var err error
+
+		// ルームを登録する
+		room, err := q.CreateRoom(ctx, CreateRoomParams{
+			RoomID:      uuid.New(),
+			HackathonID: arg.HackathonID,
+			Title:       arg.Title,
+			Description: arg.Description,
+			MemberLimit: arg.MemberLimit,
+			IsStatus:    true,
+		})
+		if err != nil {
+			return err
+		}
+
+		roomAccount, err := q.CreateRoomsAccounts(ctx, CreateRoomsAccountsParams{
+			UserID: arg.UserID,
+			RoomID: room.RoomID,
+		})
+		if err != nil {
+			return nil
+		}
+
+		return nil
+	})
 }

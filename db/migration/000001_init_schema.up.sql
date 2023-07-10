@@ -108,7 +108,8 @@ CREATE TABLE "rooms_tech_tags" (
 
 CREATE TABLE "rooms_accounts" (
   "user_id" varchar NOT NULL,
-  "room_id" uuid NOT NULL
+  "room_id" uuid NOT NULL,
+  "is_owner" boolean NOT NULL
 );
 
 CREATE TABLE "frameworks" (
@@ -133,33 +134,61 @@ CREATE TABLE "rooms_frameworks" (
 );
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("locate_id") REFERENCES "locates" ("locate_id");
+
 ALTER TABLE "account_tags" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+
 ALTER TABLE "account_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
+
 ALTER TABLE "past_work_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
+
 ALTER TABLE "past_work_tags" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
 ALTER TABLE "account_past_works" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+
 ALTER TABLE "account_past_works" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
 ALTER TABLE "rate_entries" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+
 ALTER TABLE "follows" ADD FOREIGN KEY ("to_user_id") REFERENCES "accounts" ("user_id");
+
 ALTER TABLE "follows" ADD FOREIGN KEY ("from_user_id") REFERENCES "accounts" ("user_id");
+
 ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
 ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("award_id") REFERENCES "awards" ("award_id");
+
 ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+
 ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+
 ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id");
+
 ALTER TABLE "bookmarks" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+
 ALTER TABLE "bookmarks" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+
 ALTER TABLE "rooms" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+
 ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
+
 ALTER TABLE "rooms_tech_tags" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
+
 ALTER TABLE "rooms_tech_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
+
 ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+
 ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
+
 ALTER TABLE "frameworks" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
+
 ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
 ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("user_id");
+
 ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
+
 ALTER TABLE "rooms_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
+
 ALTER TABLE "rooms_frameworks" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
 
 INSERT INTO locates (name) VALUES 
