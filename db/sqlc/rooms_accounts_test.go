@@ -11,8 +11,9 @@ func createRoomsAccountsTest(t *testing.T, room Rooms) RoomsAccounts {
 	account := createAccountTest(t)
 
 	arg := CreateRoomsAccountsParams{
-		UserID: account.UserID,
-		RoomID: room.RoomID,
+		UserID:  account.UserID,
+		RoomID:  room.RoomID,
+		IsOwner: false,
 	}
 	roomsAccounts, err := testQueries.CreateRoomsAccounts(context.Background(), arg)
 	require.NoError(t, err)
