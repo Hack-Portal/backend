@@ -243,11 +243,11 @@ func (store *SQLStore) CreateHackathonTx(ctx context.Context, arg CreateHackatho
 			if err != nil {
 				return err
 			}
-			status_id, err := q.GetStatusTags(ctx, hackathonTag.StatusID)
+			status_tag, err := q.GetListStatusTags(ctx, hackathonTag.StatusID)
 			if err != nil {
 				return err
 			}
-			result.HackathonStatusTags = append(result.HackathonStatusTags, status_id)
+			result.HackathonStatusTags = append(result.HackathonStatusTags, status_tag)
 		}
 		return nil
 	})

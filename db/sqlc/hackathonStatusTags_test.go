@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hackhack-Geek-vol6/backend/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -32,7 +31,7 @@ func TestCreateHackathonStatusTag(t *testing.T) {
 
 func TestGetStatusTags(t *testing.T) {
 	hackathons := createHackathonTest(t)
-	hackathonsIds := util.RandomSelection(len(hackathons), 10)
+	// hackathonsIds := util.RandomSelection(len(hackathons), 10)
 	n := 5
 	for i := 0; i < n; i++ {
 		createHackathonStatusTagTest(t)
