@@ -1,7 +1,7 @@
 --name ListStatusTags :many
 SELECT *
 FROM status_tags
-ORDER BY status_tag_id;
+where hackathon_id = $1;
 
 --name CreateHackathonStatusTag :one
 
