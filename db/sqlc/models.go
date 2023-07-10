@@ -121,8 +121,9 @@ type Rooms struct {
 }
 
 type RoomsAccounts struct {
-	UserID string    `json:"user_id"`
-	RoomID uuid.UUID `json:"room_id"`
+	UserID  string    `json:"user_id"`
+	RoomID  uuid.UUID `json:"room_id"`
+	IsOwner bool      `json:"is_owner"`
 }
 
 type RoomsFrameworks struct {
