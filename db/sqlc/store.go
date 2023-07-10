@@ -10,6 +10,7 @@ type Store interface {
 	Querier
 	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
 	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error)
+	CreateHackathonTx(ctx context.Context, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
 }
 
 type SQLStore struct {
@@ -198,6 +199,56 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			result.RoomsFrameworks = append(result.RoomsFrameworks, framework)
 		}
 
+		return nil
+	})
+	return result, err
+}
+
+type CreateHackathonTxParams struct {
+	// ハッカソン登録部分
+	Hackathons
+	// status_tag登録用
+	HackathonStatusTag []int32
+}
+
+type CreateHackathonTxResult struct {
+	Hackathons
+	HackathonStatusTags []StatusTags
+}
+
+// ハッカソン登録時のトランザクション
+func (store *SQLStore) CreateHackathonTx(ctx context.Context, arg CreateHackathonTxParams) (CreateHackathonTxResult, error) {
+	var result CreateHackathonTxResult
+	err := store.execTx(ctx, func(q *Queries) error {
+		var err error
+		// ハッカソンを登録する
+		result.Hackathons, err = q.CreateHackathon(ctx, CreateHackathonParams{
+			Name:        arg.Name,
+			Icon:        arg.Icon,
+			Description: arg.Description,
+			Link:        arg.Link,
+			Expired:     arg.Expired,
+			StartDate:   arg.StartDate,
+			Term:        arg.Term,
+		})
+		if err != nil {
+			return err
+		}
+		// ハッカソンIDからステータスタグのレコードを登録する
+		for _, status_id := range arg.HackathonStatusTag {
+			hackathonTag, err := q.CreateHackathonStatusTag(ctx, CreateHackathonStatusTagParams{
+				HackathonID: result.HackathonID,
+				StatusID:    status_id,
+			})
+			if err != nil {
+				return err
+			}
+			status_id, err := q.GetStatusTags(ctx, hackathonTag.StatusID)
+			if err != nil {
+				return err
+			}
+			result.HackathonStatusTags = append(result.HackathonStatusTags, status_id)
+		}
 		return nil
 	})
 	return result, err
