@@ -22,6 +22,7 @@ type Querier interface {
 	GetAccount(ctx context.Context, userID string) (Accounts, error)
 	GetAccountAuth(ctx context.Context, userID string) (GetAccountAuthRow, error)
 	GetAccountTags(ctx context.Context, userID string) ([]GetAccountTagsRow, error)
+	GetAccountbyEmail(ctx context.Context, email string) (Accounts, error)
 	GetFrameworks(ctx context.Context, frameworkID int32) (Frameworks, error)
 	GetHackathon(ctx context.Context, hackathonID int32) (Hackathons, error)
 	GetLocate(ctx context.Context, locateID int32) (Locates, error)

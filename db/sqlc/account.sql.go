@@ -124,6 +124,35 @@ func (q *Queries) GetAccountAuth(ctx context.Context, userID string) (GetAccount
 	return i, err
 }
 
+const getAccountbyEmail = `-- name: GetAccountbyEmail :one
+SELECT 
+    user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at
+FROM
+    accounts
+WHERE
+    email = $1
+`
+
+func (q *Queries) GetAccountbyEmail(ctx context.Context, email string) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, getAccountbyEmail, email)
+	var i Accounts
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Icon,
+		&i.ExplanatoryText,
+		&i.LocateID,
+		&i.Rate,
+		&i.HashedPassword,
+		&i.Email,
+		&i.CreateAt,
+		&i.ShowLocate,
+		&i.ShowRate,
+		&i.UpdateAt,
+	)
+	return i, err
+}
+
 const listAccounts = `-- name: ListAccounts :many
 SELECT
     user_id,
