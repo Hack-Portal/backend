@@ -133,63 +133,34 @@ CREATE TABLE "rooms_frameworks" (
 );
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("locate_id") REFERENCES "locates" ("locate_id");
-
 ALTER TABLE "account_tags" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "account_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
-
 ALTER TABLE "past_work_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
-
 ALTER TABLE "past_work_tags" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
-
 ALTER TABLE "account_past_works" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "account_past_works" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
-
 ALTER TABLE "rate_entries" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "follows" ADD FOREIGN KEY ("to_user_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "follows" ADD FOREIGN KEY ("from_user_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
-
 ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("award_id") REFERENCES "awards" ("award_id");
-
 ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
 ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
 ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id");
-
 ALTER TABLE "bookmarks" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
 ALTER TABLE "bookmarks" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "rooms" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
 ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
-
 ALTER TABLE "rooms_tech_tags" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
-
 ALTER TABLE "rooms_tech_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
-
 ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
-
 ALTER TABLE "frameworks" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
-
 ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
-
 ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
-
 ALTER TABLE "rooms_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
-
 ALTER TABLE "rooms_frameworks" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
-
 
 INSERT INTO locates (name) VALUES 
 ('北海道'), 
@@ -239,41 +210,104 @@ INSERT INTO locates (name) VALUES
 ('宮崎県'), 
 ('鹿児島県'), 
 ('沖縄県');
-
-INSERT INTO tech_tags (language) VALUES
-    ('Python'),
-    ('JavaScript'),
-    ('Java'),
-    ('C++'),
-    ('C#'),
-    ('PHP'),
-    ('Swift'),
-    ('Kotlin'),
-    ('Go'),
-    ('Rust'),
-    ('R'),
-    ('SQL'),
-    ('C'),
-    ('Objective-C'),
-    ('Perl'),
-    ('Ruby'),
-    ('Scala'),
-    ('D'),
-    ('Haskell'),
-    ('Erlang'),
-    ('MySQL'),
-    ('PostgreSQL'),
-    ('MongoDB'),
-    ('Oracle'),
-    ('SQL Server'),
-    ('Amazon RDS'),
-    ('Microsoft Azure SQL Database'),
-    ('Google Cloud SQL'),
-    ('Couchbase'),
-    ('Redis'),
-    ('Amazon Web Services (AWS)'),
-    ('Microsoft Azure'),
-    ('Google Cloud Platform (GCP)'),
-    ('Alibaba Cloud'),
-    ('IBM Cloud'),
-    ('Oracle Cloud');
+-- テクノロジータグ（tech_tags）のデータを挿入
+INSERT INTO tech_tags ("language")
+VALUES  ('Python'), 
+        ('JavaScript'), 
+        ('Java'), 
+        ('Go'), 
+        ('C'), 
+        ('Csharp'), 
+        ('Cpp'), 
+        ('kotlin'), 
+        ('PHP'), 
+        ('Rust'), 
+        ('Ruby'),
+        ('R'),
+        ('DataBase'),
+        ('Cloud'),
+        ('DevOps');
+-- Pythonのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Python'), 'Django'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Python'), 'Flask'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Python'), 'FastAPI');
+-- JavaScriptのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'JavaScript'), 'React.js'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'JavaScript'), 'Vue.js'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'JavaScript'), 'Three.js'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'JavaScript'), 'Next.js'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'JavaScript'), 'Node.js'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'JavaScript'), 'Angular');
+-- Javaのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Java'), 'JavaPlayFramework'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Java'), 'Spring'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Java'), 'ApacheStruts'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Java'), 'JSF'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Java'), 'Wicket');
+-- Goのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Go'), 'Gin'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Go'), 'Beego'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Go'), 'Revel'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Go'), 'Echo');
+-- Cのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'C'), '.NET'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'C'), 'ASP.NET'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'C'), 'ASP.NET MVC');
+-- C#のフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Csharp'), '.NET'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Csharp'), 'ASP.NET'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Csharp'), 'ASP.NET MVC');
+-- C++のフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Cpp'), 'Qt');
+-- Kotlinのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'kotlin'), 'Spring'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'kotlin'), 'Ktor');
+-- PHPのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'PHP'), 'Laravel'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'PHP'), 'Symfony'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'PHP'), 'CodeIgniter');
+-- Rustのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Rust'), 'Rocket'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Rust'), 'Actix-web'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Rust'), 'Tide');
+-- Rubyのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Ruby'), 'Ruby on Rails'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Ruby'), 'Sinatra'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Ruby'), 'Hanami'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Ruby'), 'Padrino');
+-- Rのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'R'), 'Mojolicious'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'R'), 'Dancer');
+-- データベースのフレームワーク
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'MySQL'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'PostgreSQL'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'MongoDB'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'Oracle'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'Couchbase'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'SQLServer'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'Redis'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'AlibabaCloud'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DataBase'), 'OracleCloud');
+-- クラウド枠
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES  ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Cloud'),'AWS'),
+        ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Cloud'),'Microsoft Azure'),
+        ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Cloud'),'GCP'),
+        ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Cloud'),'IBM Cloud');
+-- dev ops枠
+INSERT INTO frameworks ("tech_tag_id", "framework")
+VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DevOps'),'Docker'),
+       ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DevOps'),'Kubernetes');
