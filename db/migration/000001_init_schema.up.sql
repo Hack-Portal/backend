@@ -340,3 +340,11 @@ VALUES  ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'Cloud'),'AWS')
 INSERT INTO frameworks ("tech_tag_id", "framework")
 VALUES ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DevOps'),'Docker'),
        ((SELECT "tech_tag_id" FROM tech_tags WHERE "language" = 'DevOps'),'Kubernetes');
+
+
+-- ステータス追加
+INSERT INTO "status_tags" ("status") VALUES
+('オンライン'),
+('オフライン'),
+('初心者歓迎'),
+('急募');
