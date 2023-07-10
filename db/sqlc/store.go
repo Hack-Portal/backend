@@ -52,8 +52,8 @@ type CreateAccountTxParams struct {
 }
 type CreateAccountTxResult struct {
 	Account           Accounts
-	AccountTechTags   []AccountTags
-	AccountFrameworks []AccountFrameworks
+	AccountTechTags   []TechTags
+	AccountFrameworks []Frameworks
 }
 
 // アカウント登録時のトランザクション
@@ -86,7 +86,8 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 			if err != nil {
 				return err
 			}
-			result.AccountTechTags = append(result.AccountTechTags, accountTag)
+			techtag, err := q.GetTechTag(ctx, accountTag.TechTagID)
+			result.AccountTechTags = append(result.AccountTechTags, techtag)
 		}
 
 		for _, accountFrameworkTag := range arg.AccountFrameworkTag {
@@ -97,8 +98,10 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 			if err != nil {
 				return err
 			}
-			result.AccountFrameworks = append(result.AccountFrameworks, accountFramework)
+			framework, err := q.GetFrameworks(ctx, accountFramework.FrameworkID)
+			result.AccountFrameworks = append(result.AccountFrameworks, framework)
 		}
+
 		return nil
 	})
 	return result, err

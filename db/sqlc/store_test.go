@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"log"
 	"testing"
 
 	"github.com/hackhack-Geek-vol6/backend/util"
@@ -10,6 +9,8 @@ import (
 )
 
 func TestCreateAccountTx(t *testing.T) {
+	store := NewStore(testDB)
+
 	techTags := listTechTagTest(t)
 	frameworks := listFrameworkTest(t)
 	techTagIds := util.RandomSelection(len(techTags), 10)
@@ -27,10 +28,22 @@ func TestCreateAccountTx(t *testing.T) {
 		AccountTechTag:      techTagIds,
 		AccountFrameworkTag: frameworkIds,
 	}
-	log.Println(args.AccountTechTag)
-	log.Println(args.AccountFrameworkTag)
+	var accountTechTags []TechTags
+	var accountFrameworks []Frameworks
 
-	store := NewStore(testDB)
+	for _, techtagid := range techTagIds {
+		accountTechTag, err := store.GetTechTag(context.Background(), techtagid)
+		require.NoError(t, err)
+		require.NotEmpty(t, accountTechTag)
+		accountTechTags = append(accountTechTags, accountTechTag)
+	}
+
+	for _, frameworkId := range frameworkIds {
+		accountFramework, err := store.GetFrameworks(context.Background(), frameworkId)
+		require.NoError(t, err)
+		require.NotEmpty(t, accountFramework)
+		accountFrameworks = append(accountFrameworks, accountFramework)
+	}
 
 	result, err := store.CreateAccountTx(context.Background(), args)
 	require.NoError(t, err)
@@ -46,4 +59,7 @@ func TestCreateAccountTx(t *testing.T) {
 
 	require.Len(t, result.AccountTechTags, len(techTagIds))
 	require.Len(t, result.AccountFrameworks, len(frameworkIds))
+
+	require.Equal(t, result.AccountTechTags, accountTechTags)
+	require.Equal(t, result.AccountFrameworks, accountFrameworks)
 }
