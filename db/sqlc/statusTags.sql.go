@@ -9,14 +9,26 @@ import (
 	"context"
 )
 
-const listStatusTags = `-- name: ListStatusTags :many
+const getListStatusTags = `-- name: GetListStatusTags :one
 SELECT status_id, status
 FROM status_tags
 where status_id = $1
 `
 
-func (q *Queries) ListStatusTags(ctx context.Context, statusID int32) ([]StatusTags, error) {
-	rows, err := q.db.QueryContext(ctx, listStatusTags, statusID)
+func (q *Queries) GetListStatusTags(ctx context.Context, statusID int32) (StatusTags, error) {
+	row := q.db.QueryRowContext(ctx, getListStatusTags, statusID)
+	var i StatusTags
+	err := row.Scan(&i.StatusID, &i.Status)
+	return i, err
+}
+
+const listStatusTags = `-- name: ListStatusTags :many
+SELECT status_id, status
+FROM status_tags
+`
+
+func (q *Queries) ListStatusTags(ctx context.Context) ([]StatusTags, error) {
+	rows, err := q.db.QueryContext(ctx, listStatusTags)
 	if err != nil {
 		return nil, err
 	}

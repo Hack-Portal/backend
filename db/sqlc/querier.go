@@ -15,12 +15,13 @@ type Querier interface {
 	GetAccount(ctx context.Context, userID string) (GetAccountRow, error)
 	GetAccountAuth(ctx context.Context, userID string) (GetAccountAuthRow, error)
 	GetHackathon(ctx context.Context, hackathonID int32) (Hackathons, error)
+	GetListStatusTags(ctx context.Context, statusID int32) (StatusTags, error)
 	GetLocate(ctx context.Context, locateID int32) (Locates, error)
 	GetStatusTags(ctx context.Context, hackathonID int32) ([]HackathonStatusTags, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
 	ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathons, error)
 	ListLocates(ctx context.Context) ([]Locates, error)
-	ListStatusTags(ctx context.Context, statusID int32) ([]StatusTags, error)
+	ListStatusTags(ctx context.Context) ([]StatusTags, error)
 }
 
 var _ Querier = (*Queries)(nil)
