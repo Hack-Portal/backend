@@ -135,6 +135,10 @@ type ListRoomsRequest struct {
 	PageSize int32 `form:"page_size"`
 }
 
+type ListRoomsResponse struct {
+	Rooms []GetRoomResponse `json:"get_rooms_response"`
+}
+
 // ルームを取得するAPI
 // 認証必須
 func (server *Server) ListRooms(ctx *gin.Context) {
@@ -148,7 +152,21 @@ func (server *Server) ListRooms(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, rooms)
+	var response ListRoomsResponse
+
+	for _, room := range rooms {
+		roomAccounts, err := server.store.GetRoomsAccounts(ctx, room.RoomID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		response.Rooms = append(response.Rooms, GetRoomResponse{
+			Room:     room,
+			Accounts: roomAccounts,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }
 
 type GetRoomRequest struct {
@@ -157,6 +175,12 @@ type GetRoomRequest struct {
 
 // ルームの詳細を取得する
 // 認証必須
+
+type GetRoomResponse struct {
+	Room     db.Rooms
+	Accounts []db.GetRoomsAccountsRow
+}
+
 func (server *Server) GetRoom(ctx *gin.Context) {
 	var request GetRoomRequest
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -174,5 +198,14 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, room)
+	roomAccounts, err := server.store.GetRoomsAccounts(ctx, room.RoomID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	response := GetRoomResponse{
+		Room:     room,
+		Accounts: roomAccounts,
+	}
+	ctx.JSON(http.StatusOK, response)
 }
