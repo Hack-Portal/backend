@@ -1,4 +1,4 @@
---name CreateHackathonStatusTag :one
+-- name: CreateHackathonStatusTag :one
 INSERT INTO hackathon_status_tags (
     hackathon_id,
     status_id
@@ -8,7 +8,7 @@ INSERT INTO hackathon_status_tags (
   )
 RETURNING *;
 
---name GetStatusTags :many
+-- name: GetStatusTags :many
 SELECT *
 FROM hackathon_status_tags
 WHERE hackathon_id = $1;
