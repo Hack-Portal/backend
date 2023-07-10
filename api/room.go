@@ -95,8 +95,33 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 
 // ルームにアカウントを追加するAPI
 // 認証必須
-func (server *Server) AddAccountInRoom(ctx *gin.Context) {
+type AddAccountInRoomRequest struct {
+	RoomID uuid.UUID `uri:"room_id"`
+}
 
+func (server *Server) AddAccountInRoom(ctx *gin.Context) {
+	var request AddAccountInRoomRequest
+	if err := ctx.ShouldBindUri(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
+	account, err := server.store.GetAccountbyEmail(ctx, payload.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	roomAccounts, err := server.store.CreateRoomsAccounts(ctx, db.CreateRoomsAccountsParams{
+		UserID:  account.UserID,
+		RoomID:  request.RoomID,
+		IsOwner: false,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, roomAccounts)
 }
 
 // ルームからアカウントを削除するAPI
