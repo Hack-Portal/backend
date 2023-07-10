@@ -1,9 +1,10 @@
 -- name: CreateRoomsAccounts :one
 INSERT INTO rooms_accounts (
     user_id,
-    room_id
+    room_id,
+    is_owner
 )VALUES(
-    $1,$2
+    $1,$2,$3
 )RETURNING *;
 
 -- name: GetRoomsAccounts :many
