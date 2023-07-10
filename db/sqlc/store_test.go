@@ -72,6 +72,7 @@ func TestCreateRoomTx(t *testing.T) {
 	frameworks := listFrameworkTest(t)
 	techTagIds := util.RandomSelection(len(techTags), 10)
 	frameworkIds := util.RandomSelection(len(frameworks), 10)
+
 	user := createAccountTest(t)
 	roomID, err := uuid.NewRandom()
 	require.NoError(t, err)

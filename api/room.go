@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	uuid5 "github.com/gofrs/uuid/v5"
 	"github.com/google/uuid"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/util/token"
@@ -58,7 +59,6 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
 	result, err := server.store.CreateRoomTx(ctx, db.CreateRoomTxParams{
 		Rooms: db.Rooms{
 			RoomID:      uuid.New(),
@@ -126,18 +126,53 @@ func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 
 // ルームからアカウントを削除するAPI
 // 認証必須
+// 時間あれば追加
 func (server *Server) RemoveAccountInRoom(ctx *gin.Context) {
 
+}
+
+type ListRoomsRequest struct {
+	PageSize int32 `form:"page_size"`
 }
 
 // ルームを取得するAPI
 // 認証必須
 func (server *Server) ListRooms(ctx *gin.Context) {
+	var request ListRoomsRequest
+	if err := ctx.ShouldBindQuery(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	rooms, err := server.store.ListRoom(ctx, request.PageSize)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, rooms)
+}
 
+type GetRoomRequest struct {
+	RoomID string `uri:"room_id"`
 }
 
 // ルームの詳細を取得する
 // 認証必須
 func (server *Server) GetRoom(ctx *gin.Context) {
+	var request GetRoomRequest
+	if err := ctx.ShouldBindUri(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
 
+	roomID, err := uuid5.FromString(request.RoomID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	room, err := server.store.GetRoom(ctx, uuid.UUID(roomID))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, room)
 }

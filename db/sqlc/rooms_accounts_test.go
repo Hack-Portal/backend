@@ -7,8 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRoomsAccountsTest(t *testing.T, room Rooms) RoomsAccounts {
-	account := createAccountTest(t)
+func createRoomsAccountsTest(t *testing.T, room Rooms, account Accounts) RoomsAccounts {
 
 	arg := CreateRoomsAccountsParams{
 		UserID:  account.UserID,
@@ -26,15 +25,17 @@ func createRoomsAccountsTest(t *testing.T, room Rooms) RoomsAccounts {
 
 func TestCreateRoomsAccounts(t *testing.T) {
 	room := createRoomsTest(t)
-	createRoomsAccountsTest(t, room)
+	account := createAccountTest(t)
+	createRoomsAccountsTest(t, room, account)
 }
 
 func TestGetRoomsAccounts(t *testing.T) {
 	room := createRoomsTest(t)
+	account := createAccountTest(t)
 	n := 5
 
 	for i := 0; i < n; i++ {
-		createRoomsAccountsTest(t, room)
+		createRoomsAccountsTest(t, room, account)
 	}
 
 	tags, err := testQueries.GetRoomsAccounts(context.Background(), room.RoomID)
@@ -42,3 +43,19 @@ func TestGetRoomsAccounts(t *testing.T) {
 	require.NotEmpty(t, tags)
 	require.Len(t, tags, n)
 }
+
+// ToDo:時間のあるとき実装する
+// func TestRemoveAccountInRoom(t *testing.T) {
+// 	room := createRoomsTest(t)
+// 	account := createAccountTest(t)
+// 	roomAccount := createRoomsAccountsTest(t, room, account)
+// 	log.Println("1 :", roomAccount)
+
+// 	roomAccounts, err := testQueries.RemoveAccountInRoom(context.Background(), RemoveAccountInRoomParams{
+// 		RoomID: room.RoomID,
+// 		UserID: account.UserID,
+// 	})
+// 	log.Println("2 :", roomAccounts)
+// 	require.NoError(t, err)
+// 	require.Empty(t, roomAccounts)
+// }

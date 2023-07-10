@@ -156,10 +156,12 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			RoomID:  result.RoomID,
 			IsOwner: true,
 		})
+
 		if err != nil {
 			return err
 		}
 		result.RoomsAccounts, err = q.GetRoomsAccounts(ctx, result.RoomID)
+
 		if err != nil {
 			return err
 		}

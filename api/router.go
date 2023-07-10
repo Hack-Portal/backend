@@ -29,4 +29,8 @@ func (server *Server) authRouter() {
 	// アカウント作成
 
 	auth.POST("/accounts", server.CreateAccount)
+	auth.POST("/rooms", server.CreateRoom)
+	auth.POST("/rooms/:room_id", server.AddAccountInRoom)
+	auth.GET("/rooms", server.ListRooms)
+	auth.GET("/rooms/:room_id", server.GetRoom)
 }
