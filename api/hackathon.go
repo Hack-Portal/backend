@@ -98,3 +98,45 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, response)
 }
+
+// ハッカソン一覧取得
+// ハッカソン一覧を取得する際のパラメータ
+type ListHackathonsParams struct {
+	PageSize int32 `uri:"page_size"`
+	PageId   int32 `uri:"page_id"`
+}
+
+func (server *Server) ListHackathons(ctx *gin.Context) {
+	var request ListHackathonsParams
+	if err := ctx.ShouldBindUri(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	args := db.ListHackathonsParams{
+		Expired: time.Now(),
+		Limit:   request.PageSize,
+		Offset:  (request.PageId - 1) * request.PageSize,
+	}
+
+	hackathons, err := server.store.ListHackathons(ctx, args)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	var response []HackathonResponses
+	for _, hackathon := range hackathons {
+		response = append(response, HackathonResponses{
+			HackathonID: hackathon.HackathonID,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon,
+			Description: hackathon.Description,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired,
+			StartDate:   hackathon.StartDate,
+			Term:        hackathon.Term,
+		})
+	}
+	ctx.JSON(http.StatusOK, response)
+}
