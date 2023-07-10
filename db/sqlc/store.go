@@ -87,6 +87,9 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 				return err
 			}
 			techtag, err := q.GetTechTag(ctx, accountTag.TechTagID)
+			if err != nil {
+				return err
+			}
 			result.AccountTechTags = append(result.AccountTechTags, techtag)
 		}
 
@@ -99,6 +102,9 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 				return err
 			}
 			framework, err := q.GetFrameworks(ctx, accountFramework.FrameworkID)
+			if err != nil {
+				return err
+			}
 			result.AccountFrameworks = append(result.AccountFrameworks, framework)
 		}
 

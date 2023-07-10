@@ -116,18 +116,49 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	// ToDo:単一アカウント取得にauthヘッダが必要か否か
-
+	// アカウント取得
 	account, err := server.store.GetAccount(ctx, request.ID)
 	if err != nil {
 		// ToDo: IDがなかったときの分岐を作る
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
-
+	//
 	locate, err := server.store.GetLocate(ctx, account.LocateID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
+	}
+
+	techTags, err := server.store.GetAccountTags(ctx, account.UserID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	frameworks, err := server.store.ListAccountFrameworks(ctx, account.UserID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	var accountTechTags []db.TechTags
+
+	for _, tags := range techTags {
+		techtag, err := server.store.GetTechTag(ctx, tags.TechTagID.Int32)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		accountTechTags = append(accountTechTags, techtag)
+	}
+
+	var accountFrameworks []db.Frameworks
+	for _, framework := range frameworks {
+		fw, err := server.store.GetFrameworks(ctx, framework.FrameworkID.Int32)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		accountFrameworks = append(accountFrameworks, fw)
 	}
 
 	response := AccountResponses{
@@ -138,6 +169,8 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		Locate:          locate,
 		ShowLocate:      account.ShowLocate,
 		ShowRate:        account.ShowRate,
+		TechTags:        accountTechTags,
+		Frameworks:      accountFrameworks,
 	}
 	ctx.JSON(http.StatusOK, response)
 }
