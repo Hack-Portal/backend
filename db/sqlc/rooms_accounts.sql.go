@@ -78,3 +78,19 @@ func (q *Queries) GetRoomsAccounts(ctx context.Context, roomID uuid.UUID) ([]Get
 	}
 	return items, nil
 }
+
+const removeAccountInRoom = `-- name: RemoveAccountInRoom :one
+DELETE FROM rooms_accounts WHERE room_id = $1 AND user_id = $2 RETURNING user_id, room_id, is_owner
+`
+
+type RemoveAccountInRoomParams struct {
+	RoomID uuid.UUID `json:"room_id"`
+	UserID string    `json:"user_id"`
+}
+
+func (q *Queries) RemoveAccountInRoom(ctx context.Context, arg RemoveAccountInRoomParams) (RoomsAccounts, error) {
+	row := q.db.QueryRowContext(ctx, removeAccountInRoom, arg.RoomID, arg.UserID)
+	var i RoomsAccounts
+	err := row.Scan(&i.UserID, &i.RoomID, &i.IsOwner)
+	return i, err
+}

@@ -38,6 +38,7 @@ type Querier interface {
 	ListRoom(ctx context.Context, limit int32) ([]Rooms, error)
 	ListRoomsFrameworks(ctx context.Context, roomID uuid.UUID) ([]ListRoomsFrameworksRow, error)
 	ListTechTag(ctx context.Context) ([]TechTags, error)
+	RemoveAccountInRoom(ctx context.Context, arg RemoveAccountInRoomParams) (RoomsAccounts, error)
 }
 
 var _ Querier = (*Queries)(nil)
