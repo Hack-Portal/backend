@@ -16,6 +16,14 @@ FROM
 WHERE
     user_id = $1;
 
+-- name: GetAccountbyEmail :one
+SELECT 
+    *
+FROM
+    accounts
+WHERE
+    email = $1;
+
 -- name: ListAccounts :many
 SELECT
     user_id,
