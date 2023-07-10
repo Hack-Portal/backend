@@ -19,7 +19,7 @@ type Querier interface {
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error)
 	CreateRoomsFramework(ctx context.Context, arg CreateRoomsFrameworkParams) (RoomsFrameworks, error)
 	CreateRoomsTechTag(ctx context.Context, arg CreateRoomsTechTagParams) (RoomsTechTags, error)
-	GetAccount(ctx context.Context, userID string) (GetAccountRow, error)
+	GetAccount(ctx context.Context, userID string) (Accounts, error)
 	GetAccountAuth(ctx context.Context, userID string) (GetAccountAuthRow, error)
 	GetAccountTags(ctx context.Context, userID string) ([]GetAccountTagsRow, error)
 	GetFrameworks(ctx context.Context, frameworkID int32) (Frameworks, error)
