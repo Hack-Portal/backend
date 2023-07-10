@@ -1,4 +1,4 @@
 --name ListStatusTags :many
 SELECT *
 FROM status_tags
-where hackathon_id = $1;
+where status_id = $1;
