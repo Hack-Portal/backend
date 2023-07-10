@@ -8,6 +8,7 @@ import (
 
 type Store interface {
 	Querier
+	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
 }
 
 type SQLStore struct {
@@ -31,9 +32,8 @@ func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) erro
 	q := New(tx)
 
 	err = fn(q)
-
 	if err != nil {
-		// トランザクションにエラーが発生したときのロールバック処理用
+		//トランザクションにエラーが発生したときのロールバック処理
 		if rbErr := tx.Rollback(); rbErr != nil {
 			return fmt.Errorf("tx err : %v , rb err: %v", err, rbErr)
 		}
@@ -51,9 +51,9 @@ type CreateAccountTxParams struct {
 	AccountFrameworkTag []int32
 }
 type CreateAccountTxResult struct {
-	Account         Accounts
-	AccountTechTags []AccountTags
-	// ToDo:FW 追加
+	Account           Accounts
+	AccountTechTags   []AccountTags
+	AccountFrameworks []AccountFrameworks
 }
 
 // アカウント登録時のトランザクション
@@ -77,22 +77,28 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 		if err != nil {
 			return err
 		}
-		// アカウントに対するTechTagを登録する
-		var accountTechTags []AccountTags
 
 		for _, techtag := range arg.AccountTechTag {
 			accountTag, err := q.CreataAccountTags(ctx, CreataAccountTagsParams{
-				UserID:    result.Account.UserID,
+				UserID:    arg.UserID,
 				TechTagID: techtag,
 			})
 			if err != nil {
 				return err
 			}
-			accountTechTags = append(accountTechTags, accountTag)
+			result.AccountTechTags = append(result.AccountTechTags, accountTag)
 		}
 
-		// ToDo:フレームワークタグ登録
-
+		for _, accountFrameworkTag := range arg.AccountFrameworkTag {
+			accountFramework, err := q.CreateAccountFramework(ctx, CreateAccountFrameworkParams{
+				AccountID:   arg.UserID,
+				FrameworkID: accountFrameworkTag,
+			})
+			if err != nil {
+				return err
+			}
+			result.AccountFrameworks = append(result.AccountFrameworks, accountFramework)
+		}
 		return nil
 	})
 	return result, err
