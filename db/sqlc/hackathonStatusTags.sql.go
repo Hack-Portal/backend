@@ -32,14 +32,14 @@ func (q *Queries) CreateHackathonStatusTag(ctx context.Context, arg CreateHackat
 	return i, err
 }
 
-const getStatusTags = `-- name: GetStatusTags :many
+const getHackathonStatusTags = `-- name: GetHackathonStatusTags :many
 SELECT hackathon_id, status_id
 FROM hackathon_status_tags
 WHERE hackathon_id = $1
 `
 
-func (q *Queries) GetStatusTags(ctx context.Context, hackathonID int32) ([]HackathonStatusTags, error) {
-	rows, err := q.db.QueryContext(ctx, getStatusTags, hackathonID)
+func (q *Queries) GetHackathonStatusTags(ctx context.Context, hackathonID int32) ([]HackathonStatusTags, error) {
+	rows, err := q.db.QueryContext(ctx, getHackathonStatusTags, hackathonID)
 	if err != nil {
 		return nil, err
 	}

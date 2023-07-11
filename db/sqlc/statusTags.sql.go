@@ -9,17 +9,35 @@ import (
 	"context"
 )
 
-const getListStatusTags = `-- name: GetListStatusTags :one
-SELECT status_id, status
+const getStatusTags = `-- name: GetStatusTags :many
+SELECT status_tags.status_id ,status_tags.status
 FROM status_tags
-where status_id = $1
+LEFT OUTER JOIN hackathon_status_tags
+ON status_tags.status_id = hackathon_status_tags.status_id
+where hackathon_id = $1
 `
 
-func (q *Queries) GetListStatusTags(ctx context.Context, statusID int32) (StatusTags, error) {
-	row := q.db.QueryRowContext(ctx, getListStatusTags, statusID)
-	var i StatusTags
-	err := row.Scan(&i.StatusID, &i.Status)
-	return i, err
+func (q *Queries) GetStatusTags(ctx context.Context, hackathonID int32) ([]StatusTags, error) {
+	rows, err := q.db.QueryContext(ctx, getStatusTags, hackathonID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []StatusTags{}
+	for rows.Next() {
+		var i StatusTags
+		if err := rows.Scan(&i.StatusID, &i.Status); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listStatusTags = `-- name: ListStatusTags :many
