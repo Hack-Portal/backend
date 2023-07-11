@@ -11,17 +11,9 @@ import (
 	_ "github.com/lib/pq"
 )
 
-//	@title			Geek Hackathon vol6 backend API
-//	@version		1.0
-//	@description	Geek Camp vol6で作ったAPI
-//	@termsOfService	http://swagger.io/terms/
-
-//	@contact.name	API Support
-//	@contact.url	http://www.swagger.io/support
-//	@contact.email	support@swagger.io
-
-//	@license.name	Apache 2.0
-//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+// @title		Geek Hackathon vol6 backend API
+// @version		1.0
+// @description	Geek Camp vol6で作ったAPI
 
 // @host		localhost:8080
 // @BasePath	/v1
