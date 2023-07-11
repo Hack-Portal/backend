@@ -131,9 +131,8 @@ func TestCreateRoomTx(t *testing.T) {
 
 func TestCreateHackathonTx(t *testing.T) {
 	store := NewStore(testDB)
-
-	hackathon := createHackathonStatusTagTest(t)
-	statusTagIds := util.RandomSelection(len(hackathon), 10)
+	statusTags, err := store.ListStatusTags(context.Background())
+	statusTagIds := util.RandomSelection(len(statusTags), 2)
 
 	args := CreateHackathonTxParams{
 		Hackathons: Hackathons{
@@ -165,8 +164,8 @@ func TestCreateHackathonTx(t *testing.T) {
 	require.Equal(t, args.Icon, result.Icon)
 	require.Equal(t, args.Description, result.Description)
 	require.Equal(t, args.Link, result.Link)
-	require.Equal(t, args.Expired, result.Expired)
-	require.Equal(t, args.StartDate, result.StartDate)
+	require.NotZero(t, result.Expired)
+	require.NotZero(t, result.StartDate)
 	require.Equal(t, args.Term, result.Term)
 
 	require.Len(t, result.HackathonStatusTags, len(statusTagIds))

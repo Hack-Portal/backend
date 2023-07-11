@@ -147,7 +147,7 @@ func (server *Server) ListRooms(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	rooms, err := server.store.ListRoom(ctx, request.PageSize)
+	rooms, err := server.store.ListRooms(ctx, request.PageSize)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
