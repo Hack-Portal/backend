@@ -80,7 +80,7 @@ SELECT
     explanatory_text,
     (
         SELECT 
-            name 
+            locate_id, name 
         FROM 
             locates 
         WHERE 
@@ -99,6 +99,40 @@ WHERE
     user_id = $1
 `
 
+type GetAccountByIDRow struct {
+	UserID          string         `json:"user_id"`
+	Username        string         `json:"username"`
+	Icon            sql.NullString `json:"icon"`
+	ExplanatoryText sql.NullString `json:"explanatory_text"`
+	Locate          int32          `json:"locate"`
+	Rate            int32          `json:"rate"`
+	HashedPassword  sql.NullString `json:"hashed_password"`
+	Email           string         `json:"email"`
+	ShowLocate      bool           `json:"show_locate"`
+	ShowRate        bool           `json:"show_rate"`
+	CreateAt        time.Time      `json:"create_at"`
+	UpdateAt        time.Time      `json:"update_at"`
+}
+
+func (q *Queries) GetAccountByID(ctx context.Context, userID string) (GetAccountByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByID, userID)
+	var i GetAccountByIDRow
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Icon,
+		&i.ExplanatoryText,
+		&i.Locate,
+		&i.Rate,
+		&i.HashedPassword,
+		&i.Email,
+		&i.ShowLocate,
+		&i.ShowRate,
+		&i.CreateAt,
+		&i.UpdateAt,
+	)
+	return i, err
+}
 
 const getAccountbyEmail = `-- name: GetAccountbyEmail :one
 SELECT 
@@ -108,7 +142,7 @@ SELECT
     explanatory_text,
     (
         SELECT 
-            name 
+            locate_id, name
         FROM 
             locates 
         WHERE 
@@ -130,9 +164,9 @@ WHERE
 type GetAccountbyEmailRow struct {
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
-	Icon            []byte         `json:"icon"`
+	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	Locate          string         `json:"locate"`
+	Locate          int32          `json:"locate"`
 	Rate            int32          `json:"rate"`
 	HashedPassword  sql.NullString `json:"hashed_password"`
 	Email           string         `json:"email"`

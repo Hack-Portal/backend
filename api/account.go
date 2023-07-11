@@ -176,7 +176,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		response = AccountResponses{
 			UserID:          account.UserID,
 			Username:        account.Username,
-			Icon:            string(account.Icon),
+			Icon:            account.Icon.String,
 			ExplanatoryText: account.ExplanatoryText.String,
 			Locate:          locate,
 			Rate:            account.Rate,

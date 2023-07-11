@@ -51,9 +51,9 @@ WHERE
 `
 
 type GetRoomsAccountsByRoomIDRow struct {
-	UserID   sql.NullString `json:"user_id"`
-	Username sql.NullString `json:"username"`
-	Icon     []byte         `json:"icon"`
+	UserID  sql.NullString `json:"user_id"`
+	Icon    sql.NullString `json:"icon"`
+	IsOwner bool           `json:"is_owner"`
 }
 
 func (q *Queries) GetRoomsAccountsByRoomID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByRoomIDRow, error) {
@@ -65,7 +65,7 @@ func (q *Queries) GetRoomsAccountsByRoomID(ctx context.Context, roomID uuid.UUID
 	items := []GetRoomsAccountsByRoomIDRow{}
 	for rows.Next() {
 		var i GetRoomsAccountsByRoomIDRow
-		if err := rows.Scan(&i.UserID, &i.Username, &i.Icon); err != nil {
+		if err := rows.Scan(&i.UserID, &i.Icon, &i.IsOwner); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
