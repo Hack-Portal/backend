@@ -19,7 +19,6 @@ func (server *Server) publicRouter() {
 	public := server.router.Group("/v1")
 
 	public.GET("/hackathons", server.CreateHackathon)
-	public.GET("/accounts/:id", server.GetAccount)
 	public.GET("/locates", server.ListLocation)
 	public.GET("/tech_tags", server.ListTechTags)
 	public.GET("/frameworks", server.ListFrameworks)
@@ -29,9 +28,10 @@ func (server *Server) publicRouter() {
 func (server *Server) authRouter() {
 	auth := server.router.Group("/v1")
 	auth.Use(AuthMiddleware())
-	// アカウント作成
-
+	// アカウント
 	auth.POST("/accounts", server.CreateAccount)
+	auth.GET("/accounts/:id", server.GetAccount)
+	// ルーム
 	auth.POST("/rooms", server.CreateRoom)
 	auth.POST("/rooms/:room_id", server.AddAccountInRoom)
 	auth.GET("/rooms", server.ListRooms)

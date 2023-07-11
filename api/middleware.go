@@ -33,6 +33,10 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		accessToken := fields[0]
 		hCS, err := token.JwtDecode.DecomposeFB(accessToken)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 
 		payload, err := token.JwtDecode.DecodeClaimFB(hCS[1])
 		if err != nil {
