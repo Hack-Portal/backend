@@ -60,14 +60,14 @@ func (q *Queries) CreateHackathon(ctx context.Context, arg CreateHackathonParams
 	return i, err
 }
 
-const getHackathon = `-- name: GetHackathon :one
+const getHackathonByID = `-- name: GetHackathonByID :one
 SELECT hackathon_id, name, icon, description, link, expired, start_date, term
 FROM hackathons
 WHERE hackathon_id = $1
 `
 
-func (q *Queries) GetHackathon(ctx context.Context, hackathonID int32) (Hackathons, error) {
-	row := q.db.QueryRowContext(ctx, getHackathon, hackathonID)
+func (q *Queries) GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathons, error) {
+	row := q.db.QueryRowContext(ctx, getHackathonByID, hackathonID)
 	var i Hackathons
 	err := row.Scan(
 		&i.HackathonID,

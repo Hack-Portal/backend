@@ -9,12 +9,12 @@ import (
 	"context"
 )
 
-const getFrameworks = `-- name: GetFrameworks :one
+const getFrameworksByID = `-- name: GetFrameworksByID :one
 SELECT framework_id, tech_tag_id, framework FROM frameworks WHERE framework_id = $1
 `
 
-func (q *Queries) GetFrameworks(ctx context.Context, frameworkID int32) (Frameworks, error) {
-	row := q.db.QueryRowContext(ctx, getFrameworks, frameworkID)
+func (q *Queries) GetFrameworksByID(ctx context.Context, frameworkID int32) (Frameworks, error) {
+	row := q.db.QueryRowContext(ctx, getFrameworksByID, frameworkID)
 	var i Frameworks
 	err := row.Scan(&i.FrameworkID, &i.TechTagID, &i.Framework)
 	return i, err
