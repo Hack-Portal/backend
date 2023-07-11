@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/hackhack-Geek-vol6/backend/util"
@@ -128,39 +129,47 @@ func TestCreateRoomTx(t *testing.T) {
 	require.Equal(t, result.RoomsFrameworks, roomsFrameworks)
 }
 
-// func TestCreateHackathonTx(t *testing.T) {
-// 	store := NewStore(testDB)
-// 	statusTags, err := store.ListStatusTags(context.Background())
+func TestCreateHackathonTx(t *testing.T) {
+	// SQLStoreインスタンスを初期化する
+	store := NewStore(testDB)
+	// 全てのstatus_tagを取得する
+	statusTags, err := store.ListStatusTags(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, statusTags)
+	// statusTagsの配列の長さを最大値に持つ、要素数2つのランダムな整数を生成する
+	statusTagIds := util.RandomSelection(len(statusTags), 2)
 
-// 	statusTagIds := util.RandomSelection(len(statusTags), 2)
+	// CreateHackathonTxの引数を初期化する
+	args := CreateHackathonTxParams{
+		Hackathons: Hackathons{
+			Name:        util.RandomString(8),
+			Icon:        []byte(util.RandomString(8)),
+			Description: util.RandomString(100),
+			Link:        util.RandomString(16),
+			Expired:     time.Now().Add(time.Hour * 100),
+			StartDate:   time.Now().Add(time.Hour * 200),
+			Term:        int32(util.Random(100)),
+		},
+		HackathonStatusTag: statusTagIds,
+	}
+	var hackathonsStatusTags []StatusTags
+	// CreateHackathonTxの呼出し
+	result, err := store.CreateHackathonTx(context.Background(), args)
+	require.NoError(t, err)
+	require.NotEmpty(t, result)
 
-// 	args := CreateHackathonTxParams{
-// 		Hackathons: Hackathons{
-// 			Name:        util.RandomString(8),
-// 			Icon:        []byte(util.RandomString(8)),
-// 			Description: util.RandomString(100),
-// 			Link:        util.RandomString(16),
-// 			Expired:     time.Now().Add(time.Hour * 100),
-// 			StartDate:   time.Now().Add(time.Hour * 200),
-// 			Term:        int32(util.Random(100)),
-// 		},
-// 		HackathonStatusTag: statusTagIds,
-// 	}
-// 	var hackathonsStatusTags []StatusTags
+	// Hackathonsのデータがargsと一致するかを確認する
+	require.NotZero(t, result.HackathonID)
+	require.Equal(t, args.Name, result.Name)
+	require.Equal(t, args.Icon, result.Icon)
+	require.Equal(t, args.Description, result.Description)
+	require.Equal(t, args.Link, result.Link)
+	require.Equal(t, args.Term, result.Term)
 
-// 	result, err := store.CreateHackathonTx(context.Background(), args)
-// 	require.NoError(t, err)
-// 	require.NotEmpty(t, result)
+	// HackathonStatusTagの値が正しいか確認する
+	for index, statustags := range result.HackathonStatusTag {
+		require.NotEmpty(t, statustags)
+		require.Equal(t, statusTags[statusTagIds[index]], statustags)
+	}
 
-// 	require.NotZero(t, result.HackathonID)
-// 	require.Equal(t, args.Name, result.Name)
-// 	require.Equal(t, args.Icon, result.Icon)
-// 	require.Equal(t, args.Description, result.Description)
-// 	require.Equal(t, args.Link, result.Link)
-// 	require.NotZero(t, result.Expired)
-// 	require.NotZero(t, result.StartDate)
-// 	require.Equal(t, args.Term, result.Term)
-
-// 	require.Len(t, result.HackathonStatusTags, len(statusTagIds))
-// 	require.Equal(t, result.HackathonStatusTags, hackathonsStatusTags)
-// }
+}
