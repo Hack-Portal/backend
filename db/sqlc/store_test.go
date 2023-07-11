@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/hackhack-Geek-vol6/backend/util"
@@ -126,4 +127,49 @@ func TestCreateRoomTx(t *testing.T) {
 
 	require.Equal(t, result.RoomsTechTags, roomsTechTags)
 	require.Equal(t, result.RoomsFrameworks, roomsFrameworks)
+}
+
+func TestCreateHackathonTx(t *testing.T) {
+	store := NewStore(testDB)
+
+	hackathon := createHackathonStatusTagTest(t)
+	statusTagIds := util.RandomSelection(len(hackathon), 10)
+
+	args := CreateHackathonTxParams{
+		Hackathons: Hackathons{
+			Name:        util.RandomString(8),
+			Icon:        []byte(util.RandomString(8)),
+			Description: util.RandomString(100),
+			Link:        util.RandomString(16),
+			Expired:     time.Now().Add(time.Hour * 100),
+			StartDate:   time.Now().Add(time.Hour * 200),
+			Term:        int32(util.Random(100)),
+		},
+		HackathonStatusTag: statusTagIds,
+	}
+	var hackathonsStatusTags []StatusTags
+
+	for _, status_tag_id := range statusTagIds {
+		hackathonStatusTag, err := store.GetListStatusTags(context.Background(), status_tag_id)
+		require.NoError(t, err)
+		require.NotEmpty(t, hackathonStatusTag)
+		hackathonsStatusTags = append(hackathonsStatusTags, hackathonStatusTag)
+	}
+
+	result, err := store.CreateHackathonTx(context.Background(), args)
+	require.NoError(t, err)
+	require.NotEmpty(t, result)
+
+	require.NotZero(t, result.HackathonID)
+	require.Equal(t, args.Name, result.Name)
+	require.Equal(t, args.Icon, result.Icon)
+	require.Equal(t, args.Description, result.Description)
+	require.Equal(t, args.Link, result.Link)
+	require.Equal(t, args.Expired, result.Expired)
+	require.Equal(t, args.StartDate, result.StartDate)
+	require.Equal(t, args.Term, result.Term)
+
+	require.Len(t, result.HackathonStatusTags, len(statusTagIds))
+
+	require.Equal(t, hackathon.HackathonID, result.HackathonStatusTags[0].HackathonID.String)
 }
