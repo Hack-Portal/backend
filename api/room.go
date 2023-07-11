@@ -20,17 +20,6 @@ type CreateRoomRequest struct {
 	RoomFrameworks []int32 `json:"room_frameworks"`
 }
 
-type CreateRoomResponse struct {
-	RoomID      uuid.UUID                `json:"room_id"`
-	HackathonID int32                    `json:"hackathon_id"`
-	Title       string                   `json:"title"`
-	Description string                   `json:"description"`
-	MemberLimit int32                    `json:"member_limit"`
-	NowMember   []db.GetRoomsAccountsRow `json:"now_member"`
-	TechTags    []db.RoomTechTags        `json:"tech_tags"`
-	Frameworks  []db.RoomFramework       `json:"frameworks"`
-}
-
 // ルームを作るAPI　POST:
 // 認証必須
 func (server *Server) CreateRoom(ctx *gin.Context) {
@@ -74,22 +63,8 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	roomaccounts, err := server.store.GetRoomsAccounts(ctx, result.RoomID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	response := CreateRoomResponse{
-		RoomID:      result.RoomID,
-		HackathonID: result.HackathonID,
-		Title:       result.Title,
-		Description: result.Description,
-		MemberLimit: result.MemberLimit,
-		NowMember:   roomaccounts,
-		TechTags:    result.RoomsTechTags,
-		Frameworks:  result.RoomsFrameworks,
-	}
-	ctx.JSON(http.StatusOK, response)
+
+	ctx.JSON(http.StatusOK, result)
 }
 
 // ルームにアカウントを追加するAPI
