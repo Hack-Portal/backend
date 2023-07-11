@@ -39,7 +39,24 @@ type AccountResponses struct {
 	Frameworks []db.Frameworks
 }
 
-// アカウント作成
+//	@Summary		新しいアカウントを追加する
+//	@Description	bodyの情報からアカウントをDBに追加する
+//	@Accept			json
+//	@Produce		json
+//	@Param			user_id				body		string			false	"UserID"
+//	@Param			username			body		string			false	"Username"
+//	@Param			icon				body		[]byte			true	"Icon"
+//	@Param			explanatory_text	body		string			true	"ExplanatoryText"
+//	@Param			locate_id			body		int32			false	"LocateID"
+//	@Param			password			body		string			true	"Password"
+//	@Param			show_locate			body		bool			true	"ShowLocate"
+//	@Param			show_rate			body		bool			true	"ShowRate"
+//	@Param			tech_tags			body		[]int32			true	"TechTags"
+//	@Param			frameworks			body		[]int32			true	"Frameworks"
+//	@Success		200					{string}	string			"ok"
+//	@Failure		400					{object}	web.APIError	"We need ID!!"
+//	@Failure		404					{object}	web.APIError	"Can not find ID"
+//	@Router			/testapi/get-string-by-int/{some_id} [get]
 func (server *Server) CreateAccount(ctx *gin.Context) {
 	var request CreateAccountRequestParam
 	if err := ctx.ShouldBindJSON(&request); err != nil {

@@ -2,16 +2,24 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// ルーティングをセットアップする
 func (server *Server) setupRouter() {
 	router := gin.New()
 	server.router = router
 
+	server.swaggerSetup()
 	server.publicRouter()
 	server.authRouter()
 
+}
+
+// gin-swaggerのセットアップ
+func (server *Server) swaggerSetup() {
+	server.router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
 // 認証を必要としないルーティング
