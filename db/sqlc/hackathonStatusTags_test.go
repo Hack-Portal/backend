@@ -8,7 +8,6 @@ import (
 )
 
 func createHackathonStatusTagTest(t *testing.T, hackathon Hackathons) HackathonStatusTags {
-
 	arg := CreateHackathonStatusTagParams{
 		HackathonID: hackathon.HackathonID,
 		StatusID:    int32(1),
@@ -25,7 +24,6 @@ func createHackathonStatusTagTest(t *testing.T, hackathon Hackathons) HackathonS
 }
 
 func TestCreateHackathonStatusTag(t *testing.T) {
-
 	hackathons := createHackathonTest(t)
 	createHackathonStatusTagTest(t, hackathons)
 }

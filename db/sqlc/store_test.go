@@ -132,6 +132,7 @@ func TestCreateRoomTx(t *testing.T) {
 func TestCreateHackathonTx(t *testing.T) {
 	store := NewStore(testDB)
 	statusTags, err := store.ListStatusTags(context.Background())
+
 	statusTagIds := util.RandomSelection(len(statusTags), 2)
 
 	args := CreateHackathonTxParams{
