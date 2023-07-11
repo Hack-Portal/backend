@@ -78,6 +78,7 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 		if err != nil {
 			return err
 		}
+
 		// アカウントＩＤからテックタグのレコードを登録する
 		for _, techtag := range arg.AccountTechTag {
 			accountTag, err := q.CreataAccountTags(ctx, CreataAccountTagsParams{
@@ -124,12 +125,20 @@ type CreateRoomTxParams struct {
 	// フレームワーク登録部分
 	RoomsFrameworks []int32
 }
+type RoomTechTags struct {
+	TechTag TechTags `json:"tech_tag"`
+	Count   int32    `json:"count"`
+}
+type RoomFramework struct {
+	Framework Frameworks `json:"framework"`
+	Count     int32      `json:"count"`
+}
 
 type CraeteRoomTxResult struct {
 	Rooms
 	RoomsAccounts   []GetRoomsAccountsRow
-	RoomsTechTags   []TechTags
-	RoomsFrameworks []Frameworks
+	RoomsTechTags   []RoomTechTags
+	RoomsFrameworks []RoomFramework
 }
 
 func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error) {
@@ -179,7 +188,8 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			if err != nil {
 				return err
 			}
-			result.RoomsTechTags = append(result.RoomsTechTags, techtag)
+
+			result.RoomsTechTags = margeTechTagArray(result.RoomsTechTags, techtag)
 		}
 
 		// ルームＩＤからフレームワークのレコードを登録する
@@ -195,10 +205,40 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			if err != nil {
 				return err
 			}
-			result.RoomsFrameworks = append(result.RoomsFrameworks, framework)
+			result.RoomsFrameworks = margeFrameworkArray(result.RoomsFrameworks, framework)
 		}
 
 		return nil
 	})
 	return result, err
+}
+
+// TechTagの配列にマージする
+func margeTechTagArray(roomTechTags []RoomTechTags, techtag TechTags) []RoomTechTags {
+	for _, roomTechTag := range roomTechTags {
+		if roomTechTag.TechTag == techtag {
+			roomTechTag.Count++
+		}
+	}
+	roomTechTags = append(roomTechTags, RoomTechTags{
+		TechTag: techtag,
+		Count:   1,
+	})
+
+	return roomTechTags
+}
+
+// フレームワークの配列にマージする
+func margeFrameworkArray(roomFramework []RoomFramework, framework Frameworks) []RoomFramework {
+	for _, roomFramework := range roomFramework {
+		if roomFramework.Framework == framework {
+			roomFramework.Count++
+		}
+	}
+	roomFramework = append(roomFramework, RoomFramework{
+		Framework: framework,
+		Count:     1,
+	})
+
+	return roomFramework
 }

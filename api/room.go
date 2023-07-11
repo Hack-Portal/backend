@@ -27,13 +27,12 @@ type CreateRoomResponse struct {
 	Description string                   `json:"description"`
 	MemberLimit int32                    `json:"member_limit"`
 	NowMember   []db.GetRoomsAccountsRow `json:"now_member"`
-	TechTags    []db.TechTags            `json:"tech_tags"`
-	Frameworks  []db.Frameworks          `json:"frameworks"`
+	TechTags    []db.RoomTechTags        `json:"tech_tags"`
+	Frameworks  []db.RoomFramework       `json:"frameworks"`
 }
 
 // ルームを作るAPI　POST:
 // 認証必須
-
 func (server *Server) CreateRoom(ctx *gin.Context) {
 	var request CreateRoomRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
