@@ -179,17 +179,20 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 			if err != nil {
 				return err
 			}
+			// ハッカソンの追加
 			oneRoomInfos.Hackathon = ListRoomTxHacathonInfo{
 				HackathonID:   hackathon.HackathonID,
 				HackathonName: hackathon.Name,
-				Icon:          icon,
+				Icon:          hackathon.Icon,
 			}
+
 			members, err := q.GetRoomsAccounts(ctx, room.RoomID)
 			if err != nil {
 				return err
 			}
-
+			// アカウントの追加
 			for _, account := range members {
+				// タグの追加
 				techTags, err := q.GetAccountTags(ctx, account.UserID.String)
 				if err != nil {
 					return err
@@ -200,7 +203,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 						Language:  techTag.Language.String,
 					})
 				}
-
+				// FWの追加
 				frameworks, err := q.ListAccountFrameworks(ctx, account.UserID.String)
 				if err != nil {
 					return err
@@ -213,6 +216,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 					})
 				}
 			}
+			result = append(result, oneRoomInfos)
 		}
 		return err
 	})

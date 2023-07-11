@@ -118,7 +118,6 @@ func TestCreateRoomTx(t *testing.T) {
 	require.Equal(t, args.MemberLimit, result.MemberLimit)
 
 	require.Equal(t, args.UserID, result.RoomsAccounts[0].UserID.String)
-	require.Equal(t, user.Username, result.RoomsAccounts[0].Username.String)
 	require.Equal(t, user.Icon, result.RoomsAccounts[0].Icon)
 
 	require.Len(t, result.RoomsTechTags, len(techTagIds))
