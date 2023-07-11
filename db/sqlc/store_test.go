@@ -170,6 +170,5 @@ func TestCreateHackathonTx(t *testing.T) {
 	require.Equal(t, args.Term, result.Term)
 
 	require.Len(t, result.HackathonStatusTags, len(statusTagIds))
-
-	require.Equal(t, hackathon.HackathonID, result.HackathonStatusTags[0].HackathonID.String)
+	require.Equal(t, result.HackathonStatusTags, hackathonsStatusTags)
 }
