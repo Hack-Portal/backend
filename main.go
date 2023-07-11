@@ -6,7 +6,6 @@ import (
 
 	"github.com/hackhack-Geek-vol6/backend/api"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
-	_ "github.com/hackhack-Geek-vol6/backend/docs"
 	"github.com/hackhack-Geek-vol6/backend/util"
 	_ "github.com/lib/pq"
 )

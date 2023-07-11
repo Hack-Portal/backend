@@ -48,7 +48,7 @@ SELECT
     explanatory_text,
     (
         SELECT 
-            *
+            name
         FROM 
             locates 
         WHERE 

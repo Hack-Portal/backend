@@ -33,14 +33,14 @@ func TestCreateAccountTx(t *testing.T) {
 	var accountFrameworks []Frameworks
 
 	for _, techtagid := range techTagIds {
-		accountTechTag, err := store.GetTechTag(context.Background(), techtagid)
+		accountTechTag, err := store.GetTechTagByID(context.Background(), techtagid)
 		require.NoError(t, err)
 		require.NotEmpty(t, accountTechTag)
 		accountTechTags = append(accountTechTags, accountTechTag)
 	}
 
 	for _, frameworkId := range frameworkIds {
-		accountFramework, err := store.GetFrameworks(context.Background(), frameworkId)
+		accountFramework, err := store.GetFrameworksByID(context.Background(), frameworkId)
 		require.NoError(t, err)
 		require.NotEmpty(t, accountFramework)
 		accountFrameworks = append(accountFrameworks, accountFramework)
@@ -92,14 +92,14 @@ func TestCreateRoomTx(t *testing.T) {
 	var roomsFrameworks []Frameworks
 
 	for _, techtagid := range techTagIds {
-		accountTechTag, err := store.GetTechTag(context.Background(), techtagid)
+		accountTechTag, err := store.GetTechTagByID(context.Background(), techtagid)
 		require.NoError(t, err)
 		require.NotEmpty(t, accountTechTag)
 		roomsTechTags = append(roomsTechTags, accountTechTag)
 	}
 
 	for _, frameworkId := range frameworkIds {
-		accountFramework, err := store.GetFrameworks(context.Background(), frameworkId)
+		accountFramework, err := store.GetFrameworksByID(context.Background(), frameworkId)
 		require.NoError(t, err)
 		require.NotEmpty(t, accountFramework)
 		roomsFrameworks = append(roomsFrameworks, accountFramework)
