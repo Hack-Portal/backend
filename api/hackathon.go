@@ -99,16 +99,6 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	var hackathonStatusTags []db.StatusTags
-
-	for _, tags := range statusTags {
-		statusTags, err := server.store.GetListStatusTags(ctx, tags.StatusID)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
-		hackathonStatusTags = append(hackathonStatusTags, statusTags)
-	}
 
 	response := HackathonResponses{
 		HackathonID: hackathon.HackathonID,
@@ -119,7 +109,7 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 		Expired:     hackathon.Expired,
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
-		StatusTags:  hackathonStatusTags,
+		StatusTags:  statusTags,
 	}
 	ctx.JSON(http.StatusOK, response)
 }
@@ -148,16 +138,17 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 		return
 	}
 
-	var response ListHackathonsResponses
+	var response []db.CreateHackathonTxResult
 
 	for _, hackathon := range hackathons {
-		statusTags, err := server.store.GetListStatusTags(ctx, hackathon.HackathonID)
+		statusTags, err := server.store.GetStatusTags(ctx, hackathon.HackathonID)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
-		response.Hackathons = append(response.Hackathons, ListHackathonsResponses{
-			Hackathons: statusTags,
+		response = append(response, db.CreateHackathonTxResult{
+			Hackathons:         hackathon,
+			HackathonStatusTag: statusTags,
 		})
 	}
 	ctx.JSON(http.StatusOK, response)

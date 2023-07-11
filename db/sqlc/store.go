@@ -236,19 +236,16 @@ func (store *SQLStore) CreateHackathonTx(ctx context.Context, arg CreateHackatho
 		}
 		// ハッカソンIDからステータスタグのレコードを登録する
 		for _, status_id := range arg.HackathonStatusTag {
-			hackathonTag, err := q.CreateHackathonStatusTag(ctx, CreateHackathonStatusTagParams{
+			_, err = q.CreateHackathonStatusTag(ctx, CreateHackathonStatusTagParams{
 				HackathonID: result.HackathonID,
 				StatusID:    status_id,
 			})
 			if err != nil {
 				return err
 			}
-			status_tag, err := q.GetListStatusTags(ctx, hackathonTag.StatusID)
-			if err != nil {
-				return err
-			}
-			result.HackathonStatusTag = append(result.HackathonStatusTag, status_tag)
 		}
+		statusTag, err := q.GetStatusTags(ctx, result.HackathonID)
+		result.HackathonStatusTag = statusTag
 		return nil
 	})
 	return result, err
