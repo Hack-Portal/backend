@@ -213,7 +213,7 @@ type CreateHackathonTxParams struct {
 
 type CreateHackathonTxResult struct {
 	Hackathons
-	HackathonStatusTags []StatusTags
+	HackathonStatusTag []StatusTags
 }
 
 // ハッカソン登録時のトランザクション
@@ -247,7 +247,7 @@ func (store *SQLStore) CreateHackathonTx(ctx context.Context, arg CreateHackatho
 			if err != nil {
 				return err
 			}
-			result.HackathonStatusTags = append(result.HackathonStatusTags, status_tag)
+			result.HackathonStatusTag = append(result.HackathonStatusTag, status_tag)
 		}
 		return nil
 	})

@@ -8,6 +8,7 @@ import (
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 )
 
+// ハッカソンを作る時のリクエストパラメータ
 type CreateHackathonParams struct {
 	Name        string    `json:"Name"`
 	Icon        []byte    `json:"icon"`
@@ -16,8 +17,10 @@ type CreateHackathonParams struct {
 	Expired     time.Time `json:"expired"`
 	StartDate   time.Time `json:"start_date"`
 	Term        int32     `json:"term"`
+	StatusTags  []int32   `json:"status_tags"`
 }
 
+// ハッカソンに関するレスポンス
 type HackathonResponses struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Name        string    `json:"name"`
@@ -27,6 +30,8 @@ type HackathonResponses struct {
 	Expired     time.Time `json:"expired"`
 	StartDate   time.Time `json:"start_date"`
 	Term        int32     `json:"term"`
+
+	StatusTags []db.StatusTags
 }
 
 // ハッカソン作成
@@ -37,17 +42,20 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 		return
 	}
 
-	args := db.CreateHackathonParams{
-		Name:        request.Name,
-		Icon:        request.Icon,
-		Description: request.Description,
-		Link:        request.Link,
-		Expired:     request.Expired,
-		StartDate:   request.StartDate,
-		Term:        request.Term,
+	args := db.CreateHackathonTxParams{
+		Hackathons: db.Hackathons{
+			Name:        request.Name,
+			Icon:        request.Icon,
+			Description: request.Description,
+			Link:        request.Link,
+			Expired:     request.Expired,
+			StartDate:   request.StartDate,
+			Term:        request.Term,
+		},
+		HackathonStatusTag: request.StatusTags,
 	}
 
-	hackathon, err := server.store.CreateHackathon(ctx, args)
+	hackathon, err := server.store.CreateHackathonTx(ctx, args)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -62,6 +70,7 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 		Expired:     hackathon.Expired,
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
+		StatusTags:  hackathon.HackathonStatusTag,
 	}
 	ctx.JSON(http.StatusOK, response)
 }
@@ -85,6 +94,21 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	statusTags, err := server.store.GetStatusTags(ctx, request.HackathonID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	var hackathonStatusTags []db.StatusTags
+
+	for _, tags := range statusTags {
+		statusTags, err := server.store.GetListStatusTags(ctx, tags.StatusID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		hackathonStatusTags = append(hackathonStatusTags, statusTags)
+	}
 
 	response := HackathonResponses{
 		HackathonID: hackathon.HackathonID,
@@ -95,6 +119,7 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 		Expired:     hackathon.Expired,
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
+		StatusTags:  hackathonStatusTags,
 	}
 	ctx.JSON(http.StatusOK, response)
 }
@@ -123,6 +148,22 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 		return
 	}
 
+	statusTags, err := server.store.ListHackathons(ctx, request.PageSize)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	var hackathonStatusTags []db.StatusTags
+
+	for _, tags := range statusTags {
+		statusTags, err := server.store.GetListStatusTags(ctx, tags.StatusID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		hackathonStatusTags = append(hackathonStatusTags, statusTags)
+	}
+
 	var response []HackathonResponses
 	for _, hackathon := range hackathons {
 		response = append(response, HackathonResponses{
@@ -134,6 +175,7 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 			Expired:     hackathon.Expired,
 			StartDate:   hackathon.StartDate,
 			Term:        hackathon.Term,
+			StatusTags:  hackathonStatusTags,
 		})
 	}
 	ctx.JSON(http.StatusOK, response)
