@@ -29,7 +29,7 @@ type AccountTags struct {
 type Accounts struct {
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
-	Icon            []byte         `json:"icon"`
+	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
@@ -68,14 +68,14 @@ type HackathonStatusTags struct {
 }
 
 type Hackathons struct {
-	HackathonID int32     `json:"hackathon_id"`
-	Name        string    `json:"name"`
-	Icon        []byte    `json:"icon"`
-	Description string    `json:"description"`
-	Link        string    `json:"link"`
-	Expired     time.Time `json:"expired"`
-	StartDate   time.Time `json:"start_date"`
-	Term        int32     `json:"term"`
+	HackathonID int32          `json:"hackathon_id"`
+	Name        string         `json:"name"`
+	Icon        sql.NullString `json:"icon"`
+	Description string         `json:"description"`
+	Link        string         `json:"link"`
+	Expired     time.Time      `json:"expired"`
+	StartDate   time.Time      `json:"start_date"`
+	Term        int32          `json:"term"`
 }
 
 type HackathonsData struct {
@@ -124,16 +124,6 @@ type RoomsAccounts struct {
 	UserID  string    `json:"user_id"`
 	RoomID  uuid.UUID `json:"room_id"`
 	IsOwner bool      `json:"is_owner"`
-}
-
-type RoomsFrameworks struct {
-	RoomID      uuid.UUID `json:"room_id"`
-	FrameworkID int32     `json:"framework_id"`
-}
-
-type RoomsTechTags struct {
-	RoomID    uuid.UUID `json:"room_id"`
-	TechTagID int32     `json:"tech_tag_id"`
 }
 
 type StatusTags struct {

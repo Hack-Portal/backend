@@ -30,7 +30,7 @@ INSERT INTO accounts (
 type CreateAccountParams struct {
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
-	Icon            []byte         `json:"icon"`
+	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
@@ -183,13 +183,13 @@ type ListAccountsParams struct {
 }
 
 type ListAccountsRow struct {
-	UserID     string `json:"user_id"`
-	Username   string `json:"username"`
-	Icon       []byte `json:"icon"`
-	Locate     string `json:"locate"`
-	Rate       int32  `json:"rate"`
-	ShowLocate bool   `json:"show_locate"`
-	ShowRate   bool   `json:"show_rate"`
+	UserID     string         `json:"user_id"`
+	Username   string         `json:"username"`
+	Icon       sql.NullString `json:"icon"`
+	Locate     string         `json:"locate"`
+	Rate       int32          `json:"rate"`
+	ShowLocate bool           `json:"show_locate"`
+	ShowRate   bool           `json:"show_rate"`
 }
 
 func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error) {

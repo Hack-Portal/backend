@@ -52,7 +52,7 @@ WHERE
 
 type GetRoomsAccountsRow struct {
 	UserID  sql.NullString `json:"user_id"`
-	Icon    []byte         `json:"icon"`
+	Icon    sql.NullString `json:"icon"`
 	IsOwner bool           `json:"is_owner"`
 }
 
