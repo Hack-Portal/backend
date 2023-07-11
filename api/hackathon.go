@@ -131,10 +131,6 @@ type ListHackathonsParams struct {
 	PageId   int32 `form:"page_id"`
 }
 
-type ListHackathonsResponses struct {
-	Hackathons []GetHackathonParams `json:"hackathons"`
-}
-
 func (server *Server) ListHackathons(ctx *gin.Context) {
 	var request ListHackathonsParams
 	if err := ctx.ShouldBindQuery(&request); err != nil {
