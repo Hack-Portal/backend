@@ -31,6 +31,7 @@ type Querier interface {
 	GetRoom(ctx context.Context, roomID uuid.UUID) (Rooms, error)
 	GetRoomsAccounts(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsRow, error)
 	GetRoomsTechTags(ctx context.Context, roomID uuid.UUID) ([]GetRoomsTechTagsRow, error)
+	GetStatusTagByStatusID(ctx context.Context, statusID int32) (StatusTags, error)
 	GetStatusTags(ctx context.Context, hackathonID int32) ([]StatusTags, error)
 	GetTechTag(ctx context.Context, techTagID int32) (TechTags, error)
 	ListAccountFrameworks(ctx context.Context, accountID string) ([]ListAccountFrameworksRow, error)

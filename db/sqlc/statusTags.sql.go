@@ -9,6 +9,17 @@ import (
 	"context"
 )
 
+const getStatusTagByStatusID = `-- name: GetStatusTagByStatusID :one
+SELECT status_id, status FROM status_tags WHERE status_id = $1
+`
+
+func (q *Queries) GetStatusTagByStatusID(ctx context.Context, statusID int32) (StatusTags, error) {
+	row := q.db.QueryRowContext(ctx, getStatusTagByStatusID, statusID)
+	var i StatusTags
+	err := row.Scan(&i.StatusID, &i.Status)
+	return i, err
+}
+
 const getStatusTags = `-- name: GetStatusTags :many
 SELECT status_tags.status_id ,status_tags.status
 FROM status_tags
