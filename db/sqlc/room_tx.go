@@ -11,10 +11,6 @@ type CreateRoomTxParams struct {
 	Rooms
 	// RoomsAccounts登録部分
 	UserID string
-	// テックタグ登録部分
-	RoomsTechTags []int32
-	// フレームワーク登録部分
-	RoomsFrameworks []int32
 }
 type RoomTechTags struct {
 	TechTag TechTags `json:"tech_tag"`
@@ -27,7 +23,7 @@ type RoomFramework struct {
 type RoomHackathonData struct {
 	ID   int32  `json:"id"`
 	Name string `json:"name"`
-	Icon []byte `json:"icon"`
+	Icon string `json:"icon"`
 }
 
 type CraeteRoomTxResult struct {
@@ -80,7 +76,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 		result.Hackathon = RoomHackathonData{
 			ID:   hackathon.HackathonID,
 			Name: hackathon.Name,
-			Icon: hackathon.Icon,
+			Icon: hackathon.Icon.String,
 		}
 
 		// ルームを登録する
@@ -175,21 +171,29 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 		// それぞれのルームの確認
 		for _, room := range rooms {
 			var oneRoomInfos ListRoomTxResult
+			oneRoomInfos.Rooms = ListRoomTxRoomInfo{
+				RoomID:      room.RoomID,
+				Title:       room.Title,
+				MemberLimit: room.MemberLimit,
+			}
 			hackathon, err := q.GetHackathon(ctx, room.HackathonID)
 			if err != nil {
 				return err
 			}
+			// ハッカソンの追加
 			oneRoomInfos.Hackathon = ListRoomTxHacathonInfo{
 				HackathonID:   hackathon.HackathonID,
 				HackathonName: hackathon.Name,
-				Icon:          icon,
+				Icon:          hackathon.Icon.String,
 			}
+
 			members, err := q.GetRoomsAccounts(ctx, room.RoomID)
 			if err != nil {
 				return err
 			}
-
+			// アカウントの追加
 			for _, account := range members {
+				// タグの追加
 				techTags, err := q.GetAccountTags(ctx, account.UserID.String)
 				if err != nil {
 					return err
@@ -200,7 +204,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 						Language:  techTag.Language.String,
 					})
 				}
-
+				// FWの追加
 				frameworks, err := q.ListAccountFrameworks(ctx, account.UserID.String)
 				if err != nil {
 					return err
@@ -213,6 +217,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 					})
 				}
 			}
+			result = append(result, oneRoomInfos)
 		}
 		return err
 	})

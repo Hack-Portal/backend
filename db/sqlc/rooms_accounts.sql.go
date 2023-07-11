@@ -37,9 +37,9 @@ func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccoun
 
 const getRoomsAccounts = `-- name: GetRoomsAccounts :many
 SELECT 
-    accounts.user_id,
-    accounts.username,  
-    accounts.icon
+    accounts.user_id, 
+    accounts.icon,
+    rooms_accounts.is_owner
 FROM 
     rooms_accounts
 LEFT OUTER JOIN 
@@ -51,9 +51,9 @@ WHERE
 `
 
 type GetRoomsAccountsRow struct {
-	UserID   sql.NullString `json:"user_id"`
-	Username sql.NullString `json:"username"`
-	Icon     []byte         `json:"icon"`
+	UserID  sql.NullString `json:"user_id"`
+	Icon    sql.NullString `json:"icon"`
+	IsOwner bool           `json:"is_owner"`
 }
 
 func (q *Queries) GetRoomsAccounts(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsRow, error) {
@@ -65,7 +65,7 @@ func (q *Queries) GetRoomsAccounts(ctx context.Context, roomID uuid.UUID) ([]Get
 	items := []GetRoomsAccountsRow{}
 	for rows.Next() {
 		var i GetRoomsAccountsRow
-		if err := rows.Scan(&i.UserID, &i.Username, &i.Icon); err != nil {
+		if err := rows.Scan(&i.UserID, &i.Icon, &i.IsOwner); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

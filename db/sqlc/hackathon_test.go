@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 	"time"
 
@@ -13,7 +14,7 @@ func createHackathonTest(t *testing.T) Hackathons {
 
 	arg := CreateHackathonParams{
 		Name:        util.RandomString(8),
-		Icon:        []byte(util.RandomString(8)),
+		Icon:        sql.NullString{String: util.RandomString(8), Valid: true},
 		Description: util.RandomString(8),
 		Link:        util.RandomString(8),
 		// 時間を適当に生成すればいい
