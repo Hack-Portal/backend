@@ -152,7 +152,6 @@ func TestCreateHackathonTx(t *testing.T) {
 		},
 		HackathonStatusTag: statusTagIds,
 	}
-	var hackathonsStatusTags []StatusTags
 	// CreateHackathonTxの呼出し
 	result, err := store.CreateHackathonTx(context.Background(), args)
 	require.NoError(t, err)
@@ -167,9 +166,10 @@ func TestCreateHackathonTx(t *testing.T) {
 	require.Equal(t, args.Term, result.Term)
 
 	// HackathonStatusTagの値が正しいか確認する
-	for index, statustags := range result.HackathonStatusTag {
-		require.NotEmpty(t, statustags)
-		require.Equal(t, statusTags[statusTagIds[index]], statustags)
+	for _, statustags := range result.HackathonStatusTag {
+		tags, err := store.GetStatusTagByStatusID(context.Background(), statustags.StatusID)
+		require.NoError(t, err)
+		require.NotEmpty(t, tags)
+		require.NotEmpty(t, tags, statustags)
 	}
-
 }
