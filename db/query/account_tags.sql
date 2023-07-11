@@ -7,7 +7,7 @@ INSERT INTO account_tags (
 )RETURNING *;
 
 
--- name: GetAccountTags :many
+-- name: ListAccountTagsByUserID :many
 SELECT 
     tech_tags.tech_tag_id,
     tech_tags.language

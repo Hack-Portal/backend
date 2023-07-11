@@ -7,7 +7,7 @@ INSERT INTO account_frameworks (
 )RETURNING *;
 
 
--- name: ListAccountFrameworks :many
+-- name: ListAccountFrameworksByUserID :many
 SELECT 
     frameworks.framework_id,
     frameworks.tech_tag_id,

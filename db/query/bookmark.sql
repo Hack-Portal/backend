@@ -6,5 +6,8 @@ INSERT INTO bookmarks(
     $1,$2
 )RETURNING *;
 
--- name: ListBookmark :many
+-- name: ListBookmarkByUserID :many
 SELECT * FROM bookmarks WHERE user_id = $1 ;
+
+-- name: RemoveBookmark :exec
+DELETE FROM bookmarks WHERE user_id = $1 AND hackathon_id = $2;

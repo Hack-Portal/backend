@@ -7,7 +7,7 @@ INSERT INTO rooms_accounts (
     $1,$2,$3
 )RETURNING *;
 
--- name: GetRoomsAccounts :many
+-- name: GetRoomsAccountsByRoomID :many
 SELECT 
     accounts.user_id,
     accounts.username,  
@@ -20,5 +20,6 @@ ON
     rooms_accounts.user_id = accounts.user_id 
 WHERE 
     rooms_accounts.room_id = $1 ;
--- name: RemoveAccountInRoom :one
-DELETE FROM rooms_accounts WHERE room_id = $1 AND user_id = $2 RETURNING *;
+
+-- name: RemoveAccountInRoom :exec
+DELETE FROM rooms_accounts WHERE room_id = $1 AND user_id = $2;

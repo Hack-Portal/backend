@@ -10,11 +10,10 @@ INSERT INTO rooms (
     $1,$2,$3,$4,$5,$6
 )RETURNING *;
 
--- name: GetRoom :one
+-- name: GetRoomsByID :one
 SELECT * FROM rooms WHERE room_id = $1 ;
 
 -- name: ListRoom :many
-
 SELECT 
     * 
 FROM 

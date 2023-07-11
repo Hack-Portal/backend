@@ -1,5 +1,5 @@
 -- name: ListLocates :many
 SELECT * FROM locates;
 
--- name: GetLocate :one
+-- name: GetLocateByID :one
 SELECT * FROM locates WHERE locate_id = $1;
