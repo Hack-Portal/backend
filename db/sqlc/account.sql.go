@@ -80,7 +80,7 @@ SELECT
     explanatory_text,
     (
         SELECT 
-            locate_id, name 
+            name
         FROM 
             locates 
         WHERE 
@@ -104,7 +104,7 @@ type GetAccountByIDRow struct {
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	Locate          int32          `json:"locate"`
+	Locate          string         `json:"locate"`
 	Rate            int32          `json:"rate"`
 	HashedPassword  sql.NullString `json:"hashed_password"`
 	Email           string         `json:"email"`

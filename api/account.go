@@ -26,14 +26,14 @@ type CreateAccountRequestParam struct {
 
 // アカウントに関するレスポンス
 type AccountResponses struct {
-	UserID          string     `json:"user_id"`
-	Username        string     `json:"username"`
-	Icon            string     `json:"icon"`
-	ExplanatoryText string     `json:"explanatory_text"`
-	Rate            int32      `json:"rate"`
-	Locate          db.Locates `json:"locate"`
-	ShowLocate      bool       `json:"show_locate"`
-	ShowRate        bool       `json:"show_rate"`
+	UserID          string `json:"user_id"`
+	Username        string `json:"username"`
+	Icon            string `json:"icon"`
+	ExplanatoryText string `json:"explanatory_text"`
+	Rate            int32  `json:"rate"`
+	Locate          string `json:"locate"`
+	ShowLocate      bool   `json:"show_locate"`
+	ShowRate        bool   `json:"show_rate"`
 
 	TechTags   []db.TechTags
 	Frameworks []db.Frameworks
@@ -98,7 +98,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		Username:        result.Account.Username,
 		Icon:            result.Account.Icon.String,
 		ExplanatoryText: result.Account.ExplanatoryText.String,
-		Locate:          locate,
+		Locate:          locate.Name,
 		Rate:            result.Account.Rate,
 		ShowLocate:      result.Account.ShowLocate,
 		ShowRate:        result.Account.ShowRate,
@@ -128,12 +128,6 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 	if err != nil {
 		// ToDo: IDがなかったときの分岐を作る
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	}
-	//
-	locate, err := server.store.GetLocateByID(ctx, account.Locate)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
 	}
 
 	techTags, err := server.store.ListAccountTagsByUserID(ctx, account.UserID)
@@ -178,7 +172,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 			Username:        account.Username,
 			Icon:            account.Icon.String,
 			ExplanatoryText: account.ExplanatoryText.String,
-			Locate:          locate,
+			Locate:          account.Locate,
 			Rate:            account.Rate,
 			ShowLocate:      account.ShowLocate,
 			ShowRate:        account.ShowRate,
@@ -197,7 +191,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 			Frameworks:      accountFrameworks,
 		}
 		if account.ShowLocate {
-			response.Locate = locate
+			response.Locate = account.Locate
 		}
 		if account.ShowRate {
 			response.Rate = account.Rate

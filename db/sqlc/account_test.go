@@ -54,7 +54,7 @@ func TestGetAccount(t *testing.T) {
 
 	require.Equal(t, account.UserID, result.UserID)
 	require.Equal(t, account.Username, result.Username)
-	require.Equal(t, locate, result.Locate)
+	require.Equal(t, locate.Name, result.Locate)
 	require.Equal(t, account.Rate, result.Rate)
 	require.Equal(t, account.ShowLocate, result.ShowLocate)
 	require.Equal(t, account.ShowRate, result.ShowRate)
@@ -96,7 +96,7 @@ func TestGetAccountByEmail(t *testing.T) {
 
 	require.Equal(t, account.UserID, result.UserID)
 	require.Equal(t, account.Username, result.Username)
-	require.Equal(t, locate, result.Locate)
+	require.Equal(t, locate.Name, result.Locate)
 	require.Equal(t, account.Rate, result.Rate)
 	require.Equal(t, account.ShowLocate, result.ShowLocate)
 	require.Equal(t, account.ShowRate, result.ShowRate)
