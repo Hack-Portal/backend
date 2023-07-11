@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 
 type CreateHackathonParams struct {
 	Name        string    `json:"Name"`
-	Icon        []byte    `json:"icon"`
+	Icon        string    `json:"icon"`
 	Description string    `json:"description"`
 	Link        string    `json:"link"`
 	Expired     time.Time `json:"expired"`
@@ -21,7 +22,7 @@ type CreateHackathonParams struct {
 type HackathonResponses struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Name        string    `json:"name"`
-	Icon        []byte    `json:"icon"`
+	Icon        string    `json:"icon"`
 	Description string    `json:"description"`
 	Link        string    `json:"link"`
 	Expired     time.Time `json:"expired"`
@@ -38,8 +39,11 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 	}
 
 	args := db.CreateHackathonParams{
-		Name:        request.Name,
-		Icon:        request.Icon,
+		Name: request.Name,
+		Icon: sql.NullString{
+			String: request.Icon,
+			Valid:  true,
+		},
 		Description: request.Description,
 		Link:        request.Link,
 		Expired:     request.Expired,
@@ -56,7 +60,7 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 	response := HackathonResponses{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
-		Icon:        hackathon.Icon,
+		Icon:        hackathon.Icon.String,
 		Description: hackathon.Description,
 		Link:        hackathon.Link,
 		Expired:     hackathon.Expired,

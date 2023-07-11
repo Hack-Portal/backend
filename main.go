@@ -6,6 +6,7 @@ import (
 
 	"github.com/hackhack-Geek-vol6/backend/api"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	_ "github.com/hackhack-Geek-vol6/backend/docs"
 	"github.com/hackhack-Geek-vol6/backend/util"
 	_ "github.com/lib/pq"
 )
@@ -25,7 +26,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := server.Start("0.0.0.0:5000"); err != nil {
+	if err := server.Start("127.0.0.1:8080"); err != nil {
 		log.Fatal("cannnot start server :", err)
 	}
 }

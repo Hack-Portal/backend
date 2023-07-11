@@ -86,9 +86,7 @@ func TestCreateRoomTx(t *testing.T) {
 			Description: util.RandomString(100),
 			MemberLimit: 5,
 		},
-		UserID:          user.UserID,
-		RoomsTechTags:   techTagIds,
-		RoomsFrameworks: frameworkIds,
+		UserID: user.UserID,
 	}
 	var roomsTechTags []TechTags
 	var roomsFrameworks []Frameworks
@@ -118,7 +116,6 @@ func TestCreateRoomTx(t *testing.T) {
 	require.Equal(t, args.MemberLimit, result.MemberLimit)
 
 	require.Equal(t, args.UserID, result.RoomsAccounts[0].UserID.String)
-	require.Equal(t, user.Username, result.RoomsAccounts[0].Username.String)
 	require.Equal(t, user.Icon, result.RoomsAccounts[0].Icon)
 
 	require.Len(t, result.RoomsTechTags, len(techTagIds))

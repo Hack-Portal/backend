@@ -41,7 +41,7 @@ func TestCreateRoom(t *testing.T) {
 func TestGetRoom(t *testing.T) {
 	room1 := createRoomsTest(t)
 
-	room2, err := testQueries.GetRoom(context.Background(), room1.RoomID)
+	room2, err := testQueries.GetRoomsByID(context.Background(), room1.RoomID)
 	require.NoError(t, err)
 	require.NotEmpty(t, room2)
 

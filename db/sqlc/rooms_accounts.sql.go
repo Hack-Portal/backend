@@ -37,9 +37,9 @@ func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccoun
 
 const getRoomsAccountsByRoomID = `-- name: GetRoomsAccountsByRoomID :many
 SELECT 
-    accounts.user_id,
-    accounts.username,  
-    accounts.icon
+    accounts.user_id, 
+    accounts.icon,
+    rooms_accounts.is_owner
 FROM 
     rooms_accounts
 LEFT OUTER JOIN 

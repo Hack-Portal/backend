@@ -61,7 +61,7 @@ var locateData = []Locates{
 // + GetLocateのテスト
 func TestGetLocate(t *testing.T) {
 	for index, locate := range locateData {
-		result, err := testQueries.GetLocate(context.Background(), int32(index+1))
+		result, err := testQueries.GetLocateByID(context.Background(), int32(index+1))
 		require.NoError(t, err)
 		require.NotEmpty(t, result)
 		require.Equal(t, locate, result)

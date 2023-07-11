@@ -38,7 +38,7 @@ func TestGetRoomsAccounts(t *testing.T) {
 		createRoomsAccountsTest(t, room, account)
 	}
 
-	tags, err := testQueries.GetRoomsAccounts(context.Background(), room.RoomID)
+	tags, err := testQueries.GetRoomsAccountsByRoomID(context.Background(), room.RoomID)
 	require.NoError(t, err)
 	require.NotEmpty(t, tags)
 	require.Len(t, tags, n)

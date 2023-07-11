@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -27,13 +28,13 @@ RETURNING hackathon_id, name, icon, description, link, expired, start_date, term
 `
 
 type CreateHackathonParams struct {
-	Name        string    `json:"name"`
-	Icon        []byte    `json:"icon"`
-	Description string    `json:"description"`
-	Link        string    `json:"link"`
-	Expired     time.Time `json:"expired"`
-	StartDate   time.Time `json:"start_date"`
-	Term        int32     `json:"term"`
+	Name        string         `json:"name"`
+	Icon        sql.NullString `json:"icon"`
+	Description string         `json:"description"`
+	Link        string         `json:"link"`
+	Expired     time.Time      `json:"expired"`
+	StartDate   time.Time      `json:"start_date"`
+	Term        int32          `json:"term"`
 }
 
 func (q *Queries) CreateHackathon(ctx context.Context, arg CreateHackathonParams) (Hackathons, error) {

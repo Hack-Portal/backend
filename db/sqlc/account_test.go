@@ -49,7 +49,7 @@ func TestGetAccount(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, locate1)
 
-	result, err := testQueries.GetAccount(context.Background(), account.UserID)
+	result, err := testQueries.GetAccountByID(context.Background(), account.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 

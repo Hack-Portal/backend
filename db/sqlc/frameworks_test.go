@@ -25,7 +25,7 @@ func TestGetFrameworks(t *testing.T) {
 	frameworks := listFrameworkTest(t)
 	randomId := util.Random(len(frameworks) - 1)
 
-	framework, err := testQueries.GetFrameworks(context.Background(), frameworks[randomId].FrameworkID)
+	framework, err := testQueries.GetFrameworksByID(context.Background(), frameworks[randomId].FrameworkID)
 	require.NoError(t, err)
 	require.NotEmpty(t, framework)
 

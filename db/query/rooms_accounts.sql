@@ -9,9 +9,9 @@ INSERT INTO rooms_accounts (
 
 -- name: GetRoomsAccountsByRoomID :many
 SELECT 
-    accounts.user_id,
-    accounts.username,  
-    accounts.icon
+    accounts.user_id, 
+    accounts.icon,
+    rooms_accounts.is_owner
 FROM 
     rooms_accounts
 LEFT OUTER JOIN 

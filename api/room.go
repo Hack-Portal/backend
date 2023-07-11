@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,29 +12,15 @@ import (
 )
 
 type CreateRoomRequest struct {
-	HackathonID    int32   `json:"hackathon_id" binding:"required"`
-	Title          string  `json:"title" binding:"required"`
-	Description    string  `json:"description" binding:"required"`
-	MemberLimit    int32   `json:"member_limit" binding:"required"`
-	UserID         string  `json:"user_id" binding:"required"`
-	RoomTechTags   []int32 `json:"room_tech_tags"`
-	RoomFrameworks []int32 `json:"room_frameworks"`
-}
-
-type CreateRoomResponse struct {
-	RoomID      uuid.UUID                `json:"room_id"`
-	HackathonID int32                    `json:"hackathon_id"`
-	Title       string                   `json:"title"`
-	Description string                   `json:"description"`
-	MemberLimit int32                    `json:"member_limit"`
-	NowMember   []db.GetRoomsAccountsRow `json:"now_member"`
-	TechTags    []db.TechTags            `json:"tech_tags"`
-	Frameworks  []db.Frameworks          `json:"frameworks"`
+	HackathonID int32  `json:"hackathon_id" binding:"required"`
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	MemberLimit int32  `json:"member_limit" binding:"required"`
+	UserID      string `json:"user_id" binding:"required"`
 }
 
 // ルームを作るAPI　POST:
 // 認証必須
-
 func (server *Server) CreateRoom(ctx *gin.Context) {
 	var request CreateRoomRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -42,7 +29,7 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 	}
 
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccount(ctx, request.UserID)
+	account, err := server.store.GetAccountByID(ctx, request.UserID)
 	if err != nil {
 		// Userがいない時の処理も必要
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -54,43 +41,33 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 		return
 	}
 	// ハッカソンがあるか？
-	_, err = server.store.GetHackathon(ctx, request.HackathonID)
+	_, err = server.store.GetHackathonByID(ctx, request.HackathonID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	roomID, err := uuid.NewRandom()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	log.Println(roomID)
 	result, err := server.store.CreateRoomTx(ctx, db.CreateRoomTxParams{
 		Rooms: db.Rooms{
-			RoomID:      uuid.New(),
+			RoomID:      roomID,
 			HackathonID: request.HackathonID,
 			Title:       request.Title,
 			Description: request.Description,
 			MemberLimit: request.MemberLimit,
 		},
-		UserID:          request.UserID,
-		RoomsTechTags:   request.RoomTechTags,
-		RoomsFrameworks: request.RoomFrameworks,
+		UserID: request.UserID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	roomaccounts, err := server.store.GetRoomsAccounts(ctx, result.RoomID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	response := CreateRoomResponse{
-		RoomID:      result.RoomID,
-		HackathonID: result.HackathonID,
-		Title:       result.Title,
-		Description: result.Description,
-		MemberLimit: result.MemberLimit,
-		NowMember:   roomaccounts,
-		TechTags:    result.RoomsTechTags,
-		Frameworks:  result.RoomsFrameworks,
-	}
-	ctx.JSON(http.StatusOK, response)
+
+	ctx.JSON(http.StatusOK, result)
 }
 
 // ルームにアカウントを追加するAPI
@@ -147,25 +124,11 @@ func (server *Server) ListRooms(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	rooms, err := server.store.ListRoom(ctx, request.PageSize)
+	response, err := server.store.ListRoomTx(ctx, db.ListRoomTxParam{})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	var response ListRoomsResponse
-
-	for _, room := range rooms {
-		roomAccounts, err := server.store.GetRoomsAccounts(ctx, room.RoomID)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
-		response.Rooms = append(response.Rooms, GetRoomResponse{
-			Room:     room,
-			Accounts: roomAccounts,
-		})
-	}
-
 	ctx.JSON(http.StatusOK, response)
 }
 
@@ -178,7 +141,7 @@ type GetRoomRequest struct {
 
 type GetRoomResponse struct {
 	Room     db.Rooms
-	Accounts []db.GetRoomsAccountsRow
+	Accounts []db.GetRoomsAccountsByRoomIDRow
 }
 
 func (server *Server) GetRoom(ctx *gin.Context) {
@@ -193,12 +156,12 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	room, err := server.store.GetRoom(ctx, uuid.UUID(roomID))
+	room, err := server.store.GetRoomsByID(ctx, uuid.UUID(roomID))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	roomAccounts, err := server.store.GetRoomsAccounts(ctx, room.RoomID)
+	roomAccounts, err := server.store.GetRoomsAccountsByRoomID(ctx, room.RoomID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

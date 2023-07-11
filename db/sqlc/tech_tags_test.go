@@ -22,7 +22,7 @@ func TestGetTechTag(t *testing.T) {
 	n := 1
 	techTags := listTechTagTest(t)
 
-	techTag, err := testQueries.GetTechTag(context.Background(), techTags[n].TechTagID)
+	techTag, err := testQueries.GetTechTagByID(context.Background(), techTags[n].TechTagID)
 	require.NoError(t, err)
 	require.NotEmpty(t, techTag)
 

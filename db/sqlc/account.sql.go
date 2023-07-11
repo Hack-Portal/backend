@@ -31,7 +31,7 @@ INSERT INTO accounts (
 type CreateAccountParams struct {
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
-	Icon            []byte         `json:"icon"`
+	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
@@ -99,40 +99,6 @@ WHERE
     user_id = $1
 `
 
-type GetAccountByIDRow struct {
-	UserID          string         `json:"user_id"`
-	Username        string         `json:"username"`
-	Icon            []byte         `json:"icon"`
-	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	Locate          string         `json:"locate"`
-	Rate            int32          `json:"rate"`
-	HashedPassword  sql.NullString `json:"hashed_password"`
-	Email           string         `json:"email"`
-	ShowLocate      bool           `json:"show_locate"`
-	ShowRate        bool           `json:"show_rate"`
-	CreateAt        time.Time      `json:"create_at"`
-	UpdateAt        time.Time      `json:"update_at"`
-}
-
-func (q *Queries) GetAccountByID(ctx context.Context, userID string) (GetAccountByIDRow, error) {
-	row := q.db.QueryRowContext(ctx, getAccountByID, userID)
-	var i GetAccountByIDRow
-	err := row.Scan(
-		&i.UserID,
-		&i.Username,
-		&i.Icon,
-		&i.ExplanatoryText,
-		&i.Locate,
-		&i.Rate,
-		&i.HashedPassword,
-		&i.Email,
-		&i.ShowLocate,
-		&i.ShowRate,
-		&i.CreateAt,
-		&i.UpdateAt,
-	)
-	return i, err
-}
 
 const getAccountbyEmail = `-- name: GetAccountbyEmail :one
 SELECT 
@@ -226,13 +192,13 @@ type ListAccountsParams struct {
 }
 
 type ListAccountsRow struct {
-	UserID     string `json:"user_id"`
-	Username   string `json:"username"`
-	Icon       []byte `json:"icon"`
-	Locate     string `json:"locate"`
-	Rate       int32  `json:"rate"`
-	ShowLocate bool   `json:"show_locate"`
-	ShowRate   bool   `json:"show_rate"`
+	UserID     string         `json:"user_id"`
+	Username   string         `json:"username"`
+	Icon       sql.NullString `json:"icon"`
+	Locate     string         `json:"locate"`
+	Rate       int32          `json:"rate"`
+	ShowLocate bool           `json:"show_locate"`
+	ShowRate   bool           `json:"show_rate"`
 }
 
 func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error) {

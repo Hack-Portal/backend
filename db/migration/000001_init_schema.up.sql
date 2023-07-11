@@ -33,7 +33,7 @@ CREATE TABLE "tech_tags" (
 CREATE TABLE "accounts" (
   "user_id" varchar PRIMARY KEY,
   "username" varchar NOT NULL,
-  "icon" bytea,
+  "icon" text,
   "explanatory_text" text,
   "locate_id" int NOT NULL,
   "rate" int NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE "locates" (
 CREATE TABLE "hackathons" (
   "hackathon_id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
-  "icon" bytea,
+  "icon" text,
   "description" text NOT NULL,
   "link" varchar NOT NULL,
   "expired" date NOT NULL,
@@ -101,11 +101,6 @@ CREATE TABLE "rooms" (
   "is_status" boolean NOT NULL
 );
 
-CREATE TABLE "rooms_tech_tags" (
-  "room_id" uuid NOT NULL,
-  "tech_tag_id" int NOT NULL
-);
-
 CREATE TABLE "rooms_accounts" (
   "user_id" varchar NOT NULL,
   "room_id" uuid NOT NULL,
@@ -125,11 +120,6 @@ CREATE TABLE "past_work_frameworks" (
 
 CREATE TABLE "account_frameworks" (
   "account_id" varchar NOT NULL,
-  "framework_id" int NOT NULL
-);
-
-CREATE TABLE "rooms_frameworks" (
-  "room_id" uuid NOT NULL,
   "framework_id" int NOT NULL
 );
 
@@ -171,10 +161,6 @@ ALTER TABLE "rooms" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("h
 
 ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
 
-ALTER TABLE "rooms_tech_tags" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
-
-ALTER TABLE "rooms_tech_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
-
 ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
 
 ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
@@ -186,10 +172,6 @@ ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("opus") REFERENCES "past_wor
 ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("user_id");
 
 ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
-
-ALTER TABLE "rooms_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
-
-ALTER TABLE "rooms_frameworks" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
 
 INSERT INTO locates (name) VALUES 
 ('北海道'), 
