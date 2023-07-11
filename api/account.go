@@ -14,7 +14,7 @@ import (
 type CreateAccountRequestParam struct {
 	UserID          string  `json:"user_id" binding:"required"`
 	Username        string  `json:"username" binding:"required"`
-	Icon            []byte  `json:"icon"`
+	Icon            string  `json:"icon"`
 	ExplanatoryText string  `json:"explanatory_text"`
 	LocateID        int32   `json:"locate_id" binding:"required"`
 	Password        string  `json:"password"`
@@ -28,7 +28,7 @@ type CreateAccountRequestParam struct {
 type AccountResponses struct {
 	UserID          string     `json:"user_id"`
 	Username        string     `json:"username"`
-	Icon            []byte     `json:"icon"`
+	Icon            string     `json:"icon"`
 	ExplanatoryText string     `json:"explanatory_text"`
 	Rate            int32      `json:"rate"`
 	Locate          db.Locates `json:"locate"`
@@ -39,24 +39,6 @@ type AccountResponses struct {
 	Frameworks []db.Frameworks
 }
 
-//	@Summary		新しいアカウントを追加する
-//	@Description	bodyの情報からアカウントをDBに追加する
-//	@Accept			json
-//	@Produce		json
-//	@Param			user_id				body		string			false	"UserID"
-//	@Param			username			body		string			false	"Username"
-//	@Param			icon				body		[]byte			true	"Icon"
-//	@Param			explanatory_text	body		string			true	"ExplanatoryText"
-//	@Param			locate_id			body		int32			false	"LocateID"
-//	@Param			password			body		string			true	"Password"
-//	@Param			show_locate			body		bool			true	"ShowLocate"
-//	@Param			show_rate			body		bool			true	"ShowRate"
-//	@Param			tech_tags			body		[]int32			true	"TechTags"
-//	@Param			frameworks			body		[]int32			true	"Frameworks"
-//	@Success		200					{string}	string			"ok"
-//	@Failure		400					{object}	web.APIError	"We need ID!!"
-//	@Failure		404					{object}	web.APIError	"Can not find ID"
-//	@Router			/testapi/get-string-by-int/{some_id} [get]
 func (server *Server) CreateAccount(ctx *gin.Context) {
 	var request CreateAccountRequestParam
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -78,7 +60,10 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		Accounts: db.Accounts{
 			UserID:   request.UserID,
 			Username: request.Username,
-			Icon:     request.Icon,
+			Icon: sql.NullString{
+				String: request.Icon,
+				Valid:  true,
+			},
 			ExplanatoryText: sql.NullString{
 				String: request.ExplanatoryText,
 				Valid:  true,
@@ -111,7 +96,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 	response := AccountResponses{
 		UserID:          result.Account.UserID,
 		Username:        result.Account.Username,
-		Icon:            result.Account.Icon,
+		Icon:            result.Account.Icon.String,
 		ExplanatoryText: result.Account.ExplanatoryText.String,
 		Locate:          locate,
 		Rate:            result.Account.Rate,
@@ -191,7 +176,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		response = AccountResponses{
 			UserID:          account.UserID,
 			Username:        account.Username,
-			Icon:            account.Icon,
+			Icon:            account.Icon.String,
 			ExplanatoryText: account.ExplanatoryText.String,
 			Locate:          locate,
 			Rate:            account.Rate,
@@ -204,7 +189,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		response = AccountResponses{
 			UserID:          account.UserID,
 			Username:        account.Username,
-			Icon:            account.Icon,
+			Icon:            account.Icon.String,
 			ExplanatoryText: account.ExplanatoryText.String,
 			ShowLocate:      account.ShowLocate,
 			ShowRate:        account.ShowRate,

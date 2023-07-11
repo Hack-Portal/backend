@@ -86,9 +86,7 @@ func TestCreateRoomTx(t *testing.T) {
 			Description: util.RandomString(100),
 			MemberLimit: 5,
 		},
-		UserID:          user.UserID,
-		RoomsTechTags:   techTagIds,
-		RoomsFrameworks: frameworkIds,
+		UserID: user.UserID,
 	}
 	var roomsTechTags []TechTags
 	var roomsFrameworks []Frameworks

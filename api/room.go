@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,13 +12,11 @@ import (
 )
 
 type CreateRoomRequest struct {
-	HackathonID    int32   `json:"hackathon_id" binding:"required"`
-	Title          string  `json:"title" binding:"required"`
-	Description    string  `json:"description" binding:"required"`
-	MemberLimit    int32   `json:"member_limit" binding:"required"`
-	UserID         string  `json:"user_id" binding:"required"`
-	RoomTechTags   []int32 `json:"room_tech_tags"`
-	RoomFrameworks []int32 `json:"room_frameworks"`
+	HackathonID int32  `json:"hackathon_id" binding:"required"`
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	MemberLimit int32  `json:"member_limit" binding:"required"`
+	UserID      string `json:"user_id" binding:"required"`
 }
 
 // ルームを作るAPI　POST:
@@ -47,17 +46,21 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	roomID, err := uuid.NewRandom()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	log.Println(roomID)
 	result, err := server.store.CreateRoomTx(ctx, db.CreateRoomTxParams{
 		Rooms: db.Rooms{
-			RoomID:      uuid.New(),
+			RoomID:      roomID,
 			HackathonID: request.HackathonID,
 			Title:       request.Title,
 			Description: request.Description,
 			MemberLimit: request.MemberLimit,
 		},
-		UserID:          request.UserID,
-		RoomsTechTags:   request.RoomTechTags,
-		RoomsFrameworks: request.RoomFrameworks,
+		UserID: request.UserID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -121,25 +124,11 @@ func (server *Server) ListRooms(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	rooms, err := server.store.ListRoom(ctx, request.PageSize)
+	response, err := server.store.ListRoomTx(ctx, db.ListRoomTxParam{})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	var response ListRoomsResponse
-
-	for _, room := range rooms {
-		roomAccounts, err := server.store.GetRoomsAccounts(ctx, room.RoomID)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
-		response.Rooms = append(response.Rooms, GetRoomResponse{
-			Room:     room,
-			Accounts: roomAccounts,
-		})
-	}
-
 	ctx.JSON(http.StatusOK, response)
 }
 
