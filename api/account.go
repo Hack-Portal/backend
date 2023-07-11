@@ -30,6 +30,7 @@ type AccountResponses struct {
 	Username        string     `json:"username"`
 	Icon            []byte     `json:"icon"`
 	ExplanatoryText string     `json:"explanatory_text"`
+	Rate            int32      `json:"rate"`
 	Locate          db.Locates `json:"locate"`
 	ShowLocate      bool       `json:"show_locate"`
 	ShowRate        bool       `json:"show_rate"`
@@ -96,6 +97,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		Icon:            result.Account.Icon,
 		ExplanatoryText: result.Account.ExplanatoryText.String,
 		Locate:          locate,
+		Rate:            result.Account.Rate,
 		ShowLocate:      result.Account.ShowLocate,
 		ShowRate:        result.Account.ShowRate,
 		TechTags:        result.AccountTechTags,
@@ -104,18 +106,21 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-// アカウントを取得するさいのパラメータ
+// アカウントを取得する際のパラメータ
 type GetAccountRequestParams struct {
 	ID string `uri:"id"`
 }
 
 // アカウントを取得する
+// 認証必須
 func (server *Server) GetAccount(ctx *gin.Context) {
 	var request GetAccountRequestParams
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
+
 	// アカウント取得
 	account, err := server.store.GetAccount(ctx, request.ID)
 	if err != nil {
@@ -142,6 +147,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 	}
 	var accountTechTags []db.TechTags
 
+	// 技術タグを取得する
 	for _, tags := range techTags {
 		techtag, err := server.store.GetTechTag(ctx, tags.TechTagID.Int32)
 		if err != nil {
@@ -150,7 +156,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		}
 		accountTechTags = append(accountTechTags, techtag)
 	}
-
+	// フレームワークを取得する
 	var accountFrameworks []db.Frameworks
 	for _, framework := range frameworks {
 		fw, err := server.store.GetFrameworks(ctx, framework.FrameworkID.Int32)
@@ -161,16 +167,39 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		accountFrameworks = append(accountFrameworks, fw)
 	}
 
-	response := AccountResponses{
-		UserID:          account.UserID,
-		Username:        account.Username,
-		Icon:            account.Icon,
-		ExplanatoryText: account.ExplanatoryText.String,
-		Locate:          locate,
-		ShowLocate:      account.ShowLocate,
-		ShowRate:        account.ShowRate,
-		TechTags:        accountTechTags,
-		Frameworks:      accountFrameworks,
+	// 本人のリクエストの時は、すべての情報を返す
+	// そうでないときはShowLocateとShowRateの情報に沿って返す
+	var response AccountResponses
+	if payload.Email == account.Email {
+		response = AccountResponses{
+			UserID:          account.UserID,
+			Username:        account.Username,
+			Icon:            account.Icon,
+			ExplanatoryText: account.ExplanatoryText.String,
+			Locate:          locate,
+			Rate:            account.Rate,
+			ShowLocate:      account.ShowLocate,
+			ShowRate:        account.ShowRate,
+			TechTags:        accountTechTags,
+			Frameworks:      accountFrameworks,
+		}
+	} else {
+		response = AccountResponses{
+			UserID:          account.UserID,
+			Username:        account.Username,
+			Icon:            account.Icon,
+			ExplanatoryText: account.ExplanatoryText.String,
+			ShowLocate:      account.ShowLocate,
+			ShowRate:        account.ShowRate,
+			TechTags:        accountTechTags,
+			Frameworks:      accountFrameworks,
+		}
+		if account.ShowLocate {
+			response.Locate = locate
+		}
+		if account.ShowRate {
+			response.Rate = account.Rate
+		}
 	}
 	ctx.JSON(http.StatusOK, response)
 }
