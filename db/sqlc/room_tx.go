@@ -1,6 +1,10 @@
 package db
 
-import "context"
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
 
 type CreateRoomTxParams struct {
 	// ルーム登録部分
@@ -102,46 +106,115 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 		if err != nil {
 			return err
 		}
-		result.RoomsAccounts, err = q.GetRoomsAccounts(ctx, result.RoomID)
 
+		result.RoomsAccounts, err = q.GetRoomsAccounts(ctx, result.RoomID)
 		if err != nil {
 			return err
 		}
 
-		// ルームＩＤからテックタグのレコードを登録する
-		for _, techtag := range arg.RoomsTechTags {
-			accountTag, err := q.CreateRoomsTechTag(ctx, CreateRoomsTechTagParams{
-				RoomID:    result.RoomID,
-				TechTagID: techtag,
-			})
+		// ルーム内のユーザをもとにユーザの持つ技術タグとフレームワークタグを配列に落とし込む（力業
+		for _, account := range result.RoomsAccounts {
+			techTags, err := q.GetAccountTags(ctx, account.UserID.String)
 			if err != nil {
 				return err
 			}
-			techtag, err := q.GetTechTag(ctx, accountTag.TechTagID)
-			if err != nil {
-				return err
+			for _, techTag := range techTags {
+				result.RoomsTechTags = margeTechTagArray(result.RoomsTechTags, TechTags{
+					TechTagID: techTag.TechTagID.Int32,
+					Language:  techTag.Language.String,
+				})
 			}
 
-			result.RoomsTechTags = margeTechTagArray(result.RoomsTechTags, techtag)
+			frameworks, err := q.ListAccountFrameworks(ctx, account.UserID.String)
+			if err != nil {
+				return err
+			}
+			for _, framework := range frameworks {
+				result.RoomsFrameworks = margeFrameworkArray(result.RoomsFrameworks, Frameworks{
+					FrameworkID: framework.FrameworkID.Int32,
+					TechTagID:   framework.TechTagID.Int32,
+					Framework:   framework.Framework.String,
+				})
+			}
 		}
-
-		// ルームＩＤからフレームワークのレコードを登録する
-		for _, accountFrameworkTag := range arg.RoomsFrameworks {
-			accountFramework, err := q.CreateRoomsFramework(ctx, CreateRoomsFrameworkParams{
-				RoomID:      result.RoomID,
-				FrameworkID: accountFrameworkTag,
-			})
-			if err != nil {
-				return err
-			}
-			framework, err := q.GetFrameworks(ctx, accountFramework.FrameworkID)
-			if err != nil {
-				return err
-			}
-			result.RoomsFrameworks = margeFrameworkArray(result.RoomsFrameworks, framework)
-		}
-
 		return nil
+	})
+	return result, err
+}
+
+type ListRoomTxParam struct {
+}
+
+type ListRoomTxRoomInfo struct {
+	RoomID      uuid.UUID `json:"room_id"`
+	Title       string    `josn:"title"`
+	MemberLimit int32     `json:"member_limit"`
+}
+type ListRoomTxHacathonInfo struct {
+	HackathonID   int32  `json:"hackathon_id"`
+	HackathonName string `json:"hackathon_name"`
+	Icon          string `json:"icon"`
+}
+type ListRoomTxResult struct {
+	Rooms             ListRoomTxRoomInfo     `json:"rooms"`
+	Hackathon         ListRoomTxHacathonInfo `json:"hackathon"`
+	NowMember         []GetRoomsAccountsRow  `json:"now_member"`
+	MembersTechTags   []RoomTechTags         `json:"members_tech_tags"`
+	MembersFrameworks []RoomFramework        `json:"members_frameworks"`
+}
+
+func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error) {
+	var result []ListRoomTxResult
+	err := store.execTx(ctx, func(q *Queries) error {
+		var err error
+		// ルーム一覧を取得してくる
+		rooms, err := q.ListRoom(ctx, 100)
+		if err != nil {
+			return err
+		}
+		// それぞれのルームの確認
+		for _, room := range rooms {
+			var oneRoomInfos ListRoomTxResult
+			hackathon, err := q.GetHackathon(ctx, room.HackathonID)
+			if err != nil {
+				return err
+			}
+			oneRoomInfos.Hackathon = ListRoomTxHacathonInfo{
+				HackathonID:   hackathon.HackathonID,
+				HackathonName: hackathon.Name,
+				Icon:          icon,
+			}
+			members, err := q.GetRoomsAccounts(ctx, room.RoomID)
+			if err != nil {
+				return err
+			}
+
+			for _, account := range members {
+				techTags, err := q.GetAccountTags(ctx, account.UserID.String)
+				if err != nil {
+					return err
+				}
+				for _, techTag := range techTags {
+					oneRoomInfos.MembersTechTags = margeTechTagArray(oneRoomInfos.MembersTechTags, TechTags{
+						TechTagID: techTag.TechTagID.Int32,
+						Language:  techTag.Language.String,
+					})
+				}
+
+				frameworks, err := q.ListAccountFrameworks(ctx, account.UserID.String)
+				if err != nil {
+					return err
+				}
+				for _, framework := range frameworks {
+					oneRoomInfos.MembersFrameworks = margeFrameworkArray(oneRoomInfos.MembersFrameworks, Frameworks{
+						FrameworkID: framework.FrameworkID.Int32,
+						TechTagID:   framework.TechTagID.Int32,
+						Framework:   framework.Framework.String,
+					})
+				}
+			}
+		}
+		return err
 	})
 	return result, err
 }
