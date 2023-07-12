@@ -47,3 +47,28 @@ func TestListBookmark(t *testing.T) {
 	}
 
 }
+
+func TestRemoveBookmark(t *testing.T) {
+	n := 5
+	account := createAccountTest(t)
+	var lastbookmark Bookmarks
+	for i := 0; i < n; i++ {
+		lastbookmark = createBookmarkTest(t, account)
+	}
+
+	err := testQueries.RemoveBookmark(context.Background(), RemoveBookmarkParams{
+		UserID:      lastbookmark.UserID,
+		HackathonID: lastbookmark.HackathonID,
+	})
+	require.NoError(t, err)
+
+	listBookmark, err := testQueries.ListBookmarkByUserID(context.Background(), account.UserID)
+	require.NoError(t, err)
+	require.NotEmpty(t, listBookmark)
+
+	require.Len(t, listBookmark, n-1)
+
+	for _, bookmark := range listBookmark {
+		require.NotEqual(t, bookmark, lastbookmark)
+	}
+}
