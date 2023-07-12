@@ -20,7 +20,7 @@ func (q *Queries) GetStatusTagByStatusID(ctx context.Context, statusID int32) (S
 	return i, err
 }
 
-const getStatusTags = `-- name: GetStatusTags :many
+const getStatusTagsByhackathonID = `-- name: GetStatusTagsByhackathonID :many
 SELECT status_tags.status_id ,status_tags.status
 FROM status_tags
 LEFT OUTER JOIN hackathon_status_tags
@@ -28,8 +28,8 @@ ON status_tags.status_id = hackathon_status_tags.status_id
 where hackathon_id = $1
 `
 
-func (q *Queries) GetStatusTags(ctx context.Context, hackathonID int32) ([]StatusTags, error) {
-	rows, err := q.db.QueryContext(ctx, getStatusTags, hackathonID)
+func (q *Queries) GetStatusTagsByhackathonID(ctx context.Context, hackathonID int32) ([]StatusTags, error) {
+	rows, err := q.db.QueryContext(ctx, getStatusTagsByhackathonID, hackathonID)
 	if err != nil {
 		return nil, err
 	}

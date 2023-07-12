@@ -36,7 +36,7 @@ func TestGetStatusTags(t *testing.T) {
 		createHackathonStatusTagTest(t, hackathons)
 	}
 
-	statusTags, err := testQueries.GetHackathonStatusTags(context.Background(), hackathons.HackathonID)
+	statusTags, err := testQueries.GetHackathonStatusTagsByHackathonID(context.Background(), hackathons.HackathonID)
 	require.NoError(t, err)
 	require.NotEmpty(t, statusTags)
 	require.Len(t, statusTags, n)
