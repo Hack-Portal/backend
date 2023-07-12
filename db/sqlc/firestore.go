@@ -47,8 +47,8 @@ func (store *SQLStore) WriteFireStore(ctx context.Context, arg WriteFireStorePar
 }
 
 // 初期化する
-func (store *SQLStore) InitChatRoom(ctx context.Context, roomID uuid.UUID) (*firestore.WriteResult, error) {
-	result, err := store.client.Collection(FireStoreChatRoomCollectionName).Doc(roomID.String()).Set(ctx, map[string]interface{}{
+func (store *SQLStore) InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error) {
+	result, err := store.client.Collection(FireStoreChatRoomCollectionName).Doc(roomID).Set(ctx, map[string]interface{}{
 		"chat_room": nil,
 	}, firestore.MergeAll)
 

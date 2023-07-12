@@ -67,6 +67,13 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 		return
 	}
 
+	// チャットルームの初期化
+	_, err = server.store.InitChatRoom(ctx, result.Rooms.RoomID.String())
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	ctx.JSON(http.StatusOK, result)
 }
 

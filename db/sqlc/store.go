@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/firestore"
-	"github.com/gofrs/uuid/v5"
 )
 
 type Store interface {
@@ -15,7 +14,7 @@ type Store interface {
 	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error)
 	ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error)
 	// Firebase
-	InitChatRoom(ctx context.Context, roomID uuid.UUID) (*firestore.WriteResult, error)
+	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
 	WriteFireStore(ctx context.Context, arg WriteFireStoreParam) (*firestore.WriteResult, error)
 	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]ChatRoomsWrite, error)
 }
