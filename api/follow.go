@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
 type CreateFollow struct {
@@ -21,22 +22,25 @@ func (server *Server) CreateFollow(ctx *gin.Context) {
 	}
 
 	// フォローする人がいるか
-	_, err := server.store.GetAccountByID(ctx, request.ToUserID)
+	// 本人確認
+	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
+	account, err := server.store.GetAccountbyEmail(ctx, payload.Email)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
+	}
+	if account.UserID != request.ToUserID {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 	}
 
 	// フォローされる人がいるか
-	_, err = server.store.GetAccountByID(ctx, request.FromUserID)
+	followedAccounts, err := server.store.ListFollowByToUserID(ctx, request.ToUserID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	// フォローしていないか
-	_, err = server.store.ListFollowByToUserID(ctx, request.ToUserID)
-	if err == nil {
+	if !checkFollow(followedAccounts, request.FromUserID) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -51,6 +55,16 @@ func (server *Server) CreateFollow(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, result)
+}
+
+// フォローしていないか
+func checkFollow(accounts []db.CreateFollowParams, userID string) bool {
+	for _, account := range accounts {
+		if account.ToUserID == userID {
+			return true
+		}
+	}
+	return false
 }
 
 // フォローを外すAPI
