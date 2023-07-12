@@ -89,10 +89,10 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			MemberLimit: arg.MemberLimit,
 			IsStatus:    true,
 		})
-
 		if err != nil {
 			return err
 		}
+
 		// ルームのオーナーを登録する
 		_, err = q.CreateRoomsAccounts(ctx, CreateRoomsAccountsParams{
 			UserID:  arg.UserID,
