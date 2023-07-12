@@ -17,7 +17,10 @@ func (server *Server) setupRouter() {
 func (server *Server) publicRouter() {
 	public := server.router.Group("/v1")
 
-	public.GET("/hackathons", server.CreateHackathon)
+	public.GET("/ping", server.Ping)
+	public.POST("/hackathons", server.CreateHackathon)
+	public.GET("/hackathons", server.ListHackathons)
+	public.GET("/hackathons/:hackathon_id", server.GetHackathon)
 	public.GET("/locates", server.ListLocation)
 	public.GET("/tech_tags", server.ListTechTags)
 	public.GET("/frameworks", server.ListFrameworks)
