@@ -35,7 +35,7 @@ func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccoun
 	return i, err
 }
 
-const getRoomsAccounts = `-- name: GetRoomsAccounts :many
+const getRoomsAccountsByRoomID = `-- name: GetRoomsAccountsByRoomID :many
 SELECT 
     accounts.user_id, 
     accounts.icon,
@@ -50,21 +50,21 @@ WHERE
     rooms_accounts.room_id = $1
 `
 
-type GetRoomsAccountsRow struct {
+type GetRoomsAccountsByRoomIDRow struct {
 	UserID  sql.NullString `json:"user_id"`
 	Icon    sql.NullString `json:"icon"`
 	IsOwner bool           `json:"is_owner"`
 }
 
-func (q *Queries) GetRoomsAccounts(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getRoomsAccounts, roomID)
+func (q *Queries) GetRoomsAccountsByRoomID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByRoomIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, getRoomsAccountsByRoomID, roomID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetRoomsAccountsRow{}
+	items := []GetRoomsAccountsByRoomIDRow{}
 	for rows.Next() {
-		var i GetRoomsAccountsRow
+		var i GetRoomsAccountsByRoomIDRow
 		if err := rows.Scan(&i.UserID, &i.Icon, &i.IsOwner); err != nil {
 			return nil, err
 		}
@@ -79,8 +79,8 @@ func (q *Queries) GetRoomsAccounts(ctx context.Context, roomID uuid.UUID) ([]Get
 	return items, nil
 }
 
-const removeAccountInRoom = `-- name: RemoveAccountInRoom :one
-DELETE FROM rooms_accounts WHERE room_id = $1 AND user_id = $2 RETURNING user_id, room_id, is_owner
+const removeAccountInRoom = `-- name: RemoveAccountInRoom :exec
+DELETE FROM rooms_accounts WHERE room_id = $1 AND user_id = $2
 `
 
 type RemoveAccountInRoomParams struct {
@@ -88,9 +88,7 @@ type RemoveAccountInRoomParams struct {
 	UserID string    `json:"user_id"`
 }
 
-func (q *Queries) RemoveAccountInRoom(ctx context.Context, arg RemoveAccountInRoomParams) (RoomsAccounts, error) {
-	row := q.db.QueryRowContext(ctx, removeAccountInRoom, arg.RoomID, arg.UserID)
-	var i RoomsAccounts
-	err := row.Scan(&i.UserID, &i.RoomID, &i.IsOwner)
-	return i, err
+func (q *Queries) RemoveAccountInRoom(ctx context.Context, arg RemoveAccountInRoomParams) error {
+	_, err := q.db.ExecContext(ctx, removeAccountInRoom, arg.RoomID, arg.UserID)
+	return err
 }

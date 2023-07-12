@@ -29,7 +29,7 @@ type RoomHackathonData struct {
 type CraeteRoomTxResult struct {
 	Rooms
 	Hackathon       RoomHackathonData
-	RoomsAccounts   []GetRoomsAccountsRow
+	RoomsAccounts   []GetRoomsAccountsByRoomIDRow
 	RoomsTechTags   []RoomTechTags
 	RoomsFrameworks []RoomFramework
 }
@@ -69,7 +69,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 		// ハッカソンデータを送る
-		hackathon, err := q.GetHackathon(ctx, arg.HackathonID)
+		hackathon, err := q.GetHackathonByID(ctx, arg.HackathonID)
 		if err != nil {
 			return err
 		}
@@ -103,14 +103,14 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			return err
 		}
 
-		result.RoomsAccounts, err = q.GetRoomsAccounts(ctx, result.RoomID)
+		result.RoomsAccounts, err = q.GetRoomsAccountsByRoomID(ctx, result.RoomID)
 		if err != nil {
 			return err
 		}
 
 		// ルーム内のユーザをもとにユーザの持つ技術タグとフレームワークタグを配列に落とし込む（力業
 		for _, account := range result.RoomsAccounts {
-			techTags, err := q.GetAccountTags(ctx, account.UserID.String)
+			techTags, err := q.ListAccountTagsByUserID(ctx, account.UserID.String)
 			if err != nil {
 				return err
 			}
@@ -121,7 +121,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 				})
 			}
 
-			frameworks, err := q.ListAccountFrameworks(ctx, account.UserID.String)
+			frameworks, err := q.ListAccountFrameworksByUserID(ctx, account.UserID.String)
 			if err != nil {
 				return err
 			}
@@ -152,11 +152,11 @@ type ListRoomTxHacathonInfo struct {
 	Icon          string `json:"icon"`
 }
 type ListRoomTxResult struct {
-	Rooms             ListRoomTxRoomInfo     `json:"rooms"`
-	Hackathon         ListRoomTxHacathonInfo `json:"hackathon"`
-	NowMember         []GetRoomsAccountsRow  `json:"now_member"`
-	MembersTechTags   []RoomTechTags         `json:"members_tech_tags"`
-	MembersFrameworks []RoomFramework        `json:"members_frameworks"`
+	Rooms             ListRoomTxRoomInfo            `json:"rooms"`
+	Hackathon         ListRoomTxHacathonInfo        `json:"hackathon"`
+	NowMember         []GetRoomsAccountsByRoomIDRow `json:"now_member"`
+	MembersTechTags   []RoomTechTags                `json:"members_tech_tags"`
+	MembersFrameworks []RoomFramework               `json:"members_frameworks"`
 }
 
 func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error) {
@@ -176,7 +176,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 				Title:       room.Title,
 				MemberLimit: room.MemberLimit,
 			}
-			hackathon, err := q.GetHackathon(ctx, room.HackathonID)
+			hackathon, err := q.GetHackathonByID(ctx, room.HackathonID)
 			if err != nil {
 				return err
 			}
@@ -187,14 +187,14 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 				Icon:          hackathon.Icon.String,
 			}
 
-			members, err := q.GetRoomsAccounts(ctx, room.RoomID)
+			members, err := q.GetRoomsAccountsByRoomID(ctx, room.RoomID)
 			if err != nil {
 				return err
 			}
 			// アカウントの追加
 			for _, account := range members {
 				// タグの追加
-				techTags, err := q.GetAccountTags(ctx, account.UserID.String)
+				techTags, err := q.ListAccountTagsByUserID(ctx, account.UserID.String)
 				if err != nil {
 					return err
 				}
@@ -205,7 +205,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 					})
 				}
 				// FWの追加
-				frameworks, err := q.ListAccountFrameworks(ctx, account.UserID.String)
+				frameworks, err := q.ListAccountFrameworksByUserID(ctx, account.UserID.String)
 				if err != nil {
 					return err
 				}

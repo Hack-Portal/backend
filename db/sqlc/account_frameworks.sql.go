@@ -31,7 +31,7 @@ func (q *Queries) CreateAccountFramework(ctx context.Context, arg CreateAccountF
 	return i, err
 }
 
-const listAccountFrameworks = `-- name: ListAccountFrameworks :many
+const listAccountFrameworksByUserID = `-- name: ListAccountFrameworksByUserID :many
 SELECT 
     frameworks.framework_id,
     frameworks.tech_tag_id,
@@ -46,21 +46,21 @@ WHERE
     account_frameworks.account_id = $1
 `
 
-type ListAccountFrameworksRow struct {
+type ListAccountFrameworksByUserIDRow struct {
 	FrameworkID sql.NullInt32  `json:"framework_id"`
 	TechTagID   sql.NullInt32  `json:"tech_tag_id"`
 	Framework   sql.NullString `json:"framework"`
 }
 
-func (q *Queries) ListAccountFrameworks(ctx context.Context, accountID string) ([]ListAccountFrameworksRow, error) {
-	rows, err := q.db.QueryContext(ctx, listAccountFrameworks, accountID)
+func (q *Queries) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAccountFrameworksByUserID, accountID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListAccountFrameworksRow{}
+	items := []ListAccountFrameworksByUserIDRow{}
 	for rows.Next() {
-		var i ListAccountFrameworksRow
+		var i ListAccountFrameworksByUserIDRow
 		if err := rows.Scan(&i.FrameworkID, &i.TechTagID, &i.Framework); err != nil {
 			return nil, err
 		}

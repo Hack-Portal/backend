@@ -54,12 +54,12 @@ func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, 
 	return i, err
 }
 
-const getRoom = `-- name: GetRoom :one
+const getRoomsByID = `-- name: GetRoomsByID :one
 SELECT room_id, hackathon_id, title, description, member_limit, is_status FROM rooms WHERE room_id = $1
 `
 
-func (q *Queries) GetRoom(ctx context.Context, roomID uuid.UUID) (Rooms, error) {
-	row := q.db.QueryRowContext(ctx, getRoom, roomID)
+func (q *Queries) GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Rooms, error) {
+	row := q.db.QueryRowContext(ctx, getRoomsByID, roomID)
 	var i Rooms
 	err := row.Scan(
 		&i.RoomID,
@@ -73,7 +73,6 @@ func (q *Queries) GetRoom(ctx context.Context, roomID uuid.UUID) (Rooms, error) 
 }
 
 const listRoom = `-- name: ListRoom :many
-
 SELECT 
     room_id, hackathon_id, title, description, member_limit, is_status 
 FROM 

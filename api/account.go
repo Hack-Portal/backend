@@ -26,14 +26,14 @@ type CreateAccountRequestParam struct {
 
 // アカウントに関するレスポンス
 type AccountResponses struct {
-	UserID          string     `json:"user_id"`
-	Username        string     `json:"username"`
-	Icon            string     `json:"icon"`
-	ExplanatoryText string     `json:"explanatory_text"`
-	Rate            int32      `json:"rate"`
-	Locate          db.Locates `json:"locate"`
-	ShowLocate      bool       `json:"show_locate"`
-	ShowRate        bool       `json:"show_rate"`
+	UserID          string `json:"user_id"`
+	Username        string `json:"username"`
+	Icon            string `json:"icon"`
+	ExplanatoryText string `json:"explanatory_text"`
+	Rate            int32  `json:"rate"`
+	Locate          string `json:"locate"`
+	ShowLocate      bool   `json:"show_locate"`
+	ShowRate        bool   `json:"show_rate"`
 
 	TechTags   []db.TechTags
 	Frameworks []db.Frameworks
@@ -88,7 +88,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	locate, err := server.store.GetLocate(ctx, result.Account.LocateID)
+	locate, err := server.store.GetLocateByID(ctx, result.Account.LocateID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -98,7 +98,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		Username:        result.Account.Username,
 		Icon:            result.Account.Icon.String,
 		ExplanatoryText: result.Account.ExplanatoryText.String,
-		Locate:          locate,
+		Locate:          locate.Name,
 		Rate:            result.Account.Rate,
 		ShowLocate:      result.Account.ShowLocate,
 		ShowRate:        result.Account.ShowRate,
@@ -124,25 +124,19 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
 
 	// アカウント取得
-	account, err := server.store.GetAccount(ctx, request.ID)
+	account, err := server.store.GetAccountByID(ctx, request.ID)
 	if err != nil {
 		// ToDo: IDがなかったときの分岐を作る
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
-	//
-	locate, err := server.store.GetLocate(ctx, account.LocateID)
+
+	techTags, err := server.store.ListAccountTagsByUserID(ctx, account.UserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	techTags, err := server.store.GetAccountTags(ctx, account.UserID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	frameworks, err := server.store.ListAccountFrameworks(ctx, account.UserID)
+	frameworks, err := server.store.ListAccountFrameworksByUserID(ctx, account.UserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -151,7 +145,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 
 	// 技術タグを取得する
 	for _, tags := range techTags {
-		techtag, err := server.store.GetTechTag(ctx, tags.TechTagID.Int32)
+		techtag, err := server.store.GetTechTagByID(ctx, tags.TechTagID.Int32)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
@@ -161,7 +155,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 	// フレームワークを取得する
 	var accountFrameworks []db.Frameworks
 	for _, framework := range frameworks {
-		fw, err := server.store.GetFrameworks(ctx, framework.FrameworkID.Int32)
+		fw, err := server.store.GetFrameworksByID(ctx, framework.FrameworkID.Int32)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
@@ -178,7 +172,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 			Username:        account.Username,
 			Icon:            account.Icon.String,
 			ExplanatoryText: account.ExplanatoryText.String,
-			Locate:          locate,
+			Locate:          account.Locate,
 			Rate:            account.Rate,
 			ShowLocate:      account.ShowLocate,
 			ShowRate:        account.ShowRate,
@@ -197,7 +191,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 			Frameworks:      accountFrameworks,
 		}
 		if account.ShowLocate {
-			response.Locate = locate
+			response.Locate = account.Locate
 		}
 		if account.ShowRate {
 			response.Rate = account.Rate

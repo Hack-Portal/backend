@@ -40,7 +40,7 @@ func TestListAccountFrameworks(t *testing.T) {
 		createAccountFrameworksTest(t, account)
 	}
 
-	listAccountsFramework, err := testQueries.ListAccountFrameworks(context.Background(), account.UserID)
+	listAccountsFramework, err := testQueries.ListAccountFrameworksByUserID(context.Background(), account.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, listAccountsFramework)
 	require.Len(t, listAccountsFramework, n)

@@ -31,7 +31,7 @@ func (q *Queries) CreataAccountTags(ctx context.Context, arg CreataAccountTagsPa
 	return i, err
 }
 
-const getAccountTags = `-- name: GetAccountTags :many
+const listAccountTagsByUserID = `-- name: ListAccountTagsByUserID :many
 SELECT 
     tech_tags.tech_tag_id,
     tech_tags.language
@@ -45,20 +45,20 @@ WHERE
     account_tags.user_id = $1
 `
 
-type GetAccountTagsRow struct {
+type ListAccountTagsByUserIDRow struct {
 	TechTagID sql.NullInt32  `json:"tech_tag_id"`
 	Language  sql.NullString `json:"language"`
 }
 
-func (q *Queries) GetAccountTags(ctx context.Context, userID string) ([]GetAccountTagsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getAccountTags, userID)
+func (q *Queries) ListAccountTagsByUserID(ctx context.Context, userID string) ([]ListAccountTagsByUserIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAccountTagsByUserID, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetAccountTagsRow{}
+	items := []ListAccountTagsByUserIDRow{}
 	for rows.Next() {
-		var i GetAccountTagsRow
+		var i ListAccountTagsByUserIDRow
 		if err := rows.Scan(&i.TechTagID, &i.Language); err != nil {
 			return nil, err
 		}

@@ -9,12 +9,12 @@ import (
 	"context"
 )
 
-const getTechTag = `-- name: GetTechTag :one
+const getTechTagByID = `-- name: GetTechTagByID :one
 SELECT tech_tag_id, language FROM tech_tags WHERE tech_tag_id = $1
 `
 
-func (q *Queries) GetTechTag(ctx context.Context, techTagID int32) (TechTags, error) {
-	row := q.db.QueryRowContext(ctx, getTechTag, techTagID)
+func (q *Queries) GetTechTagByID(ctx context.Context, techTagID int32) (TechTags, error) {
+	row := q.db.QueryRowContext(ctx, getTechTagByID, techTagID)
 	var i TechTags
 	err := row.Scan(&i.TechTagID, &i.Language)
 	return i, err

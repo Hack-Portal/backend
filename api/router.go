@@ -2,24 +2,15 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func (server *Server) setupRouter() {
 	router := gin.New()
 	server.router = router
 
-	server.swaggerSetup()
 	server.publicRouter()
 	server.authRouter()
 
-}
-
-// gin-swaggerのセットアップ
-func (server *Server) swaggerSetup() {
-	server.router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
 // 認証を必要としないルーティング
@@ -44,4 +35,8 @@ func (server *Server) authRouter() {
 	auth.POST("/rooms/:room_id", server.AddAccountInRoom)
 	auth.GET("/rooms", server.ListRooms)
 	auth.GET("/rooms/:room_id", server.GetRoom)
+	// ブックマーク
+	auth.POST("/bookmarks", server.CreateBookmark)
+	auth.POST("/bookmarks/:hackathon_id", server.RemoveBookmark)
+	auth.GET("/bookmarks/", server.ListBookmarkToHackathon)
 }

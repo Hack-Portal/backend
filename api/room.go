@@ -29,7 +29,7 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 	}
 
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccount(ctx, request.UserID)
+	account, err := server.store.GetAccountByID(ctx, request.UserID)
 	if err != nil {
 		// Userがいない時の処理も必要
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -41,7 +41,7 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 		return
 	}
 	// ハッカソンがあるか？
-	_, err = server.store.GetHackathon(ctx, request.HackathonID)
+	_, err = server.store.GetHackathonByID(ctx, request.HackathonID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -141,7 +141,7 @@ type GetRoomRequest struct {
 
 type GetRoomResponse struct {
 	Room     db.Rooms
-	Accounts []db.GetRoomsAccountsRow
+	Accounts []db.GetRoomsAccountsByRoomIDRow
 }
 
 func (server *Server) GetRoom(ctx *gin.Context) {
@@ -156,12 +156,12 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	room, err := server.store.GetRoom(ctx, uuid.UUID(roomID))
+	room, err := server.store.GetRoomsByID(ctx, uuid.UUID(roomID))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	roomAccounts, err := server.store.GetRoomsAccounts(ctx, room.RoomID)
+	roomAccounts, err := server.store.GetRoomsAccountsByRoomID(ctx, room.RoomID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

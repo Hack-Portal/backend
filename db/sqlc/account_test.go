@@ -45,23 +45,16 @@ func TestCreateAccount(t *testing.T) {
 func TestGetAccount(t *testing.T) {
 	account := createAccountTest(t)
 
-	locate1, err := testQueries.GetLocate(context.Background(), account.LocateID)
-	require.NoError(t, err)
-	require.NotEmpty(t, locate1)
-
-	result, err := testQueries.GetAccount(context.Background(), account.UserID)
+	result, err := testQueries.GetAccountByID(context.Background(), account.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
-
-	locate2, err := testQueries.GetLocate(context.Background(), account.LocateID)
+	locate, err := testQueries.GetLocateByID(context.Background(), account.LocateID)
 	require.NoError(t, err)
-	require.NotEmpty(t, locate1)
+	require.NotEmpty(t, locate)
 
 	require.Equal(t, account.UserID, result.UserID)
 	require.Equal(t, account.Username, result.Username)
-	// locate 変換必要
-
-	require.Equal(t, locate1, locate2)
+	require.Equal(t, locate.Name, result.Locate)
 	require.Equal(t, account.Rate, result.Rate)
 	require.Equal(t, account.ShowLocate, result.ShowLocate)
 	require.Equal(t, account.ShowRate, result.ShowRate)
@@ -93,23 +86,17 @@ func TestListAccount(t *testing.T) {
 func TestGetAccountByEmail(t *testing.T) {
 	account := createAccountTest(t)
 
-	locate1, err := testQueries.GetLocate(context.Background(), account.LocateID)
-	require.NoError(t, err)
-	require.NotEmpty(t, locate1)
-
 	result, err := testQueries.GetAccountbyEmail(context.Background(), account.Email)
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 
-	locate2, err := testQueries.GetLocate(context.Background(), account.LocateID)
+	locate, err := testQueries.GetLocateByID(context.Background(), account.LocateID)
 	require.NoError(t, err)
-	require.NotEmpty(t, locate1)
+	require.NotEmpty(t, locate)
 
 	require.Equal(t, account.UserID, result.UserID)
 	require.Equal(t, account.Username, result.Username)
-	// locate 変換必要
-
-	require.Equal(t, locate1, locate2)
+	require.Equal(t, locate.Name, result.Locate)
 	require.Equal(t, account.Rate, result.Rate)
 	require.Equal(t, account.ShowLocate, result.ShowLocate)
 	require.Equal(t, account.ShowRate, result.ShowRate)

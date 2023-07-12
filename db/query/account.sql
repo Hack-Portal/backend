@@ -1,16 +1,40 @@
--- name: GetAccountAuth :one
+-- name: CreateAccount :one
+INSERT INTO accounts (
+    user_id,
+    username,
+    icon,
+    explanatory_text,
+    locate_id,
+    rate,
+    hashed_password,
+    email,
+    show_locate,
+    show_rate
+)VALUES(
+    $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
+)RETURNING *;
+
+-- name: GetAccountByID :one
 SELECT 
     user_id,
+    username,
+    icon,
+    explanatory_text,
+    (
+        SELECT 
+            name
+        FROM 
+            locates 
+        WHERE 
+            locate_id = accounts.locate_id
+    ) as locate,
+    rate,
     hashed_password,
-    email
-FROM 
-    accounts
-WHERE
-    user_id = $1;
-
--- name: GetAccount :one
-SELECT 
-    *
+    email,
+    show_locate,
+    show_rate,
+    create_at,
+    update_at
 FROM
     accounts
 WHERE
@@ -18,7 +42,25 @@ WHERE
 
 -- name: GetAccountbyEmail :one
 SELECT 
-    *
+    user_id,
+    username,
+    icon,
+    explanatory_text,
+    (
+        SELECT 
+            name
+        FROM 
+            locates 
+        WHERE 
+            locate_id = accounts.locate_id
+    ) as locate,
+    rate,
+    hashed_password,
+    email,
+    show_locate,
+    show_rate,
+    create_at,
+    update_at
 FROM
     accounts
 WHERE
@@ -46,18 +88,3 @@ WHERE username LIKE $1
 LIMIT $2
 OFFSET $3;
 
--- name: CreateAccount :one
-INSERT INTO accounts (
-    user_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    hashed_password,
-    email,
-    show_locate,
-    show_rate
-)VALUES(
-    $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
-)RETURNING *;
