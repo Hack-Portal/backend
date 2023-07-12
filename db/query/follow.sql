@@ -1,16 +1,16 @@
--- name CreateFollow :one
+-- name: CreateFollow :one
 INSERT INTO follows (
     to_user_id,
-    form_user_id,
-    create_at
+    from_user_id
   )
-VALUES($1, $2, $3)
+VALUES($1, $2)
 RETURNING *;
--- name ListFollow :many
+-- name: ListFollowByToUserID :many
 SELECT *
 FROM follows
 WHERE to_user_id = $1;
--- name RemoveFollow :exec
+
+-- name: RemoveFollow :exec
 DELETE FROM follows
 WHERE to_user_id = $1
-  AND form_user_id = $2;
+  AND from_user_id = $2;
