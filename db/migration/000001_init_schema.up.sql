@@ -1,7 +1,8 @@
 CREATE TABLE "past_works" (
   "opus" serial PRIMARY KEY,
   "thumbnail_image" bytea NOT NULL,
-  "explanatory_text" text NOT NULL
+  "explanatory_text" text NOT NULL,
+  "create_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "hackathons_data" (
@@ -79,7 +80,8 @@ CREATE TABLE "status_tags" (
 
 CREATE TABLE "bookmarks" (
   "hackathon_id" int NOT NULL,
-  "user_id" varchar NOT NULL
+  "user_id" varchar NOT NULL,
+  "create_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "account_past_works" (
@@ -89,7 +91,8 @@ CREATE TABLE "account_past_works" (
 
 CREATE TABLE "follows" (
   "to_user_id" varchar NOT NULL,
-  "from_user_id" varchar NOT NULL
+  "from_user_id" varchar NOT NULL,
+  "create_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "rooms" (
@@ -98,13 +101,15 @@ CREATE TABLE "rooms" (
   "title" varchar NOT NULL,
   "description" text NOT NULL,
   "member_limit" int NOT NULL,
-  "is_status" boolean NOT NULL
+  "is_status" boolean NOT NULL,
+  "create_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "rooms_accounts" (
   "user_id" varchar NOT NULL,
   "room_id" uuid NOT NULL,
-  "is_owner" boolean NOT NULL
+  "is_owner" boolean NOT NULL,
+  "create_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "frameworks" (
@@ -119,7 +124,7 @@ CREATE TABLE "past_work_frameworks" (
 );
 
 CREATE TABLE "account_frameworks" (
-  "account_id" varchar NOT NULL,
+  "user_id" varchar NOT NULL,
   "framework_id" int NOT NULL
 );
 
@@ -169,9 +174,9 @@ ALTER TABLE "frameworks" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" 
 
 ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
 
-ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("user_id");
-
 ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
+
+ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
 
 INSERT INTO locates (name) VALUES 
 ('北海道'), 
