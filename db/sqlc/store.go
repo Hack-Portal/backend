@@ -8,10 +8,15 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
+const (
+	ForeignKeyViolation = "foreign_key_violation"
+	UniqueViolation     = "unique_violation"
+)
+
 type Store interface {
 	Querier
 	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
-	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error)
+	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error)
 	CreateHackathonTx(ctx context.Context, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
 	ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error)
 	// Firebase

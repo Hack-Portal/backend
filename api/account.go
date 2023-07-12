@@ -8,6 +8,7 @@ import (
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/util"
 	"github.com/hackhack-Geek-vol6/backend/util/token"
+	"github.com/lib/pq"
 )
 
 // アカウントを作る時のリクエストパラメータ
@@ -84,7 +85,14 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 
 	result, err := server.store.CreateAccountTx(ctx, args)
 	if err != nil {
-		// ToDo: すでに登録されている時のエラーの分岐を作る
+		// すでに登録されている場合と参照エラーの処理
+		if pqErr, ok := err.(*pq.Error); ok {
+			switch pqErr.Code.Name() {
+			case db.ForeignKeyViolation, db.UniqueViolation:
+				ctx.JSON(http.StatusForbidden, errorResponse(err))
+				return
+			}
+		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -145,12 +153,12 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 
 	// 技術タグを取得する
 	for _, tags := range techTags {
-		techtag, err := server.store.GetTechTagByID(ctx, tags.TechTagID.Int32)
+		techTag, err := server.store.GetTechTagByID(ctx, tags.TechTagID.Int32)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
-		accountTechTags = append(accountTechTags, techtag)
+		accountTechTags = append(accountTechTags, techTag)
 	}
 	// フレームワークを取得する
 	var accountFrameworks []db.Frameworks

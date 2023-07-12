@@ -181,7 +181,7 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 
 // チャットを追加する
 // 認証必須
-type AddChattRequestURI struct {
+type AddChatRequestURI struct {
 	RoomID string `uri:"room_id"`
 }
 type AddChatRequestBody struct {
@@ -190,7 +190,7 @@ type AddChatRequestBody struct {
 }
 
 func (server *Server) AddChat(ctx *gin.Context) {
-	var requestURI AddChattRequestURI
+	var requestURI AddChatRequestURI
 	var requestBody AddChatRequestBody
 	if err := ctx.ShouldBindUri(&requestURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
