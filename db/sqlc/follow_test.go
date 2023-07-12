@@ -7,11 +7,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createFollowTest(t *testing.T, account Accounts) Follows {
+// フォローを追加する
+func createFollowTest(t *testing.T, to, from Accounts) Follows {
+	// アカウント追加のパラメタを満たす
 	arg := CreateFollowParams{
-		ToUserID:   account.UserID,
-		FromUserID: account.UserID,
+		// 送り元ユーザID
+		ToUserID: to.UserID,
+		// 送り先ユーザID
+		FromUserID: from.UserID,
 	}
+	// 実行する
 	follow, err := testQueries.CreateFollow(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, follow)
@@ -21,31 +26,38 @@ func createFollowTest(t *testing.T, account Accounts) Follows {
 	return follow
 }
 
+// Createのテスト
 func TestCreateFollow(t *testing.T) {
-	account := createAccountTest(t)
-	createFollowTest(t, account)
+	// ２つのアカウントを追加
+	toAccount := createAccountTest(t)
+	fromAccount := createAccountTest(t)
+
+	createFollowTest(t, toAccount, fromAccount)
 }
 
 func TestRemoveFollow(t *testing.T) {
 	n := 5
-	account := createAccountTest(t)
+	toAccount := createAccountTest(t)
 	var lastFollow Follows
+
 	for i := 0; i < n; i++ {
-		createFollowTest(t, account)
+		fromAccount := createAccountTest(t)
+		lastFollow = createFollowTest(t, toAccount, fromAccount)
 	}
 
 	err := testQueries.RemoveFollow(context.Background(), RemoveFollowParams{
 		ToUserID:   lastFollow.ToUserID,
 		FromUserID: lastFollow.FromUserID,
 	})
+
 	require.NoError(t, err)
 
-	listBookmark, err := testQueries.ListFollowByToUserID(context.Background(), account.UserID)
+	listBookmarks, err := testQueries.ListFollowByToUserID(context.Background(), toAccount.UserID)
 	require.NoError(t, err)
-	require.NotEmpty(t, listBookmark)
-	require.Len(t, listBookmark, n)
+	require.NotEmpty(t, listBookmarks)
+	require.Len(t, listBookmarks, n-1)
 
-	for _, follow := range listBookmark {
+	for _, follow := range listBookmarks {
 		require.NotEmpty(t, follow)
 		require.NotEqual(t, follow, lastFollow)
 	}
