@@ -1,6 +1,6 @@
 -- name: CreateAccountFramework :one
 INSERT INTO account_frameworks (
-    account_id,
+    user_id,
     framework_id
 )VALUES(
     $1,$2
@@ -19,4 +19,4 @@ LEFT OUTER JOIN
 ON 
     account_frameworks.framework_id = frameworks.framework_id 
 WHERE 
-    account_frameworks.account_id = $1;
+    account_frameworks.user_Id = $1;

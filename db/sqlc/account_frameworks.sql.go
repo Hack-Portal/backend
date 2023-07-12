@@ -12,22 +12,22 @@ import (
 
 const createAccountFramework = `-- name: CreateAccountFramework :one
 INSERT INTO account_frameworks (
-    account_id,
+    user_id,
     framework_id
 )VALUES(
     $1,$2
-)RETURNING account_id, framework_id
+)RETURNING user_id, framework_id
 `
 
 type CreateAccountFrameworkParams struct {
-	AccountID   string `json:"account_id"`
+	UserID      string `json:"user_id"`
 	FrameworkID int32  `json:"framework_id"`
 }
 
 func (q *Queries) CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFrameworks, error) {
-	row := q.db.QueryRowContext(ctx, createAccountFramework, arg.AccountID, arg.FrameworkID)
+	row := q.db.QueryRowContext(ctx, createAccountFramework, arg.UserID, arg.FrameworkID)
 	var i AccountFrameworks
-	err := row.Scan(&i.AccountID, &i.FrameworkID)
+	err := row.Scan(&i.UserID, &i.FrameworkID)
 	return i, err
 }
 
@@ -43,7 +43,7 @@ LEFT OUTER JOIN
 ON 
     account_frameworks.framework_id = frameworks.framework_id 
 WHERE 
-    account_frameworks.account_id = $1
+    account_frameworks.user_Id = $1
 `
 
 type ListAccountFrameworksByUserIDRow struct {
@@ -52,8 +52,8 @@ type ListAccountFrameworksByUserIDRow struct {
 	Framework   sql.NullString `json:"framework"`
 }
 
-func (q *Queries) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error) {
-	rows, err := q.db.QueryContext(ctx, listAccountFrameworksByUserID, accountID)
+func (q *Queries) ListAccountFrameworksByUserID(ctx context.Context, userID string) ([]ListAccountFrameworksByUserIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAccountFrameworksByUserID, userID)
 	if err != nil {
 		return nil, err
 	}
