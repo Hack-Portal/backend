@@ -58,7 +58,7 @@ func (server *Server) CreateFollow(ctx *gin.Context) {
 }
 
 // フォローしていないか
-func checkFollow(accounts []db.CreateFollowParams, userID string) bool {
+func checkFollow(accounts []db.Follows, userID string) bool {
 	for _, account := range accounts {
 		if account.ToUserID == userID {
 			return true
