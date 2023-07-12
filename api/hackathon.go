@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -44,8 +45,11 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 
 	args := db.CreateHackathonTxParams{
 		Hackathons: db.Hackathons{
-			Name:        request.Name,
-			Icon:        request.Icon,
+			Name: request.Name,
+			Icon: sql.NullString{
+				String: request.Icon,
+				Valid:  true,
+			},
 			Description: request.Description,
 			Link:        request.Link,
 			Expired:     request.Expired,
@@ -64,7 +68,7 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 	response := HackathonResponses{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
-		Icon:        hackathon.Icon,
+		Icon:        hackathon.Icon.String,
 		Description: hackathon.Description,
 		Link:        hackathon.Link,
 		Expired:     hackathon.Expired,
@@ -89,12 +93,12 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 		return
 	}
 
-	hackathon, err := server.store.GetHackathon(ctx, request.HackathonID)
+	hackathon, err := server.store.GetHackathonByID(ctx, request.HackathonID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	statusTags, err := server.store.GetStatusTags(ctx, request.HackathonID)
+	statusTags, err := server.store.GetStatusTagsByhackathonID(ctx, request.HackathonID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -141,7 +145,7 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 	var response []db.CreateHackathonTxResult
 
 	for _, hackathon := range hackathons {
-		statusTags, err := server.store.GetStatusTags(ctx, hackathon.HackathonID)
+		statusTags, err := server.store.GetStatusTagsByhackathonID(ctx, hackathon.HackathonID)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
