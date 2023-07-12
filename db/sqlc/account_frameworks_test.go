@@ -13,7 +13,7 @@ func createAccountFrameworksTest(t *testing.T, account Accounts) AccountFramewor
 	randomId := util.Random(len(frameworks) - 1)
 
 	arg := CreateAccountFrameworkParams{
-		AccountID:   account.UserID,
+		UserID:      account.UserID,
 		FrameworkID: frameworks[randomId].FrameworkID,
 	}
 
@@ -22,7 +22,7 @@ func createAccountFrameworksTest(t *testing.T, account Accounts) AccountFramewor
 	require.NoError(t, err)
 	require.NotEmpty(t, accountFrameworks)
 
-	require.Equal(t, arg.AccountID, accountFrameworks.AccountID)
+	require.Equal(t, arg.UserID, accountFrameworks.UserID)
 	require.Equal(t, arg.FrameworkID, accountFrameworks.FrameworkID)
 
 	return accountFrameworks

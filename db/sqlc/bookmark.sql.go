@@ -15,7 +15,7 @@ INSERT INTO bookmarks(
     user_id
 )VALUES(
     $1,$2
-)RETURNING hackathon_id, user_id
+)RETURNING hackathon_id, user_id, create_at
 `
 
 type CreateBookmarkParams struct {
@@ -26,12 +26,12 @@ type CreateBookmarkParams struct {
 func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmarks, error) {
 	row := q.db.QueryRowContext(ctx, createBookmark, arg.HackathonID, arg.UserID)
 	var i Bookmarks
-	err := row.Scan(&i.HackathonID, &i.UserID)
+	err := row.Scan(&i.HackathonID, &i.UserID, &i.CreateAt)
 	return i, err
 }
 
 const listBookmarkByUserID = `-- name: ListBookmarkByUserID :many
-SELECT hackathon_id, user_id FROM bookmarks WHERE user_id = $1
+SELECT hackathon_id, user_id, create_at FROM bookmarks WHERE user_id = $1
 `
 
 func (q *Queries) ListBookmarkByUserID(ctx context.Context, userID string) ([]Bookmarks, error) {
@@ -43,7 +43,7 @@ func (q *Queries) ListBookmarkByUserID(ctx context.Context, userID string) ([]Bo
 	items := []Bookmarks{}
 	for rows.Next() {
 		var i Bookmarks
-		if err := rows.Scan(&i.HackathonID, &i.UserID); err != nil {
+		if err := rows.Scan(&i.HackathonID, &i.UserID, &i.CreateAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
