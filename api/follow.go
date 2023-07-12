@@ -80,19 +80,14 @@ func (server *Server) RemoveFollow(ctx *gin.Context) {
 		return
 	}
 
-	// フォローしているか
-	_, err := server.store.ListFollowByToUserID(ctx, request.ToUserID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
+	// フォローを外す
+	// TODO: エラーハンドリング
 	result, err := server.store.GetAccountByID(ctx, request.ToUserID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	// フォローを外す
+
 	err = server.store.RemoveFollow(ctx, db.RemoveFollowParams{
 		ToUserID:   request.ToUserID,
 		FromUserID: request.FromUserID,
