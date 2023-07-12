@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -124,7 +125,6 @@ type ListRoomsResponse struct {
 }
 
 // ルームを取得するAPI
-// 認証必須
 func (server *Server) ListRooms(ctx *gin.Context) {
 	var request ListRoomsRequest
 	if err := ctx.ShouldBindQuery(&request); err != nil {
@@ -144,7 +144,6 @@ type GetRoomRequest struct {
 }
 
 // ルームの詳細を取得する
-// 認証必須
 
 type GetRoomResponse struct {
 	Room     db.Rooms
@@ -178,4 +177,84 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 		Accounts: roomAccounts,
 	}
 	ctx.JSON(http.StatusOK, response)
+}
+
+// チャットを追加する
+// 認証必須
+type AddChattRequestURI struct {
+	RoomID string `uri:"room_id"`
+}
+type AddChatRequestBody struct {
+	UserID  string `json:"user_id" binding:"required"`
+	Message string `json:"message" binding:"required"`
+}
+
+func (server *Server) AddChat(ctx *gin.Context) {
+	var requestURI AddChattRequestURI
+	var requestBody AddChatRequestBody
+	if err := ctx.ShouldBindUri(&requestURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
+	account, err := server.store.GetAccountbyEmail(ctx, payload.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	// 本人確認
+	if requestBody.UserID != account.UserID {
+		err := errors.New("アカウントが一致しません")
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	// ルームメンバか確認する
+	roomid, err := uuid5.FromString(requestURI.RoomID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	roomAccounts, err := server.store.GetRoomsAccountsByRoomID(ctx, uuid.UUID(roomid))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	if !checkAccount(roomAccounts, requestBody.UserID) {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	data, err := server.store.ReadDocsByRoomID(ctx, requestURI.RoomID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	_, err = server.store.WriteFireStore(ctx, db.WriteFireStoreParam{
+		RoomID:  requestURI.RoomID,
+		Index:   len(data) + 1,
+		UID:     account.UserID,
+		Message: requestBody.Message,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"success": "inserted successfully"})
+}
+
+// ユーザが含まれているかの確認
+func checkAccount(accounts []db.GetRoomsAccountsByRoomIDRow, userid string) bool {
+	for _, account := range accounts {
+		if account.UserID.String == userid {
+			return true
+		}
+	}
+	return false
 }

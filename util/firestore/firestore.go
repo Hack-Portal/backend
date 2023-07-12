@@ -8,6 +8,7 @@ import (
 	"google.golang.org/api/option"
 )
 
+// クライアントをセットする
 func FirebaseSetup(path string) (*firestore.Client, error) {
 	serviceAccount := option.WithCredentialsFile(path)
 	app, err := firebase.NewApp(context.Background(), nil, serviceAccount)

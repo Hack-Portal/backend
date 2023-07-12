@@ -6,14 +6,13 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
-	"github.com/gofrs/uuid/v5"
 )
 
 type WriteFireStoreParam struct {
-	RoomID  uuid.UUID `json:"room_id"`
-	Index   int32     `json:"index"`
-	UID     string    `json:"uid"`
-	Message string    `json:"message"`
+	RoomID  string `json:"room_id"`
+	Index   int    `json:"index"`
+	UID     string `json:"uid"`
+	Message string `json:"message"`
 }
 
 type ChatRoomsWrite struct {
@@ -38,7 +37,7 @@ func (store *SQLStore) WriteFireStore(ctx context.Context, arg WriteFireStorePar
 			},
 		},
 	}
-	result, err := store.client.Collection(FireStoreChatRoomCollectionName).Doc(arg.RoomID.String()).Update(ctx, update)
+	result, err := store.client.Collection(FireStoreChatRoomCollectionName).Doc(arg.RoomID).Update(ctx, update)
 	if err != nil {
 		return nil, err
 	}
@@ -48,9 +47,7 @@ func (store *SQLStore) WriteFireStore(ctx context.Context, arg WriteFireStorePar
 
 // 初期化する
 func (store *SQLStore) InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error) {
-	result, err := store.client.Collection(FireStoreChatRoomCollectionName).Doc(roomID).Set(ctx, map[string]interface{}{
-		"chat_room": nil,
-	}, firestore.MergeAll)
+	result, err := store.client.Collection(FireStoreChatRoomCollectionName).Doc(roomID).Set(ctx, map[string]interface{}{}, firestore.MergeAll)
 
 	if err != nil {
 		return nil, err
