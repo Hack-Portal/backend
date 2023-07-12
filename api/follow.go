@@ -40,7 +40,7 @@ func (server *Server) CreateFollow(ctx *gin.Context) {
 		return
 	}
 
-	if !checkFollow(followedAccounts, request.FromUserID) {
+	if !checkFollow(followedAccounts, request.ToUserID) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
