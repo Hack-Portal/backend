@@ -98,7 +98,7 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 		// アカウントＩＤからフレームワークのレコードを登録する
 		for _, accountFrameworkTag := range arg.AccountFrameworkTag {
 			accountFramework, err := q.CreateAccountFramework(ctx, CreateAccountFrameworkParams{
-				AccountID:   arg.UserID,
+				UserID:      arg.UserID,
 				FrameworkID: accountFrameworkTag,
 			})
 			if err != nil {

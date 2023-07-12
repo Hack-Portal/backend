@@ -31,6 +31,7 @@ func createRoomsTest(t *testing.T) Rooms {
 	require.Equal(t, arg.Description, room.Description)
 	require.Equal(t, arg.MemberLimit, room.MemberLimit)
 	require.Equal(t, arg.IsStatus, room.IsStatus)
+	require.NotZero(t, room.CreateAt)
 	return room
 }
 
