@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -88,10 +89,10 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			MemberLimit: arg.MemberLimit,
 			IsStatus:    true,
 		})
-
 		if err != nil {
 			return err
 		}
+
 		// ルームのオーナーを登録する
 		_, err = q.CreateRoomsAccounts(ctx, CreateRoomsAccountsParams{
 			UserID:  arg.UserID,
@@ -145,6 +146,7 @@ type ListRoomTxRoomInfo struct {
 	RoomID      uuid.UUID `json:"room_id"`
 	Title       string    `josn:"title"`
 	MemberLimit int32     `json:"member_limit"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 type ListRoomTxHacathonInfo struct {
 	HackathonID   int32  `json:"hackathon_id"`
@@ -175,6 +177,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 				RoomID:      room.RoomID,
 				Title:       room.Title,
 				MemberLimit: room.MemberLimit,
+				CreatedAt:   room.CreateAt,
 			}
 			hackathon, err := q.GetHackathonByID(ctx, room.HackathonID)
 			if err != nil {

@@ -44,7 +44,7 @@ type Querier interface {
 	GetRoomsAccountsByRoomID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByRoomIDRow, error)
 	GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Rooms, error)
 	GetTechTagByID(ctx context.Context, techTagID int32) (TechTags, error)
-	ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error)
+	ListAccountFrameworksByUserID(ctx context.Context, userID string) ([]ListAccountFrameworksByUserIDRow, error)
 	ListAccountTagsByUserID(ctx context.Context, userID string) ([]ListAccountTagsByUserIDRow, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
 	ListBookmarkByUserID(ctx context.Context, userID string) ([]Bookmarks, error)

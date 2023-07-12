@@ -12,7 +12,7 @@ import (
 )
 
 type AccountFrameworks struct {
-	AccountID   string `json:"account_id"`
+	UserID      string `json:"user_id"`
 	FrameworkID int32  `json:"framework_id"`
 }
 
@@ -47,13 +47,15 @@ type Awards struct {
 }
 
 type Bookmarks struct {
-	HackathonID int32  `json:"hackathon_id"`
-	UserID      string `json:"user_id"`
+	HackathonID int32     `json:"hackathon_id"`
+	UserID      string    `json:"user_id"`
+	CreateAt    time.Time `json:"create_at"`
 }
 
 type Follows struct {
-	ToUserID   string `json:"to_user_id"`
-	FromUserID string `json:"from_user_id"`
+	ToUserID   string    `json:"to_user_id"`
+	FromUserID string    `json:"from_user_id"`
+	CreateAt   time.Time `json:"create_at"`
 }
 
 type Frameworks struct {
@@ -100,9 +102,10 @@ type PastWorkTags struct {
 }
 
 type PastWorks struct {
-	Opus            int32  `json:"opus"`
-	ThumbnailImage  []byte `json:"thumbnail_image"`
-	ExplanatoryText string `json:"explanatory_text"`
+	Opus            int32     `json:"opus"`
+	ThumbnailImage  []byte    `json:"thumbnail_image"`
+	ExplanatoryText string    `json:"explanatory_text"`
+	CreateAt        time.Time `json:"create_at"`
 }
 
 type RateEntries struct {
@@ -118,12 +121,14 @@ type Rooms struct {
 	Description string    `json:"description"`
 	MemberLimit int32     `json:"member_limit"`
 	IsStatus    bool      `json:"is_status"`
+	CreateAt    time.Time `json:"create_at"`
 }
 
 type RoomsAccounts struct {
-	UserID  string    `json:"user_id"`
-	RoomID  uuid.UUID `json:"room_id"`
-	IsOwner bool      `json:"is_owner"`
+	UserID   string    `json:"user_id"`
+	RoomID   uuid.UUID `json:"room_id"`
+	IsOwner  bool      `json:"is_owner"`
+	CreateAt time.Time `json:"create_at"`
 }
 
 type StatusTags struct {

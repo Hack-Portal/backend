@@ -19,7 +19,7 @@ INSERT INTO rooms_accounts (
     is_owner
 )VALUES(
     $1,$2,$3
-)RETURNING user_id, room_id, is_owner
+)RETURNING user_id, room_id, is_owner, create_at
 `
 
 type CreateRoomsAccountsParams struct {
@@ -31,7 +31,12 @@ type CreateRoomsAccountsParams struct {
 func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error) {
 	row := q.db.QueryRowContext(ctx, createRoomsAccounts, arg.UserID, arg.RoomID, arg.IsOwner)
 	var i RoomsAccounts
-	err := row.Scan(&i.UserID, &i.RoomID, &i.IsOwner)
+	err := row.Scan(
+		&i.UserID,
+		&i.RoomID,
+		&i.IsOwner,
+		&i.CreateAt,
+	)
 	return i, err
 }
 
