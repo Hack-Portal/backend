@@ -1,4 +1,4 @@
--- name: GetStatusTagsByhackathonID :many
+-- name: GetStatusTagsByHackathonID :many
 SELECT status_tags.status_id ,status_tags.status
 FROM status_tags
 LEFT OUTER JOIN hackathon_status_tags

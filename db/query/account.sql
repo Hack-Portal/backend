@@ -40,7 +40,7 @@ FROM
 WHERE
     user_id = $1;
 
--- name: GetAccountbyEmail :one
+-- name: GetAccountByEmail :one
 SELECT 
     user_id,
     username,
