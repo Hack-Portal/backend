@@ -31,7 +31,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := server.Start("0.0.0.0:8080"); err != nil {
+	if err := server.Start(config.ServerPort); err != nil {
 		log.Fatal("cannnot start server :", err)
 	}
 }

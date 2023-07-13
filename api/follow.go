@@ -24,7 +24,7 @@ func (server *Server) CreateFollow(ctx *gin.Context) {
 	// フォローする人がいるか
 	// 本人確認
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountbyEmail(ctx, payload.Email)
+	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

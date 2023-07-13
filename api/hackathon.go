@@ -98,7 +98,7 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	statusTags, err := server.store.GetStatusTagsByhackathonID(ctx, request.HackathonID)
+	statusTags, err := server.store.GetStatusTagsByHackathonID(ctx, request.HackathonID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -145,7 +145,7 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 	var response []db.CreateHackathonTxResult
 
 	for _, hackathon := range hackathons {
-		statusTags, err := server.store.GetStatusTagsByhackathonID(ctx, hackathon.HackathonID)
+		statusTags, err := server.store.GetStatusTagsByHackathonID(ctx, hackathon.HackathonID)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return

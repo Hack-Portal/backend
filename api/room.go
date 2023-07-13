@@ -91,7 +91,7 @@ func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 		return
 	}
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountbyEmail(ctx, payload.Email)
+	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -203,7 +203,7 @@ func (server *Server) AddChat(ctx *gin.Context) {
 	}
 
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountbyEmail(ctx, payload.Email)
+	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

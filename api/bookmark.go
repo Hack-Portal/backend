@@ -68,7 +68,7 @@ func (server *Server) RemoveBookmark(ctx *gin.Context) {
 	}
 
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountbyEmail(ctx, payload.Email)
+	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
 	if err != nil {
 		// UIDについてのカラムがない場合の処理を作る必要がある (badRequest)
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -108,7 +108,7 @@ func (server *Server) ListBookmarkToHackathon(ctx *gin.Context) {
 	}
 
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountbyEmail(ctx, payload.Email)
+	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

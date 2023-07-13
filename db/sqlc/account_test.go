@@ -86,7 +86,7 @@ func TestListAccount(t *testing.T) {
 func TestGetAccountByEmail(t *testing.T) {
 	account := createAccountTest(t)
 
-	result, err := testQueries.GetAccountbyEmail(context.Background(), account.Email)
+	result, err := testQueries.GetAccountByEmail(context.Background(), account.Email)
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 
