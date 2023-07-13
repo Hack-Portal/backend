@@ -11,7 +11,7 @@ import (
 
 // ハッカソンを作る時のリクエストパラメータ
 type CreateHackathonParams struct {
-	Name        string    `json:"Name"`
+	Name        string    `json:"name"`
 	Icon        string    `json:"icon"`
 	Description string    `json:"description"`
 	Link        string    `json:"link"`
