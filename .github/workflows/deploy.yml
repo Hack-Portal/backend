@@ -10,16 +10,14 @@ jobs:
     name: Build image
     runs-on: ubuntu-latest
 
-
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
       - shell: bash
         run: |
-          touch app.env
           echo "FOO=${{ secrets.APP_ENV }}" >> app.env
-    
+
       - name: create-json
         id: create-json
         uses: jsdaniell/create-json@v1.2.2
