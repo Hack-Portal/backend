@@ -32,7 +32,7 @@ type HackathonResponses struct {
 	StartDate   time.Time `json:"start_date"`
 	Term        int32     `json:"term"`
 
-	StatusTags []db.StatusTags
+	StatusTags []db.StatusTags `json:"status_tags"`
 }
 
 // ハッカソン作成
