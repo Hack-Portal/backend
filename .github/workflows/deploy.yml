@@ -15,11 +15,12 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Save the secret json
-      run: envsubst < serviceAccount.json > serviceAccount.json
+      run: envsubst < ./app/serviceAccount.json > ./app/serviceAccount.json
       env:
         SECRET_FILE: ${{ secrets.SECRET_FILE }}
+        
     - name: Save the secret env
-      run: envsubst < app.env > app.env
+      run: envsubst < ./app/app.env > ./app/app.env
       env:
         SECRET_FILE: ${{ secrets.APP_ENV }}
 
