@@ -98,7 +98,7 @@ func (store *SQLStore) CreateHackathonTx(ctx context.Context, arg CreateHackatho
 				return err
 			}
 		}
-		statusTag, err := q.GetStatusTagsByhackathonID(ctx, result.HackathonID)
+		statusTag, err := q.GetStatusTagsByHackathonID(ctx, result.HackathonID)
 		if err != nil {
 			return err
 		}

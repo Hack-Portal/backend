@@ -40,7 +40,7 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 
 		// アカウントＩＤからテックタグのレコードを登録する
 		for _, techtag := range arg.AccountTechTag {
-			accountTag, err := q.CreataAccountTags(ctx, CreataAccountTagsParams{
+			accountTag, err := q.CreateAccountTags(ctx, CreateAccountTagsParams{
 				UserID:    arg.UserID,
 				TechTagID: techtag,
 			})
