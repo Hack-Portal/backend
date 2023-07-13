@@ -26,7 +26,6 @@ jobs:
         with:
           name: "credentials.json"
           json: ${{ secrets.CREDENTIALS_JSON }}
-          dir: "/"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
