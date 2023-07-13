@@ -11,14 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
 
-
     steps:
-      - name: Create app.env file
       - shell: bash
         run: |
           touch app.env
           echo "FOO=${{ secrets.APP_ENV }}" >> app.env
-
+    
       - name: create-json
         id: create-json
         uses: jsdaniell/create-json@v1.2.2
