@@ -13,6 +13,11 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+
+    - name: Save the secret file
+      run: envsubst < serviceAccount.json > serviceAccount.json
+      env:
+        SECRET_FILE: ${{ secrets.SECRET_FILE }}
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
