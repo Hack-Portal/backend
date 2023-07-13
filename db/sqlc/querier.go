@@ -11,9 +11,9 @@ import (
 )
 
 type Querier interface {
-	CreataAccountTags(ctx context.Context, arg CreataAccountTagsParams) (AccountTags, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
 	CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFrameworks, error)
+	CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTags, error)
 	CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmarks, error)
 	CreateFollow(ctx context.Context, arg CreateFollowParams) (Follows, error)
 	CreateHackathon(ctx context.Context, arg CreateHackathonParams) (Hackathons, error)

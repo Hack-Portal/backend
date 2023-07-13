@@ -145,12 +145,12 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 
 	// 技術タグを取得する
 	for _, tags := range techTags {
-		techtag, err := server.store.GetTechTagByID(ctx, tags.TechTagID.Int32)
+		techTag, err := server.store.GetTechTagByID(ctx, tags.TechTagID.Int32)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
-		accountTechTags = append(accountTechTags, techtag)
+		accountTechTags = append(accountTechTags, techTag)
 	}
 	// フレームワークを取得する
 	var accountFrameworks []db.Frameworks

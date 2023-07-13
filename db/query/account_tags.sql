@@ -1,4 +1,4 @@
--- name: CreataAccountTags :one
+-- name: CreateAccountTags :one
 INSERT INTO account_tags (
     user_id,
     tech_tag_id
