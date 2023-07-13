@@ -20,13 +20,12 @@ jobs:
           echo "${{ secrets.APP_ENV }}" >> app.env
           cat app.env
 
-      - name: create-json
-        id: create-json
-        uses: jsdaniell/create-json@v1.2.2
-        with:
-          name: "credentials.json"
-          json: ${{ secrets.CREDENTIALS_JSON }}
-          dir: "."
+      - name: Translate secrets of base64 into json
+        env:
+          JSON_DECODE: ${{ secrets.CREDENTIALS_JSON }}
+
+        run: |
+          echo-n $JSON_DECODE | base64 --decode > ./serviceAccount.json
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
