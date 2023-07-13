@@ -12,6 +12,9 @@ jobs:
 
 
     steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
       - shell: bash
         run: |
           touch app.env
