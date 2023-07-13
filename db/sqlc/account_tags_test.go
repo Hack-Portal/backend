@@ -12,11 +12,11 @@ func createAccountTagsTest(t *testing.T, account Accounts) AccountTags {
 	tags := listTechTagTest(t)
 	techs := util.Random(len(tags) - 1)
 
-	arg := CreataAccountTagsParams{
+	arg := CreateAccountTagsParams{
 		UserID:    account.UserID,
 		TechTagID: tags[techs].TechTagID,
 	}
-	accountTags, err := testQueries.CreataAccountTags(context.Background(), arg)
+	accountTags, err := testQueries.CreateAccountTags(context.Background(), arg)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, accountTags)
