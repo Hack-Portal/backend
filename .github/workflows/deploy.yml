@@ -16,7 +16,7 @@ jobs:
 
       - shell: bash
         run: |
-          echo "FOO=${{ secrets.APP_ENV }}" >> app.env
+          echo "APP_ENV=${{ secrets.APP_ENV }}" >> app.env
           cat app.env
 
       - name: create-json
