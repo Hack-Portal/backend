@@ -47,8 +47,5 @@ jobs:
     - name: Run migration
       run: make migrateup
 
-    - name: Set env
-      run: DB_DRIVER=postgres DB_SOURSE=postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable go test -v -cover ./...       
-    
     - name: Test
       run: make test
