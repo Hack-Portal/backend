@@ -10,6 +10,8 @@ type EnvConfig struct {
 	DBDriver string `mapstructure:"DB_DRIVER"`
 	DBSouse  string `mapstructure:"DB_SOURSE"`
 
+	ServerPort string `mapstructure:"SERVER_PORT"`
+
 	GoogleClientID     string `mapstructure:"GOOGLE_CLIENT_ID"`
 	GoogleClinetSecret string `mapstructure:"GOOGLE_CLIENT_SECRET"`
 }

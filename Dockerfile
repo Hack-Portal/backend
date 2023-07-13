@@ -1,19 +1,21 @@
-# golang install
-FROM golang:1.20-alpine
-
-## timezone update
-RUN apk add tzdata
-ENV TZ=Asia/Tokyo
+FROM golang:1.20-alpine3.17 AS builder
 WORKDIR /app
-COPY go.mod .
-COPY go.sum .
+COPY . .
+RUN go build -o main main.go
+RUN apk add curl
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz 
+
+FROM alpine:3.17
+WORKDIR /app
+COPY --from=builder /app/main .
+COPY --from=builder /app/migrate ./migrate
 COPY app.env .
 COPY serviceAccount.json .
-RUN go mod download
-COPY . .
-RUN go build -o ./out/dist .
+COPY start.sh .
+COPY wait-for.sh .
+COPY db/migration ./migration
 
-## container listen port
+
 EXPOSE 8080
-
-CMD ./out/dist
+CMD [ "/app/main"]
+ENTRYPOINT [ "/app/start.sh" ]

@@ -215,12 +215,12 @@ func (server *Server) AddChat(ctx *gin.Context) {
 		return
 	}
 	// ルームメンバか確認する
-	roomid, err := uuid5.FromString(requestURI.RoomID)
+	roomId, err := uuid5.FromString(requestURI.RoomID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	roomAccounts, err := server.store.GetRoomsAccountsByRoomID(ctx, uuid.UUID(roomid))
+	roomAccounts, err := server.store.GetRoomsAccountsByRoomID(ctx, uuid.UUID(roomId))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -250,9 +250,9 @@ func (server *Server) AddChat(ctx *gin.Context) {
 }
 
 // ユーザが含まれているかの確認
-func checkAccount(accounts []db.GetRoomsAccountsByRoomIDRow, userid string) bool {
+func checkAccount(accounts []db.GetRoomsAccountsByRoomIDRow, roomId string) bool {
 	for _, account := range accounts {
-		if account.UserID.String == userid {
+		if account.UserID.String == roomId {
 			return true
 		}
 	}
