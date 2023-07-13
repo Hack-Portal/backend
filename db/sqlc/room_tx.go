@@ -27,7 +27,7 @@ type RoomHackathonData struct {
 	Icon string `json:"icon"`
 }
 
-type CraeteRoomTxResult struct {
+type CreateRoomTxResult struct {
 	Rooms
 	Hackathon       RoomHackathonData
 	RoomsAccounts   []GetRoomsAccountsByRoomIDRow
@@ -65,8 +65,8 @@ func margeFrameworkArray(roomFramework []RoomFramework, framework Frameworks) []
 	return roomFramework
 }
 
-func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error) {
-	var result CraeteRoomTxResult
+func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error) {
+	var result CreateRoomTxResult
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 		// ハッカソンデータを送る
@@ -148,14 +148,14 @@ type ListRoomTxRoomInfo struct {
 	MemberLimit int32     `json:"member_limit"`
 	CreatedAt   time.Time `json:"created_at"`
 }
-type ListRoomTxHacathonInfo struct {
+type ListRoomTxHackathonInfo struct {
 	HackathonID   int32  `json:"hackathon_id"`
 	HackathonName string `json:"hackathon_name"`
 	Icon          string `json:"icon"`
 }
 type ListRoomTxResult struct {
 	Rooms             ListRoomTxRoomInfo            `json:"rooms"`
-	Hackathon         ListRoomTxHacathonInfo        `json:"hackathon"`
+	Hackathon         ListRoomTxHackathonInfo       `json:"hackathon"`
 	NowMember         []GetRoomsAccountsByRoomIDRow `json:"now_member"`
 	MembersTechTags   []RoomTechTags                `json:"members_tech_tags"`
 	MembersFrameworks []RoomFramework               `json:"members_frameworks"`
@@ -184,7 +184,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 				return err
 			}
 			// ハッカソンの追加
-			oneRoomInfos.Hackathon = ListRoomTxHacathonInfo{
+			oneRoomInfos.Hackathon = ListRoomTxHackathonInfo{
 				HackathonID:   hackathon.HackathonID,
 				HackathonName: hackathon.Name,
 				Icon:          hackathon.Icon.String,

@@ -64,14 +64,14 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestListAccount(t *testing.T) {
-	var lastaccount Accounts
+	var lastAccount Accounts
 	n := 10
 
 	for i := 0; i < n; i++ {
-		lastaccount = createAccountTest(t)
+		lastAccount = createAccountTest(t)
 	}
 
-	username := util.Remove5Strings(lastaccount.Username)
+	username := util.Remove5Strings(lastAccount.Username)
 	arg := ListAccountsParams{
 		Username: "%" + username + "%",
 		Limit:    int32(n),
