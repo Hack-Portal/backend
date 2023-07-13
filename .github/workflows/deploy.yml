@@ -14,11 +14,15 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: Save the secret file
+    - name: Save the secret json
       run: envsubst < serviceAccount.json > serviceAccount.json
       env:
         SECRET_FILE: ${{ secrets.SECRET_FILE }}
-      
+    - name: Save the secret env
+      run: envsubst < app.env > app.env
+      env:
+        SECRET_FILE: ${{ secrets.APP_ENV }}
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -29,6 +33,8 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+    - name: Load secrets and save to app.env
+      run: aws secretsmanager get-secret-value --secret-id hackhack --query SecretString --output text | jq -r 'to_entries | map("\(.key)=\(.value)")|.[]'
 
     - name: Build, tag, and push image to Amazon ECR
       env:
