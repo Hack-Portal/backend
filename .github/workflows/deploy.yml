@@ -26,21 +26,15 @@ jobs:
 
         run: |
           echo -n $JSON_DECODE | base64 --decode > ./serviceAccount.json
-
-      - name: Build, tag, and push image to harbor
-        env:
-          REGISTRY: ${{ secrets.HARBOR_REGISTRY }}
-          USERNAME: ${{ secrets.HARBOR_USERNAME }}
-          PASSWORD: ${{ secrets.HARBOR_PASSWORD }} 
-
+          
       - uses: docker/login-action@v1
         with:
-          registry: $REGISTRY
-          username: $REGISTRY
-          password: $PASSWORD
+          registry: ${{ secrets.HARBOR_REGISTRY }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }} 
 
       - uses: actions/checkout@v3
       - name: BuildAndPushImageOnHarbor
         run: |
-          docker build -t $REGISTRY/hackhack/hackhack-backend:${{ github.sha }}
-          docker push $REGISTRY/hackhack/hackhack-backend:${{ github.sha }}
+          docker build -t ${{ secrets.HARBOR_REGISTRY }}/hackhack/hackhack-backend:${{ github.sha }}
+          docker push ${{ secrets.HARBOR_REGISTRY }}/hackhack/hackhack-backend:${{ github.sha }}
