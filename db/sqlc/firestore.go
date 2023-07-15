@@ -87,7 +87,7 @@ func (store *SQLStore) ReadDocsByRoomID(ctx context.Context, RoomID string) (map
 func (store *SQLStore) UploadImage(ctx context.Context, file []byte, filename string) (uuid.UUID, error) {
 	id := uuid.New()
 	// パス取得
-	fbstorage, err := store.App.Storage(ctx)
+	fbstorage, err := store.App.Storage(context.Background())
 	log.Println("1 :", err)
 	if err != nil {
 		return id, err
