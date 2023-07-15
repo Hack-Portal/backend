@@ -119,6 +119,18 @@ type ListHackathonsParams struct {
 	PageId   int32 `form:"page_id"`
 }
 
+type ListHackathonsResponses struct {
+	HackathonID int32     `json:"hackathon_id"`
+	Name        string    `json:"name"`
+	Icon        string    `json:"icon"`
+	Link        string    `json:"link"`
+	Expired     time.Time `json:"expired"`
+	StartDate   time.Time `json:"start_date"`
+	Term        int32     `json:"term"`
+
+	StatusTags []db.StatusTags `json:"status_tags"`
+}
+
 func (server *Server) ListHackathons(ctx *gin.Context) {
 	var request ListHackathonsParams
 	if err := ctx.ShouldBindQuery(&request); err != nil {
@@ -136,7 +148,7 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 		return
 	}
 
-	var response []db.CreateHackathonTxResult
+	var response []ListHackathonsResponses
 
 	for _, hackathon := range hackathons {
 		statusTags, err := server.store.GetStatusTagsByHackathonID(ctx, hackathon.HackathonID)
@@ -144,9 +156,15 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
-		response = append(response, db.CreateHackathonTxResult{
-			Hackathons:         hackathon,
-			HackathonStatusTag: statusTags,
+		response = append(response, ListHackathonsResponses{
+			HackathonID: hackathon.HackathonID,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon.String,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired,
+			StartDate:   hackathon.StartDate,
+			Term:        hackathon.Term,
+			StatusTags:  statusTags,
 		})
 	}
 	ctx.JSON(http.StatusOK, response)
