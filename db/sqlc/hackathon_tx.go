@@ -31,7 +31,7 @@ type CreateHackathonTxResult struct {
 // ハッカソン登録時のトランザクション
 func (store *SQLStore) CreateHackathonTx(ctx context.Context, config *util.EnvConfig, arg CreateHackathonTxParams) (CreateHackathonTxResult, error) {
 	var result CreateHackathonTxResult
-	hackathonToken, err := store.UploadImage(ctx, arg.Icon, arg.Name)
+	hackathonToken, err := store.UploadImage(ctx, arg.Icon, arg.Name+".jpg")
 	if err != nil {
 		return result, err
 	}
@@ -41,7 +41,7 @@ func (store *SQLStore) CreateHackathonTx(ctx context.Context, config *util.EnvCo
 		result.Hackathons, err = q.CreateHackathon(ctx, CreateHackathonParams{
 			Name: arg.Name,
 			Icon: sql.NullString{
-				String: fmt.Sprintf("%s/%s?alt=media&token=%s", config.BasePath, arg.Name, hackathonToken),
+				String: fmt.Sprintf("%s/%s.jpg?alt=media&token=%s", config.BasePath, arg.Name, hackathonToken),
 				Valid:  true,
 			},
 			Description: arg.Description,
