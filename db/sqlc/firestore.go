@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -87,10 +88,12 @@ func (store *SQLStore) UploadImage(ctx context.Context, file []byte, filename st
 	id := uuid.New()
 	// パス取得
 	fbstorage, err := store.App.Storage(ctx)
+	log.Println("1 :", err)
 	if err != nil {
 		return id, err
 	}
 	bucket, err := fbstorage.DefaultBucket()
+	log.Println("2 :", err)
 	if err != nil {
 		return id, err
 	}
@@ -101,12 +104,14 @@ func (store *SQLStore) UploadImage(ctx context.Context, file []byte, filename st
 	//Set the attribute
 	writer.ObjectAttrs.Metadata = map[string]string{"firebaseStorageDownloadTokens": id.String()}
 	defer writer.Close()
-
 	if _, err := io.Copy(writer, bytes.NewReader(file)); err != nil {
+		log.Println("3 :", err)
 		return id, err
 	}
 
 	if err := object.ACL().Set(context.Background(), storage.AllUsers, storage.RoleReader); err != nil {
+
+		log.Println("4 :", err)
 		return id, err
 	}
 
