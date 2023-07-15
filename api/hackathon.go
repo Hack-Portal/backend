@@ -117,6 +117,7 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 type ListHackathonsParams struct {
 	PageSize int32 `form:"page_size"`
 	PageId   int32 `form:"page_id"`
+	Expired  bool  `form:"expired"`
 }
 
 type ListHackathonsResponses struct {
@@ -137,8 +138,14 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	var exp time.Time
+	if request.Expired {
+		exp = time.Now()
+	} else {
+		exp = time.Now().Add(-time.Hour * 720)
+	}
 	hackathons, err := server.store.ListHackathons(ctx, db.ListHackathonsParams{
-		Expired: time.Now(),
+		Expired: exp,
 		Limit:   request.PageSize,
 		Offset:  (request.PageId - 1) * request.PageSize,
 	})
