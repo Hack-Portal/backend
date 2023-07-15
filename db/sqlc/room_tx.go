@@ -144,7 +144,7 @@ type ListRoomTxParam struct {
 
 type ListRoomTxRoomInfo struct {
 	RoomID      uuid.UUID `json:"room_id"`
-	Title       string    `josn:"title"`
+	Title       string    `json:"title"`
 	MemberLimit int32     `json:"member_limit"`
 	CreatedAt   time.Time `json:"created_at"`
 }
