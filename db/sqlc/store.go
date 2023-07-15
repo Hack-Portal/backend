@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/firestore"
+	fb "firebase.google.com/go"
 )
 
 type Store interface {
@@ -22,15 +23,15 @@ type Store interface {
 
 type SQLStore struct {
 	*Queries
-	db     *sql.DB
-	client *firestore.Client
+	db  *sql.DB
+	App *fb.App
 }
 
-func NewStore(db *sql.DB, client *firestore.Client) *SQLStore {
+func NewStore(db *sql.DB, app *fb.App) *SQLStore {
 	return &SQLStore{
 		db:      db,
 		Queries: New(db),
-		client:  client,
+		App:     app,
 	}
 }
 
