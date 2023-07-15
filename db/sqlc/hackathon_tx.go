@@ -1,10 +1,24 @@
 package db
 
-import "context"
+import (
+	"context"
+	"database/sql"
+	"fmt"
+	"time"
+
+	"github.com/hackhack-Geek-vol6/backend/util"
+)
 
 type CreateHackathonTxParams struct {
 	// ハッカソン登録部分
-	Hackathons
+	Name        string    `json:"name"`
+	Icon        []byte    `json:"icon"`
+	Description string    `json:"description"`
+	Link        string    `json:"link"`
+	Expired     time.Time `json:"expired"`
+	StartDate   time.Time `json:"start_date"`
+	Term        int32     `json:"term"`
+
 	// status_tag登録用
 	HackathonStatusTag []int32
 }
@@ -15,14 +29,21 @@ type CreateHackathonTxResult struct {
 }
 
 // ハッカソン登録時のトランザクション
-func (store *SQLStore) CreateHackathonTx(ctx context.Context, arg CreateHackathonTxParams) (CreateHackathonTxResult, error) {
+func (store *SQLStore) CreateHackathonTx(ctx context.Context, config *util.EnvConfig, arg CreateHackathonTxParams) (CreateHackathonTxResult, error) {
 	var result CreateHackathonTxResult
-	err := store.execTx(ctx, func(q *Queries) error {
+	hackathonToken, err := store.UploadImage(ctx, arg.Icon, arg.Name)
+	if err != nil {
+		return result, err
+	}
+	err = store.execTx(ctx, func(q *Queries) error {
 		var err error
 		// ハッカソンを登録する
 		result.Hackathons, err = q.CreateHackathon(ctx, CreateHackathonParams{
-			Name:        arg.Name,
-			Icon:        arg.Icon,
+			Name: arg.Name,
+			Icon: sql.NullString{
+				String: fmt.Sprintf("%s/%s?alt=media&token=%s", config.BasePath, arg.Name, hackathonToken),
+				Valid:  true,
+			},
 			Description: arg.Description,
 			Link:        arg.Link,
 			Expired:     arg.Expired,

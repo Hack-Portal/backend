@@ -1,7 +1,6 @@
 package api
 
 import (
-	"database/sql"
 	"net/http"
 	"time"
 
@@ -44,22 +43,17 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 	}
 
 	args := db.CreateHackathonTxParams{
-		Hackathons: db.Hackathons{
-			Name: request.Name,
-			Icon: sql.NullString{
-				String: request.Icon,
-				Valid:  true,
-			},
-			Description: request.Description,
-			Link:        request.Link,
-			Expired:     request.Expired,
-			StartDate:   request.StartDate,
-			Term:        request.Term,
-		},
+		Name:               request.Name,
+		Icon:               []byte(request.Icon),
+		Description:        request.Description,
+		Link:               request.Link,
+		Expired:            request.Expired,
+		StartDate:          request.StartDate,
+		Term:               request.Term,
 		HackathonStatusTag: request.StatusTags,
 	}
 
-	hackathon, err := server.store.CreateHackathonTx(ctx, args)
+	hackathon, err := server.store.CreateHackathonTx(ctx, &server.config, args)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
