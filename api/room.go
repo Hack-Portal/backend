@@ -144,6 +144,18 @@ type GetRoomRequest struct {
 	RoomID string `uri:"room_id"`
 }
 
+type hackathonInfo struct {
+	HackathonID int32           `json:"hackathon_id"`
+	Name        string          `json:"name"`
+	Icon        string          `json:"icon"`
+	Description string          `json:"description"`
+	Link        string          `json:"link"`
+	Expired     time.Time       `json:"expired"`
+	StartDate   time.Time       `json:"start_date"`
+	Term        int32           `json:"term"`
+	Tags        []db.StatusTags `json:"tags"`
+}
+
 // ルームの詳細を取得する
 type GetRoomResponse struct {
 	RoomID            uuid.UUID                        `json:"room_id"`
@@ -152,7 +164,7 @@ type GetRoomResponse struct {
 	MemberLimit       int32                            `json:"member_limit"`
 	IsStatus          bool                             `json:"is_status"`
 	CreateAt          time.Time                        `json:"create_at"`
-	Hackathon         db.Hackathons                    `json:"hackathon"`
+	Hackathon         hackathonInfo                    `json:"hackathon"`
 	NowMember         []db.GetRoomsAccountsByRoomIDRow `json:"now_member"`
 	MembersTechTags   []db.RoomTechTags                `json:"members_tech_tags"`
 	MembersFrameworks []db.RoomFramework               `json:"members_frameworks"`
@@ -185,10 +197,26 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	hacathonTags, err := server.store.GetHackathonStatusTagsByHackathonID(ctx, hackathon.HackathonID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	var (
+		statusTags        []db.StatusTags
 		membersTechTags   []db.RoomTechTags
 		MembersFrameworks []db.RoomFramework
 	)
+
+	for _, hackathonTag := range hacathonTags {
+		tag, err := server.store.GetStatusTagByStatusID(ctx, hackathonTag.StatusID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		statusTags = append(statusTags, tag)
+	}
 
 	for _, account := range roomAccounts {
 		// タグの追加
@@ -219,13 +247,23 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 	}
 
 	response := GetRoomResponse{
-		RoomID:            room.RoomID,
-		Title:             room.Title,
-		Description:       room.Description,
-		MemberLimit:       room.MemberLimit,
-		IsStatus:          room.IsStatus,
-		CreateAt:          room.CreateAt,
-		Hackathon:         hackathon,
+		RoomID:      room.RoomID,
+		Title:       room.Title,
+		Description: room.Description,
+		MemberLimit: room.MemberLimit,
+		IsStatus:    room.IsStatus,
+		CreateAt:    room.CreateAt,
+		Hackathon: hackathonInfo{
+			HackathonID: hackathon.HackathonID,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon.String,
+			Description: hackathon.Description,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired,
+			StartDate:   hackathon.StartDate,
+			Term:        hackathon.Term,
+			Tags:        statusTags,
+		},
 		NowMember:         roomAccounts,
 		MembersTechTags:   membersTechTags,
 		MembersFrameworks: MembersFrameworks,
