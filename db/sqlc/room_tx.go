@@ -36,7 +36,7 @@ type CraeteRoomTxResult struct {
 }
 
 // TechTagの配列にマージする
-func margeTechTagArray(roomTechTags []RoomTechTags, techtag TechTags) []RoomTechTags {
+func MargeTechTagArray(roomTechTags []RoomTechTags, techtag TechTags) []RoomTechTags {
 	for _, roomTechTag := range roomTechTags {
 		if roomTechTag.TechTag == techtag {
 			roomTechTag.Count++
@@ -51,7 +51,7 @@ func margeTechTagArray(roomTechTags []RoomTechTags, techtag TechTags) []RoomTech
 }
 
 // フレームワークの配列にマージする
-func margeFrameworkArray(roomFramework []RoomFramework, framework Frameworks) []RoomFramework {
+func MargeFrameworkArray(roomFramework []RoomFramework, framework Frameworks) []RoomFramework {
 	for _, roomFramework := range roomFramework {
 		if roomFramework.Framework == framework {
 			roomFramework.Count++
@@ -116,7 +116,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 				return err
 			}
 			for _, techTag := range techTags {
-				result.RoomsTechTags = margeTechTagArray(result.RoomsTechTags, TechTags{
+				result.RoomsTechTags = MargeTechTagArray(result.RoomsTechTags, TechTags{
 					TechTagID: techTag.TechTagID.Int32,
 					Language:  techTag.Language.String,
 				})
@@ -127,7 +127,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 				return err
 			}
 			for _, framework := range frameworks {
-				result.RoomsFrameworks = margeFrameworkArray(result.RoomsFrameworks, Frameworks{
+				result.RoomsFrameworks = MargeFrameworkArray(result.RoomsFrameworks, Frameworks{
 					FrameworkID: framework.FrameworkID.Int32,
 					TechTagID:   framework.TechTagID.Int32,
 					Framework:   framework.Framework.String,
@@ -202,7 +202,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 					return err
 				}
 				for _, techTag := range techTags {
-					oneRoomInfos.MembersTechTags = margeTechTagArray(oneRoomInfos.MembersTechTags, TechTags{
+					oneRoomInfos.MembersTechTags = MargeTechTagArray(oneRoomInfos.MembersTechTags, TechTags{
 						TechTagID: techTag.TechTagID.Int32,
 						Language:  techTag.Language.String,
 					})
@@ -213,7 +213,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 					return err
 				}
 				for _, framework := range frameworks {
-					oneRoomInfos.MembersFrameworks = margeFrameworkArray(oneRoomInfos.MembersFrameworks, Frameworks{
+					oneRoomInfos.MembersFrameworks = MargeFrameworkArray(oneRoomInfos.MembersFrameworks, Frameworks{
 						FrameworkID: framework.FrameworkID.Int32,
 						TechTagID:   framework.TechTagID.Int32,
 						Framework:   framework.Framework.String,
