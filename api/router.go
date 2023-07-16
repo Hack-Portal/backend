@@ -1,16 +1,36 @@
 package api
 
 import (
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func (server *Server) setupRouter() {
 	router := gin.New()
 	server.router = router
-
+	server.setUpCors()
 	server.publicRouter()
 	server.authRouter()
 
+}
+func (server *Server) setUpCors() {
+	server.router.Use(cors.New(
+		cors.Config{
+			AllowOrigins: []string{"https://frontend-3muyo7jtb-qirenqiantian367-gmailcom-s-team.vercel.app/"},
+			AllowMethods: []string{"GET", "Fetch", "POST", "Delete", "PUT"},
+			AllowHeaders: []string{
+				"Access-Control-Allow-Credentials",
+				"Access-Control-Allow-Headers",
+				"Content-Type",
+				"Content-Length",
+				"Accept-Encoding",
+				"Authorization",
+			},
+			AllowCredentials: false,
+			MaxAge:           24 * time.Hour,
+		}))
 }
 
 // 認証を必要としないルーティング
