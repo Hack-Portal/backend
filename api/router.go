@@ -1,8 +1,6 @@
 package api
 
 import (
-	"time"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -16,21 +14,22 @@ func (server *Server) setupRouter() {
 
 }
 func (server *Server) setUpCors() {
-	server.router.Use(cors.New(
-		cors.Config{
-			AllowOrigins: []string{"https://frontend-3muyo7jtb-qirenqiantian367-gmailcom-s-team.vercel.app/"},
-			AllowMethods: []string{"GET", "Fetch", "POST", "Delete", "PUT"},
-			AllowHeaders: []string{
-				"Access-Control-Allow-Credentials",
-				"Access-Control-Allow-Headers",
-				"Content-Type",
-				"Content-Length",
-				"Accept-Encoding",
-				"Authorization",
-			},
-			AllowCredentials: false,
-			MaxAge:           24 * time.Hour,
-		}))
+	// server.router.Use(cors.New(
+	// 	cors.Config{
+	// 		AllowOrigins: []string{"https://frontend-3muyo7jtb-qirenqiantian367-gmailcom-s-team.vercel.app/"},
+	// 		AllowMethods: []string{"GET", "Fetch", "POST", "Delete", "PUT"},
+	// 		AllowHeaders: []string{
+	// 			"Access-Control-Allow-Credentials",
+	// 			"Access-Control-Allow-Headers",
+	// 			"Content-Type",
+	// 			"Content-Length",
+	// 			"Accept-Encoding",
+	// 			"Authorization",
+	// 		},
+	// 		AllowCredentials: false,
+	// 		MaxAge:           24 * time.Hour,
+	// 	}))
+	server.router.Use(cors.Default())
 }
 
 // 認証を必要としないルーティング
