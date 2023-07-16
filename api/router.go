@@ -8,7 +8,7 @@ import (
 )
 
 func (server *Server) setupRouter() {
-	router := gin.New()
+	router := gin.Default()
 	server.router = router
 	server.setUpCors()
 	server.publicRouter()
