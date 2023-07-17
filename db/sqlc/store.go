@@ -6,6 +6,8 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/firestore"
+	fb "firebase.google.com/go"
+	"github.com/hackhack-Geek-vol6/backend/util"
 )
 
 const (
@@ -17,7 +19,7 @@ type Store interface {
 	Querier
 	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
 	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error)
-	CreateHackathonTx(ctx context.Context, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
+	CreateHackathonTx(ctx context.Context, config *util.EnvConfig, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
 	ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error)
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
@@ -27,15 +29,15 @@ type Store interface {
 
 type SQLStore struct {
 	*Queries
-	db     *sql.DB
-	client *firestore.Client
+	db  *sql.DB
+	App *fb.App
 }
 
-func NewStore(db *sql.DB, client *firestore.Client) *SQLStore {
+func NewStore(db *sql.DB, app *fb.App) *SQLStore {
 	return &SQLStore{
 		db:      db,
 		Queries: New(db),
-		client:  client,
+		App:     app,
 	}
 }
 

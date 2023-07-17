@@ -11,9 +11,7 @@ type EnvConfig struct {
 	DBSouse  string `mapstructure:"DB_SOURSE"`
 
 	ServerPort string `mapstructure:"SERVER_PORT"`
-
-	GoogleClientID     string `mapstructure:"GOOGLE_CLIENT_ID"`
-	GoogleClinetSecret string `mapstructure:"GOOGLE_CLIENT_SECRET"`
+	BasePath   string `mapstructure:"BASE_PATH"`
 }
 
 // app.envファイルを読み込む

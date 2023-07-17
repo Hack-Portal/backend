@@ -1,7 +1,6 @@
 package api
 
 import (
-	"database/sql"
 	"net/http"
 	"time"
 
@@ -44,22 +43,17 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 	}
 
 	args := db.CreateHackathonTxParams{
-		Hackathons: db.Hackathons{
-			Name: request.Name,
-			Icon: sql.NullString{
-				String: request.Icon,
-				Valid:  true,
-			},
-			Description: request.Description,
-			Link:        request.Link,
-			Expired:     request.Expired,
-			StartDate:   request.StartDate,
-			Term:        request.Term,
-		},
+		Name:               request.Name,
+		Icon:               []byte(request.Icon),
+		Description:        request.Description,
+		Link:               request.Link,
+		Expired:            request.Expired,
+		StartDate:          request.StartDate,
+		Term:               request.Term,
 		HackathonStatusTag: request.StatusTags,
 	}
 
-	hackathon, err := server.store.CreateHackathonTx(ctx, args)
+	hackathon, err := server.store.CreateHackathonTx(ctx, &server.config, args)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -123,6 +117,19 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 type ListHackathonsParams struct {
 	PageSize int32 `form:"page_size"`
 	PageId   int32 `form:"page_id"`
+	Expired  bool  `form:"expired"`
+}
+
+type ListHackathonsResponses struct {
+	HackathonID int32     `json:"hackathon_id"`
+	Name        string    `json:"name"`
+	Icon        string    `json:"icon"`
+	Link        string    `json:"link"`
+	Expired     time.Time `json:"expired"`
+	StartDate   time.Time `json:"start_date"`
+	Term        int32     `json:"term"`
+
+	StatusTags []db.StatusTags `json:"status_tags"`
 }
 
 func (server *Server) ListHackathons(ctx *gin.Context) {
@@ -131,8 +138,14 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	var exp time.Time
+	if request.Expired {
+		exp = time.Now()
+	} else {
+		exp = time.Now().Add(-time.Hour * 720)
+	}
 	hackathons, err := server.store.ListHackathons(ctx, db.ListHackathonsParams{
-		Expired: time.Now(),
+		Expired: exp,
 		Limit:   request.PageSize,
 		Offset:  (request.PageId - 1) * request.PageSize,
 	})
@@ -142,7 +155,7 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 		return
 	}
 
-	var response []db.CreateHackathonTxResult
+	var response []ListHackathonsResponses
 
 	for _, hackathon := range hackathons {
 		statusTags, err := server.store.GetStatusTagsByHackathonID(ctx, hackathon.HackathonID)
@@ -150,9 +163,15 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
-		response = append(response, db.CreateHackathonTxResult{
-			Hackathons:         hackathon,
-			HackathonStatusTag: statusTags,
+		response = append(response, ListHackathonsResponses{
+			HackathonID: hackathon.HackathonID,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon.String,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired,
+			StartDate:   hackathon.StartDate,
+			Term:        hackathon.Term,
+			StatusTags:  statusTags,
 		})
 	}
 	ctx.JSON(http.StatusOK, response)

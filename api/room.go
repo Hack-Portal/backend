@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	uuid5 "github.com/gofrs/uuid/v5"
@@ -68,12 +69,12 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 		return
 	}
 
-	// チャットルームの初期化
-	_, err = server.store.InitChatRoom(ctx, result.Rooms.RoomID.String())
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
+	// // チャットルームの初期化
+	// _, err = server.store.InitChatRoom(ctx, result.Rooms.RoomID.String())
+	// if err != nil {
+	// 	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	// 	return
+	// }
 
 	ctx.JSON(http.StatusOK, result)
 }
@@ -143,11 +144,30 @@ type GetRoomRequest struct {
 	RoomID string `uri:"room_id"`
 }
 
-// ルームの詳細を取得する
+type hackathonInfo struct {
+	HackathonID int32           `json:"hackathon_id"`
+	Name        string          `json:"name"`
+	Icon        string          `json:"icon"`
+	Description string          `json:"description"`
+	Link        string          `json:"link"`
+	Expired     time.Time       `json:"expired"`
+	StartDate   time.Time       `json:"start_date"`
+	Term        int32           `json:"term"`
+	Tags        []db.StatusTags `json:"tags"`
+}
 
+// ルームの詳細を取得する
 type GetRoomResponse struct {
-	Room     db.Rooms
-	Accounts []db.GetRoomsAccountsByRoomIDRow
+	RoomID            uuid.UUID                        `json:"room_id"`
+	Title             string                           `json:"title"`
+	Description       string                           `json:"description"`
+	MemberLimit       int32                            `json:"member_limit"`
+	IsStatus          bool                             `json:"is_status"`
+	CreateAt          time.Time                        `json:"create_at"`
+	Hackathon         hackathonInfo                    `json:"hackathon"`
+	NowMember         []db.GetRoomsAccountsByRoomIDRow `json:"now_member"`
+	MembersTechTags   []db.RoomTechTags                `json:"members_tech_tags"`
+	MembersFrameworks []db.RoomFramework               `json:"members_frameworks"`
 }
 
 func (server *Server) GetRoom(ctx *gin.Context) {
@@ -172,9 +192,81 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	hackathon, err := server.store.GetHackathonByID(ctx, room.HackathonID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	hacathonTags, err := server.store.GetHackathonStatusTagsByHackathonID(ctx, hackathon.HackathonID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	var (
+		statusTags        []db.StatusTags
+		membersTechTags   []db.RoomTechTags
+		MembersFrameworks []db.RoomFramework
+	)
+
+	for _, hackathonTag := range hacathonTags {
+		tag, err := server.store.GetStatusTagByStatusID(ctx, hackathonTag.StatusID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		statusTags = append(statusTags, tag)
+	}
+
+	for _, account := range roomAccounts {
+		// タグの追加
+		techTags, err := server.store.ListAccountTagsByUserID(ctx, account.UserID.String)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		for _, techTag := range techTags {
+			membersTechTags = db.MargeTechTagArray(membersTechTags, db.TechTags{
+				TechTagID: techTag.TechTagID.Int32,
+				Language:  techTag.Language.String,
+			})
+		}
+		// FWの追加
+		frameworks, err := server.store.ListAccountFrameworksByUserID(ctx, account.UserID.String)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		for _, framework := range frameworks {
+			MembersFrameworks = db.MargeFrameworkArray(MembersFrameworks, db.Frameworks{
+				FrameworkID: framework.FrameworkID.Int32,
+				TechTagID:   framework.TechTagID.Int32,
+				Framework:   framework.Framework.String,
+			})
+		}
+	}
+
 	response := GetRoomResponse{
-		Room:     room,
-		Accounts: roomAccounts,
+		RoomID:      room.RoomID,
+		Title:       room.Title,
+		Description: room.Description,
+		MemberLimit: room.MemberLimit,
+		IsStatus:    room.IsStatus,
+		CreateAt:    room.CreateAt,
+		Hackathon: hackathonInfo{
+			HackathonID: hackathon.HackathonID,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon.String,
+			Description: hackathon.Description,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired,
+			StartDate:   hackathon.StartDate,
+			Term:        hackathon.Term,
+			Tags:        statusTags,
+		},
+		NowMember:         roomAccounts,
+		MembersTechTags:   membersTechTags,
+		MembersFrameworks: MembersFrameworks,
 	}
 	ctx.JSON(http.StatusOK, response)
 }

@@ -3,7 +3,10 @@ module github.com/hackhack-Geek-vol6/backend
 go 1.20
 
 require (
+	cloud.google.com/go/firestore v1.9.0
+	cloud.google.com/go/storage v1.28.1
 	firebase.google.com/go v3.13.0+incompatible
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/gofrs/uuid/v5 v5.0.0
 	github.com/google/uuid v1.3.0
@@ -18,10 +21,8 @@ require (
 	cloud.google.com/go v0.110.0 // indirect
 	cloud.google.com/go/compute v1.19.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
-	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/iam v0.13.0 // indirect
 	cloud.google.com/go/longrunning v0.4.1 // indirect
-	cloud.google.com/go/storage v1.28.1 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

@@ -4,13 +4,13 @@ import (
 	"context"
 	"testing"
 
-	"cloud.google.com/go/firestore"
+	fb "firebase.google.com/go"
 	"github.com/hackhack-Geek-vol6/backend/util"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCreateAccountTx(t *testing.T) {
-	store := NewStore(testDB, &firestore.Client{})
+	store := NewStore(testDB, &fb.App{})
 
 	techTags := listTechTagTest(t)
 	frameworks := listFrameworkTest(t)
