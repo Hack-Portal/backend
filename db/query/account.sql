@@ -1,31 +1,43 @@
 -- name: CreateAccount :one
-INSERT INTO accounts (
-    user_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    hashed_password,
-    email,
-    show_locate,
-    show_rate
-)VALUES(
-    $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
-)RETURNING *;
+INSERT INTO
+    accounts (
+        user_id,
+        username,
+        icon,
+        explanatory_text,
+        locate_id,
+        rate,
+        hashed_password,
+        email,
+        show_locate,
+        show_rate
+    )
+VALUES
+    (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10
+    ) RETURNING *;
 
 -- name: GetAccountByID :one
-SELECT 
+SELECT
     user_id,
     username,
     icon,
     explanatory_text,
     (
-        SELECT 
+        SELECT
             name
-        FROM 
-            locates 
-        WHERE 
+        FROM
+            locates
+        WHERE
             locate_id = accounts.locate_id
     ) as locate,
     rate,
@@ -41,17 +53,17 @@ WHERE
     user_id = $1;
 
 -- name: GetAccountByEmail :one
-SELECT 
+SELECT
     user_id,
     username,
     icon,
     explanatory_text,
     (
-        SELECT 
+        SELECT
             name
-        FROM 
-            locates 
-        WHERE 
+        FROM
+            locates
+        WHERE
             locate_id = accounts.locate_id
     ) as locate,
     rate,
@@ -72,11 +84,11 @@ SELECT
     username,
     icon,
     (
-        SELECT 
-            name 
-        FROM 
-            locates 
-        WHERE 
+        SELECT
+            name
+        FROM
+            locates
+        WHERE
             locate_id = accounts.locate_id
     ) as locate,
     rate,
@@ -84,7 +96,15 @@ SELECT
     show_rate
 FROM
     accounts
-WHERE username LIKE $1
-LIMIT $2
-OFFSET $3;
+WHERE
+    username LIKE $1
+LIMIT
+    $2 OFFSET $3;
 
+-- name: SoftDeleteAccount :one
+UPDATE
+    accounts
+SET
+    is_delete = true
+WHERE
+    user_id = $1 RETURNING *;

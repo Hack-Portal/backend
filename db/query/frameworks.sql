@@ -1,4 +1,21 @@
 -- name: ListFrameworks :many
-SELECT * FROM frameworks LIMIT $1 ;
+SELECT
+    *
+FROM
+    frameworks
+LIMIT
+    $1;
+
 -- name: GetFrameworksByID :one
-SELECT * FROM frameworks WHERE framework_id = $1 ;
+SELECT
+    *
+FROM
+    frameworks
+WHERE
+    framework_id = $1;
+
+-- name: DeleteFrameworksByID :exec
+DELETE FROM
+    frameworks
+WHERE
+    framework_id = $1;

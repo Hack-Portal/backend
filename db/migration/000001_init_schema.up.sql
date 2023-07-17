@@ -2,7 +2,8 @@ CREATE TABLE "past_works" (
   "opus" serial PRIMARY KEY,
   "thumbnail_image" bytea NOT NULL,
   "explanatory_text" text NOT NULL,
-  "create_at" timestamptz NOT NULL DEFAULT (now())
+  "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "is_delete" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "hackathons_data" (
@@ -43,7 +44,8 @@ CREATE TABLE "accounts" (
   "create_at" timestamptz NOT NULL DEFAULT (now()),
   "show_locate" boolean NOT NULL,
   "show_rate" boolean NOT NULL,
-  "update_at" timestamptz NOT NULL DEFAULT (now())
+  "update_at" timestamptz NOT NULL DEFAULT (now()),
+  "is_delete" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "rate_entries" (
@@ -81,7 +83,8 @@ CREATE TABLE "status_tags" (
 CREATE TABLE "bookmarks" (
   "hackathon_id" int NOT NULL,
   "user_id" varchar NOT NULL,
-  "create_at" timestamptz NOT NULL DEFAULT (now())
+  "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "is_delete" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "account_past_works" (
@@ -101,8 +104,8 @@ CREATE TABLE "rooms" (
   "title" varchar NOT NULL,
   "description" text NOT NULL,
   "member_limit" int NOT NULL,
-  "is_status" boolean NOT NULL,
-  "create_at" timestamptz NOT NULL DEFAULT (now())
+  "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "is_delete" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "rooms_accounts" (
