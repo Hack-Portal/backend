@@ -27,7 +27,8 @@ type RoomHackathonData struct {
 	Icon string `json:"icon"`
 }
 
-type CraeteRoomTxResult struct {
+// ToDo:タイポ修正↓
+type CreateRoomTxResult struct {
 	Rooms
 	Hackathon       RoomHackathonData
 	RoomsAccounts   []GetRoomsAccountsByRoomIDRow
@@ -65,8 +66,8 @@ func MargeFrameworkArray(roomFramework []RoomFramework, framework Frameworks) []
 	return roomFramework
 }
 
-func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error) {
-	var result CraeteRoomTxResult
+func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error) {
+	var result CreateRoomTxResult
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 		// ハッカソンデータを送る

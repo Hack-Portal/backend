@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// インテグレートテスト
 func createHackathonStatusTagTest(t *testing.T, hackathon Hackathons) HackathonStatusTags {
 	arg := CreateHackathonStatusTagParams{
 		HackathonID: hackathon.HackathonID,
