@@ -8,7 +8,7 @@ import (
 type EnvConfig struct {
 	// DB情報
 	DBDriver string `mapstructure:"DB_DRIVER"`
-	DBSouse  string `mapstructure:"DB_SOURSE"`
+	DBSource string `mapstructure:"DB_SOURCE"`
 
 	ServerPort string `mapstructure:"SERVER_PORT"`
 	BasePath   string `mapstructure:"BASE_PATH"`
