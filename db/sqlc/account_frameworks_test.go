@@ -49,3 +49,20 @@ func TestListAccountFrameworks(t *testing.T) {
 		require.NotEmpty(t, accountsFramework)
 	}
 }
+
+func TestDeleteAccountFrameworksByUserID(t *testing.T) {
+	n := 5
+	account := createAccountTest(t)
+	for i := 0; i < n; i++ {
+		createAccountFrameworksTest(t, account)
+	}
+
+	err := testQueries.DeleteAccountFrameworksByUserID(context.Background(), account.UserID)
+	require.NoError(t, err)
+	accountFramework, err := testQueries.ListAccountFrameworksByUserID(context.Background(), account.UserID)
+	require.NoError(t, err)
+	require.Len(t, accountFramework, 0)
+	for _, af := range accountFramework {
+		require.Empty(t, af)
+	}
+}
