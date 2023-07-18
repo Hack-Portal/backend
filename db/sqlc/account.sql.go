@@ -171,7 +171,7 @@ SELECT
 FROM
     accounts
 WHERE
-    user_id = $1
+    user_id = $1 AND is_delete = false
 `
 
 type GetAccountByIDRow struct {
@@ -314,20 +314,21 @@ const updateAccount = `-- name: UpdateAccount :one
 UPDATE
     accounts
 SET
-    username = $1,
-    icon = $2,
-    explanatory_text = $3,
-    locate_id = $4,
-    rate = $5,
-    hashed_password = $6,
-    email = $7,
-    show_locate = $8,
-    show_rate = $9
+    username = $2,
+    icon = $3,
+    explanatory_text = $4,
+    locate_id = $5,
+    rate = $6,
+    hashed_password = $7,
+    email = $8,
+    show_locate = $9,
+    show_rate = $10
 WHERE
     user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
 `
 
 type UpdateAccountParams struct {
+	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
@@ -341,6 +342,7 @@ type UpdateAccountParams struct {
 
 func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Accounts, error) {
 	row := q.db.QueryRowContext(ctx, updateAccount,
+		arg.UserID,
 		arg.Username,
 		arg.Icon,
 		arg.ExplanatoryText,
