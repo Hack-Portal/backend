@@ -44,3 +44,20 @@ func TestGetAccountTag(t *testing.T) {
 	require.NotEmpty(t, tags)
 	require.Len(t, tags, n)
 }
+
+func TestDeleteAccountTagByUserID(t *testing.T) {
+	n := 5
+	account := createAccountTest(t)
+	for i := 0; i < n; i++ {
+		createAccountTagsTest(t, account)
+	}
+
+	err := testQueries.DeleteAccounttagsByUserID(context.Background(), account.UserID)
+	require.NoError(t, err)
+	accountFramework, err := testQueries.ListAccountTagsByUserID(context.Background(), account.UserID)
+	require.NoError(t, err)
+	require.Len(t, accountFramework, 0)
+	for _, af := range accountFramework {
+		require.Empty(t, af)
+	}
+}

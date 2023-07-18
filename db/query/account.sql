@@ -50,7 +50,7 @@ SELECT
 FROM
     accounts
 WHERE
-    user_id = $1;
+    user_id = $1 AND is_delete = false;
 
 -- name: GetAccountByEmail :one
 SELECT
@@ -113,14 +113,14 @@ WHERE
 UPDATE
     accounts
 SET
-    username = $1,
-    icon = $2,
-    explanatory_text = $3,
-    locate_id = $4,
-    rate = $5,
-    hashed_password = $6,
-    email = $7,
-    show_locate = $8,
-    show_rate = $9
+    username = $2,
+    icon = $3,
+    explanatory_text = $4,
+    locate_id = $5,
+    rate = $6,
+    hashed_password = $7,
+    email = $8,
+    show_locate = $9,
+    show_rate = $10
 WHERE
     user_id = $1 RETURNING *;

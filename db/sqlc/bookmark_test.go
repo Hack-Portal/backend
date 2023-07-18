@@ -48,7 +48,7 @@ func TestListBookmark(t *testing.T) {
 
 }
 
-func TestRemoveBookmark(t *testing.T) {
+func TestSoftRemoveBookmark(t *testing.T) {
 	n := 5
 	account := createAccountTest(t)
 	var lastBookMark Bookmarks

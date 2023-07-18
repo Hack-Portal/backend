@@ -9,7 +9,6 @@ import (
 )
 
 func createAccountTest(t *testing.T) Accounts {
-
 	arg := CreateAccountParams{
 		UserID:     util.RandomString(8),
 		Username:   util.RandomString(8),
@@ -42,7 +41,7 @@ func TestCreateAccount(t *testing.T) {
 	createAccountTest(t)
 }
 
-func TestGetAccount(t *testing.T) {
+func TestGetAccountByID(t *testing.T) {
 	account := createAccountTest(t)
 
 	result, err := testQueries.GetAccountByID(context.Background(), account.UserID)
@@ -103,4 +102,62 @@ func TestGetAccountByEmail(t *testing.T) {
 
 	require.NotZero(t, account.CreateAt)
 	require.NotZero(t, account.UpdateAt)
+}
+
+func TestSoftDeleteAccount(t *testing.T) {
+	account1 := createAccountTest(t)
+
+	deletedAccount, err := testQueries.SoftDeleteAccount(context.Background(), account1.UserID)
+	require.NoError(t, err)
+	require.NotEmpty(t, deletedAccount)
+
+	account2, err := testQueries.GetAccountByID(context.Background(), account1.UserID)
+	require.NoError(t, err)
+	require.Empty(t, account2)
+}
+
+func TestUpdateAccount(t *testing.T) {
+	baseAccount := createAccountTest(t)
+	testCase := []struct {
+		name      string
+		arg       UpdateAccountParams
+		checkData func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts)
+	}{
+		{
+			name: "update-username",
+			arg: UpdateAccountParams{
+				Username:        "changed-name",
+				Icon:            baseAccount.Icon,
+				ExplanatoryText: baseAccount.ExplanatoryText,
+				LocateID:        baseAccount.LocateID,
+				Rate:            baseAccount.Rate,
+				HashedPassword:  baseAccount.HashedPassword,
+				Email:           baseAccount.Email,
+				ShowLocate:      baseAccount.ShowLocate,
+				ShowRate:        baseAccount.ShowRate,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.NotEqual(t, baseAccount.Username, UpdatedAccount.Username)
+
+				require.Equal(t, arg.Username, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
+				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
+				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
+				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.Username)
+			},
+		},
+	}
+
+	for _, tc := range testCase {
+
+		UpdatedAccount, err := testQueries.UpdateAccount(context.Background(), tc.arg)
+		require.NoError(t, err)
+		require.NotEmpty(t, UpdatedAccount)
+
+		tc.checkData(t, tc.arg, baseAccount, UpdatedAccount)
+	}
+
 }
