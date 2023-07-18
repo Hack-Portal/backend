@@ -87,7 +87,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			Title:       arg.Title,
 			Description: arg.Description,
 			MemberLimit: arg.MemberLimit,
-			IsStatus:    true,
+			IsDelete:    false,
 		})
 		if err != nil {
 			return err

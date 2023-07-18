@@ -36,5 +36,4 @@ WHERE
 DELETE FROM
   hackathons
 WHERE
-WHERE
   hackathon_id = $1;

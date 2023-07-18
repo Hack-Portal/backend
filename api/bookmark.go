@@ -81,7 +81,7 @@ func (server *Server) RemoveBookmark(ctx *gin.Context) {
 		return
 	}
 
-	err = server.store.RemoveBookmark(ctx, db.RemoveBookmarkParams{
+	_, err = server.store.SoftRemoveBookmark(ctx, db.SoftRemoveBookmarkParams{
 		UserID:      account.UserID,
 		HackathonID: request.HackathonID,
 	})

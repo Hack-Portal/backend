@@ -12,20 +12,32 @@ import (
 )
 
 const createAccount = `-- name: CreateAccount :one
-INSERT INTO accounts (
-    user_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    hashed_password,
-    email,
-    show_locate,
-    show_rate
-)VALUES(
-    $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
-)RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at
+INSERT INTO
+    accounts (
+        user_id,
+        username,
+        icon,
+        explanatory_text,
+        locate_id,
+        rate,
+        hashed_password,
+        email,
+        show_locate,
+        show_rate
+    )
+VALUES
+    (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10
+    ) RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
 `
 
 type CreateAccountParams struct {
@@ -68,22 +80,23 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 		&i.ShowLocate,
 		&i.ShowRate,
 		&i.UpdateAt,
+		&i.IsDelete,
 	)
 	return i, err
 }
 
 const getAccountByEmail = `-- name: GetAccountByEmail :one
-SELECT 
+SELECT
     user_id,
     username,
     icon,
     explanatory_text,
     (
-        SELECT 
+        SELECT
             name
-        FROM 
-            locates 
-        WHERE 
+        FROM
+            locates
+        WHERE
             locate_id = accounts.locate_id
     ) as locate,
     rate,
@@ -96,7 +109,7 @@ SELECT
 FROM
     accounts
 WHERE
-    email = $1
+    email = $1 AND is_delete = false
 `
 
 type GetAccountByEmailRow struct {
@@ -135,17 +148,17 @@ func (q *Queries) GetAccountByEmail(ctx context.Context, email string) (GetAccou
 }
 
 const getAccountByID = `-- name: GetAccountByID :one
-SELECT 
+SELECT
     user_id,
     username,
     icon,
     explanatory_text,
     (
-        SELECT 
+        SELECT
             name
-        FROM 
-            locates 
-        WHERE 
+        FROM
+            locates
+        WHERE
             locate_id = accounts.locate_id
     ) as locate,
     rate,
@@ -202,11 +215,11 @@ SELECT
     username,
     icon,
     (
-        SELECT 
-            name 
-        FROM 
-            locates 
-        WHERE 
+        SELECT
+            name
+        FROM
+            locates
+        WHERE
             locate_id = accounts.locate_id
     ) as locate,
     rate,
@@ -214,9 +227,10 @@ SELECT
     show_rate
 FROM
     accounts
-WHERE username LIKE $1
-LIMIT $2
-OFFSET $3
+WHERE
+    username LIKE $1 AND is_delete = false
+LIMIT
+    $2 OFFSET $3
 `
 
 type ListAccountsParams struct {
@@ -264,4 +278,94 @@ func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]L
 		return nil, err
 	}
 	return items, nil
+}
+
+const softDeleteAccount = `-- name: SoftDeleteAccount :one
+UPDATE
+    accounts
+SET
+    is_delete = true
+WHERE
+    user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
+`
+
+func (q *Queries) SoftDeleteAccount(ctx context.Context, userID string) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, softDeleteAccount, userID)
+	var i Accounts
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Icon,
+		&i.ExplanatoryText,
+		&i.LocateID,
+		&i.Rate,
+		&i.HashedPassword,
+		&i.Email,
+		&i.CreateAt,
+		&i.ShowLocate,
+		&i.ShowRate,
+		&i.UpdateAt,
+		&i.IsDelete,
+	)
+	return i, err
+}
+
+const updateAccount = `-- name: UpdateAccount :one
+UPDATE
+    accounts
+SET
+    username = $1,
+    icon = $2,
+    explanatory_text = $3,
+    locate_id = $4,
+    rate = $5,
+    hashed_password = $6,
+    email = $7,
+    show_locate = $8,
+    show_rate = $9
+WHERE
+    user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
+`
+
+type UpdateAccountParams struct {
+	Username        string         `json:"username"`
+	Icon            sql.NullString `json:"icon"`
+	ExplanatoryText sql.NullString `json:"explanatory_text"`
+	LocateID        int32          `json:"locate_id"`
+	Rate            int32          `json:"rate"`
+	HashedPassword  sql.NullString `json:"hashed_password"`
+	Email           string         `json:"email"`
+	ShowLocate      bool           `json:"show_locate"`
+	ShowRate        bool           `json:"show_rate"`
+}
+
+func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, updateAccount,
+		arg.Username,
+		arg.Icon,
+		arg.ExplanatoryText,
+		arg.LocateID,
+		arg.Rate,
+		arg.HashedPassword,
+		arg.Email,
+		arg.ShowLocate,
+		arg.ShowRate,
+	)
+	var i Accounts
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Icon,
+		&i.ExplanatoryText,
+		&i.LocateID,
+		&i.Rate,
+		&i.HashedPassword,
+		&i.Email,
+		&i.CreateAt,
+		&i.ShowLocate,
+		&i.ShowRate,
+		&i.UpdateAt,
+		&i.IsDelete,
+	)
+	return i, err
 }

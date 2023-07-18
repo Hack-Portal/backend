@@ -12,7 +12,8 @@ import (
 )
 
 const createHackathon = `-- name: CreateHackathon :one
-INSERT INTO hackathons (
+INSERT INTO
+  hackathons (
     name,
     icon,
     description,
@@ -21,10 +22,8 @@ INSERT INTO hackathons (
     start_date,
     term
   )
-VALUES(
-    $1,$2,$3,$4,$5,$6,$7
-  )
-RETURNING hackathon_id, name, icon, description, link, expired, start_date, term
+VALUES
+($1, $2, $3, $4, $5, $6, $7) RETURNING hackathon_id, name, icon, description, link, expired, start_date, term
 `
 
 type CreateHackathonParams struct {
@@ -61,10 +60,25 @@ func (q *Queries) CreateHackathon(ctx context.Context, arg CreateHackathonParams
 	return i, err
 }
 
+const deleteHackathonByID = `-- name: DeleteHackathonByID :exec
+DELETE FROM
+  hackathons
+WHERE
+  hackathon_id = $1
+`
+
+func (q *Queries) DeleteHackathonByID(ctx context.Context, hackathonID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteHackathonByID, hackathonID)
+	return err
+}
+
 const getHackathonByID = `-- name: GetHackathonByID :one
-SELECT hackathon_id, name, icon, description, link, expired, start_date, term
-FROM hackathons
-WHERE hackathon_id = $1
+SELECT
+  hackathon_id, name, icon, description, link, expired, start_date, term
+FROM
+  hackathons
+WHERE
+  hackathon_id = $1
 `
 
 func (q *Queries) GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathons, error) {
@@ -84,11 +98,16 @@ func (q *Queries) GetHackathonByID(ctx context.Context, hackathonID int32) (Hack
 }
 
 const listHackathons = `-- name: ListHackathons :many
-SELECT hackathon_id, name, icon, description, link, expired, start_date, term
-FROM hackathons
-WHERE expired > $1
-ORDER BY hackathon_id
-LIMIT $2 OFFSET $3
+SELECT
+  hackathon_id, name, icon, description, link, expired, start_date, term
+FROM
+  hackathons
+WHERE
+  expired > $1
+ORDER BY
+  hackathon_id
+LIMIT
+  $2 OFFSET $3
 `
 
 type ListHackathonsParams struct {

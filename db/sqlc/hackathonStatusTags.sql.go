@@ -32,6 +32,15 @@ func (q *Queries) CreateHackathonStatusTag(ctx context.Context, arg CreateHackat
 	return i, err
 }
 
+const deleteHackathonStatusTagsByHackathonID = `-- name: DeleteHackathonStatusTagsByHackathonID :exec
+DELETE FROM hackathon_status_tags WHERE hackathon_id = $1
+`
+
+func (q *Queries) DeleteHackathonStatusTagsByHackathonID(ctx context.Context, hackathonID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteHackathonStatusTagsByHackathonID, hackathonID)
+	return err
+}
+
 const getHackathonStatusTagsByHackathonID = `-- name: GetHackathonStatusTagsByHackathonID :many
 SELECT hackathon_id, status_id
 FROM hackathon_status_tags

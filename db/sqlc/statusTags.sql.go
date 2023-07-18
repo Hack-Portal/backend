@@ -9,6 +9,17 @@ import (
 	"context"
 )
 
+const deleteStatusTagByStatusID = `-- name: DeleteStatusTagByStatusID :exec
+DELETE FROM
+    status_tags
+WHERE status_id = $1
+`
+
+func (q *Queries) DeleteStatusTagByStatusID(ctx context.Context, statusID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteStatusTagByStatusID, statusID)
+	return err
+}
+
 const getStatusTagByStatusID = `-- name: GetStatusTagByStatusID :one
 SELECT status_id, status FROM status_tags WHERE status_id = $1
 `
@@ -77,4 +88,19 @@ func (q *Queries) ListStatusTags(ctx context.Context) ([]StatusTags, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateStatusTagByStatusID = `-- name: UpdateStatusTagByStatusID :one
+UPDATE
+    status_tags
+SET
+    status = $1
+WHERE status_id = $1 RETURNING status_id, status
+`
+
+func (q *Queries) UpdateStatusTagByStatusID(ctx context.Context, status string) (StatusTags, error) {
+	row := q.db.QueryRowContext(ctx, updateStatusTagByStatusID, status)
+	var i StatusTags
+	err := row.Scan(&i.StatusID, &i.Status)
+	return i, err
 }

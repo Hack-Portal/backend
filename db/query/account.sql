@@ -76,7 +76,7 @@ SELECT
 FROM
     accounts
 WHERE
-    email = $1;
+    email = $1 AND is_delete = false;
 
 -- name: ListAccounts :many
 SELECT
@@ -97,7 +97,7 @@ SELECT
 FROM
     accounts
 WHERE
-    username LIKE $1
+    username LIKE $1 AND is_delete = false
 LIMIT
     $2 OFFSET $3;
 
@@ -106,5 +106,21 @@ UPDATE
     accounts
 SET
     is_delete = true
+WHERE
+    user_id = $1 RETURNING *;
+
+-- name: UpdateAccount :one
+UPDATE
+    accounts
+SET
+    username = $1,
+    icon = $2,
+    explanatory_text = $3,
+    locate_id = $4,
+    rate = $5,
+    hashed_password = $6,
+    email = $7,
+    show_locate = $8,
+    show_rate = $9
 WHERE
     user_id = $1 RETURNING *;

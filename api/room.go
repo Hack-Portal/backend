@@ -251,7 +251,7 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 		Title:       room.Title,
 		Description: room.Description,
 		MemberLimit: room.MemberLimit,
-		IsStatus:    room.IsStatus,
+		IsStatus:    room.IsDelete,
 		CreateAt:    room.CreateAt,
 		Hackathon: hackathonInfo{
 			HackathonID: hackathon.HackathonID,

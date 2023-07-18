@@ -10,7 +10,7 @@ SELECT
 FROM
     bookmarks
 WHERE
-    user_id = $1;
+    user_id = $1 AND is_delete = false;
 
 -- name: SoftRemoveBookmark :one
 UPDATE

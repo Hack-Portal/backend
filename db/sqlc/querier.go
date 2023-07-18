@@ -20,6 +20,13 @@ type Querier interface {
 	CreateHackathonStatusTag(ctx context.Context, arg CreateHackathonStatusTagParams) (HackathonStatusTags, error)
 	CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error)
+	DeleteAccountFrameworksByUserID(ctx context.Context, userID string) error
+	DeleteAccounttagsByUserID(ctx context.Context, userID string) error
+	DeleteFrameworksByID(ctx context.Context, frameworkID int32) error
+	DeleteHackathonByID(ctx context.Context, hackathonID int32) error
+	DeleteHackathonStatusTagsByHackathonID(ctx context.Context, hackathonID int32) error
+	DeleteStatusTagByStatusID(ctx context.Context, statusID int32) error
+	DeleteTechTagByID(ctx context.Context, techTagID int32) error
 	GetAccountByEmail(ctx context.Context, email string) (GetAccountByEmailRow, error)
 	GetAccountByID(ctx context.Context, userID string) (GetAccountByIDRow, error)
 	GetFrameworksByID(ctx context.Context, frameworkID int32) (Frameworks, error)
@@ -43,8 +50,15 @@ type Querier interface {
 	ListStatusTags(ctx context.Context) ([]StatusTags, error)
 	ListTechTag(ctx context.Context) ([]TechTags, error)
 	RemoveAccountInRoom(ctx context.Context, arg RemoveAccountInRoomParams) error
-	RemoveBookmark(ctx context.Context, arg RemoveBookmarkParams) error
 	RemoveFollow(ctx context.Context, arg RemoveFollowParams) error
+	SoftDeleteAccount(ctx context.Context, userID string) (Accounts, error)
+	SoftDeleteRoomByID(ctx context.Context, roomID uuid.UUID) (Rooms, error)
+	SoftRemoveBookmark(ctx context.Context, arg SoftRemoveBookmarkParams) (Bookmarks, error)
+	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Accounts, error)
+	UpdateFrameworksByID(ctx context.Context, arg UpdateFrameworksByIDParams) (Frameworks, error)
+	UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Rooms, error)
+	UpdateStatusTagByStatusID(ctx context.Context, status string) (StatusTags, error)
+	UpdateTechTagByID(ctx context.Context, language string) (TechTags, error)
 }
 
 var _ Querier = (*Queries)(nil)
