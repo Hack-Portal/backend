@@ -37,12 +37,13 @@ func (server *Server) publicRouter() {
 	public := server.router.Group("/v1")
 
 	public.GET("/ping", server.Ping)
-	public.POST("/hackathons", server.CreateHackathon)
-	public.GET("/hackathons", server.ListHackathons)
-	public.GET("/hackathons/:hackathon_id", server.GetHackathon)
 	public.GET("/locates", server.ListLocation)
 	public.GET("/tech_tags", server.ListTechTags)
 	public.GET("/frameworks", server.ListFrameworks)
+
+	public.POST("/hackathons", server.CreateHackathon)
+	public.GET("/hackathons", server.ListHackathons)
+	public.GET("/hackathons/:hackathon_id", server.GetHackathon)
 }
 
 // 認証ミドルウェアの必要なルーティング
@@ -51,14 +52,24 @@ func (server *Server) authRouter() {
 	auth.Use(AuthMiddleware())
 	// アカウント
 	auth.POST("/accounts", server.CreateAccount)
+
 	auth.GET("/accounts/:id", server.GetAccount)
+	auth.PUT("/accounts/:id", server.UpdateAccount)
+	auth.DELETE("/acccounts/:id", server.DeleteAccount)
 	// ルーム
-	auth.POST("/rooms", server.CreateRoom)
-	auth.POST("/rooms/:room_id", server.AddAccountInRoom)
 	auth.GET("/rooms", server.ListRooms)
+	auth.POST("/rooms", server.CreateRoom)
+
 	auth.GET("/rooms/:room_id", server.GetRoom)
-	auth.POST("/rooms/:room_id/chatroom", server.AddChat)
-	// ブックマーク
+	auth.POST("/rooms/:room_id", server.AddAccountInRoom)
+	auth.PUT("/rooms/:room_id", server.UpdateRoom)
+	auth.DELETE("/rooms/:room_id", server.DeleteRoom)
+
+	auth.POST("/rooms/:room_id/members", server.AddAccountInRoom)
+	auth.DELETE("/rooms/:room_id/members/user_id", server.RemoveAccountInRoom)
+	auth.POST("/rooms/:room_id/addchat", server.AddChat)
+
+	// TODO ブックマークURL 設計
 	auth.POST("/bookmarks", server.CreateBookmark)
 	auth.POST("/bookmarks/:hackathon_id", server.RemoveBookmark)
 	auth.GET("/bookmarks/", server.ListBookmarkToHackathon)

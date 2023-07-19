@@ -9,6 +9,15 @@ import (
 	"context"
 )
 
+const deleteTechTagByID = `-- name: DeleteTechTagByID :exec
+DELETE FROM tech_tags WHERE tech_tag_id = $1
+`
+
+func (q *Queries) DeleteTechTagByID(ctx context.Context, techTagID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteTechTagByID, techTagID)
+	return err
+}
+
 const getTechTagByID = `-- name: GetTechTagByID :one
 SELECT tech_tag_id, language FROM tech_tags WHERE tech_tag_id = $1
 `
@@ -45,4 +54,15 @@ func (q *Queries) ListTechTag(ctx context.Context) ([]TechTags, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateTechTagByID = `-- name: UpdateTechTagByID :one
+UPDATE tech_tags SET language = $1 WHERE tech_tag_id = $1 RETURNING tech_tag_id, language
+`
+
+func (q *Queries) UpdateTechTagByID(ctx context.Context, language string) (TechTags, error) {
+	row := q.db.QueryRowContext(ctx, updateTechTagByID, language)
+	var i TechTags
+	err := row.Scan(&i.TechTagID, &i.Language)
+	return i, err
 }

@@ -9,8 +9,25 @@ import (
 	"context"
 )
 
+const deleteFrameworksByID = `-- name: DeleteFrameworksByID :exec
+DELETE FROM
+    frameworks
+WHERE
+    framework_id = $1
+`
+
+func (q *Queries) DeleteFrameworksByID(ctx context.Context, frameworkID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteFrameworksByID, frameworkID)
+	return err
+}
+
 const getFrameworksByID = `-- name: GetFrameworksByID :one
-SELECT framework_id, tech_tag_id, framework FROM frameworks WHERE framework_id = $1
+SELECT
+    framework_id, tech_tag_id, framework
+FROM
+    frameworks
+WHERE
+    framework_id = $1
 `
 
 func (q *Queries) GetFrameworksByID(ctx context.Context, frameworkID int32) (Frameworks, error) {
@@ -21,7 +38,12 @@ func (q *Queries) GetFrameworksByID(ctx context.Context, frameworkID int32) (Fra
 }
 
 const listFrameworks = `-- name: ListFrameworks :many
-SELECT framework_id, tech_tag_id, framework FROM frameworks LIMIT $1
+SELECT
+    framework_id, tech_tag_id, framework
+FROM
+    frameworks
+LIMIT
+    $1
 `
 
 func (q *Queries) ListFrameworks(ctx context.Context, limit int32) ([]Frameworks, error) {
@@ -45,4 +67,21 @@ func (q *Queries) ListFrameworks(ctx context.Context, limit int32) ([]Frameworks
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateFrameworksByID = `-- name: UpdateFrameworksByID :one
+UPDATE frameworks SET framework = $1 , tech_tag_id = $2 WHERE framework_id = $3 RETURNING framework_id, tech_tag_id, framework
+`
+
+type UpdateFrameworksByIDParams struct {
+	Framework   string `json:"framework"`
+	TechTagID   int32  `json:"tech_tag_id"`
+	FrameworkID int32  `json:"framework_id"`
+}
+
+func (q *Queries) UpdateFrameworksByID(ctx context.Context, arg UpdateFrameworksByIDParams) (Frameworks, error) {
+	row := q.db.QueryRowContext(ctx, updateFrameworksByID, arg.Framework, arg.TechTagID, arg.FrameworkID)
+	var i Frameworks
+	err := row.Scan(&i.FrameworkID, &i.TechTagID, &i.Framework)
+	return i, err
 }

@@ -39,6 +39,7 @@ type Accounts struct {
 	ShowLocate      bool           `json:"show_locate"`
 	ShowRate        bool           `json:"show_rate"`
 	UpdateAt        time.Time      `json:"update_at"`
+	IsDelete        bool           `json:"is_delete"`
 }
 
 type Awards struct {
@@ -50,6 +51,7 @@ type Bookmarks struct {
 	HackathonID int32     `json:"hackathon_id"`
 	UserID      string    `json:"user_id"`
 	CreateAt    time.Time `json:"create_at"`
+	IsDelete    bool      `json:"is_delete"`
 }
 
 type Follows struct {
@@ -106,6 +108,7 @@ type PastWorks struct {
 	ThumbnailImage  []byte    `json:"thumbnail_image"`
 	ExplanatoryText string    `json:"explanatory_text"`
 	CreateAt        time.Time `json:"create_at"`
+	IsDelete        bool      `json:"is_delete"`
 }
 
 type RateEntries struct {
@@ -120,8 +123,8 @@ type Rooms struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	MemberLimit int32     `json:"member_limit"`
-	IsStatus    bool      `json:"is_status"`
 	CreateAt    time.Time `json:"create_at"`
+	IsDelete    bool      `json:"is_delete"`
 }
 
 type RoomsAccounts struct {

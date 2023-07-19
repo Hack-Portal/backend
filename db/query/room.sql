@@ -5,7 +5,7 @@ INSERT INTO rooms (
     title,
     description,
     member_limit,
-    is_status
+    is_delete
 )VALUES(
     $1,$2,$3,$4,$5,$6
 )RETURNING *;
@@ -25,6 +25,23 @@ WHERE
         WHERE rooms_accounts.room_id = rooms.room_id
         ) 
     AND
-    is_status = TRUE 
+    is_delete = false
 LIMIT $1;
 
+-- name: SoftDeleteRoomByID :one
+UPDATE
+    rooms
+SET
+    is_delete = true
+WHERE
+    room_id = $1 RETURNING *;
+-- name: UpdateRoomByID :one
+UPDATE
+    rooms
+SET
+    hackathon_id = $1,
+    title = $2,
+    description = $3,
+    member_limit = $4
+WHERE
+    room_id = $5 RETURNING *;

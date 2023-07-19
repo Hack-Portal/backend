@@ -48,7 +48,7 @@ func TestListBookmark(t *testing.T) {
 
 }
 
-func TestRemoveBookmark(t *testing.T) {
+func TestSoftRemoveBookmark(t *testing.T) {
 	n := 5
 	account := createAccountTest(t)
 	var lastBookMark Bookmarks
@@ -56,7 +56,7 @@ func TestRemoveBookmark(t *testing.T) {
 		lastBookMark = createBookmarkTest(t, account)
 	}
 
-	err := testQueries.RemoveBookmark(context.Background(), RemoveBookmarkParams{
+	_, err := testQueries.SoftRemoveBookmark(context.Background(), SoftRemoveBookmarkParams{
 		UserID:      lastBookMark.UserID,
 		HackathonID: lastBookMark.HackathonID,
 	})

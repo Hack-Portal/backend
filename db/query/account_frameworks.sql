@@ -1,22 +1,22 @@
 -- name: CreateAccountFramework :one
-INSERT INTO account_frameworks (
-    user_id,
-    framework_id
-)VALUES(
-    $1,$2
-)RETURNING *;
-
+INSERT INTO
+    account_frameworks (user_id, framework_id)
+VALUES
+    ($1, $2) RETURNING *;
 
 -- name: ListAccountFrameworksByUserID :many
-SELECT 
+SELECT
     frameworks.framework_id,
     frameworks.tech_tag_id,
     frameworks.framework
-FROM 
+FROM
     account_frameworks
-LEFT OUTER JOIN 
-    frameworks 
-ON 
-    account_frameworks.framework_id = frameworks.framework_id 
-WHERE 
+    LEFT OUTER JOIN frameworks ON account_frameworks.framework_id = frameworks.framework_id
+WHERE
     account_frameworks.user_Id = $1;
+
+-- name: DeleteAccountFrameworksByUserID :exec
+DELETE FROM
+    account_frameworks
+WHERE
+    user_id = $1;

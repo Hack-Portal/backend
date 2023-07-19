@@ -10,12 +10,10 @@ import (
 )
 
 const createFollow = `-- name: CreateFollow :one
-INSERT INTO follows (
-    to_user_id,
-    from_user_id
-  )
-VALUES($1, $2)
-RETURNING to_user_id, from_user_id, create_at
+INSERT INTO
+  follows (to_user_id, from_user_id)
+VALUES
+($1, $2) RETURNING to_user_id, from_user_id, create_at
 `
 
 type CreateFollowParams struct {
@@ -31,9 +29,12 @@ func (q *Queries) CreateFollow(ctx context.Context, arg CreateFollowParams) (Fol
 }
 
 const listFollowByToUserID = `-- name: ListFollowByToUserID :many
-SELECT to_user_id, from_user_id, create_at
-FROM follows
-WHERE to_user_id = $1
+SELECT
+  to_user_id, from_user_id, create_at
+FROM
+  follows
+WHERE
+  to_user_id = $1
 `
 
 func (q *Queries) ListFollowByToUserID(ctx context.Context, toUserID string) ([]Follows, error) {
@@ -60,8 +61,10 @@ func (q *Queries) ListFollowByToUserID(ctx context.Context, toUserID string) ([]
 }
 
 const removeFollow = `-- name: RemoveFollow :exec
-DELETE FROM follows
-WHERE to_user_id = $1
+DELETE FROM
+  follows
+WHERE
+  to_user_id = $1
   AND from_user_id = $2
 `
 
