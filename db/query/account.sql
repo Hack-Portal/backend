@@ -124,3 +124,12 @@ SET
     show_rate = $10
 WHERE
     user_id = $1 RETURNING *;
+
+
+-- name: UpdateRateByUserID:one
+UPDATE
+    accounts
+SET    
+    rate = $2,
+WHERE
+    user_id = $1 RETURNING *;

@@ -2,7 +2,10 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
@@ -19,8 +22,8 @@ type CreateAccountRequestParam struct {
 	ExplanatoryText string  `json:"explanatory_text"`
 	LocateID        int32   `json:"locate_id" binding:"required"`
 	Password        string  `json:"password"`
-	ShowLocate      bool    `json:"show_locate"`
-	ShowRate        bool    `json:"show_rate"`
+	ShowLocate      bool    `json:"show_locate" binding:"required"`
+	ShowRate        bool    `json:"show_rate" binding:"required"`
 	TechTags        []int32 `json:"tech_tags"`
 	Frameworks      []int32 `json:"frameworks"`
 }
@@ -36,8 +39,8 @@ type AccountResponses struct {
 	ShowLocate      bool   `json:"show_locate"`
 	ShowRate        bool   `json:"show_rate"`
 
-	TechTags   []db.TechTags
-	Frameworks []db.Frameworks
+	TechTags   []db.TechTags   `json:"tech_tags"`
+	Frameworks []db.Frameworks `json:"frameworks"`
 }
 
 func (server *Server) CreateAccount(ctx *gin.Context) {
@@ -117,14 +120,14 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 }
 
 // アカウントを取得する際のパラメータ
-type GetAccountRequestParams struct {
+type RequestParams struct {
 	ID string `uri:"id"`
 }
 
 // アカウントを取得する
 // 認証必須
 func (server *Server) GetAccount(ctx *gin.Context) {
-	var request GetAccountRequestParams
+	var request RequestParams
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -206,4 +209,165 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		}
 	}
 	ctx.JSON(http.StatusOK, response)
+}
+
+type UpdateAccountRequestBody struct {
+	Username        string `json:"username"`
+	ExplanatoryText string `json:"explanatory_text"`
+	LocateID        int32  `json:"locate_id"`
+	Rate            int32  `json:"rate"`
+	HashedPassword  string `json:"hashed_password"`
+	ShowLocate      bool   `json:"show_locate"`
+	ShowRate        bool   `json:"show_rate"`
+}
+
+type UpdateAccountResponse struct {
+	Username        string    `json:"username"`
+	ExplanatoryText string    `json:"explanatory_text"`
+	icon            string    `json:"icon"`
+	Locate          string    `json:"locate"`
+	Rate            int32     `json:"rate"`
+	HashedPassword  string    `json:"hashed_password"`
+	ShowLocate      bool      `json:"show_locate"`
+	ShowRate        bool      `json:"show_rate"`
+	CreatedAt       time.Time `json:"created_at"`
+}
+
+// アカウント更新
+// 認証必須
+func (server *Server) UpdateAccount(ctx *gin.Context) {
+	var (
+		requestBody UpdateAccountRequestBody
+		requestURI  RequestParams
+	)
+	if err := ctx.ShouldBindUri(&requestURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	// TODO:条件次第でFormDataから画像を読み込む
+
+	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
+	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if account.UserID != requestURI.ID {
+		err := errors.New("valid user id")
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	arg, err := parseUpdateAccountParam(account, requestBody)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	result, err := server.store.UpdateAccount(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	locate, err := server.store.GetLocateByID(ctx, result.LocateID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	// TODO:iconのPathを含む
+	response := UpdateAccountResponse{
+		Username:        result.Username,
+		ExplanatoryText: requestBody.ExplanatoryText,
+		icon:            result.Icon.String,
+		Locate:          locate.Name,
+		Rate:            result.Rate,
+		HashedPassword:  result.HashedPassword.String,
+		ShowLocate:      result.ShowLocate,
+		ShowRate:        result.ShowRate,
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}
+
+// 型変換
+func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams, err error) {
+	result.UserID = account.UserID
+	if len(strings.TrimSpace(body.Username)) != 0 {
+		result.Username = body.Username
+	}
+
+	if len(strings.TrimSpace(body.ExplanatoryText)) != 0 {
+		result.ExplanatoryText = sql.NullString{
+			String: body.ExplanatoryText,
+			Valid:  true,
+		}
+	} else {
+		result.ExplanatoryText = sql.NullString{
+			Valid: false,
+		}
+	}
+	if body.LocateID != 0 {
+		result.LocateID = body.LocateID
+	}
+
+	if body.Rate != 0 {
+		result.Rate = body.Rate
+	}
+
+	if len(strings.TrimSpace(body.HashedPassword)) != 0 {
+		var hashedPassword string
+		hashedPassword, err = util.HashPassword(body.HashedPassword)
+		if err != nil {
+			return
+		}
+
+		result.HashedPassword = sql.NullString{
+			String: hashedPassword,
+			Valid:  true,
+		}
+	} else {
+		result.HashedPassword = sql.NullString{
+			Valid: false,
+		}
+	}
+
+	result.ShowLocate = body.ShowLocate
+	result.ShowRate = body.ShowRate
+
+	return
+}
+
+// ユーザ削除
+func (server *Server) DeleteAccount(ctx *gin.Context) {
+	var request RequestParams
+	if err := ctx.ShouldBindUri(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
+	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if account.UserID != request.ID {
+		err := errors.New("valid user id")
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	_, err = server.store.SoftDeleteAccount(ctx, request.ID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": "success",
+	})
+
 }

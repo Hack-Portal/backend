@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 
 	"github.com/hackhack-Geek-vol6/backend/util"
@@ -126,6 +127,7 @@ func TestUpdateAccount(t *testing.T) {
 		{
 			name: "update-username",
 			arg: UpdateAccountParams{
+				UserID:          baseAccount.UserID,
 				Username:        "changed-name",
 				Icon:            baseAccount.Icon,
 				ExplanatoryText: baseAccount.ExplanatoryText,
@@ -137,16 +139,232 @@ func TestUpdateAccount(t *testing.T) {
 				ShowRate:        baseAccount.ShowRate,
 			},
 			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
-				require.NotEqual(t, baseAccount.Username, UpdatedAccount.Username)
-
 				require.Equal(t, arg.Username, UpdatedAccount.Username)
 				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
 				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
 				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
 				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
 				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
 				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
-				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
+			},
+		},
+		{
+			name: "update-icon",
+			arg: UpdateAccountParams{
+				UserID:   baseAccount.UserID,
+				Username: baseAccount.Username,
+				Icon: sql.NullString{
+					String: "chenged-icon",
+					Valid:  true,
+				},
+				ExplanatoryText: baseAccount.ExplanatoryText,
+				LocateID:        baseAccount.LocateID,
+				Rate:            baseAccount.Rate,
+				HashedPassword:  baseAccount.HashedPassword,
+				Email:           baseAccount.Email,
+				ShowLocate:      baseAccount.ShowLocate,
+				ShowRate:        baseAccount.ShowRate,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
+				require.Equal(t, arg.Icon, UpdatedAccount.Icon)
+				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
+				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
+				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
+				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
+			},
+		},
+		{
+			name: "update-ExplanatoryText",
+			arg: UpdateAccountParams{
+				UserID:   baseAccount.UserID,
+				Username: baseAccount.Username,
+				Icon:     baseAccount.Icon,
+				ExplanatoryText: sql.NullString{
+					String: "changed-explanatoryText",
+					Valid:  true,
+				},
+				LocateID:       baseAccount.LocateID,
+				Rate:           baseAccount.Rate,
+				HashedPassword: baseAccount.HashedPassword,
+				Email:          baseAccount.Email,
+				ShowLocate:     baseAccount.ShowLocate,
+				ShowRate:       baseAccount.ShowRate,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
+				require.Equal(t, arg.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
+				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
+				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
+				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
+			},
+		},
+		{
+			name: "update-LocateID",
+			arg: UpdateAccountParams{
+				UserID:          baseAccount.UserID,
+				Username:        baseAccount.Username,
+				Icon:            baseAccount.Icon,
+				ExplanatoryText: baseAccount.ExplanatoryText,
+				LocateID:        1,
+				Rate:            baseAccount.Rate,
+				HashedPassword:  baseAccount.HashedPassword,
+				Email:           baseAccount.Email,
+				ShowLocate:      baseAccount.ShowLocate,
+				ShowRate:        baseAccount.ShowRate,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
+				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, arg.LocateID, UpdatedAccount.LocateID)
+				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
+				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
+				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
+			},
+		},
+		{
+			name: "update-Rate",
+			arg: UpdateAccountParams{
+				UserID:          baseAccount.UserID,
+				Username:        baseAccount.Username,
+				Icon:            baseAccount.Icon,
+				ExplanatoryText: baseAccount.ExplanatoryText,
+				LocateID:        baseAccount.LocateID,
+				Rate:            10,
+				HashedPassword:  baseAccount.HashedPassword,
+				Email:           baseAccount.Email,
+				ShowLocate:      baseAccount.ShowLocate,
+				ShowRate:        baseAccount.ShowRate,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
+				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
+				require.Equal(t, arg.Rate, UpdatedAccount.Rate)
+				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
+				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
+			},
+		},
+		{
+			name: "update-HashedPassword",
+			arg: UpdateAccountParams{
+				UserID:          baseAccount.UserID,
+				Username:        baseAccount.Username,
+				Icon:            baseAccount.Icon,
+				ExplanatoryText: baseAccount.ExplanatoryText,
+				LocateID:        baseAccount.LocateID,
+				Rate:            baseAccount.Rate,
+				HashedPassword: sql.NullString{
+					String: "changed-password",
+					Valid:  true,
+				},
+				Email:      baseAccount.Email,
+				ShowLocate: baseAccount.ShowLocate,
+				ShowRate:   baseAccount.ShowRate,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
+				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
+				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
+				require.Equal(t, arg.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
+				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
+			},
+		},
+		{
+			name: "update-Email",
+			arg: UpdateAccountParams{
+				UserID:          baseAccount.UserID,
+				Username:        baseAccount.Username,
+				Icon:            baseAccount.Icon,
+				ExplanatoryText: baseAccount.ExplanatoryText,
+				LocateID:        baseAccount.LocateID,
+				Rate:            baseAccount.Rate,
+				HashedPassword:  baseAccount.HashedPassword,
+				Email:           util.RandomEmail(),
+				ShowLocate:      baseAccount.ShowLocate,
+				ShowRate:        baseAccount.ShowRate,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
+				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
+				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
+				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, arg.Email, UpdatedAccount.Email)
+				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
+			},
+		},
+		{
+			name: "update-ShowLocate",
+			arg: UpdateAccountParams{
+				UserID:          baseAccount.UserID,
+				Username:        baseAccount.Username,
+				Icon:            baseAccount.Icon,
+				ExplanatoryText: baseAccount.ExplanatoryText,
+				LocateID:        baseAccount.LocateID,
+				Rate:            baseAccount.Rate,
+				HashedPassword:  baseAccount.HashedPassword,
+				Email:           baseAccount.Email,
+				ShowLocate:      false,
+				ShowRate:        baseAccount.ShowRate,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
+				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
+				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
+				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
+				require.Equal(t, arg.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
+			},
+		},
+		{
+			name: "update-ShowRate",
+			arg: UpdateAccountParams{
+				UserID:          baseAccount.UserID,
+				Username:        baseAccount.Username,
+				Icon:            baseAccount.Icon,
+				ExplanatoryText: baseAccount.ExplanatoryText,
+				LocateID:        baseAccount.LocateID,
+				Rate:            baseAccount.Rate,
+				HashedPassword:  baseAccount.HashedPassword,
+				Email:           baseAccount.Email,
+				ShowLocate:      baseAccount.ShowLocate,
+				ShowRate:        false,
+			},
+			checkData: func(t *testing.T, arg UpdateAccountParams, baseAccount, UpdatedAccount Accounts) {
+				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
+				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
+				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
+				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
+				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
+				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
+				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
+				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
+				require.Equal(t, arg.ShowRate, UpdatedAccount.ShowRate)
 			},
 		},
 	}

@@ -58,7 +58,7 @@ func (server *Server) authRouter() {
 	auth.GET("/rooms", server.ListRooms)
 	auth.GET("/rooms/:room_id", server.GetRoom)
 	auth.POST("/rooms/:room_id/chatroom", server.AddChat)
-	// ブックマーク
+	// TODO ブックマークURL 設計
 	auth.POST("/bookmarks", server.CreateBookmark)
 	auth.POST("/bookmarks/:hackathon_id", server.RemoveBookmark)
 	auth.GET("/bookmarks/", server.ListBookmarkToHackathon)
