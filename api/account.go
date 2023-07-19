@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -141,6 +140,12 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
+	locate, err := server.store.GetLocateByID(ctx, account.LocateID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	techTags, err := server.store.ListAccountTagsByUserID(ctx, account.UserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -183,7 +188,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 			Username:        account.Username,
 			Icon:            account.Icon.String,
 			ExplanatoryText: account.ExplanatoryText.String,
-			Locate:          account.Locate,
+			Locate:          locate.Name,
 			Rate:            account.Rate,
 			ShowLocate:      account.ShowLocate,
 			ShowRate:        account.ShowRate,
@@ -202,7 +207,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 			Frameworks:      accountFrameworks,
 		}
 		if account.ShowLocate {
-			response.Locate = account.Locate
+			response.Locate = locate.Name
 		}
 		if account.ShowRate {
 			response.Rate = account.Rate
@@ -224,7 +229,7 @@ type UpdateAccountRequestBody struct {
 type UpdateAccountResponse struct {
 	Username        string    `json:"username"`
 	ExplanatoryText string    `json:"explanatory_text"`
-	icon            string    `json:"icon"`
+	Icon            string    `json:"icon"`
 	Locate          string    `json:"locate"`
 	Rate            int32     `json:"rate"`
 	HashedPassword  string    `json:"hashed_password"`
@@ -261,12 +266,7 @@ func (server *Server) UpdateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	arg, err := parseUpdateAccountParam(account, requestBody)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	result, err := server.store.UpdateAccount(ctx, arg)
+	result, err := server.store.UpdateAccount(ctx, parseUpdateAccountParam(account, requestBody))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -282,7 +282,7 @@ func (server *Server) UpdateAccount(ctx *gin.Context) {
 	response := UpdateAccountResponse{
 		Username:        result.Username,
 		ExplanatoryText: requestBody.ExplanatoryText,
-		icon:            result.Icon.String,
+		Icon:            result.Icon.String,
 		Locate:          locate.Name,
 		Rate:            result.Rate,
 		HashedPassword:  result.HashedPassword.String,
@@ -294,37 +294,53 @@ func (server *Server) UpdateAccount(ctx *gin.Context) {
 }
 
 // 型変換
-func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams, err error) {
+func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams) {
 	result.UserID = account.UserID
-	if len(strings.TrimSpace(body.Username)) != 0 {
+	if util.StringLength(body.Username) != 0 {
+		if util.EqualString(account.Username, body.Username) {
+			result.Username = account.Username
+		}
 		result.Username = body.Username
 	}
 
-	if len(strings.TrimSpace(body.ExplanatoryText)) != 0 {
-		result.ExplanatoryText = sql.NullString{
-			String: body.ExplanatoryText,
-			Valid:  true,
+	if !util.EqualString(account.ExplanatoryText.String, body.ExplanatoryText) {
+		if util.StringLength(body.ExplanatoryText) != 0 {
+			result.ExplanatoryText = sql.NullString{
+				String: body.ExplanatoryText,
+				Valid:  true,
+			}
+		} else {
+			result.ExplanatoryText = sql.NullString{
+				Valid: false,
+			}
 		}
+
 	} else {
-		result.ExplanatoryText = sql.NullString{
-			Valid: false,
-		}
+		result.ExplanatoryText = account.ExplanatoryText
 	}
+
 	if body.LocateID != 0 {
-		result.LocateID = body.LocateID
+		if util.Equalint(int(account.LocateID), int(body.LocateID)) {
+			result.LocateID = account.LocateID
+		} else {
+			result.LocateID = body.LocateID
+		}
 	}
 
 	if body.Rate != 0 {
-		result.Rate = body.Rate
+		if util.Equalint(int(account.Rate), int(body.Rate)) {
+			result.Rate = account.Rate
+		} else {
+			result.Rate = body.Rate
+		}
 	}
 
-	if len(strings.TrimSpace(body.HashedPassword)) != 0 {
+	if util.StringLength(body.HashedPassword) != 0 {
 		var hashedPassword string
-		hashedPassword, err = util.HashPassword(body.HashedPassword)
-		if err != nil {
-			return
+		hashedPassword, _ = util.HashPassword(body.HashedPassword)
+		if util.EqualString(account.HashedPassword.String, hashedPassword) {
+			result.HashedPassword = account.HashedPassword
 		}
-
 		result.HashedPassword = sql.NullString{
 			String: hashedPassword,
 			Valid:  true,
