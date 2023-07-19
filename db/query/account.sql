@@ -32,14 +32,7 @@ SELECT
     username,
     icon,
     explanatory_text,
-    (
-        SELECT
-            name
-        FROM
-            locates
-        WHERE
-            locate_id = accounts.locate_id
-    ) as locate,
+    locate_id,
     rate,
     hashed_password,
     email,
@@ -58,14 +51,7 @@ SELECT
     username,
     icon,
     explanatory_text,
-    (
-        SELECT
-            name
-        FROM
-            locates
-        WHERE
-            locate_id = accounts.locate_id
-    ) as locate,
+    locate_id,
     rate,
     hashed_password,
     email,
