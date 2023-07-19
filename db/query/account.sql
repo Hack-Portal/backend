@@ -112,10 +112,10 @@ WHERE
     user_id = $1 RETURNING *;
 
 
--- name: UpdateRateByUserID:one
+-- name: UpdateRateByUserID :one
 UPDATE
     accounts
 SET    
-    rate = $2,
+    rate = $2
 WHERE
     user_id = $1 RETURNING *;

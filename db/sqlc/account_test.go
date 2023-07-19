@@ -48,13 +48,14 @@ func TestGetAccountByID(t *testing.T) {
 	result, err := testQueries.GetAccountByID(context.Background(), account.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
+
 	locate, err := testQueries.GetLocateByID(context.Background(), account.LocateID)
 	require.NoError(t, err)
 	require.NotEmpty(t, locate)
 
 	require.Equal(t, account.UserID, result.UserID)
 	require.Equal(t, account.Username, result.Username)
-	require.Equal(t, locate.Name, result.Locate)
+	require.Equal(t, account.LocateID, result.LocateID)
 	require.Equal(t, account.Rate, result.Rate)
 	require.Equal(t, account.ShowLocate, result.ShowLocate)
 	require.Equal(t, account.ShowRate, result.ShowRate)
@@ -90,13 +91,9 @@ func TestGetAccountByEmail(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 
-	locate, err := testQueries.GetLocateByID(context.Background(), account.LocateID)
-	require.NoError(t, err)
-	require.NotEmpty(t, locate)
-
 	require.Equal(t, account.UserID, result.UserID)
 	require.Equal(t, account.Username, result.Username)
-	require.Equal(t, locate.Name, result.Locate)
+	require.Equal(t, account.LocateID, result.LocateID)
 	require.Equal(t, account.Rate, result.Rate)
 	require.Equal(t, account.ShowLocate, result.ShowLocate)
 	require.Equal(t, account.ShowRate, result.ShowRate)

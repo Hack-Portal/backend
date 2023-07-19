@@ -91,14 +91,7 @@ SELECT
     username,
     icon,
     explanatory_text,
-    (
-        SELECT
-            name
-        FROM
-            locates
-        WHERE
-            locate_id = accounts.locate_id
-    ) as locate,
+    locate_id,
     rate,
     hashed_password,
     email,
@@ -117,7 +110,7 @@ type GetAccountByEmailRow struct {
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	Locate          string         `json:"locate"`
+	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
 	HashedPassword  sql.NullString `json:"hashed_password"`
 	Email           string         `json:"email"`
@@ -135,7 +128,7 @@ func (q *Queries) GetAccountByEmail(ctx context.Context, email string) (GetAccou
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
-		&i.Locate,
+		&i.LocateID,
 		&i.Rate,
 		&i.HashedPassword,
 		&i.Email,
@@ -153,14 +146,7 @@ SELECT
     username,
     icon,
     explanatory_text,
-    (
-        SELECT
-            name
-        FROM
-            locates
-        WHERE
-            locate_id = accounts.locate_id
-    ) as locate,
+    locate_id,
     rate,
     hashed_password,
     email,
@@ -179,7 +165,7 @@ type GetAccountByIDRow struct {
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	Locate          string         `json:"locate"`
+	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
 	HashedPassword  sql.NullString `json:"hashed_password"`
 	Email           string         `json:"email"`
@@ -197,7 +183,7 @@ func (q *Queries) GetAccountByID(ctx context.Context, userID string) (GetAccount
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
-		&i.Locate,
+		&i.LocateID,
 		&i.Rate,
 		&i.HashedPassword,
 		&i.Email,
@@ -353,6 +339,41 @@ func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (A
 		arg.ShowLocate,
 		arg.ShowRate,
 	)
+	var i Accounts
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Icon,
+		&i.ExplanatoryText,
+		&i.LocateID,
+		&i.Rate,
+		&i.HashedPassword,
+		&i.Email,
+		&i.CreateAt,
+		&i.ShowLocate,
+		&i.ShowRate,
+		&i.UpdateAt,
+		&i.IsDelete,
+	)
+	return i, err
+}
+
+const updateRateByUserID = `-- name: UpdateRateByUserID :one
+UPDATE
+    accounts
+SET    
+    rate = $2
+WHERE
+    user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
+`
+
+type UpdateRateByUserIDParams struct {
+	UserID string `json:"user_id"`
+	Rate   int32  `json:"rate"`
+}
+
+func (q *Queries) UpdateRateByUserID(ctx context.Context, arg UpdateRateByUserIDParams) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, updateRateByUserID, arg.UserID, arg.Rate)
 	var i Accounts
 	err := row.Scan(
 		&i.UserID,

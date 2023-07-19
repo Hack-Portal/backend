@@ -56,6 +56,7 @@ type Querier interface {
 	SoftRemoveBookmark(ctx context.Context, arg SoftRemoveBookmarkParams) (Bookmarks, error)
 	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Accounts, error)
 	UpdateFrameworksByID(ctx context.Context, arg UpdateFrameworksByIDParams) (Frameworks, error)
+	UpdateRateByUserID(ctx context.Context, arg UpdateRateByUserIDParams) (Accounts, error)
 	UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Rooms, error)
 	UpdateStatusTagByStatusID(ctx context.Context, status string) (StatusTags, error)
 	UpdateTechTagByID(ctx context.Context, language string) (TechTags, error)
