@@ -1,16 +1,14 @@
 package db
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"time"
 
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/storage"
-	"github.com/google/uuid"
+	"github.com/gofrs/uuid/v5"
 )
 
 type WriteFireStoreParam struct {
@@ -85,36 +83,42 @@ func (store *SQLStore) ReadDocsByRoomID(ctx context.Context, RoomID string) (map
 }
 
 // firebaseCloudStorageに画像を上げる
-func (store *SQLStore) UploadImage(ctx context.Context, file []byte, filename string) (uuid.UUID, error) {
-	id := uuid.New()
+func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, error) {
+	filename, err := uuid.NewGen().NewV7()
+	if err != nil {
+		return "", err
+	}
 	// パス取得
-	fbstorage, err := store.App.Storage(context.Background())
+	fbstorage, err := store.App.Storage(ctx)
 	log.Println("1 :", err)
 	if err != nil {
-		return id, err
+		return "", err
 	}
 	bucket, err := fbstorage.DefaultBucket()
 	log.Println("2 :", err)
 	if err != nil {
-		return id, err
+		return "", err
 	}
 
-	object := bucket.Object(filename)
-	writer := object.NewWriter(ctx)
+	obj := bucket.Object(filename.String() + ".jpg")
+	wc := obj.NewWriter(ctx)
+	wc.ContentType = "image/jpg"
 
-	//Set the attribute
-	writer.ObjectAttrs.Metadata = map[string]string{"firebaseStorageDownloadTokens": id.String()}
-	defer writer.Close()
-	if _, err := io.Copy(writer, bytes.NewReader(file)); err != nil {
-		log.Println("3 :", err)
-		return id, err
+	if _, err := wc.Write(file); err != nil {
+		return "", fmt.Errorf("createFile:file %v: %v", filename, err)
 	}
 
-	if err := object.ACL().Set(context.Background(), storage.AllUsers, storage.RoleReader); err != nil {
+	if err := wc.Close(); err != nil {
+		return "", fmt.Errorf("createFile:file %v: %v", filename, err)
+	}
+	downloadURL, err := bucket.SignedURL(obj.ObjectName(), &storage.SignedURLOptions{
+		Expires: time.Now().AddDate(100, 0, 0),
+		Method:  "GET",
+	})
 
-		log.Println("4 :", err)
-		return id, err
+	if err != nil {
+		return "", fmt.Errorf("downloadURL :%v", err)
 	}
 
-	return id, nil
+	return downloadURL, nil
 }
