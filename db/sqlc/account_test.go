@@ -110,7 +110,7 @@ func TestSoftDeleteAccount(t *testing.T) {
 	require.NotEmpty(t, deletedAccount)
 
 	account2, err := testQueries.GetAccountByID(context.Background(), account1.UserID)
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Empty(t, account2)
 }
 
