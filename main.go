@@ -1,14 +1,16 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
 
+	firebase "firebase.google.com/go"
 	"github.com/hackhack-Geek-vol6/backend/api"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/util"
-	"github.com/hackhack-Geek-vol6/backend/util/firestore"
 	_ "github.com/lib/pq"
+	"google.golang.org/api/option"
 )
 
 func main() {
@@ -20,12 +22,19 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot connect to db", err)
 	}
-	client, err := firestore.FirebaseSetup("./serviceAccount.json")
-	if err != nil {
-		log.Fatal("firestore error :", err)
+
+	firebaseconfig := &firebase.Config{
+		StorageBucket: "hackthon-geek-v6.appspot.com",
 	}
 
-	store := db.NewStore(conn, client)
+	serviceAccount := option.WithCredentialsFile("./serviceAccount.json")
+	app, err := firebase.NewApp(context.Background(), firebaseconfig, serviceAccount)
+
+	if err != nil {
+		log.Fatal("cerviceAccount Load error :", err)
+	}
+
+	store := db.NewStore(conn, app)
 
 	server, err := api.NewServer(config, store)
 	if err != nil {

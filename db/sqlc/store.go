@@ -25,6 +25,7 @@ type Store interface {
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
 	WriteFireStore(ctx context.Context, arg WriteFireStoreParam) (*firestore.WriteResult, error)
 	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]ChatRoomsWrite, error)
+	UploadImage(ctx context.Context, file []byte) (string, error)
 }
 
 type SQLStore struct {

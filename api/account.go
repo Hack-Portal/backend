@@ -1,8 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"database/sql"
 	"errors"
+	"io"
 	"net/http"
 	"time"
 
@@ -244,6 +246,7 @@ func (server *Server) UpdateAccount(ctx *gin.Context) {
 	var (
 		requestBody UpdateAccountRequestBody
 		requestURI  RequestParams
+		imageURL    string
 	)
 	if err := ctx.ShouldBindUri(&requestURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -253,7 +256,34 @@ func (server *Server) UpdateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	// TODO:条件次第でFormDataから画像を読み込む
+	file, _, err := ctx.Request.FormFile(ImageKey)
+	if err != nil {
+		switch err.Error() {
+		case MultiPartNextPartEoF:
+			ctx.JSON(400, errorResponse(err))
+			return
+		case HttpNoSuchFile:
+			ctx.JSON(400, errorResponse(err))
+			return
+		default:
+			ctx.JSON(400, errorResponse(err))
+			return
+		case RequestContentTypeIsnt:
+			break
+		}
+	} else {
+		// 画像がある場合
+		buf := bytes.NewBuffer(nil)
+		if _, err := io.Copy(buf, file); err != nil {
+			ctx.JSON(500, errorResponse(err))
+			return
+		}
+		imageURL, err = server.store.UploadImage(ctx, buf.Bytes())
+		if err != nil {
+			ctx.JSON(500, errorResponse(err))
+			return
+		}
+	}
 
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
 	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
@@ -278,11 +308,10 @@ func (server *Server) UpdateAccount(ctx *gin.Context) {
 		return
 	}
 
-	// TODO:iconのPathを含む
 	response := UpdateAccountResponse{
 		Username:        result.Username,
 		ExplanatoryText: requestBody.ExplanatoryText,
-		Icon:            result.Icon.String,
+		Icon:            imageURL,
 		Locate:          locate.Name,
 		Rate:            result.Rate,
 		HashedPassword:  result.HashedPassword.String,

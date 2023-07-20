@@ -36,7 +36,7 @@ func (server *Server) setUpCors() {
 func (server *Server) publicRouter() {
 	public := server.router.Group("/v1")
 
-	public.GET("/ping", server.Ping)
+	public.POST("/ping", server.Ping)
 	public.GET("/locates", server.ListLocation)
 	public.GET("/tech_tags", server.ListTechTags)
 	public.GET("/frameworks", server.ListFrameworks)
