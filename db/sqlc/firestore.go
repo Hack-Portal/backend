@@ -60,7 +60,8 @@ func (store *SQLStore) InitChatRoom(ctx context.Context, roomID string) (*firest
 	if err != nil {
 		return nil, err
 	}
-	result, err := client.Collection(FireStoreChatRoomCollectionName).Doc(roomID).Set(ctx, map[string]interface{}{}, firestore.MergeAll)
+	defer client.Close()
+	result, err := client.Collection(FireStoreChatRoomCollectionName).Doc(roomID).Set(context.Background(), map[string]interface{}{}, firestore.MergeAll)
 
 	if err != nil {
 		return nil, err
