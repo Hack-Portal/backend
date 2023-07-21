@@ -46,13 +46,13 @@ type CreateAccountResponses struct {
 
 // CreateAccount	godoc
 // @Summary			Create new account
-// @Description		Create new account
+// @Description		Create an account from the requested body
 // @Tags			Accounts
 // @Produce			json
-// @Param			CreateAccountRequestBody 	body 	CreateAccountRequestBody	true	"Create Account Request Body"
-// @Success			200			{object}		CreateAccountResponses	"create succsss response"
-// @Failure 		400			{object}		ErrorResponse	"bad request response"
-// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Param			CreateAccountRequestBody 	body 			CreateAccountRequestBody	true	"Create Account Request Body"
+// @Success			200							{object}		CreateAccountResponses		"create succsss response"
+// @Failure 		400							{object}		ErrorResponse				"bad request response"
+// @Failure 		500							{object}		ErrorResponse				"server error response"
 // @Router       	/accounts 	[post]
 func (server *Server) CreateAccount(ctx *gin.Context) {
 	var request CreateAccountRequestBody
@@ -152,13 +152,13 @@ type GetAccountResponses struct {
 
 // GetAccount		godoc
 // @Summary			Get account
-// @Description		Get Any Account
+// @Description		Return a user from the id specified in the path
 // @Tags			Accounts
 // @Produce			json
-// @Param			user_id 	path			string		true	"user_id"
+// @Param			user_id 	path			string				true	"user_id"
 // @Success			200			{object}		GetAccountResponses	"Get success response"
-// @Failure 		400			{object}		ErrorResponse	"bad request response"
-// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Failure 		400			{object}		ErrorResponse		"bad request response"
+// @Failure 		500			{object}		ErrorResponse		"server error response"
 // @Router       	/accounts/{user_id} 		[get]
 func (server *Server) GetAccount(ctx *gin.Context) {
 	var request AccountRequestWildCard
@@ -276,14 +276,14 @@ type UpdateAccountResponse struct {
 
 // UpdateAccount	godoc
 // @Summary			Update Account
-// @Description		Update process when it matches the person
+// @Description		Update user info from requested body
 // @Tags			Accounts
 // @Produce			json
-// @Param			user_id 						path	string			true	"user_id"
-// @Param			UpdateAccountRequestBody 		body	UpdateAccountRequestBody	true	"Update Account Request Body"
-// @Success			200			{object}		UpdateAccountResponse	"Update succsss response"
-// @Failure 		400			{object}		ErrorResponse	"bad request response"
-// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Param			user_id 					path		string						true	"user_id"
+// @Param			UpdateAccountRequestBody 	body		UpdateAccountRequestBody	true	"Update Account Request Body"
+// @Success			200							{object}	UpdateAccountResponse		"Update succsss response"
+// @Failure 		400							{object}	ErrorResponse				"bad request response"
+// @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/accounts/{user_id} 		[put]
 func (server *Server) UpdateAccount(ctx *gin.Context) {
 	var (
