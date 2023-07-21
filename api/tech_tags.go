@@ -11,9 +11,9 @@ import (
 // @Description		Get Framewroks
 // @Tags			TechTags
 // @Produce			json
-// @Success			200			{array}			db.TechTags	"succsss response"
-// @Failure 		500			{object}		ErrorResponse		"error response"
-// @Router       	/tech_tags	[get]
+// @Success			200		{array}		db.TechTags		"succsss response"
+// @Failure 		500		{object}	ErrorResponse	"error response"
+// @Router       	/tech_tags			[get]
 func (server *Server) ListTechTags(ctx *gin.Context) {
 	techTags, err := server.store.ListTechTag(ctx)
 	if err != nil {
