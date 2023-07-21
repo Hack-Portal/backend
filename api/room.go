@@ -31,11 +31,11 @@ type CreateRoomRequestBody struct {
 // @Description		Create Rooms
 // @Tags			Rooms
 // @Produce			json
-// @Param			CreateRoomRequestBody 		body 					CreateRoomRequestBody		true	"create Room Request Body"
-// @Success			200			{object}		db.CreateRoomTxResult	"succsss response"
-// @Failure 		400			{object}		ErrorResponse			"error response"
-// @Failure 		500			{object}		ErrorResponse			"error response"
-// @Router       	/rooms	[post]
+// @Param			CreateRoomRequestBody 	body 		CreateRoomRequestBody	true	"create Room Request Body"
+// @Success			200						{object}	db.CreateRoomTxResult	"succsss response"
+// @Failure 		400						{object}	ErrorResponse			"error response"
+// @Failure 		500						{object}	ErrorResponse			"error response"
+// @Router       	/rooms					[post]
 func (server *Server) CreateRoom(ctx *gin.Context) {
 	var request CreateRoomRequestBody
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -98,10 +98,10 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 // @Description		Add Account In Rooms
 // @Tags			Rooms
 // @Produce			json
-// @Param			room_id 					path 					string						true	"Get Room Request uri"
-// @Success			200			{object}		db.CreateRoomTxResult	"succsss response"
-// @Failure 		400			{object}		ErrorResponse			"error response"
-// @Failure 		500			{object}		ErrorResponse			"error response"
+// @Param			room_id 	path 		string					true	"Rooms API wildcard"
+// @Success			200			{object}	db.CreateRoomTxResult	"succsss response"
+// @Failure 		400			{object}	ErrorResponse			"error response"
+// @Failure 		500			{object}	ErrorResponse			"error response"
 // @Router       	/rooms/:room_id/members	[post]
 func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 	var reqURI RoomsRequestWildCard
@@ -142,10 +142,10 @@ func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 // @Description		Remove Account In Rooms
 // @Tags			Rooms
 // @Produce			json
-// @Param			room_id 					path 					string						true	"Get Room Request uri"
-// @Success			200			{object}		DeleteResponse			"succsss response"
-// @Failure 		400			{object}		ErrorResponse			"error response"
-// @Failure 		500			{object}		ErrorResponse			"error response"
+// @Param			room_id 	path 		string			true	"Rooms API wildcard"
+// @Success			200			{object}	DeleteResponse	"succsss response"
+// @Failure 		400			{object}	ErrorResponse	"error response"
+// @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/rooms/:room_id/members	[delete]
 func (server *Server) RemoveAccountInRoom(ctx *gin.Context) {
 	var (
@@ -203,10 +203,10 @@ type ListRoomsResponse struct {
 // @Description		List Account
 // @Tags			Rooms
 // @Produce			json
-// @Param			room_id 					path 					string						true	"Get Room Request uri"
-// @Success			200			{array}			[]db.ListRoomTxResult			"succsss response"
-// @Failure 		400			{object}		ErrorResponse			"error response"
-// @Failure 		500			{object}		ErrorResponse			"error response"
+// @Param			room_id path 		string					true	"Rooms API wildcard"
+// @Success			200		{array}		[]db.ListRoomTxResult	"succsss response"
+// @Failure 		400		{object}	ErrorResponse			"error response"
+// @Failure 		500		{object}	ErrorResponse			"error response"
 // @Router       	/rooms	[get]
 func (server *Server) ListRooms(ctx *gin.Context) {
 	var request ListRoomsRequest
@@ -252,11 +252,11 @@ type GetRoomResponse struct {
 // @Description		Get Room
 // @Tags			Rooms
 // @Produce			json
-// @Param			room_id 						path 					string						true	"Get Room Request uri"
-// @Success			200				{object}		GetRoomResponse			"succsss response"
-// @Failure 		400				{object}		ErrorResponse			"error response"
-// @Failure 		500				{object}		ErrorResponse			"error response"
-// @Router       	/rooms/:room_id	[get]
+// @Param			room_id path 		string				true	"Rooms API wildcard"
+// @Success			200		{object}	GetRoomResponse		"succsss response"
+// @Failure 		400		{object}	ErrorResponse		"error response"
+// @Failure 		500		{object}	ErrorResponse		"error response"
+// @Router       	/rooms/:room_id		[get]
 func (server *Server) GetRoom(ctx *gin.Context) {
 	var request RoomsRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -375,12 +375,12 @@ type AddChatRequestBody struct {
 // @Description		Add Chat Room
 // @Tags			Rooms
 // @Produce			json
-// @Param			room_id 						path 					string						true	"add chat Room Request uri"
-// @Param			AddChatRequestBody 				body 					AddChatRequestBody			true	"add chat Room Request body"
-// @Success			200				{object}		GetRoomResponse			"succsss response"
-// @Failure 		400				{object}		ErrorResponse			"error response"
-// @Failure 		500				{object}		ErrorResponse			"error response"
-// @Router       	/rooms/:room_id/addchat	[post]
+// @Param			room_id 			path 		string				true	"Rooms API wildcard"
+// @Param			AddChatRequestBody 	body 		AddChatRequestBody	true	"add chat Room Request body"
+// @Success			200					{object}	GetRoomResponse		"succsss response"
+// @Failure 		400					{object}	ErrorResponse		"error response"
+// @Failure 		500					{object}	ErrorResponse		"error response"
+// @Router       	/rooms/:room_id/addchat			[post]
 func (server *Server) AddChat(ctx *gin.Context) {
 	var requestURI RoomsRequestWildCard
 	var requestBody AddChatRequestBody
@@ -456,12 +456,12 @@ type UpdateRoomRequestBody struct {
 // @Description		update Room
 // @Tags			Rooms
 // @Produce			json
-// @Param			room_id 						path 					string						true	"update Room Request uri"
-// @Param			UpdateRoomRequestBody 			body 					UpdateRoomRequestBody		true	"update Room Request body"
-// @Success			200				{object}		GetRoomResponse			"succsss response"
-// @Failure 		400				{object}		ErrorResponse			"error response"
-// @Failure 		500				{object}		ErrorResponse			"error response"
-// @Router       	/rooms/:room_id	[put]
+// @Param			room_id 				path 		string					true	"Rooms API wildcard"
+// @Param			UpdateRoomRequestBody 	body 		UpdateRoomRequestBody	true	"update Room Request body"
+// @Success			200						{object}	GetRoomResponse			"succsss response"
+// @Failure 		400						{object}	ErrorResponse			"error response"
+// @Failure 		500						{object}	ErrorResponse			"error response"
+// @Router       	/rooms/:room_id			[put]
 func (server *Server) UpdateRoom(ctx *gin.Context) {
 	var (
 		reqURI  RoomsRequestWildCard
@@ -553,11 +553,11 @@ func parseUpdateRoomParam(room db.Rooms, reqBody UpdateRoomRequestBody) (result 
 // @Description		delete Room
 // @Tags			Rooms
 // @Produce			json
-// @Param			room_id 						path 					string						true	"update Room Request uri"
-// @Success			200				{object}		DeleteResponse			"succsss response"
-// @Failure 		400				{object}		ErrorResponse			"error response"
-// @Failure 		500				{object}		ErrorResponse			"error response"
-// @Router       	/rooms/:room_id	[delete]
+// @Param			room_id path 		string			true	"Rooms API wildcard"
+// @Success			200		{object}	DeleteResponse	"succsss response"
+// @Failure 		400		{object}	ErrorResponse	"error response"
+// @Failure 		500		{object}	ErrorResponse	"error response"
+// @Router       	/rooms/:room_id		[delete]
 func (server *Server) DeleteRoom(ctx *gin.Context) {
 	var (
 		reqURI RoomsRequestWildCard
