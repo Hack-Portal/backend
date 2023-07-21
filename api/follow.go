@@ -8,15 +8,32 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
-type CreateFollow struct {
-	ToUserID   string `json:"to_user_id" binding:"required"`
-	FromUserID string `json:"from_user_id" binding:"required"`
+type CreateFollowRequestBody struct {
+	ToUserID string `json:"to_user_id" binding:"required"`
 }
 
-// フォローするAPI
+// TODO:レスポンス変更　=> accounts
+// CreateFollow	godoc
+// @Summary			Create Follow
+// @Description		Follow!!!!!!!!
+// @Tags			Accounts
+// @Produce			json
+// @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
+// @Param			CreateFollowRequestBody 	body 		CreateFollowRequestBody		true	"create Follow Request Body"
+// @Success			200							{array}		db.Follows					"succsss response"
+// @Failure 		400							{object}	ErrorResponse				"error response"
+// @Failure 		500							{object}	ErrorResponse				"error response"
+// @Router       	/accounts/:from_user_id/follow			[post]
 func (server *Server) CreateFollow(ctx *gin.Context) {
-	var request CreateFollow
-	if err := ctx.ShouldBindJSON(&request); err != nil {
+	var (
+		reqURI  AccountRequestWildCard
+		reqBody CreateFollowRequestBody
+	)
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -29,26 +46,26 @@ func (server *Server) CreateFollow(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if account.UserID != request.ToUserID {
+	if account.UserID != reqBody.ToUserID {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 	}
 
 	// フォローされる人がいるか
-	followedAccounts, err := server.store.ListFollowByToUserID(ctx, request.ToUserID)
+	followedAccounts, err := server.store.ListFollowByToUserID(ctx, reqBody.ToUserID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	if checkFollow(followedAccounts, request.ToUserID) {
+	if checkFollow(followedAccounts, reqBody.ToUserID) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	// フォローする
 	result, err := server.store.CreateFollow(ctx, db.CreateFollowParams{
-		ToUserID:   request.ToUserID,
-		FromUserID: request.FromUserID,
+		ToUserID:   reqBody.ToUserID,
+		FromUserID: reqURI.ID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -67,34 +84,82 @@ func checkFollow(accounts []db.Follows, userID string) bool {
 	return false
 }
 
-// フォローを外すAPI
-type RemoveFollow struct {
+type RemoveFollowRequestQueries struct {
 	ToUserID   string `json:"to_user_id" binding:"required"`
 	FromUserID string `json:"from_user_id" binding:"required"`
 }
 
+// TODO:レスポンス修正
+// RemoveFollow	godoc
+// @Summary			Remove follow
+// @Description		Unfollow
+// @Tags			Accounts
+// @Produce			json
+// @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
+// @Param			RemoveFollowRequestQueries 	formData 	CreateFollowRequestBody		true	"Remove Follow Request Body"
+// @Success			200							{object}	DeleteResponse				"succsss response"
+// @Failure 		400							{object}	ErrorResponse				"error response"
+// @Failure 		500							{object}	ErrorResponse				"error response"
+// @Router       	/accounts/:from_user_id/follow			[delete]
 func (server *Server) RemoveFollow(ctx *gin.Context) {
-	var request RemoveFollow
-	if err := ctx.ShouldBindJSON(&request); err != nil {
+	var (
+		reqURI   AccountRequestWildCard
+		reqQuery RemoveFollowRequestQueries
+	)
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	// フォローを外す
 	// TODO: エラーハンドリング
-	result, err := server.store.GetAccountByID(ctx, request.ToUserID)
+	_, err := server.store.GetAccountByID(ctx, reqQuery.ToUserID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	err = server.store.RemoveFollow(ctx, db.RemoveFollowParams{
-		ToUserID:   request.ToUserID,
-		FromUserID: request.FromUserID,
+		ToUserID:   reqQuery.ToUserID,
+		FromUserID: reqURI.ID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, result)
+	ctx.JSON(http.StatusOK, DeleteResponse{Result: "Delete Successful"})
+}
+
+type GetFollowRequestQueries struct {
+	Mode     bool   `form:"mode"`
+	PageSize string `form:"page_size"`
+	PageID   string `form:"page_id"`
+}
+
+func (server *Server) GetFollow(ctx *gin.Context) {
+	var (
+		reqtURI  AccountRequestWildCard
+		reqQuery GetFollowRequestQueries
+		// result   []db.Follows
+	)
+	if err := ctx.ShouldBindUri(&reqtURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	// TODO:　ToFollowからの取得と FromFollowからの取得　両方作る
+	// args は page_size ,page_id ,user_id
+	if reqQuery.Mode {
+		// Toの取得
+	} else {
+		// Fromの取得
+	}
+
 }
