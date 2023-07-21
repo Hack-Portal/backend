@@ -38,14 +38,14 @@ type HackathonResponses struct {
 
 // CreateHackathon	godoc
 // @Summary			Create Hackathon
-// @Description		Create Hackathon
+// @Description		Register a hackathon from given parameters
 // @Tags			Hackathon
 // @Produce			json
-// @Param			CreateHackathonRequestBody 	body 					CreateHackathonRequestBody		true	"create hackathon Request Body"
-// @Success			200			{object}		HackathonResponses		"succsss response"
-// @Failure 		400			{object}		ErrorResponse			"error response"
-// @Failure 		500			{object}		ErrorResponse			"error response"
-// @Router       	/hackathons	[post]
+// @Param			CreateHackathonRequestBody 	body 		CreateHackathonRequestBody		true	"create hackathon Request Body"
+// @Success			200							{object}	HackathonResponses				"succsss response"
+// @Failure 		400							{object}	ErrorResponse					"error response"
+// @Failure 		500							{object}	ErrorResponse					"error response"
+// @Router       	/hackathons					[post]
 func (server *Server) CreateHackathon(ctx *gin.Context) {
 	var (
 		request  CreateHackathonRequestBody
@@ -130,11 +130,11 @@ type HackathonRequestWildCard struct {
 // @Description		Get Hackathon
 // @Tags			Hackathon
 // @Produce			json
-// @Param			hackathon_id				path 	 				string			true	"get hackathon Request Body"
-// @Success			200			{object}			HackathonResponses		"succsss response"
-// @Failure 		400			{object}		ErrorResponse			"error response"
-// @Failure 		500			{object}		ErrorResponse			"error response"
-// @Router       	/hackathons/:hackathon_id [get]
+// @Param			hackathon_id	path 	 		string					true	"Hackathons API wildcard"
+// @Success			200				{object}		HackathonResponses		"succsss response"
+// @Failure 		400				{object}		ErrorResponse			"error response"
+// @Failure 		500				{object}		ErrorResponse			"error response"
+// @Router       	/hackathons/:hackathon_id 		[get]
 func (server *Server) GetHackathon(ctx *gin.Context) {
 	var reqURI HackathonRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -192,11 +192,11 @@ type ListHackathonsResponses struct {
 // @Description		List Hackathon
 // @Tags			Hackathon
 // @Produce			json
-// @Param			ListHackathonsParams		formData 	 			ListHackathonsParams	true	"List hackathon Request queries"
-// @Success			200			{array}			HackathonResponses		"succsss response"
-// @Failure 		400			{object}		ErrorResponse			"error response"
-// @Failure 		500			{object}		ErrorResponse			"error response"
-// @Router       	/hackathons [get]
+// @Param			ListHackathonsParams	formData 	ListHackathonsParams	true	"List hackathon Request queries"
+// @Success			200						{array}		HackathonResponses		"succsss response"
+// @Failure 		400						{object}	ErrorResponse			"error response"
+// @Failure 		500						{object}	ErrorResponse			"error response"
+// @Router       	/hackathons 			[get]
 func (server *Server) ListHackathons(ctx *gin.Context) {
 	var request ListHackathonsParams
 	if err := ctx.ShouldBindQuery(&request); err != nil {
