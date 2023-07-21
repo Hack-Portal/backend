@@ -88,6 +88,7 @@ type RemoveFollowRequestQueries struct {
 	FromUserID string `json:"from_user_id" binding:"required"`
 }
 
+// TODO:レスポンス修正
 // RemoveFollow	godoc
 // @Summary			Remove follow
 // @Description		Remove follow
@@ -95,7 +96,7 @@ type RemoveFollowRequestQueries struct {
 // @Produce			json
 // @Param			from_user_id 				path 			string						true	"remove Follow Request path"
 // @Param			RemoveFollowRequestQueries 	formData 		CreateFollowRequestBody		true	"remove Follow Request Body"
-// @Success			200			{array}			db.Follows		"succsss response"
+// @Success			200			{object}		db.Follows		"succsss response"
 // @Failure 		400			{object}		ErrorResponse	"error response"
 // @Failure 		500			{object}		ErrorResponse	"error response"
 // @Router       	/acccounts/{from_user_id}/follow	[delete]

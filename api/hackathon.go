@@ -11,7 +11,7 @@ import (
 )
 
 // ハッカソンを作る時のリクエストパラメータ
-type CreateHackathonParams struct {
+type CreateHackathonRequestBody struct {
 	Name        string    `json:"name"`
 	Icon        string    `json:"icon"`
 	Description string    `json:"description"`
@@ -36,10 +36,19 @@ type HackathonResponses struct {
 	StatusTags []db.StatusTags `json:"status_tags"`
 }
 
-// ハッカソン作成
+// CreateHackathon	godoc
+// @Summary			Get Hackathon
+// @Description		Get Hackathon
+// @Tags			Hackathon
+// @Produce			json
+// @Param			CreateHackathonRequestBody 	body 					CreateHackathonRequestBody		true	"create hackathon Request Body"
+// @Success			200			{object}		HackathonResponses		"succsss response"
+// @Failure 		400			{object}		ErrorResponse			"error response"
+// @Failure 		500			{object}		ErrorResponse			"error response"
+// @Router       	/hackathons	[post]
 func (server *Server) CreateHackathon(ctx *gin.Context) {
 	var (
-		request  CreateHackathonParams
+		request  CreateHackathonRequestBody
 		imageURL string
 	)
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -108,24 +117,33 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 
 // ハッカソン取得
 // ハッカソンを取得する際のパラメータ
-type GetHackathonParams struct {
+type HackathonRequestWildCard struct {
 	HackathonID int32 `uri:"hackathon_id"`
 }
 
-// ハッカソンを取得する
+// GetHackathon	godoc
+// @Summary			Get Hackathon
+// @Description		Get Hackathon
+// @Tags			Hackathon
+// @Produce			json
+// @Param			hackathon_id				path 	 				string			true	"get hackathon Request Body"
+// @Success			200			{object}			HackathonResponses		"succsss response"
+// @Failure 		400			{object}		ErrorResponse			"error response"
+// @Failure 		500			{object}		ErrorResponse			"error response"
+// @Router       	/hackathons/:hackathon_id [get]
 func (server *Server) GetHackathon(ctx *gin.Context) {
-	var request GetHackathonParams
-	if err := ctx.ShouldBindUri(&request); err != nil {
+	var reqURI HackathonRequestWildCard
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	hackathon, err := server.store.GetHackathonByID(ctx, request.HackathonID)
+	hackathon, err := server.store.GetHackathonByID(ctx, reqURI.HackathonID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	statusTags, err := server.store.GetStatusTagsByHackathonID(ctx, request.HackathonID)
+	statusTags, err := server.store.GetStatusTagsByHackathonID(ctx, reqURI.HackathonID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -165,6 +183,16 @@ type ListHackathonsResponses struct {
 	StatusTags []db.StatusTags `json:"status_tags"`
 }
 
+// ListHackathons	godoc
+// @Summary			Get Hackathon
+// @Description		Get Hackathon
+// @Tags			Hackathon
+// @Produce			json
+// @Param			ListHackathonsParams		formData 	 			ListHackathonsParams	true	"List hackathon Request queries"
+// @Success			200			{array}			HackathonResponses		"succsss response"
+// @Failure 		400			{object}		ErrorResponse			"error response"
+// @Failure 		500			{object}		ErrorResponse			"error response"
+// @Router       	/hackathons/:hackathon_id [get]
 func (server *Server) ListHackathons(ctx *gin.Context) {
 	var request ListHackathonsParams
 	if err := ctx.ShouldBindQuery(&request); err != nil {
