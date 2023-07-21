@@ -7,6 +7,9 @@ const (
 	ImageKey               = "icons"
 )
 
+type DeleteResponse struct {
+	Result string `json:"result"`
+}
 type ErrorResponse struct {
 	Error string `json:"error"`
 }

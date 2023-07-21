@@ -30,7 +30,7 @@ type CreateAccountRequestBody struct {
 }
 
 // アカウントに関するレスポンス
-type AccountResponses struct {
+type CreateAccountResponses struct {
 	UserID          string `json:"user_id"`
 	Username        string `json:"username"`
 	Icon            string `json:"icon"`
@@ -50,7 +50,7 @@ type AccountResponses struct {
 // @Tags			Accounts
 // @Produce			json
 // @Param			CreateAccountRequestBody 	body 	CreateAccountRequestBody	true	"Create Account Request Body"
-// @Success			200			{object}		AccountResponses	"create succsss response"
+// @Success			200			{object}		CreateAccountResponses	"create succsss response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts 	[post]
@@ -60,7 +60,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
+	//
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
 	if request.Password == "" {
 		var err error
@@ -115,7 +115,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	response := AccountResponses{
+	response := CreateAccountResponses{
 		UserID:          result.Account.UserID,
 		Username:        result.Account.Username,
 		Icon:            result.Account.Icon.String,
@@ -131,14 +131,37 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 }
 
 // アカウントを取得する際のパラメータ
-type RequestParams struct {
+type AccountRequestURI struct {
 	ID string `uri:"id"`
 }
 
-// アカウントを取得する
-// 認証必須
+type GetAccountResponses struct {
+	UserID          string `json:"user_id"`
+	Username        string `json:"username"`
+	Icon            string `json:"icon"`
+	ExplanatoryText string `json:"explanatory_text"`
+	Rate            int32  `json:"rate"`
+	Email           string `json:"email"`
+	Locate          string `json:"locate"`
+	ShowLocate      bool   `json:"show_locate"`
+	ShowRate        bool   `json:"show_rate"`
+
+	TechTags   []db.TechTags   `json:"tech_tags"`
+	Frameworks []db.Frameworks `json:"frameworks"`
+}
+
+// GetAccount	godoc
+// @Summary			Get account
+// @Description		Get Any Account
+// @Tags			Accounts
+// @Produce			json
+// @Param			AccountRequestURI 		path	AccountRequestURI	true	"user_id"
+// @Success			200			{object}		GetAccountResponses	"Get succsss response"
+// @Failure 		400			{object}		ErrorResponse	"bad request response"
+// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Router       	/accounts/{user_id} 		[get]
 func (server *Server) GetAccount(ctx *gin.Context) {
-	var request RequestParams
+	var request AccountRequestURI
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -193,14 +216,15 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 
 	// 本人のリクエストの時は、すべての情報を返す
 	// そうでないときはShowLocateとShowRateの情報に沿って返す
-	var response AccountResponses
+	var response GetAccountResponses
 	if payload.Email == account.Email {
-		response = AccountResponses{
+		response = GetAccountResponses{
 			UserID:          account.UserID,
 			Username:        account.Username,
 			Icon:            account.Icon.String,
 			ExplanatoryText: account.ExplanatoryText.String,
 			Locate:          locate.Name,
+			Email:           account.Email,
 			Rate:            account.Rate,
 			ShowLocate:      account.ShowLocate,
 			ShowRate:        account.ShowRate,
@@ -208,7 +232,7 @@ func (server *Server) GetAccount(ctx *gin.Context) {
 			Frameworks:      accountFrameworks,
 		}
 	} else {
-		response = AccountResponses{
+		response = GetAccountResponses{
 			UserID:          account.UserID,
 			Username:        account.Username,
 			Icon:            account.Icon.String,
@@ -250,12 +274,21 @@ type UpdateAccountResponse struct {
 	CreatedAt       time.Time `json:"created_at"`
 }
 
-// アカウント更新
-// 認証必須
+// UpdateAccount	godoc
+// @Summary			Update Account
+// @Description		Update process when it matches the person
+// @Tags			Accounts
+// @Produce			json
+// @Param			AccountRequestURI 				path	AccountRequestURI		true	"user_id"
+// @Param			UpdateAccountRequestBody 		body	UpdateAccountRequestBody	true	"Update Account Request Body"
+// @Success			200			{object}		UpdateAccountResponse	"Update succsss response"
+// @Failure 		400			{object}		ErrorResponse	"bad request response"
+// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Router       	/accounts/{user_id} 		[put]
 func (server *Server) UpdateAccount(ctx *gin.Context) {
 	var (
 		requestBody UpdateAccountRequestBody
-		requestURI  RequestParams
+		requestURI  AccountRequestURI
 		imageURL    string
 	)
 	if err := ctx.ShouldBindUri(&requestURI); err != nil {
@@ -396,9 +429,18 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccount
 	return
 }
 
-// ユーザ削除
+// DeleteAccount	godoc
+// @Summary			Remove Account
+// @Description		Only you can delete your account (logical delete)
+// @Tags			Accounts
+// @Produce			json
+// @Param			AccountRequestURI 			path	AccountRequestURI		true	"user_id"
+// @Success			200			{object}		DeleteResponse	"delete succsss response"
+// @Failure 		400			{object}		ErrorResponse	"bad request response"
+// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Router       	/accounts/{user_id} 		[put]
 func (server *Server) DeleteAccount(ctx *gin.Context) {
-	var request RequestParams
+	var request AccountRequestURI
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -421,8 +463,8 @@ func (server *Server) DeleteAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"result": "success",
+	ctx.JSON(http.StatusOK, DeleteResponse{
+		Result: "success",
 	})
 
 }
