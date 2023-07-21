@@ -1,5 +1,24 @@
 basePath: /api/v1
 definitions:
+  api.BookmarkResponse:
+    properties:
+      description:
+        type: string
+      expired:
+        type: string
+      hackathon_id:
+        type: integer
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      term:
+        type: integer
+    type: object
   api.CreateAccountRequestBody:
     properties:
       explanatory_text:
@@ -58,6 +77,13 @@ definitions:
       user_id:
         type: string
       username:
+        type: string
+    type: object
+  api.CreateBookmarkRequestBody:
+    properties:
+      hackathon_id:
+        type: integer
+      user_id:
         type: string
     type: object
   api.DeleteResponse:
@@ -280,4 +306,87 @@ paths:
       summary: Update Account
       tags:
       - Accounts
+  /bookmarks:
+    post:
+      description: Create new bookmark
+      parameters:
+      - description: New Bookmark Request Body
+        in: body
+        name: CreateBookmarkRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateBookmarkRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create succsss response
+          schema:
+            $ref: '#/definitions/api.BookmarkResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create new bookmark
+      tags:
+      - Bookmark
+  /bookmarks/{hackathon_id}:
+    delete:
+      description: delete bookmark
+      parameters:
+      - description: Delete Bookmark Request Body
+        in: path
+        name: hackathon_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete succsss response
+          schema:
+            $ref: '#/definitions/api.BookmarkResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: delete bookmark
+      tags:
+      - Bookmark
+    get:
+      description: Get bookmark
+      parameters:
+      - description: Delete Bookmark Request Body
+        in: formData
+        name: ListBookmarkRequestQueries
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete succsss response
+          schema:
+            items:
+              $ref: '#/definitions/api.BookmarkResponse'
+            type: array
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get my bookmark
+      tags:
+      - Bookmark
 swagger: "2.0"

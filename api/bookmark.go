@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
@@ -13,17 +14,27 @@ type CreateBookmarkRequestBody struct {
 	HackathonID int32  `json:"hackathon_id"`
 }
 
+type BookmarkResponse struct {
+	HackathonID int32     `json:"hackathon_id"`
+	Name        string    `json:"name"`
+	Icon        string    `json:"icon"`
+	Description string    `json:"description"`
+	Link        string    `json:"link"`
+	Expired     time.Time `json:"expired"`
+	StartDate   time.Time `json:"start_date"`
+	Term        int32     `json:"term"`
+}
+
 // CreateBookmark	godoc
 // @Summary			Create new bookmark
 // @Description		Create new bookmark
 // @Tags			Bookmark
 // @Produce			json
 // @Param			CreateBookmarkRequestBody 	body 	CreateBookmarkRequestBody	true	"New Bookmark Request Body"
-// @Success			200			{object}		db.Hackathons	"create succsss response"
+// @Success			200			{object}		BookmarkResponse	"create succsss response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/bookmarks 	[post]
-
 func (server *Server) CreateBookmark(ctx *gin.Context) {
 	var request CreateBookmarkRequestBody
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -59,8 +70,21 @@ func (server *Server) CreateBookmark(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	response := BookmarkResponse{
+		HackathonID: hackathon.HackathonID,
+		Name:        hackathon.Name,
+		Icon:        hackathon.Icon.String,
+		Description: hackathon.Description,
+		Link:        hackathon.Link,
+		Expired:     hackathon.Expired,
+		StartDate:   hackathon.StartDate,
+		Term:        hackathon.Term,
+	}
+	ctx.JSON(http.StatusOK, response)
+}
 
-	ctx.JSON(http.StatusOK, hackathon)
+type RemoveBookmarkRequestURI struct {
+	HackathonID int32 `uri:"hackathon_id"`
 }
 
 // RemoveBookmark	godoc
@@ -69,15 +93,10 @@ func (server *Server) CreateBookmark(ctx *gin.Context) {
 // @Tags			Bookmark
 // @Produce			json
 // @Param			hackathon_id 	path 		string	true	"Delete Bookmark Request Body"
-// @Success			200			{object}		db.Hackathons	"delete succsss response"
+// @Success			200			{object}		BookmarkResponse	"delete succsss response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/bookmarks/{hackathon_id} 	[delete]
-
-type RemoveBookmarkRequestURI struct {
-	HackathonID int32 `uri:"hackathon_id"`
-}
-
 func (server *Server) RemoveBookmark(ctx *gin.Context) {
 	var request RemoveBookmarkRequestURI
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -107,8 +126,23 @@ func (server *Server) RemoveBookmark(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	response := BookmarkResponse{
+		HackathonID: hackathon.HackathonID,
+		Name:        hackathon.Name,
+		Icon:        hackathon.Icon.String,
+		Description: hackathon.Description,
+		Link:        hackathon.Link,
+		Expired:     hackathon.Expired,
+		StartDate:   hackathon.StartDate,
+		Term:        hackathon.Term,
+	}
 
-	ctx.JSON(http.StatusOK, hackathon)
+	ctx.JSON(http.StatusOK, response)
+}
+
+type ListBookmarkRequestQueries struct {
+	PageSize int32 `form:"page_size" binding:"required"`
+	PageID   int32 `form:"page_id" binding:"required"`
 }
 
 // ListBookmarkToHackathon	godoc
@@ -117,16 +151,10 @@ func (server *Server) RemoveBookmark(ctx *gin.Context) {
 // @Tags			Bookmark
 // @Produce			json
 // @Param			ListBookmarkRequestQueries 	formData 		string	true	"Delete Bookmark Request Body"
-// @Success			200			{object}		db.Hackathons	"delete succsss response"
+// @Success			200			{array}		BookmarkResponse	"delete succsss response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/bookmarks/{hackathon_id} 	[get]
-
-type ListBookmarkRequestQueries struct {
-	PageSize int32 `form:"page_size"`
-	PageID   int32 `form:"page_id"`
-}
-
 func (server *Server) ListBookmarkToHackathon(ctx *gin.Context) {
 	var request ListBookmarkRequestQueries
 	if err := ctx.ShouldBindQuery(&request); err != nil {
@@ -146,14 +174,23 @@ func (server *Server) ListBookmarkToHackathon(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	var hackathons []db.Hackathons
+	var response []BookmarkResponse
 	for _, bookmark := range bookmarks {
 		hackathon, err := server.store.GetHackathonByID(ctx, bookmark.HackathonID)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
-		hackathons = append(hackathons, hackathon)
+		response = append(response, BookmarkResponse{
+			HackathonID: hackathon.HackathonID,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon.String,
+			Description: hackathon.Description,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired,
+			StartDate:   hackathon.StartDate,
+			Term:        hackathon.Term,
+		})
 	}
-	ctx.JSON(http.StatusOK, hackathons)
+	ctx.JSON(http.StatusOK, response)
 }

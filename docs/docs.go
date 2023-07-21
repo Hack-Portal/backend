@@ -195,9 +195,164 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/bookmarks": {
+            "post": {
+                "description": "Create new bookmark",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmark"
+                ],
+                "summary": "Create new bookmark",
+                "parameters": [
+                    {
+                        "description": "New Bookmark Request Body",
+                        "name": "CreateBookmarkRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateBookmarkRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.BookmarkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookmarks/{hackathon_id}": {
+            "get": {
+                "description": "Get bookmark",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmark"
+                ],
+                "summary": "Get my bookmark",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Delete Bookmark Request Body",
+                        "name": "ListBookmarkRequestQueries",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.BookmarkResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete bookmark",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmark"
+                ],
+                "summary": "delete bookmark",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Delete Bookmark Request Body",
+                        "name": "hackathon_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.BookmarkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "api.BookmarkResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "expired": {
+                    "type": "string"
+                },
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.CreateAccountRequestBody": {
             "type": "object",
             "required": [
@@ -283,6 +438,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.CreateBookmarkRequestBody": {
+            "type": "object",
+            "properties": {
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
