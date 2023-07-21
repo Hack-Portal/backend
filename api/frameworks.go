@@ -11,7 +11,7 @@ import (
 // @Description		Get Framewroks
 // @Tags			Framewroks
 // @Produce			json
-// @Success			200			{array}			db.ListFrameworks	"succsss response"
+// @Success			200			{array}			db.Frameworks	"succsss response"
 // @Failure 		500			{object}		ErrorResponse		"error response"
 // @Router       	/frameworks	[get]
 func (server *Server) ListFrameworks(ctx *gin.Context) {

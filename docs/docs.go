@@ -95,23 +95,17 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "remove Follow Request Body",
-                        "name": "RemoveFollowRequestQueries",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.CreateFollowRequestBody"
-                        }
+                        "type": "string",
+                        "name": "to_user_id",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "succsss response",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.Follows"
-                            }
+                            "$ref": "#/definitions/db.Follows"
                         }
                     },
                     "400": {
@@ -425,6 +419,130 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/frameworks": {
+            "get": {
+                "description": "Get Framewroks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Framewroks"
+                ],
+                "summary": "Get Framewroks",
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Frameworks"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/hackathons": {
+            "post": {
+                "description": "Get Hackathon",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Get Hackathon",
+                "parameters": [
+                    {
+                        "description": "create hackathon Request Body",
+                        "name": "CreateHackathonRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateHackathonRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.HackathonResponses"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/hackathons/:hackathon_id": {
+            "get": {
+                "description": "Get Hackathon",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Get Hackathon",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "name": "expired",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.HackathonResponses"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -568,6 +686,38 @@ const docTemplate = `{
                 }
             }
         },
+        "api.CreateHackathonRequestBody": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "expired": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.DeleteResponse": {
             "type": "object",
             "properties": {
@@ -625,6 +775,41 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "api.HackathonResponses": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "expired": {
+                    "type": "string"
+                },
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.StatusTags"
+                    }
+                },
+                "term": {
+                    "type": "integer"
                 }
             }
         },
@@ -710,6 +895,17 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "tech_tag_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.StatusTags": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "status_id": {
                     "type": "integer"
                 }
             }
