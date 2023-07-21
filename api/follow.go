@@ -12,6 +12,7 @@ type CreateFollowRequestBody struct {
 	ToUserID string `json:"to_user_id" binding:"required"`
 }
 
+// TODO:レスポンス変更　=> accounts
 // CreateFollow	godoc
 // @Summary			Create Follow
 // @Description		Follow!!!!!!!!
