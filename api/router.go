@@ -3,6 +3,9 @@ package api
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	_ "github.com/hackhack-Geek-vol6/backend/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func (server *Server) setupRouter() {
@@ -11,8 +14,14 @@ func (server *Server) setupRouter() {
 	server.setUpCors()
 	server.publicRouter()
 	server.authRouter()
+	server.setupSwagger()
 
 }
+
+func (server *Server) setupSwagger() {
+	server.router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+}
+
 func (server *Server) setUpCors() {
 	// server.router.Use(cors.New(
 	// 	cors.Config{

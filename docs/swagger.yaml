@@ -1,0 +1,16 @@
+basePath: /api/v1
+host: https://seaffood.com
+info:
+  contact:
+    email: oogiriminister@gmail.com
+    name: murasame
+    url: https://twitter.com/fresh_salmon256
+  description: HackPortal Backend API serice
+  license:
+    name: No-license
+    url: No-license
+  termsOfService: https://seaffood.com/api
+  title: Hack Hack Backend API
+  version: "1.0"
+paths: {}
+swagger: "2.0"
