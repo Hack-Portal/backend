@@ -308,11 +308,11 @@ func (server *Server) UpdateAccount(ctx *gin.Context) {
 		case HttpNoSuchFile:
 			ctx.JSON(400, errorResponse(err))
 			return
+		case RequestContentTypeIsnt:
+			break
 		default:
 			ctx.JSON(400, errorResponse(err))
 			return
-		case RequestContentTypeIsnt:
-			break
 		}
 	} else {
 		// 画像がある場合
