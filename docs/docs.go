@@ -50,7 +50,135 @@ const docTemplate = `{
                     "200": {
                         "description": "create succsss response",
                         "schema": {
-                            "$ref": "#/definitions/api.AccountResponses"
+                            "$ref": "#/definitions/api.CreateAccountResponses"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{user_id}": {
+            "get": {
+                "description": "Get Any Account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get success response",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetAccountResponses"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update process when it matches the person",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Update Account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Account Request Body",
+                        "name": "UpdateAccountRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.UpdateAccountRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.UpdateAccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Only you can delete your account (logical delete)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Remove Account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.DeleteResponse"
                         }
                     },
                     "400": {
@@ -70,47 +198,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api.AccountResponses": {
-            "type": "object",
-            "properties": {
-                "explanatory_text": {
-                    "type": "string"
-                },
-                "frameworks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.Frameworks"
-                    }
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "locate": {
-                    "type": "string"
-                },
-                "rate": {
-                    "type": "integer"
-                },
-                "show_locate": {
-                    "type": "boolean"
-                },
-                "show_rate": {
-                    "type": "boolean"
-                },
-                "tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.TechTags"
-                    }
-                },
-                "user_id": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "api.CreateAccountRequestBody": {
             "type": "object",
             "required": [
@@ -159,10 +246,161 @@ const docTemplate = `{
                 }
             }
         },
+        "api.CreateAccountResponses": {
+            "type": "object",
+            "properties": {
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.Frameworks"
+                    }
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "locate": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.TechTags"
+                    }
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.DeleteResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
         "api.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.GetAccountResponses": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.Frameworks"
+                    }
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "locate": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.TechTags"
+                    }
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.UpdateAccountRequestBody": {
+            "type": "object",
+            "properties": {
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "hashed_password": {
+                    "type": "string"
+                },
+                "locate_id": {
+                    "type": "integer"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.UpdateAccountResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "hashed_password": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "locate": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "username": {
                     "type": "string"
                 }
             }
