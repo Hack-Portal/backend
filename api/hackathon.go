@@ -65,19 +65,23 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 		case HttpNoSuchFile:
 			ctx.JSON(400, errorResponse(err))
 			return
+		case RequestContentTypeIsnt:
+			break
 		default:
 			ctx.JSON(400, errorResponse(err))
 			return
-		case RequestContentTypeIsnt:
-			break
 		}
 	} else {
 		buf := bytes.NewBuffer(nil)
 		if _, err := io.Copy(buf, file); err != nil {
-			ctx.JSON(500, errorResponse(err))
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
 		imageURL, err = server.store.UploadImage(ctx, buf.Bytes())
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
 		if _, err := io.Copy(buf, file); err != nil {
 			ctx.JSON(500, errorResponse(err))
 			return
@@ -192,7 +196,7 @@ type ListHackathonsResponses struct {
 // @Success			200			{array}			HackathonResponses		"succsss response"
 // @Failure 		400			{object}		ErrorResponse			"error response"
 // @Failure 		500			{object}		ErrorResponse			"error response"
-// @Router       	/hackathons/:hackathon_id [get]
+// @Router       	/hackathons [get]
 func (server *Server) ListHackathons(ctx *gin.Context) {
 	var request ListHackathonsParams
 	if err := ctx.ShouldBindQuery(&request); err != nil {

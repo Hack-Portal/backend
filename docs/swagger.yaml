@@ -541,8 +541,40 @@ paths:
       tags:
       - Framewroks
   /hackathons:
+    get:
+      description: List Hackathon
+      parameters:
+      - in: formData
+        name: expired
+        type: boolean
+      - in: formData
+        name: page_id
+        type: integer
+      - in: formData
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            items:
+              $ref: '#/definitions/api.HackathonResponses'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: List Hackathon
+      tags:
+      - Hackathon
     post:
-      description: Get Hackathon
+      description: Create Hackathon
       parameters:
       - description: create hackathon Request Body
         in: body
@@ -565,31 +597,25 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Get Hackathon
+      summary: Create Hackathon
       tags:
       - Hackathon
   /hackathons/:hackathon_id:
     get:
       description: Get Hackathon
       parameters:
-      - in: formData
-        name: expired
-        type: boolean
-      - in: formData
-        name: page_id
-        type: integer
-      - in: formData
-        name: page_size
-        type: integer
+      - description: get hackathon Request Body
+        in: path
+        name: hackathon_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: succsss response
           schema:
-            items:
-              $ref: '#/definitions/api.HackathonResponses'
-            type: array
+            $ref: '#/definitions/api.HackathonResponses'
         "400":
           description: error response
           schema:

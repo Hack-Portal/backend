@@ -450,15 +450,65 @@ const docTemplate = `{
             }
         },
         "/hackathons": {
-            "post": {
-                "description": "Get Hackathon",
+            "get": {
+                "description": "List Hackathon",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Hackathon"
                 ],
-                "summary": "Get Hackathon",
+                "summary": "List Hackathon",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "name": "expired",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.HackathonResponses"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Hackathon",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Create Hackathon",
                 "parameters": [
                     {
                         "description": "create hackathon Request Body",
@@ -504,29 +554,18 @@ const docTemplate = `{
                 "summary": "Get Hackathon",
                 "parameters": [
                     {
-                        "type": "boolean",
-                        "name": "expired",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "page_id",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "page_size",
-                        "in": "formData"
+                        "type": "string",
+                        "description": "get hackathon Request Body",
+                        "name": "hackathon_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "succsss response",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/api.HackathonResponses"
-                            }
+                            "$ref": "#/definitions/api.HackathonResponses"
                         }
                     },
                     "400": {
