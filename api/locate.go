@@ -11,7 +11,7 @@ import (
 // @Description		Get Framewroks
 // @Tags			Locates
 // @Produce			json
-// @Success			200			{array}			db.Locates	"succsss response"
+// @Success			200			{array}			db.Locates			"succsss response"
 // @Failure 		500			{object}		ErrorResponse		"error response"
 // @Router       	/locates	[get]
 func (server *Server) ListLocation(ctx *gin.Context) {
