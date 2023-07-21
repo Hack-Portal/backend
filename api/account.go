@@ -44,6 +44,14 @@ type AccountResponses struct {
 	Frameworks []db.Frameworks `json:"frameworks"`
 }
 
+// CreateAccount             godoc
+// @Summary      Create new account
+// @Description  Create new account
+// @Tags         Accounts
+// @Produce      json
+// @Param
+// @Success      200  {object}  models.Accounts
+// @Router       /accounts [post]
 func (server *Server) CreateAccount(ctx *gin.Context) {
 	var request CreateAccountRequestParam
 	if err := ctx.ShouldBindJSON(&request); err != nil {
