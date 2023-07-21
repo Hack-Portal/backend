@@ -66,9 +66,9 @@ func (server *Server) authRouter() {
 	auth.PUT("/accounts/:id", server.UpdateAccount)
 	auth.DELETE("/acccounts/:id", server.DeleteAccount)
 
-	auth.GET("/acccounts/:from_user_id/follow")
-	auth.POST("/acccounts/:from_user_id/follow", server.CreateFollow)
-	auth.DELETE("/acccounts/:from_user_id/follow", server.RemoveFollow)
+	// auth.GET("/acccounts/:id/follow")
+	auth.POST("/acccounts/:id/follow", server.CreateFollow)
+	auth.DELETE("/acccounts/:id/follow", server.RemoveFollow)
 
 	// ルーム
 	auth.GET("/rooms", server.ListRooms)

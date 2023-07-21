@@ -131,7 +131,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 }
 
 // アカウントを取得する際のパラメータ
-type AccountRequestURI struct {
+type AccountRequestWildCard struct {
 	ID string `uri:"id"`
 }
 
@@ -161,7 +161,7 @@ type GetAccountResponses struct {
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts/{user_id} 		[get]
 func (server *Server) GetAccount(ctx *gin.Context) {
-	var request AccountRequestURI
+	var request AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -288,7 +288,7 @@ type UpdateAccountResponse struct {
 func (server *Server) UpdateAccount(ctx *gin.Context) {
 	var (
 		requestBody UpdateAccountRequestBody
-		requestURI  AccountRequestURI
+		requestURI  AccountRequestWildCard
 		imageURL    string
 	)
 	if err := ctx.ShouldBindUri(&requestURI); err != nil {
@@ -440,7 +440,7 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccount
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts/{user_id} 		[delete]
 func (server *Server) DeleteAccount(ctx *gin.Context) {
-	var request AccountRequestURI
+	var request AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

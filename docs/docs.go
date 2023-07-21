@@ -25,6 +25,110 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/acccounts/{from_user_id}/follow": {
+            "post": {
+                "description": "Create Follow",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AccountsFollow"
+                ],
+                "summary": "Create Follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "create Follow Request path",
+                        "name": "from_user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "create Follow Request Body",
+                        "name": "CreateFollowRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateFollowRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Follows"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove follow",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AccountsFollow"
+                ],
+                "summary": "Remove follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "remove Follow Request path",
+                        "name": "from_user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "remove Follow Request Body",
+                        "name": "RemoveFollowRequestQueries",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateFollowRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Follows"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/accounts": {
             "post": {
                 "description": "Create new account",
@@ -453,6 +557,17 @@ const docTemplate = `{
                 }
             }
         },
+        "api.CreateFollowRequestBody": {
+            "type": "object",
+            "required": [
+                "to_user_id"
+            ],
+            "properties": {
+                "to_user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "api.DeleteResponse": {
             "type": "object",
             "properties": {
@@ -567,6 +682,20 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Follows": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "from_user_id": {
+                    "type": "string"
+                },
+                "to_user_id": {
                     "type": "string"
                 }
             }

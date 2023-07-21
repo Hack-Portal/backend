@@ -8,9 +8,6 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
-type FollowRequestURI struct {
-	FromUserID string `uri:"from_user_id"`
-}
 type CreateFollowRequestBody struct {
 	ToUserID string `json:"to_user_id" binding:"required"`
 }
@@ -28,7 +25,7 @@ type CreateFollowRequestBody struct {
 // @Router       	/acccounts/{from_user_id}/follow	[post]
 func (server *Server) CreateFollow(ctx *gin.Context) {
 	var (
-		reqURI  FollowRequestURI
+		reqURI  AccountRequestWildCard
 		reqBody CreateFollowRequestBody
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -67,7 +64,7 @@ func (server *Server) CreateFollow(ctx *gin.Context) {
 	// フォローする
 	result, err := server.store.CreateFollow(ctx, db.CreateFollowParams{
 		ToUserID:   reqBody.ToUserID,
-		FromUserID: reqURI.FromUserID,
+		FromUserID: reqURI.ID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -104,7 +101,7 @@ type RemoveFollowRequestQueries struct {
 // @Router       	/acccounts/{from_user_id}/follow	[delete]
 func (server *Server) RemoveFollow(ctx *gin.Context) {
 	var (
-		reqURI   FollowRequestURI
+		reqURI   AccountRequestWildCard
 		reqQuery RemoveFollowRequestQueries
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -126,7 +123,7 @@ func (server *Server) RemoveFollow(ctx *gin.Context) {
 
 	err = server.store.RemoveFollow(ctx, db.RemoveFollowParams{
 		ToUserID:   reqQuery.ToUserID,
-		FromUserID: reqURI.FromUserID,
+		FromUserID: reqURI.ID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
