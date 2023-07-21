@@ -7,9 +7,9 @@ import (
 )
 
 // ListFrameworks	godoc
-// @Summary			Remove follow
-// @Description		Remove follow
-// @Tags			AccountsFollow
+// @Summary			Get Framewroks
+// @Description		Get Framewroks
+// @Tags			Framewroks
 // @Produce			json
 // @Success			200			{array}			db.ListFrameworks	"succsss response"
 // @Failure 		500			{object}		ErrorResponse		"error response"
