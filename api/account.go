@@ -155,11 +155,11 @@ type GetAccountResponses struct {
 // @Description		Return a user from the id specified in the path
 // @Tags			Accounts
 // @Produce			json
-// @Param			user_id 	path			string				true	"user_id"
+// @Param			user_id 	path			string				true	"Accounts API wildcard"
 // @Success			200			{object}		GetAccountResponses	"Get success response"
 // @Failure 		400			{object}		ErrorResponse		"bad request response"
 // @Failure 		500			{object}		ErrorResponse		"server error response"
-// @Router       	/accounts/{user_id} 		[get]
+// @Router       	/accounts/:user_id 			[get]
 func (server *Server) GetAccount(ctx *gin.Context) {
 	var request AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -279,12 +279,12 @@ type UpdateAccountResponse struct {
 // @Description		Update user info from requested body
 // @Tags			Accounts
 // @Produce			json
-// @Param			user_id 					path		string						true	"user_id"
+// @Param			user_id 					path		string						true	"Accounts API wildcard"
 // @Param			UpdateAccountRequestBody 	body		UpdateAccountRequestBody	true	"Update Account Request Body"
 // @Success			200							{object}	UpdateAccountResponse		"Update succsss response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
-// @Router       	/accounts/{user_id} 		[put]
+// @Router       	/accounts/:user_id 			[put]
 func (server *Server) UpdateAccount(ctx *gin.Context) {
 	var (
 		requestBody UpdateAccountRequestBody
@@ -434,7 +434,7 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccount
 // @Description		Only you can delete your account (logical delete)
 // @Tags			Accounts
 // @Produce			json
-// @Param			user_id 	path			string			true	"user_id"
+// @Param			user_id 	path			string			true	"Accounts API wildcard"
 // @Success			200			{object}		DeleteResponse	"delete succsss response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
