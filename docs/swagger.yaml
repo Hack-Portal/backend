@@ -1075,4 +1075,23 @@ paths:
       summary: Add Account In Rooms
       tags:
       - Rooms
+  /tech_tags:
+    get:
+      description: Get Framewroks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            items:
+              $ref: '#/definitions/db.TechTags'
+            type: array
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get Framewroks
+      tags:
+      - TechTags
 swagger: "2.0"

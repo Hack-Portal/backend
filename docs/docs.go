@@ -957,6 +957,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/tech_tags": {
+            "get": {
+                "description": "Get Framewroks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TechTags"
+                ],
+                "summary": "Get Framewroks",
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.TechTags"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
