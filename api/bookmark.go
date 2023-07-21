@@ -8,15 +8,24 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
-// ブックマークを作る
-// 認証必須
-type BookmarkRequest struct {
+type CreateBookmarkRequestBody struct {
 	UserID      string `json:"user_id"`
 	HackathonID int32  `json:"hackathon_id"`
 }
 
+// CreateBookmark	godoc
+// @Summary			Create new bookmark
+// @Description		Create new bookmark
+// @Tags			Bookmark
+// @Produce			json
+// @Param			CreateBookmarkRequestBody 	body 	CreateBookmarkRequestBody	true	"New Bookmark Request Body"
+// @Success			200			{object}		db.Hackathons	"create succsss response"
+// @Failure 		400			{object}		ErrorResponse	"bad request response"
+// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Router       	/bookmarks 	[post]
+
 func (server *Server) CreateBookmark(ctx *gin.Context) {
-	var request BookmarkRequest
+	var request CreateBookmarkRequestBody
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -54,14 +63,23 @@ func (server *Server) CreateBookmark(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, hackathon)
 }
 
-// ブックマークを削除する
-// 認証必須
-type RemoveBookmarkRequest struct {
+// RemoveBookmark	godoc
+// @Summary			delete bookmark
+// @Description		delete bookmark
+// @Tags			Bookmark
+// @Produce			json
+// @Param			hackathon_id 	path 		string	true	"Delete Bookmark Request Body"
+// @Success			200			{object}		db.Hackathons	"delete succsss response"
+// @Failure 		400			{object}		ErrorResponse	"bad request response"
+// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Router       	/bookmarks/{hackathon_id} 	[delete]
+
+type RemoveBookmarkRequestURI struct {
 	HackathonID int32 `uri:"hackathon_id"`
 }
 
 func (server *Server) RemoveBookmark(ctx *gin.Context) {
-	var request RemoveBookmarkRequest
+	var request RemoveBookmarkRequestURI
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -70,7 +88,7 @@ func (server *Server) RemoveBookmark(ctx *gin.Context) {
 	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
 	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
 	if err != nil {
-		// UIDについてのカラムがない場合の処理を作る必要がある (badRequest)
+		// TODO: UIDについてのカラムがない場合の処理を作る必要がある (badRequest)
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -93,15 +111,24 @@ func (server *Server) RemoveBookmark(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, hackathon)
 }
 
-// ブックマーク一覧からハッカソンを取得する
-// 認証必須
-type ListBookmarkRequest struct {
+// ListBookmarkToHackathon	godoc
+// @Summary			Get my bookmark
+// @Description		Get bookmark
+// @Tags			Bookmark
+// @Produce			json
+// @Param			ListBookmarkRequestQueries 	formData 		string	true	"Delete Bookmark Request Body"
+// @Success			200			{object}		db.Hackathons	"delete succsss response"
+// @Failure 		400			{object}		ErrorResponse	"bad request response"
+// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Router       	/bookmarks/{hackathon_id} 	[get]
+
+type ListBookmarkRequestQueries struct {
 	PageSize int32 `form:"page_size"`
 	PageID   int32 `form:"page_id"`
 }
 
 func (server *Server) ListBookmarkToHackathon(ctx *gin.Context) {
-	var request ListBookmarkRequest
+	var request ListBookmarkRequestQueries
 	if err := ctx.ShouldBindQuery(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
