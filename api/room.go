@@ -137,9 +137,9 @@ func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 // ルームからアカウントを削除するAPI
 // 認証必須
 
-// AddAccountInRoom	godoc
-// @Summary			Add Account In Rooms
-// @Description		Add Account In Rooms
+// RemoveAccountInRoom	godoc
+// @Summary			Remove Account In Rooms
+// @Description		Remove Account In Rooms
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 					path 					string						true	"Get Room Request uri"
@@ -451,9 +451,9 @@ type UpdateRoomRequestBody struct {
 	MemberLimit int32  `json:"member_limit" binding:"required"`
 }
 
-// AddChat	godoc
-// @Summary			Add Chat Room
-// @Description		Add Chat Room
+// UpdateRoom	godoc
+// @Summary			update Room
+// @Description		update Room
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 						path 					string						true	"update Room Request uri"
@@ -461,7 +461,7 @@ type UpdateRoomRequestBody struct {
 // @Success			200				{object}		GetRoomResponse			"succsss response"
 // @Failure 		400				{object}		ErrorResponse			"error response"
 // @Failure 		500				{object}		ErrorResponse			"error response"
-// @Router       	/rooms/:room_id/addchat	[put]
+// @Router       	/rooms/:room_id	[put]
 func (server *Server) UpdateRoom(ctx *gin.Context) {
 	var (
 		reqURI  RoomsRequestWildCard
@@ -547,6 +547,17 @@ func parseUpdateRoomParam(room db.Rooms, reqBody UpdateRoomRequestBody) (result 
 	}
 	return
 }
+
+// DeleteRoom	godoc
+// @Summary			delete Room
+// @Description		delete Room
+// @Tags			Rooms
+// @Produce			json
+// @Param			room_id 						path 					string						true	"update Room Request uri"
+// @Success			200				{object}		DeleteResponse			"succsss response"
+// @Failure 		400				{object}		ErrorResponse			"error response"
+// @Failure 		500				{object}		ErrorResponse			"error response"
+// @Router       	/rooms/:room_id	[delete]
 func (server *Server) DeleteRoom(ctx *gin.Context) {
 	var (
 		reqURI RoomsRequestWildCard
@@ -578,10 +589,10 @@ func (server *Server) DeleteRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	result, err := server.store.SoftDeleteRoomByID(ctx, uuid.UUID(roomId))
+	_, err = server.store.SoftDeleteRoomByID(ctx, uuid.UUID(roomId))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, result)
+	ctx.JSON(http.StatusOK, DeleteResponse{Result: "Delete Successful"})
 }

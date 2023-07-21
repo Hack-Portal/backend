@@ -1,5 +1,12 @@
 basePath: /api/v1
 definitions:
+  api.AddChatRequestBody:
+    properties:
+      message:
+        type: string
+    required:
+    - message
+    type: object
   api.BookmarkResponse:
     properties:
       description:
@@ -114,6 +121,25 @@ definitions:
       term:
         type: integer
     type: object
+  api.CreateRoomRequestBody:
+    properties:
+      description:
+        type: string
+      hackathon_id:
+        type: integer
+      member_limit:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: string
+    required:
+    - description
+    - hackathon_id
+    - member_limit
+    - title
+    - user_id
+    type: object
   api.DeleteResponse:
     properties:
       result:
@@ -151,6 +177,35 @@ definitions:
       user_id:
         type: string
       username:
+        type: string
+    type: object
+  api.GetRoomResponse:
+    properties:
+      create_at:
+        type: string
+      description:
+        type: string
+      hackathon:
+        $ref: '#/definitions/api.hackathonInfo'
+      is_status:
+        type: boolean
+      member_limit:
+        type: integer
+      members_frameworks:
+        items:
+          $ref: '#/definitions/db.RoomFramework'
+        type: array
+      members_tech_tags:
+        items:
+          $ref: '#/definitions/db.RoomTechTags'
+        type: array
+      now_member:
+        items:
+          $ref: '#/definitions/db.NowRoomAccounts'
+        type: array
+      room_id:
+        type: string
+      title:
         type: string
     type: object
   api.HackathonResponses:
@@ -214,6 +269,73 @@ definitions:
       username:
         type: string
     type: object
+  api.UpdateRoomRequestBody:
+    properties:
+      description:
+        type: string
+      member_limit:
+        type: integer
+      title:
+        type: string
+    required:
+    - description
+    - member_limit
+    - title
+    type: object
+  api.hackathonInfo:
+    properties:
+      description:
+        type: string
+      expired:
+        type: string
+      hackathon_id:
+        type: integer
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/db.StatusTags'
+        type: array
+      term:
+        type: integer
+    type: object
+  db.CreateRoomTxResult:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/db.NowRoomAccounts'
+        type: array
+      create_at:
+        type: string
+      description:
+        type: string
+      frameworks:
+        items:
+          $ref: '#/definitions/db.RoomFramework'
+        type: array
+      hackathon:
+        $ref: '#/definitions/db.RoomHackathonData'
+      hackathon_id:
+        type: integer
+      is_delete:
+        type: boolean
+      member_limit:
+        type: integer
+      room_id:
+        type: string
+      techtags:
+        items:
+          $ref: '#/definitions/db.RoomTechTags'
+        type: array
+      title:
+        type: string
+    type: object
   db.Follows:
     properties:
       create_at:
@@ -231,6 +353,84 @@ definitions:
         type: integer
       tech_tag_id:
         type: integer
+    type: object
+  db.ListRoomTxHackathonInfo:
+    properties:
+      hackathon_id:
+        type: integer
+      hackathon_name:
+        type: string
+      icon:
+        type: string
+    type: object
+  db.ListRoomTxResult:
+    properties:
+      hackathon:
+        $ref: '#/definitions/db.ListRoomTxHackathonInfo'
+      members_frameworks:
+        items:
+          $ref: '#/definitions/db.RoomFramework'
+        type: array
+      members_tech_tags:
+        items:
+          $ref: '#/definitions/db.RoomTechTags'
+        type: array
+      now_member:
+        items:
+          $ref: '#/definitions/db.NowRoomAccounts'
+        type: array
+      rooms:
+        $ref: '#/definitions/db.ListRoomTxRoomInfo'
+    type: object
+  db.ListRoomTxRoomInfo:
+    properties:
+      created_at:
+        type: string
+      member_limit:
+        type: integer
+      room_id:
+        type: string
+      title:
+        type: string
+    type: object
+  db.Locates:
+    properties:
+      locate_id:
+        type: integer
+      name:
+        type: string
+    type: object
+  db.NowRoomAccounts:
+    properties:
+      icon:
+        type: string
+      is_owner:
+        type: boolean
+      user_id:
+        type: string
+    type: object
+  db.RoomFramework:
+    properties:
+      count:
+        type: integer
+      framework:
+        $ref: '#/definitions/db.Frameworks'
+    type: object
+  db.RoomHackathonData:
+    properties:
+      icon:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  db.RoomTechTags:
+    properties:
+      count:
+        type: integer
+      tech_tag:
+        $ref: '#/definitions/db.TechTags'
     type: object
   db.StatusTags:
     properties:
@@ -627,4 +827,252 @@ paths:
       summary: Get Hackathon
       tags:
       - Hackathon
+  /locates:
+    get:
+      description: Get Framewroks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            items:
+              $ref: '#/definitions/db.Locates'
+            type: array
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get Framewroks
+      tags:
+      - Locates
+  /rooms:
+    get:
+      description: List Account
+      parameters:
+      - description: Get Room Request uri
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/db.ListRoomTxResult'
+              type: array
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: List Account
+      tags:
+      - Rooms
+    post:
+      description: Create Rooms
+      parameters:
+      - description: create Room Request Body
+        in: body
+        name: CreateRoomRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateRoomRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            $ref: '#/definitions/db.CreateRoomTxResult'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create Rooms
+      tags:
+      - Rooms
+  /rooms/:room_id:
+    delete:
+      description: delete Room
+      parameters:
+      - description: update Room Request uri
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            $ref: '#/definitions/api.DeleteResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: delete Room
+      tags:
+      - Rooms
+    get:
+      description: Get Room
+      parameters:
+      - description: Get Room Request uri
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            $ref: '#/definitions/api.GetRoomResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get Room
+      tags:
+      - Rooms
+    put:
+      description: update Room
+      parameters:
+      - description: update Room Request uri
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: update Room Request body
+        in: body
+        name: UpdateRoomRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.UpdateRoomRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            $ref: '#/definitions/api.GetRoomResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: update Room
+      tags:
+      - Rooms
+  /rooms/:room_id/addchat:
+    post:
+      description: Add Chat Room
+      parameters:
+      - description: add chat Room Request uri
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: add chat Room Request body
+        in: body
+        name: AddChatRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.AddChatRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            $ref: '#/definitions/api.GetRoomResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Add Chat Room
+      tags:
+      - Rooms
+  /rooms/:room_id/members:
+    delete:
+      description: Remove Account In Rooms
+      parameters:
+      - description: Get Room Request uri
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            $ref: '#/definitions/api.DeleteResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Remove Account In Rooms
+      tags:
+      - Rooms
+    post:
+      description: Add Account In Rooms
+      parameters:
+      - description: Get Room Request uri
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succsss response
+          schema:
+            $ref: '#/definitions/db.CreateRoomTxResult'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Add Account In Rooms
+      tags:
+      - Rooms
 swagger: "2.0"

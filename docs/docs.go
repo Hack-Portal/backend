@@ -582,9 +582,395 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/locates": {
+            "get": {
+                "description": "Get Framewroks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Locates"
+                ],
+                "summary": "Get Framewroks",
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Locates"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms": {
+            "get": {
+                "description": "List Account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "List Account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Get Room Request uri",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/db.ListRoomTxResult"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Rooms",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Create Rooms",
+                "parameters": [
+                    {
+                        "description": "create Room Request Body",
+                        "name": "CreateRoomRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateRoomRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/db.CreateRoomTxResult"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/:room_id": {
+            "get": {
+                "description": "Get Room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Get Room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Get Room Request uri",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetRoomResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "update Room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "update Room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "update Room Request uri",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "update Room Request body",
+                        "name": "UpdateRoomRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.UpdateRoomRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetRoomResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete Room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "delete Room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "update Room Request uri",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.DeleteResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/:room_id/addchat": {
+            "post": {
+                "description": "Add Chat Room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Add Chat Room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "add chat Room Request uri",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "add chat Room Request body",
+                        "name": "AddChatRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AddChatRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetRoomResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/:room_id/members": {
+            "post": {
+                "description": "Add Account In Rooms",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Add Account In Rooms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Get Room Request uri",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/db.CreateRoomTxResult"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove Account In Rooms",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Remove Account In Rooms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Get Room Request uri",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.DeleteResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "api.AddChatRequestBody": {
+            "type": "object",
+            "required": [
+                "message"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "api.BookmarkResponse": {
             "type": "object",
             "properties": {
@@ -757,6 +1143,33 @@ const docTemplate = `{
                 }
             }
         },
+        "api.CreateRoomRequestBody": {
+            "type": "object",
+            "required": [
+                "description",
+                "hackathon_id",
+                "member_limit",
+                "title",
+                "user_id"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "api.DeleteResponse": {
             "type": "object",
             "properties": {
@@ -813,6 +1226,50 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.GetRoomResponse": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "hackathon": {
+                    "$ref": "#/definitions/api.hackathonInfo"
+                },
+                "is_status": {
+                    "type": "boolean"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "members_frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.RoomFramework"
+                    }
+                },
+                "members_tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.RoomTechTags"
+                    }
+                },
+                "now_member": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.NowRoomAccounts"
+                    }
+                },
+                "room_id": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -910,6 +1367,107 @@ const docTemplate = `{
                 }
             }
         },
+        "api.UpdateRoomRequestBody": {
+            "type": "object",
+            "required": [
+                "description",
+                "member_limit",
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.hackathonInfo": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "expired": {
+                    "type": "string"
+                },
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.StatusTags"
+                    }
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.CreateRoomTxResult": {
+            "type": "object",
+            "properties": {
+                "accounts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.NowRoomAccounts"
+                    }
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.RoomFramework"
+                    }
+                },
+                "hackathon": {
+                    "$ref": "#/definitions/db.RoomHackathonData"
+                },
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "is_delete": {
+                    "type": "boolean"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "room_id": {
+                    "type": "string"
+                },
+                "techtags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.RoomTechTags"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "db.Follows": {
             "type": "object",
             "properties": {
@@ -935,6 +1493,127 @@ const docTemplate = `{
                 },
                 "tech_tag_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "db.ListRoomTxHackathonInfo": {
+            "type": "object",
+            "properties": {
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "hackathon_name": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.ListRoomTxResult": {
+            "type": "object",
+            "properties": {
+                "hackathon": {
+                    "$ref": "#/definitions/db.ListRoomTxHackathonInfo"
+                },
+                "members_frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.RoomFramework"
+                    }
+                },
+                "members_tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.RoomTechTags"
+                    }
+                },
+                "now_member": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.NowRoomAccounts"
+                    }
+                },
+                "rooms": {
+                    "$ref": "#/definitions/db.ListRoomTxRoomInfo"
+                }
+            }
+        },
+        "db.ListRoomTxRoomInfo": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "room_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Locates": {
+            "type": "object",
+            "properties": {
+                "locate_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.NowRoomAccounts": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "is_owner": {
+                    "type": "boolean"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.RoomFramework": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "framework": {
+                    "$ref": "#/definitions/db.Frameworks"
+                }
+            }
+        },
+        "db.RoomHackathonData": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.RoomTechTags": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "tech_tag": {
+                    "$ref": "#/definitions/db.TechTags"
                 }
             }
         },
