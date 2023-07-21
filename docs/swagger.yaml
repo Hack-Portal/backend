@@ -460,11 +460,39 @@ info:
   title: Hack Hack Backend API
   version: "1.0"
 paths:
-  /acccounts/{from_user_id}/follow:
-    delete:
-      description: Remove follow
+  /accounts:
+    post:
+      description: Create an account from the requested body
       parameters:
-      - description: remove Follow Request path
+      - description: Create Account Request Body
+        in: body
+        name: CreateAccountRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateAccountRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create succsss response
+          schema:
+            $ref: '#/definitions/api.CreateAccountResponses'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create new account
+      tags:
+      - Accounts
+  /accounts/:from_user_id/follow:
+    delete:
+      description: Unfollow
+      parameters:
+      - description: Accounts API wildcard
         in: path
         name: from_user_id
         required: true
@@ -479,7 +507,7 @@ paths:
         "200":
           description: succsss response
           schema:
-            $ref: '#/definitions/db.Follows'
+            $ref: '#/definitions/api.DeleteResponse'
         "400":
           description: error response
           schema:
@@ -490,11 +518,11 @@ paths:
             $ref: '#/definitions/api.ErrorResponse'
       summary: Remove follow
       tags:
-      - AccountsFollow
+      - Accounts
     post:
-      description: Create Follow
+      description: Follow!!!!!!!!
       parameters:
-      - description: create Follow Request path
+      - description: Accounts API wildcard
         in: path
         name: from_user_id
         required: true
@@ -524,40 +552,12 @@ paths:
             $ref: '#/definitions/api.ErrorResponse'
       summary: Create Follow
       tags:
-      - AccountsFollow
-  /accounts:
-    post:
-      description: Create new account
-      parameters:
-      - description: Create Account Request Body
-        in: body
-        name: CreateAccountRequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/api.CreateAccountRequestBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: create succsss response
-          schema:
-            $ref: '#/definitions/api.CreateAccountResponses'
-        "400":
-          description: bad request response
-          schema:
-            $ref: '#/definitions/api.ErrorResponse'
-        "500":
-          description: server error response
-          schema:
-            $ref: '#/definitions/api.ErrorResponse'
-      summary: Create new account
-      tags:
       - Accounts
-  /accounts/{user_id}:
+  /accounts/:user_id:
     delete:
       description: Only you can delete your account (logical delete)
       parameters:
-      - description: user_id
+      - description: Accounts API wildcard
         in: path
         name: user_id
         required: true
@@ -581,9 +581,9 @@ paths:
       tags:
       - Accounts
     get:
-      description: Get Any Account
+      description: Return a user from the id specified in the path
       parameters:
-      - description: user_id
+      - description: Accounts API wildcard
         in: path
         name: user_id
         required: true
@@ -607,9 +607,9 @@ paths:
       tags:
       - Accounts
     put:
-      description: Update process when it matches the person
+      description: Update user info from requested body
       parameters:
-      - description: user_id
+      - description: Accounts API wildcard
         in: path
         name: user_id
         required: true
@@ -640,9 +640,9 @@ paths:
       - Accounts
   /bookmarks:
     post:
-      description: Create new bookmark
+      description: Create a bookmark from the specified hackathon ID
       parameters:
-      - description: New Bookmark Request Body
+      - description: Create Bookmark Request Body
         in: body
         name: CreateBookmarkRequestBody
         required: true
@@ -666,9 +666,9 @@ paths:
       summary: Create new bookmark
       tags:
       - Bookmark
-  /bookmarks/{hackathon_id}:
+  /bookmarks/:hackathon_id:
     delete:
-      description: delete bookmark
+      description: Delete the bookmark of the specified hackathon ID
       parameters:
       - description: Delete Bookmark Request Body
         in: path
@@ -690,11 +690,11 @@ paths:
           description: server error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: delete bookmark
+      summary: Delete bookmark
       tags:
       - Bookmark
     get:
-      description: Get bookmark
+      description: Get my bookmarks
       parameters:
       - description: Delete Bookmark Request Body
         in: formData
@@ -718,7 +718,7 @@ paths:
           description: server error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Get my bookmark
+      summary: Get bookmarks
       tags:
       - Bookmark
   /frameworks:
@@ -774,7 +774,7 @@ paths:
       tags:
       - Hackathon
     post:
-      description: Create Hackathon
+      description: Register a hackathon from given parameters
       parameters:
       - description: create hackathon Request Body
         in: body
@@ -804,7 +804,7 @@ paths:
     get:
       description: Get Hackathon
       parameters:
-      - description: get hackathon Request Body
+      - description: Hackathons API wildcard
         in: path
         name: hackathon_id
         required: true
@@ -850,7 +850,7 @@ paths:
     get:
       description: List Account
       parameters:
-      - description: Get Room Request uri
+      - description: Rooms API wildcard
         in: path
         name: room_id
         required: true
@@ -908,7 +908,7 @@ paths:
     delete:
       description: delete Room
       parameters:
-      - description: update Room Request uri
+      - description: Rooms API wildcard
         in: path
         name: room_id
         required: true
@@ -934,7 +934,7 @@ paths:
     get:
       description: Get Room
       parameters:
-      - description: Get Room Request uri
+      - description: Rooms API wildcard
         in: path
         name: room_id
         required: true
@@ -960,7 +960,7 @@ paths:
     put:
       description: update Room
       parameters:
-      - description: update Room Request uri
+      - description: Rooms API wildcard
         in: path
         name: room_id
         required: true
@@ -993,7 +993,7 @@ paths:
     post:
       description: Add Chat Room
       parameters:
-      - description: add chat Room Request uri
+      - description: Rooms API wildcard
         in: path
         name: room_id
         required: true
@@ -1026,7 +1026,7 @@ paths:
     delete:
       description: Remove Account In Rooms
       parameters:
-      - description: Get Room Request uri
+      - description: Rooms API wildcard
         in: path
         name: room_id
         required: true
@@ -1052,7 +1052,7 @@ paths:
     post:
       description: Add Account In Rooms
       parameters:
-      - description: Get Room Request uri
+      - description: Rooms API wildcard
         in: path
         name: room_id
         required: true

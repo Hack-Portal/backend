@@ -154,7 +154,7 @@ type ListBookmarkRequestQueries struct {
 // @Success			200							{array}			BookmarkResponse	"delete succsss response"
 // @Failure 		400							{object}		ErrorResponse		"bad request response"
 // @Failure 		500							{object}		ErrorResponse		"server error response"
-// @Router       	/bookmarks/{hackathon_id} 	[get]
+// @Router       	/bookmarks/:hackathon_id 	[get]
 func (server *Server) ListBookmarkToHackathon(ctx *gin.Context) {
 	var request ListBookmarkRequestQueries
 	if err := ctx.ShouldBindQuery(&request); err != nil {

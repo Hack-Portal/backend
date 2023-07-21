@@ -438,7 +438,7 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccount
 // @Success			200			{object}		DeleteResponse	"delete succsss response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
-// @Router       	/accounts/{user_id} 		[delete]
+// @Router       	/accounts/:user_id 		[delete]
 func (server *Server) DeleteAccount(ctx *gin.Context) {
 	var request AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {

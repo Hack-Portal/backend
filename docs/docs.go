@@ -25,107 +25,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/acccounts/{from_user_id}/follow": {
-            "post": {
-                "description": "Create Follow",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "AccountsFollow"
-                ],
-                "summary": "Create Follow",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "create Follow Request path",
-                        "name": "from_user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "create Follow Request Body",
-                        "name": "CreateFollowRequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.CreateFollowRequestBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "succsss response",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.Follows"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Remove follow",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "AccountsFollow"
-                ],
-                "summary": "Remove follow",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "remove Follow Request path",
-                        "name": "from_user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "name": "to_user_id",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "succsss response",
-                        "schema": {
-                            "$ref": "#/definitions/db.Follows"
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/accounts": {
             "post": {
-                "description": "Create new account",
+                "description": "Create an account from the requested body",
                 "produces": [
                     "application/json"
                 ],
@@ -166,9 +68,107 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{user_id}": {
+        "/accounts/:from_user_id/follow": {
+            "post": {
+                "description": "Follow!!!!!!!!",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create Follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "from_user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "create Follow Request Body",
+                        "name": "CreateFollowRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateFollowRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Follows"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Unfollow",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Remove follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "from_user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "to_user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.DeleteResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/:user_id": {
             "get": {
-                "description": "Get Any Account",
+                "description": "Return a user from the id specified in the path",
                 "produces": [
                     "application/json"
                 ],
@@ -179,7 +179,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "user_id",
+                        "description": "Accounts API wildcard",
                         "name": "user_id",
                         "in": "path",
                         "required": true
@@ -207,7 +207,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update process when it matches the person",
+                "description": "Update user info from requested body",
                 "produces": [
                     "application/json"
                 ],
@@ -218,7 +218,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "user_id",
+                        "description": "Accounts API wildcard",
                         "name": "user_id",
                         "in": "path",
                         "required": true
@@ -266,7 +266,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "user_id",
+                        "description": "Accounts API wildcard",
                         "name": "user_id",
                         "in": "path",
                         "required": true
@@ -296,7 +296,7 @@ const docTemplate = `{
         },
         "/bookmarks": {
             "post": {
-                "description": "Create new bookmark",
+                "description": "Create a bookmark from the specified hackathon ID",
                 "produces": [
                     "application/json"
                 ],
@@ -306,7 +306,7 @@ const docTemplate = `{
                 "summary": "Create new bookmark",
                 "parameters": [
                     {
-                        "description": "New Bookmark Request Body",
+                        "description": "Create Bookmark Request Body",
                         "name": "CreateBookmarkRequestBody",
                         "in": "body",
                         "required": true,
@@ -337,16 +337,16 @@ const docTemplate = `{
                 }
             }
         },
-        "/bookmarks/{hackathon_id}": {
+        "/bookmarks/:hackathon_id": {
             "get": {
-                "description": "Get bookmark",
+                "description": "Get my bookmarks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Bookmark"
                 ],
-                "summary": "Get my bookmark",
+                "summary": "Get bookmarks",
                 "parameters": [
                     {
                         "type": "string",
@@ -381,14 +381,14 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete bookmark",
+                "description": "Delete the bookmark of the specified hackathon ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Bookmark"
                 ],
-                "summary": "delete bookmark",
+                "summary": "Delete bookmark",
                 "parameters": [
                     {
                         "type": "string",
@@ -501,7 +501,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create Hackathon",
+                "description": "Register a hackathon from given parameters",
                 "produces": [
                     "application/json"
                 ],
@@ -555,7 +555,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "get hackathon Request Body",
+                        "description": "Hackathons API wildcard",
                         "name": "hackathon_id",
                         "in": "path",
                         "required": true
@@ -625,7 +625,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Get Room Request uri",
+                        "description": "Rooms API wildcard",
                         "name": "room_id",
                         "in": "path",
                         "required": true
@@ -713,7 +713,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Get Room Request uri",
+                        "description": "Rooms API wildcard",
                         "name": "room_id",
                         "in": "path",
                         "required": true
@@ -752,7 +752,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "update Room Request uri",
+                        "description": "Rooms API wildcard",
                         "name": "room_id",
                         "in": "path",
                         "required": true
@@ -800,7 +800,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "update Room Request uri",
+                        "description": "Rooms API wildcard",
                         "name": "room_id",
                         "in": "path",
                         "required": true
@@ -841,7 +841,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "add chat Room Request uri",
+                        "description": "Rooms API wildcard",
                         "name": "room_id",
                         "in": "path",
                         "required": true
@@ -891,7 +891,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Get Room Request uri",
+                        "description": "Rooms API wildcard",
                         "name": "room_id",
                         "in": "path",
                         "required": true
@@ -930,7 +930,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Get Room Request uri",
+                        "description": "Rooms API wildcard",
                         "name": "room_id",
                         "in": "path",
                         "required": true
