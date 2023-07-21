@@ -93,8 +93,8 @@ type RemoveFollowRequestQueries struct {
 // @Description		Remove follow
 // @Tags			AccountsFollow
 // @Produce			json
-// @Param			from_user_id 				path 		string						true	"remove Follow Request path"
-// @Param			RemoveFollowRequestQueries 	body 		CreateFollowRequestBody		true	"remove Follow Request Body"
+// @Param			from_user_id 				path 			string						true	"remove Follow Request path"
+// @Param			RemoveFollowRequestQueries 	formData 		CreateFollowRequestBody		true	"remove Follow Request Body"
 // @Success			200			{array}			db.Follows		"succsss response"
 // @Failure 		400			{object}		ErrorResponse	"error response"
 // @Failure 		500			{object}		ErrorResponse	"error response"
