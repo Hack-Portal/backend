@@ -16,7 +16,7 @@ import (
 )
 
 // アカウントを作る時のリクエストパラメータ
-type CreateAccountRequestParam struct {
+type CreateAccountRequestBody struct {
 	UserID          string  `json:"user_id" binding:"required"`
 	Username        string  `json:"username" binding:"required"`
 	Icon            string  `json:"icon"`
@@ -44,16 +44,18 @@ type AccountResponses struct {
 	Frameworks []db.Frameworks `json:"frameworks"`
 }
 
-// CreateAccount             godoc
-// @Summary      Create new account
-// @Description  Create new account
-// @Tags         Accounts
-// @Produce      json
-// @Param
-// @Success      200  {object}  models.Accounts
-// @Router       /accounts [post]
+// CreateAccount	godoc
+// @Summary			Create new account
+// @Description		Create new account
+// @Tags			Accounts
+// @Produce			json
+// @Param			CreateAccountRequestBody 	body 	CreateAccountRequestBody	true
+// @Success			200			{object}		gin.H	"create succsss response"
+// @Failure 		400			{object}		gin.H	"bad request response"
+// @Failure 		500			{object}		gin.H	"server error response"
+// @Router       	/accounts 	[post]
 func (server *Server) CreateAccount(ctx *gin.Context) {
-	var request CreateAccountRequestParam
+	var request CreateAccountRequestBody
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

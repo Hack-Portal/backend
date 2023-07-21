@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/storage v1.28.1
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/gin-contrib/cors v1.4.0
-	github.com/gin-gonic/gin v1.9.1
+	github.com/gin-gonic/gin v1.9.0
 	github.com/gofrs/uuid/v5 v5.0.0
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.9
@@ -36,7 +36,7 @@ require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-openapi/jsonpointer v0.20.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
-	github.com/go-openapi/spec v0.20.9 // indirect
+	github.com/go-openapi/spec v0.20.4 // indirect
 	github.com/go-openapi/swag v0.22.4 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
