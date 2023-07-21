@@ -131,3 +131,34 @@ func (server *Server) RemoveFollow(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, result)
 }
+
+type GetFollowRequestQueries struct {
+	Mode     bool   `form:"mode"`
+	PageSize string `form:"page_size"`
+	PageID   string `form:"page_id"`
+}
+
+func (server *Server) GetFollow(ctx *gin.Context) {
+	var (
+		reqtURI  AccountRequestWildCard
+		reqQuery GetFollowRequestQueries
+		// result   []db.Follows
+	)
+	if err := ctx.ShouldBindUri(&reqtURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	// TODO:　ToFollowからの取得と FromFollowからの取得　両方作る
+	// args は page_size ,page_id ,user_id
+	if reqQuery.Mode {
+		// Toの取得
+	} else {
+		// Fromの取得
+	}
+
+}
