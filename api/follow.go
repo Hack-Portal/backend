@@ -14,15 +14,15 @@ type CreateFollowRequestBody struct {
 
 // CreateFollow	godoc
 // @Summary			Create Follow
-// @Description		Create Follow
-// @Tags			AccountsFollow
+// @Description		Follow!!!!!!!!
+// @Tags			Accounts
 // @Produce			json
-// @Param			from_user_id 				path 		string						true	"create Follow Request path"
+// @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
 // @Param			CreateFollowRequestBody 	body 		CreateFollowRequestBody		true	"create Follow Request Body"
-// @Success			200			{array}			db.Follows		"succsss response"
-// @Failure 		400			{object}		ErrorResponse	"error response"
-// @Failure 		500			{object}		ErrorResponse	"error response"
-// @Router       	/acccounts/{from_user_id}/follow	[post]
+// @Success			200							{array}		db.Follows					"succsss response"
+// @Failure 		400							{object}	ErrorResponse				"error response"
+// @Failure 		500							{object}	ErrorResponse				"error response"
+// @Router       	/accounts/:from_user_id/follow			[post]
 func (server *Server) CreateFollow(ctx *gin.Context) {
 	var (
 		reqURI  AccountRequestWildCard
@@ -91,15 +91,15 @@ type RemoveFollowRequestQueries struct {
 // TODO:レスポンス修正
 // RemoveFollow	godoc
 // @Summary			Remove follow
-// @Description		Remove follow
-// @Tags			AccountsFollow
+// @Description		Unfollow
+// @Tags			Accounts
 // @Produce			json
-// @Param			from_user_id 				path 			string						true	"remove Follow Request path"
-// @Param			RemoveFollowRequestQueries 	formData 		CreateFollowRequestBody		true	"remove Follow Request Body"
-// @Success			200			{object}		db.Follows		"succsss response"
-// @Failure 		400			{object}		ErrorResponse	"error response"
-// @Failure 		500			{object}		ErrorResponse	"error response"
-// @Router       	/acccounts/{from_user_id}/follow	[delete]
+// @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
+// @Param			RemoveFollowRequestQueries 	formData 	CreateFollowRequestBody		true	"Remove Follow Request Body"
+// @Success			200							{object}	DeleteResponse				"succsss response"
+// @Failure 		400							{object}	ErrorResponse				"error response"
+// @Failure 		500							{object}	ErrorResponse				"error response"
+// @Router       	/accounts/:from_user_id/follow			[delete]
 func (server *Server) RemoveFollow(ctx *gin.Context) {
 	var (
 		reqURI   AccountRequestWildCard
@@ -114,9 +114,8 @@ func (server *Server) RemoveFollow(ctx *gin.Context) {
 		return
 	}
 
-	// フォローを外す
 	// TODO: エラーハンドリング
-	result, err := server.store.GetAccountByID(ctx, reqQuery.ToUserID)
+	_, err := server.store.GetAccountByID(ctx, reqQuery.ToUserID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -130,7 +129,7 @@ func (server *Server) RemoveFollow(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, result)
+	ctx.JSON(http.StatusOK, DeleteResponse{Result: "Delete Successful"})
 }
 
 type GetFollowRequestQueries struct {
