@@ -37,8 +37,8 @@ type HackathonResponses struct {
 }
 
 // CreateHackathon	godoc
-// @Summary			Get Hackathon
-// @Description		Get Hackathon
+// @Summary			Create Hackathon
+// @Description		Create Hackathon
 // @Tags			Hackathon
 // @Produce			json
 // @Param			CreateHackathonRequestBody 	body 					CreateHackathonRequestBody		true	"create hackathon Request Body"
@@ -184,8 +184,8 @@ type ListHackathonsResponses struct {
 }
 
 // ListHackathons	godoc
-// @Summary			Get Hackathon
-// @Description		Get Hackathon
+// @Summary			List Hackathon
+// @Description		List Hackathon
 // @Tags			Hackathon
 // @Produce			json
 // @Param			ListHackathonsParams		formData 	 			ListHackathonsParams	true	"List hackathon Request queries"
