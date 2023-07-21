@@ -1,4 +1,86 @@
 basePath: /api/v1
+definitions:
+  api.AccountResponses:
+    properties:
+      explanatory_text:
+        type: string
+      frameworks:
+        items:
+          $ref: '#/definitions/db.Frameworks'
+        type: array
+      icon:
+        type: string
+      locate:
+        type: string
+      rate:
+        type: integer
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      tech_tags:
+        items:
+          $ref: '#/definitions/db.TechTags'
+        type: array
+      user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  api.CreateAccountRequestBody:
+    properties:
+      explanatory_text:
+        type: string
+      frameworks:
+        items:
+          type: integer
+        type: array
+      icon:
+        type: string
+      locate_id:
+        type: integer
+      password:
+        type: string
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      tech_tags:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: string
+      username:
+        type: string
+    required:
+    - locate_id
+    - show_locate
+    - show_rate
+    - user_id
+    - username
+    type: object
+  api.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  db.Frameworks:
+    properties:
+      framework:
+        type: string
+      framework_id:
+        type: integer
+      tech_tag_id:
+        type: integer
+    type: object
+  db.TechTags:
+    properties:
+      language:
+        type: string
+      tech_tag_id:
+        type: integer
+    type: object
 host: https://seaffood.com
 info:
   contact:
@@ -12,5 +94,33 @@ info:
   termsOfService: https://seaffood.com/api
   title: Hack Hack Backend API
   version: "1.0"
-paths: {}
+paths:
+  /accounts:
+    post:
+      description: Create new account
+      parameters:
+      - description: Create Account Request Body
+        in: body
+        name: CreateAccountRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateAccountRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create succsss response
+          schema:
+            $ref: '#/definitions/api.AccountResponses'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create new account
+      tags:
+      - Accounts
 swagger: "2.0"

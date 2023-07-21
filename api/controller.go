@@ -1,9 +1,5 @@
 package api
 
-import (
-	"github.com/gin-gonic/gin"
-)
-
 const (
 	MultiPartNextPartEoF   = "multipart: NextPart: EOF"
 	RequestContentTypeIsnt = "request Content-Type isn't multipart/form-data"
@@ -11,6 +7,10 @@ const (
 	ImageKey               = "icons"
 )
 
-func errorResponse(err error) gin.H {
-	return gin.H{"error": err.Error()}
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
+
+func errorResponse(err error) ErrorResponse {
+	return ErrorResponse{Error: err.Error()}
 }

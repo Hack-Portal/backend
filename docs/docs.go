@@ -24,7 +24,175 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/accounts": {
+            "post": {
+                "description": "Create new account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create new account",
+                "parameters": [
+                    {
+                        "description": "Create Account Request Body",
+                        "name": "CreateAccountRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateAccountRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create succsss response",
+                        "schema": {
+                            "$ref": "#/definitions/api.AccountResponses"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.AccountResponses": {
+            "type": "object",
+            "properties": {
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.Frameworks"
+                    }
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "locate": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.TechTags"
+                    }
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.CreateAccountRequestBody": {
+            "type": "object",
+            "required": [
+                "locate_id",
+                "show_locate",
+                "show_rate",
+                "user_id",
+                "username"
+            ],
+            "properties": {
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "locate_id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Frameworks": {
+            "type": "object",
+            "properties": {
+                "framework": {
+                    "type": "string"
+                },
+                "framework_id": {
+                    "type": "integer"
+                },
+                "tech_tag_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.TechTags": {
+            "type": "object",
+            "properties": {
+                "language": {
+                    "type": "string"
+                },
+                "tech_tag_id": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it

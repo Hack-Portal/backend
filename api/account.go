@@ -49,10 +49,10 @@ type AccountResponses struct {
 // @Description		Create new account
 // @Tags			Accounts
 // @Produce			json
-// @Param			CreateAccountRequestBody 	body 	CreateAccountRequestBody	true
-// @Success			200			{object}		gin.H	"create succsss response"
-// @Failure 		400			{object}		gin.H	"bad request response"
-// @Failure 		500			{object}		gin.H	"server error response"
+// @Param			CreateAccountRequestBody 	body 	CreateAccountRequestBody	true	"Create Account Request Body"
+// @Success			200			{object}		AccountResponses	"create succsss response"
+// @Failure 		400			{object}		ErrorResponse	"bad request response"
+// @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts 	[post]
 func (server *Server) CreateAccount(ctx *gin.Context) {
 	var request CreateAccountRequestBody
