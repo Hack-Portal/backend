@@ -27,14 +27,14 @@ type BookmarkResponse struct {
 
 // CreateBookmark	godoc
 // @Summary			Create new bookmark
-// @Description		Create new bookmark
+// @Description		Create a bookmark from the specified hackathon ID
 // @Tags			Bookmark
 // @Produce			json
-// @Param			CreateBookmarkRequestBody 	body 	CreateBookmarkRequestBody	true	"New Bookmark Request Body"
-// @Success			200			{object}		BookmarkResponse	"create succsss response"
-// @Failure 		400			{object}		ErrorResponse	"bad request response"
-// @Failure 		500			{object}		ErrorResponse	"server error response"
-// @Router       	/bookmarks 	[post]
+// @Param			CreateBookmarkRequestBody 	body 		CreateBookmarkRequestBody	true	"Create Bookmark Request Body"
+// @Success			200							{object}	BookmarkResponse			"create succsss response"
+// @Failure 		400							{object}	ErrorResponse				"bad request response"
+// @Failure 		500							{object}	ErrorResponse				"server error response"
+// @Router       	/bookmarks 					[post]
 func (server *Server) CreateBookmark(ctx *gin.Context) {
 	var request CreateBookmarkRequestBody
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -88,15 +88,15 @@ type RemoveBookmarkRequestURI struct {
 }
 
 // RemoveBookmark	godoc
-// @Summary			delete bookmark
-// @Description		delete bookmark
+// @Summary			Delete bookmark
+// @Description		Delete the bookmark of the specified hackathon ID
 // @Tags			Bookmark
 // @Produce			json
-// @Param			hackathon_id 	path 		string	true	"Delete Bookmark Request Body"
-// @Success			200			{object}		BookmarkResponse	"delete succsss response"
-// @Failure 		400			{object}		ErrorResponse	"bad request response"
-// @Failure 		500			{object}		ErrorResponse	"server error response"
-// @Router       	/bookmarks/{hackathon_id} 	[delete]
+// @Param			hackathon_id 	path 			string				true	"Delete Bookmark Request Body"
+// @Success			200				{object}		BookmarkResponse	"delete succsss response"
+// @Failure 		400				{object}		ErrorResponse		"bad request response"
+// @Failure 		500				{object}		ErrorResponse		"server error response"
+// @Router       	/bookmarks/:hackathon_id 		[delete]
 func (server *Server) RemoveBookmark(ctx *gin.Context) {
 	var request RemoveBookmarkRequestURI
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -146,14 +146,14 @@ type ListBookmarkRequestQueries struct {
 }
 
 // ListBookmarkToHackathon	godoc
-// @Summary			Get my bookmark
-// @Description		Get bookmark
+// @Summary			Get bookmarks
+// @Description		Get my bookmarks
 // @Tags			Bookmark
 // @Produce			json
-// @Param			ListBookmarkRequestQueries 	formData 		string	true	"Delete Bookmark Request Body"
-// @Success			200			{array}		BookmarkResponse	"delete succsss response"
-// @Failure 		400			{object}		ErrorResponse	"bad request response"
-// @Failure 		500			{object}		ErrorResponse	"server error response"
+// @Param			ListBookmarkRequestQueries 	formData 		string				true	"Delete Bookmark Request Body"
+// @Success			200							{array}			BookmarkResponse	"delete succsss response"
+// @Failure 		400							{object}		ErrorResponse		"bad request response"
+// @Failure 		500							{object}		ErrorResponse		"server error response"
 // @Router       	/bookmarks/{hackathon_id} 	[get]
 func (server *Server) ListBookmarkToHackathon(ctx *gin.Context) {
 	var request ListBookmarkRequestQueries
