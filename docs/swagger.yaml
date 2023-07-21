@@ -1,32 +1,5 @@
 basePath: /api/v1
 definitions:
-  api.AccountResponses:
-    properties:
-      explanatory_text:
-        type: string
-      frameworks:
-        items:
-          $ref: '#/definitions/db.Frameworks'
-        type: array
-      icon:
-        type: string
-      locate:
-        type: string
-      rate:
-        type: integer
-      show_locate:
-        type: boolean
-      show_rate:
-        type: boolean
-      tech_tags:
-        items:
-          $ref: '#/definitions/db.TechTags'
-        type: array
-      user_id:
-        type: string
-      username:
-        type: string
-    type: object
   api.CreateAccountRequestBody:
     properties:
       explanatory_text:
@@ -60,9 +33,108 @@ definitions:
     - user_id
     - username
     type: object
+  api.CreateAccountResponses:
+    properties:
+      explanatory_text:
+        type: string
+      frameworks:
+        items:
+          $ref: '#/definitions/db.Frameworks'
+        type: array
+      icon:
+        type: string
+      locate:
+        type: string
+      rate:
+        type: integer
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      tech_tags:
+        items:
+          $ref: '#/definitions/db.TechTags'
+        type: array
+      user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  api.DeleteResponse:
+    properties:
+      result:
+        type: string
+    type: object
   api.ErrorResponse:
     properties:
       error:
+        type: string
+    type: object
+  api.GetAccountResponses:
+    properties:
+      email:
+        type: string
+      explanatory_text:
+        type: string
+      frameworks:
+        items:
+          $ref: '#/definitions/db.Frameworks'
+        type: array
+      icon:
+        type: string
+      locate:
+        type: string
+      rate:
+        type: integer
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      tech_tags:
+        items:
+          $ref: '#/definitions/db.TechTags'
+        type: array
+      user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  api.UpdateAccountRequestBody:
+    properties:
+      explanatory_text:
+        type: string
+      hashed_password:
+        type: string
+      locate_id:
+        type: integer
+      rate:
+        type: integer
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      username:
+        type: string
+    type: object
+  api.UpdateAccountResponse:
+    properties:
+      created_at:
+        type: string
+      explanatory_text:
+        type: string
+      hashed_password:
+        type: string
+      icon:
+        type: string
+      locate:
+        type: string
+      rate:
+        type: integer
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      username:
         type: string
     type: object
   db.Frameworks:
@@ -111,7 +183,7 @@ paths:
         "200":
           description: create succsss response
           schema:
-            $ref: '#/definitions/api.AccountResponses'
+            $ref: '#/definitions/api.CreateAccountResponses'
         "400":
           description: bad request response
           schema:
@@ -121,6 +193,91 @@ paths:
           schema:
             $ref: '#/definitions/api.ErrorResponse'
       summary: Create new account
+      tags:
+      - Accounts
+  /accounts/{user_id}:
+    delete:
+      description: Only you can delete your account (logical delete)
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete succsss response
+          schema:
+            $ref: '#/definitions/api.DeleteResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Remove Account
+      tags:
+      - Accounts
+    get:
+      description: Get Any Account
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get success response
+          schema:
+            $ref: '#/definitions/api.GetAccountResponses'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get account
+      tags:
+      - Accounts
+    put:
+      description: Update process when it matches the person
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Update Account Request Body
+        in: body
+        name: UpdateAccountRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.UpdateAccountRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update succsss response
+          schema:
+            $ref: '#/definitions/api.UpdateAccountResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Update Account
       tags:
       - Accounts
 swagger: "2.0"

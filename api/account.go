@@ -150,13 +150,13 @@ type GetAccountResponses struct {
 	Frameworks []db.Frameworks `json:"frameworks"`
 }
 
-// GetAccount	godoc
+// GetAccount		godoc
 // @Summary			Get account
 // @Description		Get Any Account
 // @Tags			Accounts
 // @Produce			json
-// @Param			AccountRequestURI 		path	AccountRequestURI	true	"user_id"
-// @Success			200			{object}		GetAccountResponses	"Get succsss response"
+// @Param			user_id 	path			string		true	"user_id"
+// @Success			200			{object}		GetAccountResponses	"Get success response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts/{user_id} 		[get]
@@ -279,7 +279,7 @@ type UpdateAccountResponse struct {
 // @Description		Update process when it matches the person
 // @Tags			Accounts
 // @Produce			json
-// @Param			AccountRequestURI 				path	AccountRequestURI		true	"user_id"
+// @Param			user_id 						path	string			true	"user_id"
 // @Param			UpdateAccountRequestBody 		body	UpdateAccountRequestBody	true	"Update Account Request Body"
 // @Success			200			{object}		UpdateAccountResponse	"Update succsss response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
@@ -434,11 +434,11 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccount
 // @Description		Only you can delete your account (logical delete)
 // @Tags			Accounts
 // @Produce			json
-// @Param			AccountRequestURI 			path	AccountRequestURI		true	"user_id"
+// @Param			user_id 	path			string			true	"user_id"
 // @Success			200			{object}		DeleteResponse	"delete succsss response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
-// @Router       	/accounts/{user_id} 		[put]
+// @Router       	/accounts/{user_id} 		[delete]
 func (server *Server) DeleteAccount(ctx *gin.Context) {
 	var request AccountRequestURI
 	if err := ctx.ShouldBindUri(&request); err != nil {
