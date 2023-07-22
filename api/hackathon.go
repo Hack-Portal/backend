@@ -157,7 +157,6 @@ type ListHackathonsResponses struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Name        string    `json:"name"`
 	Icon        string    `json:"icon"`
-	Link        string    `json:"link"`
 	Expired     time.Time `json:"expired"`
 	StartDate   time.Time `json:"start_date"`
 	Term        int32     `json:"term"`
@@ -200,7 +199,6 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 			HackathonID: hackathon.HackathonID,
 			Name:        hackathon.Name,
 			Icon:        hackathon.Icon.String,
-			Link:        hackathon.Link,
 			Expired:     hackathon.Expired,
 			StartDate:   hackathon.StartDate,
 			Term:        hackathon.Term,
