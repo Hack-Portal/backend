@@ -14,11 +14,11 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
-type RoomsRequestURI struct {
+type RoomsRequestWildCard struct {
 	RoomID string `uri:"room_id"`
 }
 
-type CreateRoomRequest struct {
+type CreateRoomRequestBody struct {
 	HackathonID int32  `json:"hackathon_id" binding:"required"`
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
@@ -26,10 +26,18 @@ type CreateRoomRequest struct {
 	UserID      string `json:"user_id" binding:"required"`
 }
 
-// ルームを作るAPI　POST:
-// 認証必須
+// CreateRoom		godoc
+// @Summary			Create Rooms
+// @Description		Create Rooms
+// @Tags			Rooms
+// @Produce			json
+// @Param			CreateRoomRequestBody 	body 		CreateRoomRequestBody	true	"create Room Request Body"
+// @Success			200						{object}	db.CreateRoomTxResult	"succsss response"
+// @Failure 		400						{object}	ErrorResponse			"error response"
+// @Failure 		500						{object}	ErrorResponse			"error response"
+// @Router       	/rooms					[post]
 func (server *Server) CreateRoom(ctx *gin.Context) {
-	var request CreateRoomRequest
+	var request CreateRoomRequestBody
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -74,7 +82,6 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 		return
 	}
 
-	// TODO:チャットルームの初期化
 	_, err = server.store.InitChatRoom(ctx, result.Rooms.RoomID.String())
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -84,11 +91,20 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-// ルームにアカウントを追加するAPI
-// 認証必須
+// TODO:pagesizeとpageidを追加する
 
+// AddAccountInRoom	godoc
+// @Summary			Add Account In Rooms
+// @Description		Add Account In Rooms
+// @Tags			Rooms
+// @Produce			json
+// @Param			room_id 	path 		string					true	"Rooms API wildcard"
+// @Success			200			{object}	db.CreateRoomTxResult	"succsss response"
+// @Failure 		400			{object}	ErrorResponse			"error response"
+// @Failure 		500			{object}	ErrorResponse			"error response"
+// @Router       	/rooms/:room_id/members	[post]
 func (server *Server) AddAccountInRoom(ctx *gin.Context) {
-	var reqURI RoomsRequestURI
+	var reqURI RoomsRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -120,20 +136,22 @@ func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 
 // ルームからアカウントを削除するAPI
 // 認証必須
-type DeleteAccountInRoom struct {
-	userId string `form:"user_id"`
-}
 
+// RemoveAccountInRoom	godoc
+// @Summary			Remove Account In Rooms
+// @Description		Remove Account In Rooms
+// @Tags			Rooms
+// @Produce			json
+// @Param			room_id 	path 		string			true	"Rooms API wildcard"
+// @Success			200			{object}	DeleteResponse	"succsss response"
+// @Failure 		400			{object}	ErrorResponse	"error response"
+// @Failure 		500			{object}	ErrorResponse	"error response"
+// @Router       	/rooms/:room_id/members	[delete]
 func (server *Server) RemoveAccountInRoom(ctx *gin.Context) {
 	var (
-		reqURI   RoomsRequestURI
-		reqQuery DeleteAccountInRoom
+		reqURI RoomsRequestWildCard
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -162,13 +180,13 @@ func (server *Server) RemoveAccountInRoom(ctx *gin.Context) {
 	}
 	err = server.store.RemoveAccountInRoom(ctx, db.RemoveAccountInRoomParams{
 		RoomID: uuid.UUID(roomId),
-		UserID: reqQuery.userId,
+		UserID: account.UserID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"success": "delete successfully"})
+	ctx.JSON(http.StatusOK, DeleteResponse{Result: "delete Successful"})
 
 }
 
@@ -180,7 +198,16 @@ type ListRoomsResponse struct {
 	Rooms []GetRoomResponse `json:"get_rooms_response"`
 }
 
-// ルームを取得するAPI
+// ListRooms	godoc
+// @Summary			List Account
+// @Description		List Account
+// @Tags			Rooms
+// @Produce			json
+// @Param			room_id path 		string					true	"Rooms API wildcard"
+// @Success			200		{array}		[]db.ListRoomTxResult	"succsss response"
+// @Failure 		400		{object}	ErrorResponse			"error response"
+// @Failure 		500		{object}	ErrorResponse			"error response"
+// @Router       	/rooms	[get]
 func (server *Server) ListRooms(ctx *gin.Context) {
 	var request ListRoomsRequest
 	if err := ctx.ShouldBindQuery(&request); err != nil {
@@ -207,22 +234,31 @@ type hackathonInfo struct {
 	Tags        []db.StatusTags `json:"tags"`
 }
 
-// ルームの詳細を取得する
 type GetRoomResponse struct {
-	RoomID            uuid.UUID                        `json:"room_id"`
-	Title             string                           `json:"title"`
-	Description       string                           `json:"description"`
-	MemberLimit       int32                            `json:"member_limit"`
-	IsStatus          bool                             `json:"is_status"`
-	CreateAt          time.Time                        `json:"create_at"`
-	Hackathon         hackathonInfo                    `json:"hackathon"`
-	NowMember         []db.GetRoomsAccountsByRoomIDRow `json:"now_member"`
-	MembersTechTags   []db.RoomTechTags                `json:"members_tech_tags"`
-	MembersFrameworks []db.RoomFramework               `json:"members_frameworks"`
+	RoomID            uuid.UUID            `json:"room_id"`
+	Title             string               `json:"title"`
+	Description       string               `json:"description"`
+	MemberLimit       int32                `json:"member_limit"`
+	IsStatus          bool                 `json:"is_status"`
+	CreateAt          time.Time            `json:"create_at"`
+	Hackathon         hackathonInfo        `json:"hackathon"`
+	NowMember         []db.NowRoomAccounts `json:"now_member"`
+	MembersTechTags   []db.RoomTechTags    `json:"members_tech_tags"`
+	MembersFrameworks []db.RoomFramework   `json:"members_frameworks"`
 }
 
+// GetRoom	godoc
+// @Summary			Get Room
+// @Description		Get Room
+// @Tags			Rooms
+// @Produce			json
+// @Param			room_id path 		string				true	"Rooms API wildcard"
+// @Success			200		{object}	GetRoomResponse		"succsss response"
+// @Failure 		400		{object}	ErrorResponse		"error response"
+// @Failure 		500		{object}	ErrorResponse		"error response"
+// @Router       	/rooms/:room_id		[get]
 func (server *Server) GetRoom(ctx *gin.Context) {
-	var request RoomsRequestURI
+	var request RoomsRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -255,6 +291,7 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 	}
 
 	var (
+		nowMember         []db.NowRoomAccounts
 		statusTags        []db.StatusTags
 		membersTechTags   []db.RoomTechTags
 		MembersFrameworks []db.RoomFramework
@@ -270,6 +307,11 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 	}
 
 	for _, account := range roomAccounts {
+		nowMember = append(nowMember, db.NowRoomAccounts{
+			UserID:  account.UserID.String,
+			Icon:    account.Icon.String,
+			IsOwner: account.IsOwner,
+		})
 		// タグの追加
 		techTags, err := server.store.ListAccountTagsByUserID(ctx, account.UserID.String)
 		if err != nil {
@@ -315,7 +357,7 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 			Term:        hackathon.Term,
 			Tags:        statusTags,
 		},
-		NowMember:         roomAccounts,
+		NowMember:         nowMember,
 		MembersTechTags:   membersTechTags,
 		MembersFrameworks: MembersFrameworks,
 	}
@@ -325,12 +367,22 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 // チャットを追加する
 // 認証必須
 type AddChatRequestBody struct {
-	UserID  string `json:"user_id" binding:"required"`
 	Message string `json:"message" binding:"required"`
 }
 
+// AddChat	godoc
+// @Summary			Add Chat Room
+// @Description		Add Chat Room
+// @Tags			Rooms
+// @Produce			json
+// @Param			room_id 			path 		string				true	"Rooms API wildcard"
+// @Param			AddChatRequestBody 	body 		AddChatRequestBody	true	"add chat Room Request body"
+// @Success			200					{object}	GetRoomResponse		"succsss response"
+// @Failure 		400					{object}	ErrorResponse		"error response"
+// @Failure 		500					{object}	ErrorResponse		"error response"
+// @Router       	/rooms/:room_id/addchat			[post]
 func (server *Server) AddChat(ctx *gin.Context) {
-	var requestURI RoomsRequestURI
+	var requestURI RoomsRequestWildCard
 	var requestBody AddChatRequestBody
 	if err := ctx.ShouldBindUri(&requestURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -348,12 +400,6 @@ func (server *Server) AddChat(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	// 本人確認
-	if requestBody.UserID != account.UserID {
-		err := errors.New("アカウントが一致しません")
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
 	// ルームメンバか確認する
 	roomId, err := uuid5.FromString(requestURI.RoomID)
 	if err != nil {
@@ -366,7 +412,7 @@ func (server *Server) AddChat(ctx *gin.Context) {
 		return
 	}
 
-	if !checkAccount(roomAccounts, requestBody.UserID) {
+	if !checkAccount(roomAccounts, account.UserID) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -405,10 +451,20 @@ type UpdateRoomRequestBody struct {
 	MemberLimit int32  `json:"member_limit" binding:"required"`
 }
 
-// ルームの更新
+// UpdateRoom	godoc
+// @Summary			update Room
+// @Description		update Room
+// @Tags			Rooms
+// @Produce			json
+// @Param			room_id 				path 		string					true	"Rooms API wildcard"
+// @Param			UpdateRoomRequestBody 	body 		UpdateRoomRequestBody	true	"update Room Request body"
+// @Success			200						{object}	GetRoomResponse			"succsss response"
+// @Failure 		400						{object}	ErrorResponse			"error response"
+// @Failure 		500						{object}	ErrorResponse			"error response"
+// @Router       	/rooms/:room_id			[put]
 func (server *Server) UpdateRoom(ctx *gin.Context) {
 	var (
-		reqURI  RoomsRequestURI
+		reqURI  RoomsRequestWildCard
 		reqBody UpdateRoomRequestBody
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -491,9 +547,20 @@ func parseUpdateRoomParam(room db.Rooms, reqBody UpdateRoomRequestBody) (result 
 	}
 	return
 }
+
+// DeleteRoom	godoc
+// @Summary			delete Room
+// @Description		delete Room
+// @Tags			Rooms
+// @Produce			json
+// @Param			room_id path 		string			true	"Rooms API wildcard"
+// @Success			200		{object}	DeleteResponse	"succsss response"
+// @Failure 		400		{object}	ErrorResponse	"error response"
+// @Failure 		500		{object}	ErrorResponse	"error response"
+// @Router       	/rooms/:room_id		[delete]
 func (server *Server) DeleteRoom(ctx *gin.Context) {
 	var (
-		reqURI RoomsRequestURI
+		reqURI RoomsRequestWildCard
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -522,10 +589,10 @@ func (server *Server) DeleteRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	result, err := server.store.SoftDeleteRoomByID(ctx, uuid.UUID(roomId))
+	_, err = server.store.SoftDeleteRoomByID(ctx, uuid.UUID(roomId))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, result)
+	ctx.JSON(http.StatusOK, DeleteResponse{Result: "Delete Successful"})
 }
