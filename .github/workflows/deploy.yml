@@ -8,14 +8,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: docker/login-action@v2
+    - uses: docker/login-action@v1
       with:
-        registry: ${{ secrets.HARBOR_REGISTRY }}
-        username: ${{ secrets.HARBOR_USERNAME }}
+        registry: harbor.seaffood.com
+        username: ${{ secrets.HARBOR_USERNAME  }}
         password: ${{ secrets.HARBOR_PASSWORD }}
 
     - uses: actions/checkout@v3
     - name: BuildAndPushImageOnHarbor
       run: |
-        docker build ./ -t ${{ secrets.HARBOR_REGISTRY }}/hackhack/hackhack-backend:${{ github.run_number }}
-        docker push ${{ secrets.HARBOR_REGISTRY }}/hackhack/hackhack-backend:${{ github.run_number }}
+        docker build ./ -t harbor.seaffood.com/chaturmail/chaturmail-backend:${{ github.run_number }}
+        docker push harbor.seaffood.com/chaturmail/chaturmail-backend:${{ github.run_number }}
