@@ -11,7 +11,6 @@ import (
 )
 
 type Querier interface {
-	CerateRate(ctx context.Context, arg CerateRateParams) (RateEntries, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
 	CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFrameworks, error)
 	CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTags, error)
@@ -47,7 +46,6 @@ type Querier interface {
 	ListFrameworks(ctx context.Context, limit int32) ([]Frameworks, error)
 	ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathons, error)
 	ListLocates(ctx context.Context) ([]Locates, error)
-	ListRate(ctx context.Context, arg ListRateParams) ([]RateEntries, error)
 	ListRoom(ctx context.Context, limit int32) ([]Rooms, error)
 	ListStatusTags(ctx context.Context) ([]StatusTags, error)
 	ListTechTag(ctx context.Context) ([]TechTags, error)
