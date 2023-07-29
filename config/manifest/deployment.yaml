@@ -18,5 +18,7 @@ spec:
       containers:
       - image: harbor.seaffood.com/hackhack/hackhack-backend@sha256:615d0539ec3615c2244e9e4b940a6950c0200750b4d81266be1f76fc1ffeaa04
         name: hackhack-backend
+        ports:
+        - containerPort: 443
       imagePullSecrets:
       - name: regcred-reg
