@@ -20,10 +20,7 @@ spec:
     spec:
       containers:
       - name: app-test
-        image: nginx
-        ports:
-        - name: web
-          containerPort: 80
+        image: harbor.seaffood.com/hackhack/hackhack-backend@sha256:615d0539ec3615c2244e9e4b940a6950c0200750b4d81266be1f76fc1ffeaa04
 ---
 apiVersion: v1
 kind: Service
@@ -48,7 +45,7 @@ metadata:
   namespace: app-test
 spec:
   rules:
-  - host: "0.0.0.0"
+  - host: "seaffoo.com"
     http:
       paths:
       - path: /
