@@ -20,22 +20,22 @@ jobs:
         docker build ./ -t ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}
         docker push ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}
 
-    # - name: Clone Repository
-    #   run: |
-    #     git clone ${{ secrets.ARGO_REPO_URL  }}
-    # - name: Install yq
-    #   run: |
-    #     sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-    #     sudo chmod a+x /usr/local/bin/yq
-    # - name: Update YAML File
-    #   run: |
-    #     yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'argocd-configs/hackhack-pod.yaml'
+    - name: Clone Repository
+      run: |
+        git clone https://github.com/Hack-Hack-geek-Vol6/backend.git
+    - name: Install yq
+      run: |
+        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        sudo chmod a+x /usr/local/bin/yq
+    - name: Update YAML File
+      run: |
+        yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'argocd-configs/hackhack-pod.yaml'
 
-    # - name: Push to Repo
-    #   run: |
-    #     git config --global user.name "${{secrets.USERNAME_GITHUB}}"
-    #     git config --global user.email "${{secrets.EMAIL_GITHUB}}"
-    #     cd argocd-test-configs
-    #     git add .
-    #     git commit -m "Updated by GitHub Actions"
-    #     git push ${{ secrets.ARGO_REPO_URL  }} --all
+    - name: Push to Repo
+      run: |
+        git config --global user.name "${{secrets.USERNAME_GITHUB}}"
+        git config --global user.email "${{secrets.EMAIL_GITHUB}}"
+        cd argocd-test-configs
+        git add .
+        git commit -m "Updated by GitHub Actions"
+        git push ${{ secrets.ARGO_REPO_URL  }} --all
