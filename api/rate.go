@@ -32,8 +32,15 @@ type RateResponses struct {
 // @Failure 		500				{object}		ErrorResponse		"error response"
 // @Router       	/accounts/:id/rate 		[post]
 func (server *Server) CreateRate(ctx *gin.Context) {
-	var request CreateRateRequestBody
+	var (
+		request    CreateRateRequestBody
+		requestURI AccountRequestWildCard
+	)
 	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindJSON(&requestURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -49,6 +56,74 @@ func (server *Server) CreateRate(ctx *gin.Context) {
 		UserID:   rate.UserID,
 		Rate:     rate.Rate,
 		CreateAt: rate.CreateAt,
+	}
+
+	// アカウントのレートを更新
+	account, err := server.store.GetAccountByID(ctx, request.UserID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	// account.Rate += rate.Rate
+	rate, err = server.store.UpdateAccount(ctx, parseUpdateAccountRateParam(account, request))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+}
+
+func parseUpdateAccountRateParam(account db.GetAccountByIDRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams) {
+	result.Rate = account.Rate + body.Rate
+	return
+}
+
+type ListRateParams struct {
+	UserID string `json:"user_id"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
+}
+type ListRateResponses struct {
+	UserID   string    `json:"user_id"`
+	Rate     int32     `json:"rate"`
+	CreateAt time.Time `json:"create_at"`
+}
+
+// ListRate	godoc
+// @Summary			List Rate
+// @Description		List Rate for User
+// @Tags			Rate
+// @Produce			json
+// @Param  ListRateParams uri ListRateParams true "List Rate Params"
+// @Param  ListRateParams query ListRateParams true "List Rate Params"
+// @Success			200				{array}			ListRateResponses	"success response"
+// @Failure 		400				{object}		ErrorResponse		"error response"
+// @Failure 		500				{object}		ErrorResponse		"error response"
+// @Router       	/accounts/:id/rate 		[get]
+func (server *Server) ListRate(ctx *gin.Context) {
+	var request ListRateParams
+	if err := ctx.ShouldBindUri(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	rate, err := server.store.ListRate(ctx, db.ListRateParams{
+		UserID: request.UserID,
+		Limit:  request.Limit,
+		Offset: request.Offset,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	var response []ListRateResponses
+	for _, rate := range rate {
+		response = append(response, ListRateResponses{
+			UserID:   rate.UserID,
+			Rate:     rate.Rate,
+			CreateAt: rate.CreateAt,
+		})
 	}
 	ctx.JSON(http.StatusOK, response)
 }

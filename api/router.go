@@ -72,6 +72,7 @@ func (server *Server) authRouter() {
 
 	// レート
 	auth.POST("/accounts/:id/rate", server.CreateRate)
+	auth.GET("/accounts/:id/rate", server.ListRate)
 
 	// ルーム
 	auth.GET("/rooms", server.ListRooms)
