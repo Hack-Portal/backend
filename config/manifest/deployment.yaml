@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hackhack-backend
+data:
+  registriesSkippingTagResolving: harbor.seaffood.com
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -14,7 +16,7 @@ spec:
         app: hackhack-backend
     spec:
       containers:
-      - image: 10.10.10.10/hackhack/hackhack-backend@sha256:615d0539ec3615c2244e9e4b940a6950c0200750b4d81266be1f76fc1ffeaa04
+      - image: harbor.seaffood.com/hackhack/hackhack-backend@sha256:615d0539ec3615c2244e9e4b940a6950c0200750b4d81266be1f76fc1ffeaa04
         name: hackhack-backend
         ports:
         - containerPort: 80
