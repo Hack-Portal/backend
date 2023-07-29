@@ -32,7 +32,7 @@ type CreateRoomRequestBody struct {
 // @Tags			Rooms
 // @Produce			json
 // @Param			CreateRoomRequestBody 	body 		CreateRoomRequestBody	true	"create Room Request Body"
-// @Success			200						{object}	db.CreateRoomTxResult	"succsss response"
+// @Success			200						{object}	db.CreateRoomTxResult	"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
 // @Router       	/rooms					[post]
@@ -99,7 +99,7 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 	path 		string					true	"Rooms API wildcard"
-// @Success			200			{object}	db.CreateRoomTxResult	"succsss response"
+// @Success			200			{object}	db.CreateRoomTxResult	"success response"
 // @Failure 		400			{object}	ErrorResponse			"error response"
 // @Failure 		500			{object}	ErrorResponse			"error response"
 // @Router       	/rooms/:room_id/members	[post]
@@ -143,7 +143,7 @@ func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 	path 		string			true	"Rooms API wildcard"
-// @Success			200			{object}	DeleteResponse	"succsss response"
+// @Success			200			{object}	DeleteResponse	"success response"
 // @Failure 		400			{object}	ErrorResponse	"error response"
 // @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/rooms/:room_id/members	[delete]
@@ -204,7 +204,7 @@ type ListRoomsResponse struct {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id path 		string					true	"Rooms API wildcard"
-// @Success			200		{array}		[]db.ListRoomTxResult	"succsss response"
+// @Success			200		{array}		[]db.ListRoomTxResult	"success response"
 // @Failure 		400		{object}	ErrorResponse			"error response"
 // @Failure 		500		{object}	ErrorResponse			"error response"
 // @Router       	/rooms	[get]
@@ -253,7 +253,7 @@ type GetRoomResponse struct {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id path 		string				true	"Rooms API wildcard"
-// @Success			200		{object}	GetRoomResponse		"succsss response"
+// @Success			200		{object}	GetRoomResponse		"success response"
 // @Failure 		400		{object}	ErrorResponse		"error response"
 // @Failure 		500		{object}	ErrorResponse		"error response"
 // @Router       	/rooms/:room_id		[get]
@@ -377,7 +377,7 @@ type AddChatRequestBody struct {
 // @Produce			json
 // @Param			room_id 			path 		string				true	"Rooms API wildcard"
 // @Param			AddChatRequestBody 	body 		AddChatRequestBody	true	"add chat Room Request body"
-// @Success			200					{object}	GetRoomResponse		"succsss response"
+// @Success			200					{object}	GetRoomResponse		"success response"
 // @Failure 		400					{object}	ErrorResponse		"error response"
 // @Failure 		500					{object}	ErrorResponse		"error response"
 // @Router       	/rooms/:room_id/addchat			[post]
@@ -458,7 +458,7 @@ type UpdateRoomRequestBody struct {
 // @Produce			json
 // @Param			room_id 				path 		string					true	"Rooms API wildcard"
 // @Param			UpdateRoomRequestBody 	body 		UpdateRoomRequestBody	true	"update Room Request body"
-// @Success			200						{object}	GetRoomResponse			"succsss response"
+// @Success			200						{object}	GetRoomResponse			"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
 // @Router       	/rooms/:room_id			[put]
@@ -554,7 +554,7 @@ func parseUpdateRoomParam(room db.Rooms, reqBody UpdateRoomRequestBody) (result 
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id path 		string			true	"Rooms API wildcard"
-// @Success			200		{object}	DeleteResponse	"succsss response"
+// @Success			200		{object}	DeleteResponse	"success response"
 // @Failure 		400		{object}	ErrorResponse	"error response"
 // @Failure 		500		{object}	ErrorResponse	"error response"
 // @Router       	/rooms/:room_id		[delete]

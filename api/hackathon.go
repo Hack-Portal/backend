@@ -42,7 +42,7 @@ type HackathonResponses struct {
 // @Tags			Hackathon
 // @Produce			json
 // @Param			CreateHackathonRequestBody 	body 		CreateHackathonRequestBody		true	"create hackathon Request Body"
-// @Success			200							{object}	HackathonResponses				"succsss response"
+// @Success			200							{object}	HackathonResponses				"success response"
 // @Failure 		400							{object}	ErrorResponse					"error response"
 // @Failure 		500							{object}	ErrorResponse					"error response"
 // @Router       	/hackathons					[post]
@@ -131,7 +131,7 @@ type HackathonRequestWildCard struct {
 // @Tags			Hackathon
 // @Produce			json
 // @Param			hackathon_id	path 	 		string					true	"Hackathons API wildcard"
-// @Success			200				{object}		HackathonResponses		"succsss response"
+// @Success			200				{object}		HackathonResponses		"success response"
 // @Failure 		400				{object}		ErrorResponse			"error response"
 // @Failure 		500				{object}		ErrorResponse			"error response"
 // @Router       	/hackathons/:hackathon_id 		[get]
@@ -192,7 +192,7 @@ type ListHackathonsResponses struct {
 // @Tags			Hackathon
 // @Produce			json
 // @Param			ListHackathonsParams	formData 	ListHackathonsParams	true	"List hackathon Request queries"
-// @Success			200						{array}		HackathonResponses		"succsss response"
+// @Success			200						{array}		HackathonResponses		"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
 // @Router       	/hackathons 			[get]

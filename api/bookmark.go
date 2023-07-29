@@ -31,7 +31,7 @@ type BookmarkResponse struct {
 // @Tags			Bookmark
 // @Produce			json
 // @Param			CreateBookmarkRequestBody 	body 		CreateBookmarkRequestBody	true	"Create Bookmark Request Body"
-// @Success			200							{object}	BookmarkResponse			"create succsss response"
+// @Success			200							{object}	BookmarkResponse			"create success response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/bookmarks 					[post]
@@ -93,7 +93,7 @@ type RemoveBookmarkRequestURI struct {
 // @Tags			Bookmark
 // @Produce			json
 // @Param			hackathon_id 	path 			string				true	"Delete Bookmark Request Body"
-// @Success			200				{object}		BookmarkResponse	"delete succsss response"
+// @Success			200				{object}		BookmarkResponse	"delete success response"
 // @Failure 		400				{object}		ErrorResponse		"bad request response"
 // @Failure 		500				{object}		ErrorResponse		"server error response"
 // @Router       	/bookmarks/:hackathon_id 		[delete]
@@ -151,7 +151,7 @@ type ListBookmarkRequestQueries struct {
 // @Tags			Bookmark
 // @Produce			json
 // @Param			ListBookmarkRequestQueries 	formData 		string				true	"Delete Bookmark Request Body"
-// @Success			200							{array}			BookmarkResponse	"delete succsss response"
+// @Success			200							{array}			BookmarkResponse	"delete success response"
 // @Failure 		400							{object}		ErrorResponse		"bad request response"
 // @Failure 		500							{object}		ErrorResponse		"server error response"
 // @Router       	/bookmarks/:hackathon_id 	[get]
