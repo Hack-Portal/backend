@@ -22,7 +22,6 @@ jobs:
 
     - name: Clone Repository
       run: |
-        git clone https://github.com/Hack-Hack-geek-Vol6/backend.git
     - name: Install yq
       run: |
         sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
