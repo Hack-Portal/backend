@@ -33,14 +33,14 @@ type RateResponses struct {
 // @Router       	/accounts/:id/rate 		[post]
 func (server *Server) CreateRate(ctx *gin.Context) {
 	var (
-		request    CreateRateRequestBody
-		requestURI AccountRequestWildCard
+		request     CreateRateRequestBody
+		requestBody UpdateAccountRequestBody
 	)
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := ctx.ShouldBindJSON(&requestURI); err != nil {
+	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -57,31 +57,40 @@ func (server *Server) CreateRate(ctx *gin.Context) {
 		Rate:     rate.Rate,
 		CreateAt: rate.CreateAt,
 	}
-
+	ctx.JSON(http.StatusOK, response)
 	// アカウントのレートを更新
 	account, err := server.store.GetAccountByID(ctx, request.UserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	// account.Rate += rate.Rate
-	rate, err = server.store.UpdateAccount(ctx, parseUpdateAccountRateParam(account, request))
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
+	server.UpdateAccount(parseUpdateAccountRateParam(account, requestBody))
+	// rate, err = server.store.UpdateAccount(ctx, parseUpdateAccountRateParam(account, requestBody))
+	// if err != nil {
+	// 	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	// 	return
+	// }
 	ctx.JSON(http.StatusOK, response)
 }
 
 func parseUpdateAccountRateParam(account db.GetAccountByIDRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams) {
+	result.UserID = account.UserID
+	result.Username = account.Username
+	result.Icon = account.Icon
+	result.ExplanatoryText = account.ExplanatoryText
+	result.LocateID = account.LocateID
 	result.Rate = account.Rate + body.Rate
+	result.HashedPassword = account.HashedPassword
+	result.Email = account.Email
+	result.ShowLocate = account.ShowLocate
+	result.ShowRate = account.ShowRate
 	return
 }
 
 type ListRateParams struct {
-	UserID string `json:"user_id"`
-	Limit  int32  `json:"limit"`
-	Offset int32  `json:"offset"`
+	UserID   string `json:"user_id"`
+	PageSize int32  `json:"page_size"`
+	PageId   int32  `json:"page_id"`
 }
 type ListRateResponses struct {
 	UserID   string    `json:"user_id"`
@@ -102,15 +111,15 @@ type ListRateResponses struct {
 // @Router       	/accounts/:id/rate 		[get]
 func (server *Server) ListRate(ctx *gin.Context) {
 	var request ListRateParams
-	if err := ctx.ShouldBindUri(&request); err != nil {
+	if err := ctx.ShouldBindQuery(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	rate, err := server.store.ListRate(ctx, db.ListRateParams{
 		UserID: request.UserID,
-		Limit:  request.Limit,
-		Offset: request.Offset,
+		Limit:  request.PageSize,
+		Offset: (request.PageId - 1) * request.PageSize,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
