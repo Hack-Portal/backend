@@ -1,4 +1,4 @@
--- name: CerateRate :one
+-- name: CreateRate :one
 INSERT INTO rate_entries (user_id, rate)
 VALUES($1, $2)
 RETURNING *;
