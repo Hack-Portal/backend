@@ -70,6 +70,9 @@ func (server *Server) authRouter() {
 	auth.POST("/acccounts/:id/follow", server.CreateFollow)
 	auth.DELETE("/acccounts/:id/follow", server.RemoveFollow)
 
+	// レート
+	auth.POST("/accounts/:id/rate", server.CreateRate)
+
 	// ルーム
 	auth.GET("/rooms", server.ListRooms)
 	auth.POST("/rooms", server.CreateRoom)
