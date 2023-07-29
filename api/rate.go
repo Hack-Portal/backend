@@ -88,9 +88,9 @@ func parseUpdateAccountRateParam(account db.GetAccountByIDRow, body UpdateAccoun
 }
 
 type ListRateParams struct {
-	UserID   string `json:"user_id"`
-	PageSize int32  `json:"page_size"`
-	PageId   int32  `json:"page_id"`
+	UserID   string `form:"user_id"`
+	PageSize int32  `form:"page_size"`
+	PageId   int32  `form:"page_id"`
 }
 type ListRateResponses struct {
 	UserID   string    `json:"user_id"`
