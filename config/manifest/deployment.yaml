@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackhack-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackhack-backend
+  template:
+    metadata:
+      matchLabels:
+        app: hackhack-backend
+    spec:
+      containers:
+        - name: hackhack
+          image: hackhack/hackhack-backend
+          imagePullPolicy: Always
+          ports:
+            - containers: 80
