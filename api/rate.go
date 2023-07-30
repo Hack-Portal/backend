@@ -57,23 +57,21 @@ func (server *Server) CreateRate(ctx *gin.Context) {
 		Rate:     rate.Rate,
 		CreateAt: rate.CreateAt,
 	}
-	ctx.JSON(http.StatusOK, response)
 	// アカウントのレートを更新
 	account, err := server.store.GetAccountByID(ctx, request.UserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	server.UpdateAccount(parseUpdateAccountRateParam(account, requestBody))
-	// rate, err = server.store.UpdateAccount(ctx, parseUpdateAccountRateParam(account, requestBody))
-	// if err != nil {
-	// 	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	// 	return
-	// }
+	upRate, err := server.store.UpdateAccount(ctx, parseUpdateAccountRate(account, requestBody))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 	ctx.JSON(http.StatusOK, response)
 }
 
-func parseUpdateAccountRateParam(account db.GetAccountByIDRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams) {
+func parseUpdateAccountRate(account db.GetAccountByIDRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams) {
 	result.UserID = account.UserID
 	result.Username = account.Username
 	result.Icon = account.Icon
