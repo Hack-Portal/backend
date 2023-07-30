@@ -10,8 +10,7 @@ import (
 
 // レートエントリーを作る時のリクエストパラメータ
 type CreateRateRequestBody struct {
-	UserID string `json:"user_id"`
-	Rate   int32  `json:"rate"`
+	Rate int32 `json:"rate"`
 }
 
 // レートエントリーに関するレスポンス
@@ -33,67 +32,46 @@ type RateResponses struct {
 // @Router       	/accounts/:id/rate 		[post]
 func (server *Server) CreateRate(ctx *gin.Context) {
 	var (
-		request     CreateRateRequestBody
-		requestBody UpdateAccountRequestBody
+		reqURI  AccountRequestWildCard
+		reqBody UpdateAccountRequestBody
 	)
-	if err := ctx.ShouldBindJSON(&request); err != nil {
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	// れーとエントリを追加
 	rate, err := server.store.CreateRate(ctx, db.CreateRateParams{
-		UserID: request.UserID,
-		Rate:   request.Rate,
+		UserID: reqURI.ID,
+		Rate:   reqBody.Rate,
 	})
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	response := RateResponses{
-		UserID:   rate.UserID,
-		Rate:     rate.Rate,
-		CreateAt: rate.CreateAt,
-	}
-	// アカウントのレートを更新
-	account, err := server.store.GetAccountByID(ctx, request.UserID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	upRate, err := server.store.UpdateAccount(ctx, parseUpdateAccountRate(account, requestBody))
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	ctx.JSON(http.StatusOK, response)
-}
 
-func parseUpdateAccountRate(account db.GetAccountByIDRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams) {
-	result.UserID = account.UserID
-	result.Username = account.Username
-	result.Icon = account.Icon
-	result.ExplanatoryText = account.ExplanatoryText
-	result.LocateID = account.LocateID
-	result.Rate = account.Rate + body.Rate
-	result.HashedPassword = account.HashedPassword
-	result.Email = account.Email
-	result.ShowLocate = account.ShowLocate
-	result.ShowRate = account.ShowRate
-	return
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	// アカウントのレートを更新
+	_, err = server.store.UpdateRateByUserID(ctx, db.UpdateRateByUserIDParams{
+		UserID: reqURI.ID,
+		Rate:   reqBody.Rate,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, rate)
 }
 
 type ListRateParams struct {
 	UserID   string `form:"user_id"`
 	PageSize int32  `form:"page_size"`
 	PageId   int32  `form:"page_id"`
-}
-type ListRateResponses struct {
-	UserID   string    `json:"user_id"`
-	Rate     int32     `json:"rate"`
-	CreateAt time.Time `json:"create_at"`
 }
 
 // ListRate	godoc
@@ -114,7 +92,7 @@ func (server *Server) ListRate(ctx *gin.Context) {
 		return
 	}
 
-	rate, err := server.store.ListRate(ctx, db.ListRateParams{
+	rates, err := server.store.ListRate(ctx, db.ListRateParams{
 		UserID: request.UserID,
 		Limit:  request.PageSize,
 		Offset: (request.PageId - 1) * request.PageSize,
@@ -124,13 +102,5 @@ func (server *Server) ListRate(ctx *gin.Context) {
 		return
 	}
 
-	var response []ListRateResponses
-	for _, rate := range rate {
-		response = append(response, ListRateResponses{
-			UserID:   rate.UserID,
-			Rate:     rate.Rate,
-			CreateAt: rate.CreateAt,
-		})
-	}
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, rates)
 }
