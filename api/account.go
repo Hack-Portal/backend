@@ -281,7 +281,7 @@ type UpdateAccountResponse struct {
 // @Produce			json
 // @Param			user_id 					path		string						true	"Accounts API wildcard"
 // @Param			UpdateAccountRequestBody 	body		UpdateAccountRequestBody	true	"Update Account Request Body"
-// @Success			200							{object}	UpdateAccountResponse		"Update succsss response"
+// @Success			200							{object}	UpdateAccountResponse		"Update success response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/accounts/:user_id 			[put]
@@ -435,7 +435,7 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccount
 // @Tags			Accounts
 // @Produce			json
 // @Param			user_id 	path			string			true	"Accounts API wildcard"
-// @Success			200			{object}		DeleteResponse	"delete succsss response"
+// @Success			200			{object}		DeleteResponse	"delete success response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts/:user_id 		[delete]

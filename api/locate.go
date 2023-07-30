@@ -7,11 +7,11 @@ import (
 )
 
 // ListLocation	godoc
-// @Summary			Get Framewroks
-// @Description		Get Framewroks
+// @Summary			Get Frameworks
+// @Description		Get Frameworks
 // @Tags			Locates
 // @Produce			json
-// @Success			200			{array}		db.Locates		"succsss response"
+// @Success			200			{array}		db.Locates		"success response"
 // @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/locates	[get]
 func (server *Server) ListLocation(ctx *gin.Context) {

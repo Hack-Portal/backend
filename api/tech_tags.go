@@ -7,11 +7,11 @@ import (
 )
 
 // ListTechTags		godoc
-// @Summary			Get Framewroks
-// @Description		Get Framewroks
+// @Summary			Get Frameworks
+// @Description		Get Frameworks
 // @Tags			TechTags
 // @Produce			json
-// @Success			200		{array}		db.TechTags		"succsss response"
+// @Success			200		{array}		db.TechTags		"success response"
 // @Failure 		500		{object}	ErrorResponse	"error response"
 // @Router       	/tech_tags			[get]
 func (server *Server) ListTechTags(ctx *gin.Context) {
