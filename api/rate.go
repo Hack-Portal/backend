@@ -33,7 +33,7 @@ type RateResponses struct {
 func (server *Server) CreateRate(ctx *gin.Context) {
 	var (
 		reqURI  AccountRequestWildCard
-		reqBody UpdateAccountRequestBody
+		reqBody CreateRateRequestBody
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -69,9 +69,8 @@ func (server *Server) CreateRate(ctx *gin.Context) {
 }
 
 type ListRateParams struct {
-	UserID   string `form:"user_id"`
-	PageSize int32  `form:"page_size"`
-	PageId   int32  `form:"page_id"`
+	PageSize int32 `form:"page_size"`
+	PageId   int32 `form:"page_id"`
 }
 
 // ListRate	godoc
@@ -86,16 +85,25 @@ type ListRateParams struct {
 // @Failure 		500				{object}		ErrorResponse		"error response"
 // @Router       	/accounts/:id/rate 		[get]
 func (server *Server) ListRate(ctx *gin.Context) {
-	var request ListRateParams
-	if err := ctx.ShouldBindQuery(&request); err != nil {
+	var (
+		reqURI   AccountRequestWildCard
+		reqQuery ListRateParams
+	)
+
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	rates, err := server.store.ListRate(ctx, db.ListRateParams{
-		UserID: request.UserID,
-		Limit:  request.PageSize,
-		Offset: (request.PageId - 1) * request.PageSize,
+		UserID: reqURI.ID,
+		Limit:  reqQuery.PageSize,
+		Offset: (reqQuery.PageId - 1) * reqQuery.PageSize,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
