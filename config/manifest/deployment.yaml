@@ -16,7 +16,7 @@ spec:
         app: hackhack-backend
     spec:
       containers:
-      - image: harbor.seaffood.com/hackhack/hackhack-backend@sha256:615d0539ec3615c2244e9e4b940a6950c0200750b4d81266be1f76fc1ffeaa04
+      - image: harbor.seaffood.com/hackhack/hackhack-backend@sha256:efd13757392e2d8c4886d4fd9864d71fe703bfd175d8f4a035f63b32275e4e18
         name: hackhack-backend
       imagePullSecrets:
       - name: harbor
