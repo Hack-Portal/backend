@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackhack-backend
+data:
+  registriesSkippingTagResolving: harbor.seaffood.com
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: hackhack-backend
+  template:
+    metadata:
+      labels:
+        app: hackhack-backend
+    spec:
+      containers:
+        - image: harbor.seaffood.com/hackhack/hackhack-backend:2
+          name: hackhack-backend
+      imagePullSecrets:
+        - name: harbor

@@ -27,7 +27,6 @@ type Store interface {
 	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]ChatRoomsWrite, error)
 	UploadImage(ctx context.Context, file []byte) (string, error)
 }
-
 type SQLStore struct {
 	*Queries
 	db  *sql.DB
