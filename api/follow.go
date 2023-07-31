@@ -97,7 +97,7 @@ type RemoveFollowRequestQueries struct {
 // @Produce			json
 // @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
 // @Param			RemoveFollowRequestQueries 	formData 	CreateFollowRequestBody		true	"Remove Follow Request Body"
-// @Success			200							{object}	DeleteResponse				"succsss response"
+// @Success			200							{object}	DeleteResponse				"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
 // @Router       	/accounts/:from_user_id/follow			[delete]

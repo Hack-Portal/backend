@@ -78,9 +78,8 @@ type ListRateParams struct {
 // @Description		List Rate for User
 // @Tags			Rate
 // @Produce			json
-// @Param  ListRateParams uri ListRateParams true "List Rate Params"
 // @Param  ListRateParams query ListRateParams true "List Rate Params"
-// @Success			200				{array}			ListRateResponses	"success response"
+// @Success			200				{array}			RateResponses	"success response"
 // @Failure 		400				{object}		ErrorResponse		"error response"
 // @Failure 		500				{object}		ErrorResponse		"error response"
 // @Router       	/accounts/:id/rate 		[get]
