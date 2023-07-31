@@ -1,5 +1,6 @@
 CREATE TABLE "past_works" (
   "opus" serial PRIMARY KEY,
+  "name" varchar NOT NULL,
   "thumbnail_image" bytea NOT NULL,
   "explanatory_text" text NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now()),
