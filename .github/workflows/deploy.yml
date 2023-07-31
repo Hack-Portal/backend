@@ -41,7 +41,7 @@ jobs:
 
     - name: Push to Repo
       run: |
-        echo -e "machine github.com\nlogin ${{ secrets.GITHUBUSER }}\npassword ${{ secrets.GITHUBTOKEN }}" > ~/.netrc
+        echo -e "machine github.com\nlogin ${{ secrets.USERNAME_GITHUB }}\npassword ${{ secrets.GITHUB_TOKEN }}" > ~/.netrc
         git config --global user.email "${{secrets.EMAIL_GITHUB}}"
         git config --global user.name "${{secrets.USERNAME_GITHUB}}"
         git clone ${{secrets.CONFIG_REPO_URL}}
