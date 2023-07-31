@@ -49,5 +49,5 @@ jobs:
         if (git diff --shortstat | grep '[0-9]'); then \
           git add .; \
           git commit -m "Updated by GitHub Actions"; \
-          git push origin ft/cicd \
+          git push origin ft/cicd; \
         fi
