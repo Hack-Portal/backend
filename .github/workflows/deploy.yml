@@ -3,9 +3,18 @@ name: Deploy to production
 on:
   push:
     branches: [ master ]
-
 permissions:
-  contents: read
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  issues: write
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
