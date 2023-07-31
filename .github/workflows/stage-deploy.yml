@@ -1,8 +1,8 @@
-name: Deploy to production
+name: Deploy to Staging
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
 permissions:
   actions: write
   checks: write
@@ -25,7 +25,7 @@ jobs:
     - shell: bash
       run: |
         rm app.env && touch app.env
-        echo "${{ secrets.APP_ENV }}" >> app.env
+        echo "${{ secrets.STAGE_APP_ENV }}" >> app.env
         cat app.env
 
     - name: Translate secrets of base64 into json
@@ -55,7 +55,7 @@ jobs:
         git config --global user.email ${{ secrets.EMAIL_GITHUB }}
         git config --global user.name ${{ secrets.USERNAME_GITHUB }}
         
-        cd config/manifest/
+        cd config/manifest/stage
 
         yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'deployment.yaml'
 
