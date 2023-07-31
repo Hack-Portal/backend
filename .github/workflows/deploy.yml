@@ -2,8 +2,10 @@ name: Deploy to production
 
 on:
   push:
-    branches: [ ft/cicd ]
+    branches: [ master ]
 
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -51,5 +53,5 @@ jobs:
         if (git diff --shortstat | grep '[0-9]'); then \
           git add .; \
           git commit -m "Updated by GitHub Actions"; \
-          git push origin ft/cicd; \
+          git push origin master; \
         fi
