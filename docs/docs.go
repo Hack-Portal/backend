@@ -102,7 +102,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.Follows"
+                                "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Follows"
                             }
                         }
                     },
@@ -149,6 +149,94 @@ const docTemplate = `{
                         "description": "succsss response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/:id/rate": {
+            "get": {
+                "description": "List Rate for User",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rate"
+                ],
+                "summary": "List Rate",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.RateResponses"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Rate for User",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rate"
+                ],
+                "summary": "Create Rate",
+                "parameters": [
+                    {
+                        "description": "Create Rate Request Body",
+                        "name": "CreateRateRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateRateRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/api.RateResponses"
                         }
                     },
                     "400": {
@@ -235,7 +323,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Update succsss response",
+                        "description": "Update success response",
                         "schema": {
                             "$ref": "#/definitions/api.UpdateAccountResponse"
                         }
@@ -274,7 +362,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "delete success response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
                         }
@@ -317,7 +405,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "create succsss response",
+                        "description": "create success response",
                         "schema": {
                             "$ref": "#/definitions/api.BookmarkResponse"
                         }
@@ -358,7 +446,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "delete success response",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -400,7 +488,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "delete success response",
                         "schema": {
                             "$ref": "#/definitions/api.BookmarkResponse"
                         }
@@ -422,21 +510,21 @@ const docTemplate = `{
         },
         "/frameworks": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Framewroks"
+                    "Frameworks"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.Frameworks"
+                                "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks"
                             }
                         }
                     },
@@ -478,7 +566,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -522,7 +610,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.HackathonResponses"
                         }
@@ -563,7 +651,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.HackathonResponses"
                         }
@@ -585,21 +673,21 @@ const docTemplate = `{
         },
         "/locates": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Locates"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.Locates"
+                                "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Locates"
                             }
                         }
                     },
@@ -633,7 +721,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -680,7 +768,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/db.CreateRoomTxResult"
                         }
@@ -721,7 +809,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.GetRoomResponse"
                         }
@@ -769,7 +857,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.GetRoomResponse"
                         }
@@ -808,7 +896,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
                         }
@@ -858,7 +946,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.GetRoomResponse"
                         }
@@ -899,7 +987,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/db.CreateRoomTxResult"
                         }
@@ -938,7 +1026,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
                         }
@@ -960,21 +1048,21 @@ const docTemplate = `{
         },
         "/tech_tags": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "TechTags"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.TechTags"
+                                "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags"
                             }
                         }
                     },
@@ -1086,7 +1174,7 @@ const docTemplate = `{
                 "frameworks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.Frameworks"
+                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks"
                     }
                 },
                 "icon": {
@@ -1107,7 +1195,7 @@ const docTemplate = `{
                 "tech_tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.TechTags"
+                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags"
                     }
                 },
                 "user_id": {
@@ -1172,6 +1260,14 @@ const docTemplate = `{
                 }
             }
         },
+        "api.CreateRateRequestBody": {
+            "type": "object",
+            "properties": {
+                "rate": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.CreateRoomRequestBody": {
             "type": "object",
             "required": [
@@ -1227,7 +1323,7 @@ const docTemplate = `{
                 "frameworks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.Frameworks"
+                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks"
                     }
                 },
                 "icon": {
@@ -1248,7 +1344,7 @@ const docTemplate = `{
                 "tech_tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.TechTags"
+                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags"
                     }
                 },
                 "user_id": {
@@ -1330,11 +1426,25 @@ const docTemplate = `{
                 "status_tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.StatusTags"
+                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags"
                     }
                 },
                 "term": {
                     "type": "integer"
+                }
+            }
+        },
+        "api.RateResponses": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             }
         },
@@ -1442,7 +1552,7 @@ const docTemplate = `{
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.StatusTags"
+                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags"
                     }
                 },
                 "term": {
@@ -1494,34 +1604,6 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
-                }
-            }
-        },
-        "db.Follows": {
-            "type": "object",
-            "properties": {
-                "create_at": {
-                    "type": "string"
-                },
-                "from_user_id": {
-                    "type": "string"
-                },
-                "to_user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "db.Frameworks": {
-            "type": "object",
-            "properties": {
-                "framework": {
-                    "type": "string"
-                },
-                "framework_id": {
-                    "type": "integer"
-                },
-                "tech_tag_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -1585,17 +1667,6 @@ const docTemplate = `{
                 }
             }
         },
-        "db.Locates": {
-            "type": "object",
-            "properties": {
-                "locate_id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "db.NowRoomAccounts": {
             "type": "object",
             "properties": {
@@ -1617,7 +1688,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "framework": {
-                    "$ref": "#/definitions/db.Frameworks"
+                    "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks"
                 }
             }
         },
@@ -1642,11 +1713,50 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "tech_tag": {
-                    "$ref": "#/definitions/db.TechTags"
+                    "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags"
                 }
             }
         },
-        "db.StatusTags": {
+        "github_com_hackhack-Geek-vol6_backend_db_sqlc.Follows": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "from_user_id": {
+                    "type": "string"
+                },
+                "to_user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks": {
+            "type": "object",
+            "properties": {
+                "framework": {
+                    "type": "string"
+                },
+                "framework_id": {
+                    "type": "integer"
+                },
+                "tech_tag_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_hackhack-Geek-vol6_backend_db_sqlc.Locates": {
+            "type": "object",
+            "properties": {
+                "locate_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags": {
             "type": "object",
             "properties": {
                 "status": {
@@ -1657,7 +1767,7 @@ const docTemplate = `{
                 }
             }
         },
-        "db.TechTags": {
+        "github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags": {
             "type": "object",
             "properties": {
                 "language": {

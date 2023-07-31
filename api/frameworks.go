@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 )
 
 // ListFrameworks	godoc

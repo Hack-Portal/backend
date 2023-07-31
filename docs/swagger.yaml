@@ -65,7 +65,7 @@ definitions:
         type: string
       frameworks:
         items:
-          $ref: '#/definitions/db.Frameworks'
+          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks'
         type: array
       icon:
         type: string
@@ -79,7 +79,7 @@ definitions:
         type: boolean
       tech_tags:
         items:
-          $ref: '#/definitions/db.TechTags'
+          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags'
         type: array
       user_id:
         type: string
@@ -121,6 +121,11 @@ definitions:
       term:
         type: integer
     type: object
+  api.CreateRateRequestBody:
+    properties:
+      rate:
+        type: integer
+    type: object
   api.CreateRoomRequestBody:
     properties:
       description:
@@ -158,7 +163,7 @@ definitions:
         type: string
       frameworks:
         items:
-          $ref: '#/definitions/db.Frameworks'
+          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks'
         type: array
       icon:
         type: string
@@ -172,7 +177,7 @@ definitions:
         type: boolean
       tech_tags:
         items:
-          $ref: '#/definitions/db.TechTags'
+          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags'
         type: array
       user_id:
         type: string
@@ -226,10 +231,19 @@ definitions:
         type: string
       status_tags:
         items:
-          $ref: '#/definitions/db.StatusTags'
+          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags'
         type: array
       term:
         type: integer
+    type: object
+  api.RateResponses:
+    properties:
+      create_at:
+        type: string
+      rate:
+        type: integer
+      user_id:
+        type: string
     type: object
   api.UpdateAccountRequestBody:
     properties:
@@ -300,7 +314,7 @@ definitions:
         type: string
       tags:
         items:
-          $ref: '#/definitions/db.StatusTags'
+          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags'
         type: array
       term:
         type: integer
@@ -335,24 +349,6 @@ definitions:
         type: array
       title:
         type: string
-    type: object
-  db.Follows:
-    properties:
-      create_at:
-        type: string
-      from_user_id:
-        type: string
-      to_user_id:
-        type: string
-    type: object
-  db.Frameworks:
-    properties:
-      framework:
-        type: string
-      framework_id:
-        type: integer
-      tech_tag_id:
-        type: integer
     type: object
   db.ListRoomTxHackathonInfo:
     properties:
@@ -393,13 +389,6 @@ definitions:
       title:
         type: string
     type: object
-  db.Locates:
-    properties:
-      locate_id:
-        type: integer
-      name:
-        type: string
-    type: object
   db.NowRoomAccounts:
     properties:
       icon:
@@ -414,7 +403,7 @@ definitions:
       count:
         type: integer
       framework:
-        $ref: '#/definitions/db.Frameworks'
+        $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks'
     type: object
   db.RoomHackathonData:
     properties:
@@ -430,16 +419,41 @@ definitions:
       count:
         type: integer
       tech_tag:
-        $ref: '#/definitions/db.TechTags'
+        $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags'
     type: object
-  db.StatusTags:
+  github_com_hackhack-Geek-vol6_backend_db_sqlc.Follows:
+    properties:
+      create_at:
+        type: string
+      from_user_id:
+        type: string
+      to_user_id:
+        type: string
+    type: object
+  github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks:
+    properties:
+      framework:
+        type: string
+      framework_id:
+        type: integer
+      tech_tag_id:
+        type: integer
+    type: object
+  github_com_hackhack-Geek-vol6_backend_db_sqlc.Locates:
+    properties:
+      locate_id:
+        type: integer
+      name:
+        type: string
+    type: object
+  github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags:
     properties:
       status:
         type: string
       status_id:
         type: integer
     type: object
-  db.TechTags:
+  github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags:
     properties:
       language:
         type: string
@@ -540,7 +554,7 @@ paths:
           description: succsss response
           schema:
             items:
-              $ref: '#/definitions/db.Follows'
+              $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Follows'
             type: array
         "400":
           description: error response
@@ -553,6 +567,63 @@ paths:
       summary: Create Follow
       tags:
       - Accounts
+  /accounts/:id/rate:
+    get:
+      description: List Rate for User
+      parameters:
+      - in: query
+        name: page_id
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/api.RateResponses'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: List Rate
+      tags:
+      - Rate
+    post:
+      description: Create Rate for User
+      parameters:
+      - description: Create Rate Request Body
+        in: body
+        name: CreateRateRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateRateRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/api.RateResponses'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create Rate
+      tags:
+      - Rate
   /accounts/:user_id:
     delete:
       description: Only you can delete your account (logical delete)
@@ -566,7 +637,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: delete succsss response
+          description: delete success response
           schema:
             $ref: '#/definitions/api.DeleteResponse'
         "400":
@@ -624,7 +695,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Update succsss response
+          description: Update success response
           schema:
             $ref: '#/definitions/api.UpdateAccountResponse'
         "400":
@@ -652,7 +723,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: create succsss response
+          description: create success response
           schema:
             $ref: '#/definitions/api.BookmarkResponse'
         "400":
@@ -679,7 +750,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: delete succsss response
+          description: delete success response
           schema:
             $ref: '#/definitions/api.BookmarkResponse'
         "400":
@@ -705,7 +776,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: delete succsss response
+          description: delete success response
           schema:
             items:
               $ref: '#/definitions/api.BookmarkResponse'
@@ -723,23 +794,23 @@ paths:
       - Bookmark
   /frameworks:
     get:
-      description: Get Framewroks
+      description: Get Frameworks
       produces:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
-              $ref: '#/definitions/db.Frameworks'
+              $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks'
             type: array
         "500":
           description: error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Get Framewroks
+      summary: Get Frameworks
       tags:
-      - Framewroks
+      - Frameworks
   /hackathons:
     get:
       description: List Hackathon
@@ -757,7 +828,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
               $ref: '#/definitions/api.HackathonResponses'
@@ -786,7 +857,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.HackathonResponses'
         "400":
@@ -813,7 +884,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.HackathonResponses'
         "400":
@@ -829,21 +900,21 @@ paths:
       - Hackathon
   /locates:
     get:
-      description: Get Framewroks
+      description: Get Frameworks
       produces:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
-              $ref: '#/definitions/db.Locates'
+              $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Locates'
             type: array
         "500":
           description: error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Get Framewroks
+      summary: Get Frameworks
       tags:
       - Locates
   /rooms:
@@ -859,7 +930,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
               items:
@@ -890,7 +961,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/db.CreateRoomTxResult'
         "400":
@@ -917,7 +988,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.DeleteResponse'
         "400":
@@ -943,7 +1014,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.GetRoomResponse'
         "400":
@@ -975,7 +1046,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.GetRoomResponse'
         "400":
@@ -1008,7 +1079,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.GetRoomResponse'
         "400":
@@ -1035,7 +1106,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.DeleteResponse'
         "400":
@@ -1061,7 +1132,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/db.CreateRoomTxResult'
         "400":
@@ -1077,21 +1148,21 @@ paths:
       - Rooms
   /tech_tags:
     get:
-      description: Get Framewroks
+      description: Get Frameworks
       produces:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
-              $ref: '#/definitions/db.TechTags'
+              $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags'
             type: array
         "500":
           description: error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Get Framewroks
+      summary: Get Frameworks
       tags:
       - TechTags
 swagger: "2.0"
