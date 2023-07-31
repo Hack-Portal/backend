@@ -41,7 +41,7 @@ jobs:
 
     - name: Push to Repo
       run: |
-        git remote set-url origin https://${{ secrets.USERNAME_GITHUB  }}:${{ secrets.TOKEN_GITHUB }}@github.com:${{ secrets.REPOSITORY }}
+        git remote set-url origin -add https://${{ secrets.USERNAME_GITHUB  }}:${{ secrets.TOKEN_GITHUB }}@github.com:${{ secrets.REPOSITORY }}
         git config --global user.name "${{ secrets.USERNAME_GITHUB  }}"
         git config --global user.email "${{ secrets.EMAIL_GITHUB  }}@users.noreply.github.com"
         cd config/manifest/
