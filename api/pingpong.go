@@ -8,5 +8,5 @@ import (
 )
 
 func (server *Server) Ping(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("pong : %v", server.config)})
+	ctx.JSON(http.StatusOK, gin.H{"message": pong})
 }
