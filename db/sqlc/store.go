@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/firestore"
+	fb "firebase.google.com/go"
 	"github.com/hackhack-Geek-vol6/backend/util"
 )
 
@@ -26,14 +27,13 @@ type Store interface {
 	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]ChatRoomsWrite, error)
 	UploadImage(ctx context.Context, file []byte) (string, error)
 }
-
 type SQLStore struct {
 	*Queries
-	db     *sql.DB
-	client *firestore.Client
+	db  *sql.DB
+	App *fb.App
 }
 
-func NewStore(db *sql.DB, client *firestore.Client) *SQLStore {
+func NewStore(db *sql.DB, app *fb.App) *SQLStore {
 	return &SQLStore{
 		db:      db,
 		Queries: New(db),
