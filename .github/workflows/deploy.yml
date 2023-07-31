@@ -46,7 +46,7 @@ jobs:
         git clone ${{secrets.CONFIG_REPO_URL}}
         cd argocd-configuratioin/config/manifest/
 
-        yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' ' deployment.yaml'
+        yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'deployment.yaml'
 
         git add .
         git commit -m "Updated by GitHub Actions"
