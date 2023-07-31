@@ -105,6 +105,7 @@ type PastWorkTags struct {
 
 type PastWorks struct {
 	Opus            int32     `json:"opus"`
+	Name            string    `json:"name"`
 	ThumbnailImage  []byte    `json:"thumbnail_image"`
 	ExplanatoryText string    `json:"explanatory_text"`
 	CreateAt        time.Time `json:"create_at"`
