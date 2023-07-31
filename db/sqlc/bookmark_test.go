@@ -48,17 +48,17 @@ func TestListBookmark(t *testing.T) {
 
 }
 
-func TestRemoveBookmark(t *testing.T) {
+func TestSoftRemoveBookmark(t *testing.T) {
 	n := 5
 	account := createAccountTest(t)
-	var lastbookmark Bookmarks
+	var lastBookMark Bookmarks
 	for i := 0; i < n; i++ {
-		lastbookmark = createBookmarkTest(t, account)
+		lastBookMark = createBookmarkTest(t, account)
 	}
 
-	err := testQueries.RemoveBookmark(context.Background(), RemoveBookmarkParams{
-		UserID:      lastbookmark.UserID,
-		HackathonID: lastbookmark.HackathonID,
+	_, err := testQueries.SoftRemoveBookmark(context.Background(), SoftRemoveBookmarkParams{
+		UserID:      lastBookMark.UserID,
+		HackathonID: lastBookMark.HackathonID,
 	})
 	require.NoError(t, err)
 
@@ -69,6 +69,6 @@ func TestRemoveBookmark(t *testing.T) {
 	require.Len(t, listBookmark, n-1)
 
 	for _, bookmark := range listBookmark {
-		require.NotEqual(t, bookmark, lastbookmark)
+		require.NotEqual(t, bookmark, lastBookMark)
 	}
 }

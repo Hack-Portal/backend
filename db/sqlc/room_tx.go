@@ -26,17 +26,22 @@ type RoomHackathonData struct {
 	Name string `json:"name"`
 	Icon string `json:"icon"`
 }
+type NowRoomAccounts struct {
+	UserID  string `json:"user_id"`
+	Icon    string `json:"icon"`
+	IsOwner bool   `json:"is_owner"`
+}
 
-type CraeteRoomTxResult struct {
+type CreateRoomTxResult struct {
 	Rooms
-	Hackathon       RoomHackathonData
-	RoomsAccounts   []GetRoomsAccountsByRoomIDRow
-	RoomsTechTags   []RoomTechTags
-	RoomsFrameworks []RoomFramework
+	Hackathon  RoomHackathonData `json:"hackathon"`
+	Accounts   []NowRoomAccounts `json:"accounts"`
+	TechTags   []RoomTechTags    `json:"techtags"`
+	Frameworks []RoomFramework   `json:"frameworks"`
 }
 
 // TechTagの配列にマージする
-func margeTechTagArray(roomTechTags []RoomTechTags, techtag TechTags) []RoomTechTags {
+func MargeTechTagArray(roomTechTags []RoomTechTags, techtag TechTags) []RoomTechTags {
 	for _, roomTechTag := range roomTechTags {
 		if roomTechTag.TechTag == techtag {
 			roomTechTag.Count++
@@ -51,7 +56,7 @@ func margeTechTagArray(roomTechTags []RoomTechTags, techtag TechTags) []RoomTech
 }
 
 // フレームワークの配列にマージする
-func margeFrameworkArray(roomFramework []RoomFramework, framework Frameworks) []RoomFramework {
+func MargeFrameworkArray(roomFramework []RoomFramework, framework Frameworks) []RoomFramework {
 	for _, roomFramework := range roomFramework {
 		if roomFramework.Framework == framework {
 			roomFramework.Count++
@@ -65,8 +70,8 @@ func margeFrameworkArray(roomFramework []RoomFramework, framework Frameworks) []
 	return roomFramework
 }
 
-func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error) {
-	var result CraeteRoomTxResult
+func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error) {
+	var result CreateRoomTxResult
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 		// ハッカソンデータを送る
@@ -87,7 +92,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 			Title:       arg.Title,
 			Description: arg.Description,
 			MemberLimit: arg.MemberLimit,
-			IsStatus:    true,
+			IsDelete:    false,
 		})
 		if err != nil {
 			return err
@@ -103,31 +108,38 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, arg CreateRoomTxParams)
 		if err != nil {
 			return err
 		}
-
-		result.RoomsAccounts, err = q.GetRoomsAccountsByRoomID(ctx, result.RoomID)
+		accounts, err := q.GetRoomsAccountsByRoomID(ctx, result.RoomID)
 		if err != nil {
 			return err
 		}
 
+		for _, account := range accounts {
+			result.Accounts = append(result.Accounts, NowRoomAccounts{
+				UserID:  account.UserID.String,
+				Icon:    account.Icon.String,
+				IsOwner: account.IsOwner,
+			})
+		}
+
 		// ルーム内のユーザをもとにユーザの持つ技術タグとフレームワークタグを配列に落とし込む（力業
-		for _, account := range result.RoomsAccounts {
-			techTags, err := q.ListAccountTagsByUserID(ctx, account.UserID.String)
+		for _, account := range result.Accounts {
+			techTags, err := q.ListAccountTagsByUserID(ctx, account.UserID)
 			if err != nil {
 				return err
 			}
 			for _, techTag := range techTags {
-				result.RoomsTechTags = margeTechTagArray(result.RoomsTechTags, TechTags{
+				result.TechTags = MargeTechTagArray(result.TechTags, TechTags{
 					TechTagID: techTag.TechTagID.Int32,
 					Language:  techTag.Language.String,
 				})
 			}
 
-			frameworks, err := q.ListAccountFrameworksByUserID(ctx, account.UserID.String)
+			frameworks, err := q.ListAccountFrameworksByUserID(ctx, account.UserID)
 			if err != nil {
 				return err
 			}
 			for _, framework := range frameworks {
-				result.RoomsFrameworks = margeFrameworkArray(result.RoomsFrameworks, Frameworks{
+				result.Frameworks = MargeFrameworkArray(result.Frameworks, Frameworks{
 					FrameworkID: framework.FrameworkID.Int32,
 					TechTagID:   framework.TechTagID.Int32,
 					Framework:   framework.Framework.String,
@@ -148,17 +160,17 @@ type ListRoomTxRoomInfo struct {
 	MemberLimit int32     `json:"member_limit"`
 	CreatedAt   time.Time `json:"created_at"`
 }
-type ListRoomTxHacathonInfo struct {
+type ListRoomTxHackathonInfo struct {
 	HackathonID   int32  `json:"hackathon_id"`
 	HackathonName string `json:"hackathon_name"`
 	Icon          string `json:"icon"`
 }
 type ListRoomTxResult struct {
-	Rooms             ListRoomTxRoomInfo            `json:"rooms"`
-	Hackathon         ListRoomTxHacathonInfo        `json:"hackathon"`
-	NowMember         []GetRoomsAccountsByRoomIDRow `json:"now_member"`
-	MembersTechTags   []RoomTechTags                `json:"members_tech_tags"`
-	MembersFrameworks []RoomFramework               `json:"members_frameworks"`
+	Rooms             ListRoomTxRoomInfo      `json:"rooms"`
+	Hackathon         ListRoomTxHackathonInfo `json:"hackathon"`
+	NowMember         []NowRoomAccounts       `json:"now_member"`
+	MembersTechTags   []RoomTechTags          `json:"members_tech_tags"`
+	MembersFrameworks []RoomFramework         `json:"members_frameworks"`
 }
 
 func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error) {
@@ -184,7 +196,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 				return err
 			}
 			// ハッカソンの追加
-			oneRoomInfos.Hackathon = ListRoomTxHacathonInfo{
+			oneRoomInfos.Hackathon = ListRoomTxHackathonInfo{
 				HackathonID:   hackathon.HackathonID,
 				HackathonName: hackathon.Name,
 				Icon:          hackathon.Icon.String,
@@ -196,13 +208,18 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 			}
 			// アカウントの追加
 			for _, account := range members {
+				oneRoomInfos.NowMember = append(oneRoomInfos.NowMember, NowRoomAccounts{
+					UserID:  account.UserID.String,
+					Icon:    account.Icon.String,
+					IsOwner: account.IsOwner,
+				})
 				// タグの追加
 				techTags, err := q.ListAccountTagsByUserID(ctx, account.UserID.String)
 				if err != nil {
 					return err
 				}
 				for _, techTag := range techTags {
-					oneRoomInfos.MembersTechTags = margeTechTagArray(oneRoomInfos.MembersTechTags, TechTags{
+					oneRoomInfos.MembersTechTags = MargeTechTagArray(oneRoomInfos.MembersTechTags, TechTags{
 						TechTagID: techTag.TechTagID.Int32,
 						Language:  techTag.Language.String,
 					})
@@ -213,7 +230,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]L
 					return err
 				}
 				for _, framework := range frameworks {
-					oneRoomInfos.MembersFrameworks = margeFrameworkArray(oneRoomInfos.MembersFrameworks, Frameworks{
+					oneRoomInfos.MembersFrameworks = MargeFrameworkArray(oneRoomInfos.MembersFrameworks, Frameworks{
 						FrameworkID: framework.FrameworkID.Int32,
 						TechTagID:   framework.TechTagID.Int32,
 						Framework:   framework.Framework.String,

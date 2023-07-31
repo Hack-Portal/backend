@@ -9,8 +9,12 @@ import (
 
 // クライアントをセットする
 func FirebaseSetup(path string) (*firebase.App, error) {
+	config := &firebase.Config{
+		StorageBucket: "hackthon-geek-v6.appspot.com",
+	}
+
 	serviceAccount := option.WithCredentialsFile(path)
-	app, err := firebase.NewApp(context.Background(), nil, serviceAccount)
+	app, err := firebase.NewApp(context.Background(), config, serviceAccount)
 	if err != nil {
 		return nil, err
 	}

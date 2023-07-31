@@ -18,7 +18,7 @@ func createRoomsTest(t *testing.T) Rooms {
 		Title:       util.RandomString(8),
 		Description: util.RandomString(100),
 		MemberLimit: 5,
-		IsStatus:    true,
+		IsDelete:    false,
 	}
 
 	room, err := testQueries.CreateRoom(context.Background(), arg)
@@ -30,7 +30,7 @@ func createRoomsTest(t *testing.T) Rooms {
 	require.Equal(t, arg.Title, room.Title)
 	require.Equal(t, arg.Description, room.Description)
 	require.Equal(t, arg.MemberLimit, room.MemberLimit)
-	require.Equal(t, arg.IsStatus, room.IsStatus)
+	require.Equal(t, arg.IsDelete, room.IsDelete)
 	require.NotZero(t, room.CreateAt)
 	return room
 }
@@ -51,7 +51,7 @@ func TestGetRoom(t *testing.T) {
 	require.Equal(t, room1.Title, room2.Title)
 	require.Equal(t, room1.Description, room2.Description)
 	require.Equal(t, room1.MemberLimit, room2.MemberLimit)
-	require.Equal(t, room1.IsStatus, room2.IsStatus)
+	require.Equal(t, room1.IsDelete, room2.IsDelete)
 }
 
 func TestListRoom(t *testing.T) {

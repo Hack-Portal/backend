@@ -12,3 +12,6 @@ RETURNING *;
 SELECT *
 FROM hackathon_status_tags
 WHERE hackathon_id = $1;
+
+-- name: DeleteHackathonStatusTagsByHackathonID :exec
+DELETE FROM hackathon_status_tags WHERE hackathon_id = $1;

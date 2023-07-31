@@ -8,12 +8,10 @@ import (
 type EnvConfig struct {
 	// DB情報
 	DBDriver string `mapstructure:"DB_DRIVER"`
-	DBSouse  string `mapstructure:"DB_SOURSE"`
+	DBSource string `mapstructure:"DB_SOURCE"`
 
 	ServerPort string `mapstructure:"SERVER_PORT"`
-
-	GoogleClientID     string `mapstructure:"GOOGLE_CLIENT_ID"`
-	GoogleClinetSecret string `mapstructure:"GOOGLE_CLIENT_SECRET"`
+	BasePath   string `mapstructure:"BASE_PATH"`
 }
 
 // app.envファイルを読み込む

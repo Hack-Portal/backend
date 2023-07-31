@@ -11,3 +11,15 @@ FROM status_tags;
 
 -- name: GetStatusTagByStatusID :one
 SELECT * FROM status_tags WHERE status_id = $1;
+
+-- name: DeleteStatusTagByStatusID :exec
+DELETE FROM
+    status_tags
+WHERE status_id = $1;
+
+-- name: UpdateStatusTagByStatusID :one
+UPDATE
+    status_tags
+SET
+    status = $1
+WHERE status_id = $1 RETURNING *;

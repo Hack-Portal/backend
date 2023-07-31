@@ -6,32 +6,38 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/firestore"
-	fb "firebase.google.com/go"
+	"github.com/hackhack-Geek-vol6/backend/util"
+)
+
+const (
+	ForeignKeyViolation = "foreign_key_violation"
+	UniqueViolation     = "unique_violation"
 )
 
 type Store interface {
 	Querier
 	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
-	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CraeteRoomTxResult, error)
-	CreateHackathonTx(ctx context.Context, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
+	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error)
+	CreateHackathonTx(ctx context.Context, config *util.EnvConfig, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
 	ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error)
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
 	WriteFireStore(ctx context.Context, arg WriteFireStoreParam) (*firestore.WriteResult, error)
 	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]ChatRoomsWrite, error)
+	UploadImage(ctx context.Context, file []byte) (string, error)
 }
 
 type SQLStore struct {
 	*Queries
 	db     *sql.DB
-	client *fb.App
+	client *firestore.Client
 }
 
-func NewStore(db *sql.DB, client *fb.App) *SQLStore {
+func NewStore(db *sql.DB, client *firestore.Client) *SQLStore {
 	return &SQLStore{
 		db:      db,
 		Queries: New(db),
-		client:  client,
+		App:     app,
 	}
 }
 
