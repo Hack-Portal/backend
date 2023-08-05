@@ -1,4 +1,4 @@
-package api
+package controller
 
 import (
 	"bytes"
@@ -203,7 +203,7 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 		return
 	}
 	var exp time.Time
-	
+
 	if request.Expired {
 		exp = time.Now()
 	} else {

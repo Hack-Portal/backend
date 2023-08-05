@@ -24,7 +24,6 @@ func Setup(env *bootstrap.Env, timeout time.Duration, store db.Store, gin *gin.E
 	// All Protect APIs
 	NewAccountRouter(env, timeout, store, protectRouter)
 	NewRoomRouter(env, timeout, store, protectRouter)
-	NewRoomRouter(env, timeout, store, protectRouter)
 }
 
 func (server *Server) setupSwagger() {
@@ -68,20 +67,7 @@ func (server *Server) publicRouter() {
 func (server *Server) authRouter() {
 	auth := server.router.Group("/v1")
 	auth.Use(AuthMiddleware())
-	// アカウント
-	auth.POST("/accounts", server.CreateAccount)
 
-	auth.GET("/accounts/:id", server.GetAccount)
-	auth.PUT("/accounts/:id", server.UpdateAccount)
-	auth.DELETE("/acccounts/:id", server.DeleteAccount)
-
-	// auth.GET("/acccounts/:id/follow")
-	auth.POST("/acccounts/:id/follow", server.CreateFollow)
-	auth.DELETE("/acccounts/:id/follow", server.RemoveFollow)
-
-	// レート
-	auth.POST("/accounts/:id/rate", server.CreateRate)
-	auth.GET("/accounts/:id/rate", server.ListRate)
 
 	// ルーム
 	auth.GET("/rooms", server.ListRooms)

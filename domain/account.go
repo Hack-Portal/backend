@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"time"
 
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
@@ -44,7 +45,7 @@ type AccountResponses struct {
 }
 
 // アカウント更新のリクエストパラメータ
-type UpdateAccountRequestBody struct {
+type UpdateAccountRequest struct {
 	Username        string `json:"username"`
 	ExplanatoryText string `json:"explanatory_text"`
 	LocateID        int32  `json:"locate_id"`
@@ -54,22 +55,11 @@ type UpdateAccountRequestBody struct {
 	ShowRate        bool   `json:"show_rate"`
 }
 
-// アカウント更新のレスポンス
-type UpdateAccountResponse struct {
-	Username        string    `json:"username"`
-	ExplanatoryText string    `json:"explanatory_text"`
-	Icon            string    `json:"icon"`
-	Locate          string    `json:"locate"`
-	Rate            int32     `json:"rate"`
-	HashedPassword  string    `json:"hashed_password"`
-	ShowLocate      bool      `json:"show_locate"`
-	ShowRate        bool      `json:"show_rate"`
-	CreatedAt       time.Time `json:"created_at"`
-}
-
 type AccountUsecase interface {
-	CreateAccount()
-	GetAccountByID()
-	UpdateAccount()
-	DeleteAccount()
+	GetAccountByID(ctx context.Context, id string) (domain.AccountResponses, error)
+	GetAccountByEmail(ctx context.Context, email string) (domain.AccountResponses, error)
+	CreateAccount(ctx context.Context, body db.CreateAccountTxParams) (domain.AccountResponses, error)
+	UpdateAccount(ctx context.Context, body db.UpdateAccountTxParams) (domain.AccountResponses, error)
+	DeleteAccount(ctx context.Context, id string) error
+	UploadImage(ctx context.Context, body []byte) (string, error)
 }

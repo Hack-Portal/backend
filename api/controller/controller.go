@@ -1,4 +1,4 @@
-package api
+package controller
 
 const (
 	MultiPartNextPartEoF   = "multipart: NextPart: EOF"

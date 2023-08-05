@@ -6,48 +6,20 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/api/middleware"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/hackhack-Geek-vol6/backend/domain"
 	"github.com/hackhack-Geek-vol6/backend/util"
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 	"github.com/lib/pq"
 )
 
 type AccountController struct {
-	AccountUsecase domain.LoginUsecase
+	AccountUsecase domain.AccountRepository
 	Env            *bootstrap.Env
-}
-
-// アカウントを作る時のリクエストパラメータ
-type CreateAccountRequestBody struct {
-	UserID          string  `json:"user_id" binding:"required"`
-	Username        string  `json:"username" binding:"required"`
-	Icon            string  `json:"icon"`
-	ExplanatoryText string  `json:"explanatory_text"`
-	LocateID        int32   `json:"locate_id" binding:"required"`
-	Password        string  `json:"password"`
-	ShowLocate      bool    `json:"show_locate" binding:"required"`
-	ShowRate        bool    `json:"show_rate" binding:"required"`
-	TechTags        []int32 `json:"tech_tags"`
-	Frameworks      []int32 `json:"frameworks"`
-}
-
-// アカウントに関するレスポンス
-type CreateAccountResponses struct {
-	UserID          string `json:"user_id"`
-	Username        string `json:"username"`
-	Icon            string `json:"icon"`
-	ExplanatoryText string `json:"explanatory_text"`
-	Rate            int32  `json:"rate"`
-	Locate          string `json:"locate"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate"`
-
-	TechTags   []db.TechTags   `json:"tech_tags"`
-	Frameworks []db.Frameworks `json:"frameworks"`
 }
 
 // CreateAccount	godoc
@@ -60,24 +32,14 @@ type CreateAccountResponses struct {
 // @Failure 		400							{object}		ErrorResponse				"bad request response"
 // @Failure 		500							{object}		ErrorResponse				"server error response"
 // @Router       	/accounts 	[post]
-func (server *Server) CreateAccount(ctx *gin.Context) {
-	var request CreateAccountRequestBody
+func (ac *AccountController) CreateAccount(ctx *gin.Context) {
+	var request domain.CreateAccountRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	//
-	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	if request.Password == "" {
-		var err error
-		request.Password, err = util.HashPassword(request.Password)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
-	}
 
-	args := db.CreateAccountTxParams{
+	result, err := ac.AccountUsecase.CreateAccount(ctx, db.CreateAccountTxParams{
 		Accounts: db.Accounts{
 			UserID:   request.UserID,
 			Username: request.Username,
@@ -95,15 +57,13 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 				String: request.Password,
 				Valid:  true,
 			},
-			Email:      payload.Email,
 			ShowLocate: request.ShowLocate,
 			ShowRate:   request.ShowRate,
 		},
 		AccountTechTag:      request.TechTags,
 		AccountFrameworkTag: request.Frameworks,
-	}
+	})
 
-	result, err := server.store.CreateAccountTx(ctx, args)
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
 		if pqErr, ok := err.(*pq.Error); ok {
@@ -116,24 +76,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	locate, err := server.store.GetLocateByID(ctx, result.Account.LocateID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	response := CreateAccountResponses{
-		UserID:          result.Account.UserID,
-		Username:        result.Account.Username,
-		Icon:            result.Account.Icon.String,
-		ExplanatoryText: result.Account.ExplanatoryText.String,
-		Locate:          locate.Name,
-		Rate:            result.Account.Rate,
-		ShowLocate:      result.Account.ShowLocate,
-		ShowRate:        result.Account.ShowRate,
-		TechTags:        result.AccountTechTags,
-		Frameworks:      result.AccountFrameworks,
-	}
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, result)
 }
 
 // アカウントを取得する際のパラメータ
@@ -166,118 +109,21 @@ type GetAccountResponses struct {
 // @Failure 		400			{object}		ErrorResponse		"bad request response"
 // @Failure 		500			{object}		ErrorResponse		"server error response"
 // @Router       	/accounts/:user_id 			[get]
-func (server *Server) GetAccount(ctx *gin.Context) {
-	var request AccountRequestWildCard
-	if err := ctx.ShouldBindUri(&request); err != nil {
+func (ac *AccountController) GetAccount(ctx *gin.Context) {
+	var reqUri domain.AccountRequestWildCard
+	if err := ctx.ShouldBindUri(&reqUri); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
 
 	// アカウント取得
-	account, err := server.store.GetAccountByID(ctx, request.ID)
-	if err != nil {
-		// ToDo: IDがなかったときの分岐を作る
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	}
-
-	locate, err := server.store.GetLocateByID(ctx, account.LocateID)
+	result, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	techTags, err := server.store.ListAccountTagsByUserID(ctx, account.UserID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	frameworks, err := server.store.ListAccountFrameworksByUserID(ctx, account.UserID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	var accountTechTags []db.TechTags
-
-	// 技術タグを取得する
-	for _, tags := range techTags {
-		techTag, err := server.store.GetTechTagByID(ctx, tags.TechTagID.Int32)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
-		accountTechTags = append(accountTechTags, techTag)
-	}
-	// フレームワークを取得する
-	var accountFrameworks []db.Frameworks
-	for _, framework := range frameworks {
-		fw, err := server.store.GetFrameworksByID(ctx, framework.FrameworkID.Int32)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
-		accountFrameworks = append(accountFrameworks, fw)
-	}
-
-	// 本人のリクエストの時は、すべての情報を返す
-	// そうでないときはShowLocateとShowRateの情報に沿って返す
-	var response GetAccountResponses
-	if payload.Email == account.Email {
-		response = GetAccountResponses{
-			UserID:          account.UserID,
-			Username:        account.Username,
-			Icon:            account.Icon.String,
-			ExplanatoryText: account.ExplanatoryText.String,
-			Locate:          locate.Name,
-			Email:           account.Email,
-			Rate:            account.Rate,
-			ShowLocate:      account.ShowLocate,
-			ShowRate:        account.ShowRate,
-			TechTags:        accountTechTags,
-			Frameworks:      accountFrameworks,
-		}
-	} else {
-		response = GetAccountResponses{
-			UserID:          account.UserID,
-			Username:        account.Username,
-			Icon:            account.Icon.String,
-			ExplanatoryText: account.ExplanatoryText.String,
-			ShowLocate:      account.ShowLocate,
-			ShowRate:        account.ShowRate,
-			TechTags:        accountTechTags,
-			Frameworks:      accountFrameworks,
-		}
-		if account.ShowLocate {
-			response.Locate = locate.Name
-		}
-		if account.ShowRate {
-			response.Rate = account.Rate
-		}
-	}
-	ctx.JSON(http.StatusOK, response)
-}
-
-type UpdateAccountRequestBody struct {
-	Username        string `json:"username"`
-	ExplanatoryText string `json:"explanatory_text"`
-	LocateID        int32  `json:"locate_id"`
-	Rate            int32  `json:"rate"`
-	HashedPassword  string `json:"hashed_password"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate"`
-}
-
-type UpdateAccountResponse struct {
-	Username        string    `json:"username"`
-	ExplanatoryText string    `json:"explanatory_text"`
-	Icon            string    `json:"icon"`
-	Locate          string    `json:"locate"`
-	Rate            int32     `json:"rate"`
-	HashedPassword  string    `json:"hashed_password"`
-	ShowLocate      bool      `json:"show_locate"`
-	ShowRate        bool      `json:"show_rate"`
-	CreatedAt       time.Time `json:"created_at"`
+	ctx.JSON(http.StatusOK, result)
 }
 
 // UpdateAccount	godoc
@@ -291,17 +137,17 @@ type UpdateAccountResponse struct {
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/accounts/:user_id 			[put]
-func (server *Server) UpdateAccount(ctx *gin.Context) {
+func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	var (
-		requestBody UpdateAccountRequestBody
-		requestURI  AccountRequestWildCard
-		imageURL    string
+		reqBody  domain.UpdateAccountRequest
+		reqURI   domain.AccountRequestWildCard
+		imageURL string
 	)
-	if err := ctx.ShouldBindUri(&requestURI); err != nil {
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -327,52 +173,22 @@ func (server *Server) UpdateAccount(ctx *gin.Context) {
 			ctx.JSON(500, errorResponse(err))
 			return
 		}
-		imageURL, err = server.store.UploadImage(ctx, buf.Bytes())
+		imageURL, err = ac.AccountUsecase.UploadImage(ctx, buf.Bytes())
 		if err != nil {
 			ctx.JSON(500, errorResponse(err))
 			return
 		}
 	}
+	account, err := ac.AccountUsecase.GetAccountByID(ctx, reqURI.ID)
 
-	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-	if account.UserID != requestURI.ID {
-		err := errors.New("valid user id")
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-	result, err := server.store.UpdateAccount(ctx, parseUpdateAccountParam(account, requestBody))
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
+	result, err := ac.AccountUsecase.UpdateAccount(ctx, parseUpdateAccountParam(account, reqBody))
+	result.Icon = imageURL
 
-	locate, err := server.store.GetLocateByID(ctx, result.LocateID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	response := UpdateAccountResponse{
-		Username:        result.Username,
-		ExplanatoryText: requestBody.ExplanatoryText,
-		Icon:            imageURL,
-		Locate:          locate.Name,
-		Rate:            result.Rate,
-		HashedPassword:  result.HashedPassword.String,
-		ShowLocate:      result.ShowLocate,
-		ShowRate:        result.ShowRate,
-	}
-
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, result)
 }
 
 // 型変換
-func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccountRequestBody) (result db.UpdateAccountParams) {
+func parseUpdateAccountParam(account db.GetAccountByEmailRow, body domain.UpdateAccountRequest) (result db.UpdateAccountParams) {
 	result.UserID = account.UserID
 	if util.StringLength(body.Username) != 0 {
 		if util.EqualString(account.Username, body.Username) {
@@ -445,15 +261,15 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccount
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts/:user_id 		[delete]
-func (server *Server) DeleteAccount(ctx *gin.Context) {
+func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	var request AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*token.FireBaseCustomToken)
+	account, err := ac.AccountUsecase.GetAccountByEmail(ctx, payload.Email)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -464,7 +280,7 @@ func (server *Server) DeleteAccount(ctx *gin.Context) {
 		return
 	}
 
-	_, err = server.store.SoftDeleteAccount(ctx, request.ID)
+	err = ac.AccountUsecase.DeleteAccount(ctx, request.ID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

@@ -13,21 +13,51 @@ type accountUsecase struct {
 	contextTimeout time.Duration
 }
 
-func NewAccountUsercase(accountRepository domain.AccountRepository, timeout time.Duration) domain.AccountUsecase {
+func NewAccountUsercase(store db.Store, timeout time.Duration) domain.AccountUsecase {
 	return &accountUsecase{
-		accountRepository: accountRepository,
-		contextTimeout:    timeout,
+		store:          store,
+		contextTimeout: timeout,
 	}
 }
 
-func (au *accountUsecase) GetAccountByID(ctx context.Context, ID string) (domain.AccountResponses, error) {
+func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (domain.AccountResponses, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
-	return au.store.GetAccountByID(ctx, ID)
+
+	return au.store.GetAccountTxByID(ctx, id)
+}
+
+func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (domain.AccountResponses, error) {
+	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	defer cancel()
+
+	return au.store.GetAccountTxByEmail(ctx, email)
 }
 
 func (au *accountUsecase) CreateAccount(ctx context.Context, body db.CreateAccountTxParams) (domain.AccountResponses, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
+
 	return au.store.CreateAccountTx(ctx, body)
+}
+
+func (au *accountUsecase) UpdateAccount(ctx context.Context, body db.UpdateAccountTxParams) (domain.AccountResponses, error) {
+	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	defer cancel()
+
+	return au.store.UpdateAccountTx(ctx, body)
+}
+
+func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
+	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	defer cancel()
+	_, err := au.store.SoftDeleteAccount(ctx, id)
+	return err
+}
+
+func (au *accountUsecase) UploadImage(ctx context.Context, body []byte) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	defer cancel()
+
+	return au.store.UploadImage(ctx, body)
 }
