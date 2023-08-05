@@ -203,11 +203,13 @@ func (server *Server) ListHackathons(ctx *gin.Context) {
 		return
 	}
 	var exp time.Time
+	
 	if request.Expired {
 		exp = time.Now()
 	} else {
 		exp = time.Now().Add(-time.Hour * 720)
 	}
+
 	hackathons, err := server.store.ListHackathons(ctx, db.ListHackathonsParams{
 		Expired: exp,
 		Limit:   request.PageSize,

@@ -1,28 +1,37 @@
-package api
+package route
 
 import (
+	"time"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/bootstrap"
+	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	_ "github.com/hackhack-Geek-vol6/backend/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func (server *Server) setupRouter() {
-	router := gin.Default()
-	server.router = router
-	server.setUpCors()
-	server.publicRouter()
-	server.authRouter()
-	server.setupSwagger()
+func Setup(env *bootstrap.Env, timeout time.Duration, store db.Store, gin *gin.Engine) {
+	setupCors(gin)
 
+	publicRouter := gin.Group("/v1")
+	// All Public APIs
+	NewEtcRouter(env, timeout, store, publicRouter)
+	NewHackathonRouter(env, timeout, store, publicRouter)
+	//TODO:middlewareの追加
+	protectRouter := gin.Group("/v1").Use()
+	// All Protect APIs
+	NewAccountRouter(env, timeout, store, protectRouter)
+	NewRoomRouter(env, timeout, store, protectRouter)
+	NewRoomRouter(env, timeout, store, protectRouter)
 }
 
 func (server *Server) setupSwagger() {
 	server.router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
-func (server *Server) setUpCors() {
+func setupCors(router *gin.Engine) {
 	// server.router.Use(cors.New(
 	// 	cors.Config{
 	// 		AllowOrigins: []string{"https://frontend-3muyo7jtb-qirenqiantian367-gmailcom-s-team.vercel.app/"},
@@ -38,7 +47,7 @@ func (server *Server) setUpCors() {
 	// 		AllowCredentials: false,
 	// 		MaxAge:           24 * time.Hour,
 	// 	}))
-	server.router.Use(cors.Default())
+	router.Use(cors.Default())
 }
 
 // 認証を必要としないルーティング

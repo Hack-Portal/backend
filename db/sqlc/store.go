@@ -7,7 +7,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	fb "firebase.google.com/go"
-	"github.com/hackhack-Geek-vol6/backend/util"
+	"github.com/hackhack-Geek-vol6/backend/bootstrap"
 )
 
 const (
@@ -19,7 +19,7 @@ type Store interface {
 	Querier
 	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
 	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error)
-	CreateHackathonTx(ctx context.Context, config *util.EnvConfig, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
+	CreateHackathonTx(ctx context.Context, config *bootstrap.Env, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
 	ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error)
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)

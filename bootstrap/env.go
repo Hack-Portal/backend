@@ -1,11 +1,13 @@
-package util
+package bootstrap
 
 import (
+	"log"
+
 	"github.com/spf13/viper"
 )
 
 // envファイルに記載されている値のモデル
-type EnvConfig struct {
+type Env struct {
 	// DB情報
 	DBDriver string `mapstructure:"DB_DRIVER"`
 	DBSource string `mapstructure:"DB_SOURCE"`
@@ -15,17 +17,19 @@ type EnvConfig struct {
 }
 
 // app.envファイルを読み込む
-func LoadEnvConfig(path string) (config EnvConfig, err error) {
+func LoadEnvConfig(path string) (config Env) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		return
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatal("Can't find the file .env : ", err)
 	}
-	err = viper.Unmarshal(&config)
+
+	if err := viper.Unmarshal(&config); err != nil {
+		log.Fatal("Environment can't be loaded: ", err)
+	}
 	return
 }

@@ -1,4 +1,4 @@
-package api
+package controller
 
 import (
 	"bytes"
@@ -9,11 +9,17 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/bootstrap"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/util"
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 	"github.com/lib/pq"
 )
+
+type AccountController struct {
+	AccountUsecase domain.LoginUsecase
+	Env            *bootstrap.Env
+}
 
 // アカウントを作る時のリクエストパラメータ
 type CreateAccountRequestBody struct {

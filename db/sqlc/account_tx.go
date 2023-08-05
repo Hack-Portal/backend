@@ -1,6 +1,10 @@
 package db
 
-import "context"
+import (
+	"context"
+
+	"github.com/hackhack-Geek-vol6/backend/domain"
+)
 
 type CreateAccountTxParams struct {
 	// ユーザ登録部分
@@ -10,19 +14,14 @@ type CreateAccountTxParams struct {
 	// FrameworkTag登録用
 	AccountFrameworkTag []int32
 }
-type CreateAccountTxResult struct {
-	Account           Accounts
-	AccountTechTags   []TechTags
-	AccountFrameworks []Frameworks
-}
 
 // アカウント登録時のトランザクション
-func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error) {
-	var result CreateAccountTxResult
+func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (domain.AccountResponses, error) {
+	var result domain.AccountResponses
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 		// アカウントを登録する
-		result.Account, err = q.CreateAccount(ctx, CreateAccountParams{
+		account, err := q.CreateAccount(ctx, CreateAccountParams{
 			UserID:          arg.UserID,
 			Username:        arg.Username,
 			Icon:            arg.Icon,
@@ -34,9 +33,11 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, arg CreateAccountTxP
 			ShowLocate:      arg.ShowLocate,
 			ShowRate:        arg.ShowRate,
 		})
+
 		if err != nil {
 			return err
 		}
+		result = domain.AccountResponses{}
 
 		// アカウントＩＤからテックタグのレコードを登録する
 		for _, techTag := range arg.AccountTechTag {
