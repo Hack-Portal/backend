@@ -23,8 +23,7 @@ type CreateHackathonRequestBody struct {
 
 type CreateHackathonParams struct {
 	CreateHackathonRequestBody
-	Image      []byte  `json:"image"`
-	StatusTags []int32 `json:"status_tags"`
+	Image []byte `json:"image"`
 }
 
 type HackathonResponses struct {

@@ -46,7 +46,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.Cre
 		return
 	}
 
-	for _, statusTag := range body.StatusTags {
+	for _, statusTag := range body.CreateHackathonRequestBody.StatusTags {
 		_, err := hu.store.CreateHackathonStatusTag(ctx, db.CreateHackathonStatusTagParams{HackathonID: hackathon.HackathonID, StatusID: statusTag})
 		if err != nil {
 			return domain.HackathonResponses{}, err
