@@ -23,8 +23,11 @@ type BookmarkResponse struct {
 	Term        int32     `json:"term"`
 }
 
-type RemoveBookmarkRequestURI struct {
-	HackathonID int32 `uri:"hackathon_id"`
+type BookmarkRequestWildCard struct {
+	UserID string `uri:"user_id"`
+}
+type RemoveBookmarkRequestQueries struct {
+	HackathonID int32 `query:"hackathon_id" binding:"required"`
 }
 type ListBookmarkRequestQueries struct {
 	PageSize int32 `form:"page_size" binding:"required"`

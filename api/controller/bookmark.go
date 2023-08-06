@@ -1,13 +1,13 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/domain"
-	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
 type BookmarkController struct {
@@ -26,49 +26,16 @@ type BookmarkController struct {
 // @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/bookmarks 					[post]
 func (bc *BookmarkController) CreateBookmark(ctx *gin.Context) {
-	var request domain.CreateBookmarkRequest
-	if err := ctx.ShouldBindJSON(&request); err != nil {
+	var reqBody domain.CreateBookmarkRequest
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountByID(ctx, request.UserID)
-	if err != nil {
-		// UIDについてのカラムがない場合の処理を作る必要がある (badRequest)
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	// 認証ヘッダとUID登録先のEmailが一致しない場合
-	if payload.Email != account.Email {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	bookmark, err := server.store.CreateBookmark(ctx, db.CreateBookmarkParams{
-		HackathonID: request.HackathonID,
-		UserID:      account.UserID,
-	})
-	if err != nil {
-		// NoRowSQLエラーの場合の処理を作る必要がある (badRequest)
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	hackathon, err := server.store.GetHackathonByID(ctx, bookmark.HackathonID)
+	response, err := bc.BookmarkUsecase.CreateBookmark(ctx, db.CreateBookmarkParams{HackathonID: reqBody.HackathonID, UserID: reqBody.UserID})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
-	}
-	response := BookmarkResponse{
-		HackathonID: hackathon.HackathonID,
-		Name:        hackathon.Name,
-		Icon:        hackathon.Icon.String,
-		Description: hackathon.Description,
-		Link:        hackathon.Link,
-		Expired:     hackathon.Expired,
-		StartDate:   hackathon.StartDate,
-		Term:        hackathon.Term,
 	}
 	ctx.JSON(http.StatusOK, response)
 }
@@ -78,52 +45,31 @@ func (bc *BookmarkController) CreateBookmark(ctx *gin.Context) {
 // @Description		Delete the bookmark of the specified hackathon ID
 // @Tags			Bookmark
 // @Produce			json
-// @Param			hackathon_id 	path 			string				true	"Delete Bookmark Request Body"
+// @Param			user_id		 	path 			string				true	"Delete Bookmark Request Body"
 // @Success			200				{object}		BookmarkResponse	"delete success response"
 // @Failure 		400				{object}		ErrorResponse		"bad request response"
 // @Failure 		500				{object}		ErrorResponse		"server error response"
-// @Router       	/bookmarks/:hackathon_id 		[delete]
-func (server *Server) RemoveBookmark(ctx *gin.Context) {
-	var request RemoveBookmarkRequestURI
-	if err := ctx.ShouldBindUri(&request); err != nil {
+// @Router       	/bookmarks/:user_id 		[delete]
+func (bc *BookmarkController) RemoveBookmark(ctx *gin.Context) {
+	var (
+		reqURI  domain.BookmarkRequestWildCard
+		reqBody domain.RemoveBookmarkRequestQueries
+	)
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindQuery(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
-	if err != nil {
-		// TODO: UIDについてのカラムがない場合の処理を作る必要がある (badRequest)
+	if err := bc.BookmarkUsecase.RemoveBookmark(ctx, reqURI.UserID, reqBody.HackathonID); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	hackathon, err := server.store.GetHackathonByID(ctx, request.HackathonID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	_, err = server.store.SoftRemoveBookmark(ctx, db.SoftRemoveBookmarkParams{
-		UserID:      account.UserID,
-		HackathonID: request.HackathonID,
-	})
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	response := BookmarkResponse{
-		HackathonID: hackathon.HackathonID,
-		Name:        hackathon.Name,
-		Icon:        hackathon.Icon.String,
-		Description: hackathon.Description,
-		Link:        hackathon.Link,
-		Expired:     hackathon.Expired,
-		StartDate:   hackathon.StartDate,
-		Term:        hackathon.Term,
-	}
-
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, DeleteResponse{Result: fmt.Sprintf("delete successful")})
 }
 
 // ListBookmarkToHackathon	godoc
@@ -135,43 +81,25 @@ func (server *Server) RemoveBookmark(ctx *gin.Context) {
 // @Success			200							{array}			BookmarkResponse	"delete success response"
 // @Failure 		400							{object}		ErrorResponse		"bad request response"
 // @Failure 		500							{object}		ErrorResponse		"server error response"
-// @Router       	/bookmarks/:hackathon_id 	[get]
-func (server *Server) ListBookmarkToHackathon(ctx *gin.Context) {
-	var request ListBookmarkRequestQueries
-	if err := ctx.ShouldBindQuery(&request); err != nil {
+// @Router       	/bookmarks/:user_id  		[get]
+func (bc *BookmarkController) ListBookmarkToHackathon(ctx *gin.Context) {
+	var (
+		reqURI  domain.BookmarkRequestWildCard
+		reqBody domain.ListBookmarkRequestQueries
+	)
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindQuery(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	payload := ctx.MustGet(AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := server.store.GetAccountByEmail(ctx, payload.Email)
+	response, err := bc.BookmarkUsecase.GetBookmarks(ctx, reqURI.UserID, reqBody)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
-	}
-
-	bookmarks, err := server.store.ListBookmarkByUserID(ctx, account.UserID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	var response []BookmarkResponse
-	for _, bookmark := range bookmarks {
-		hackathon, err := server.store.GetHackathonByID(ctx, bookmark.HackathonID)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
-		response = append(response, BookmarkResponse{
-			HackathonID: hackathon.HackathonID,
-			Name:        hackathon.Name,
-			Icon:        hackathon.Icon.String,
-			Description: hackathon.Description,
-			Link:        hackathon.Link,
-			Expired:     hackathon.Expired,
-			StartDate:   hackathon.StartDate,
-			Term:        hackathon.Term,
-		})
 	}
 	ctx.JSON(http.StatusOK, response)
 }
