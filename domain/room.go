@@ -1,10 +1,11 @@
 package domain
 
 import (
+	"context"
 	"time"
 
-	"github.com/gofrs/uuid"
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/google/uuid"
+	"github.com/hackhack-Geek-vol6/backend/gateways/repository"
 )
 
 type RoomsRequestWildCard struct {
@@ -25,12 +26,12 @@ type ListRoomsRequest struct {
 }
 
 type RoomTechTags struct {
-	TechTag db.TechTags `json:"tech_tag"`
-	Count   int32       `json:"count"`
+	TechTag repository.TechTag `json:"tech_tag"`
+	Count   int32              `json:"count"`
 }
 type RoomFramework struct {
-	Framework db.Frameworks `json:"framework"`
-	Count     int32         `json:"count"`
+	Framework repository.Framework `json:"framework"`
+	Count     int32                `json:"count"`
 }
 
 type NowRoomAccounts struct {
@@ -58,29 +59,29 @@ type ListRoomResponse struct {
 	MembersFrameworks []RoomFramework       `json:"members_frameworks"`
 }
 
-type hackathonInfo struct {
-	HackathonID int32           `json:"hackathon_id"`
-	Name        string          `json:"name"`
-	Icon        string          `json:"icon"`
-	Description string          `json:"description"`
-	Link        string          `json:"link"`
-	Expired     time.Time       `json:"expired"`
-	StartDate   time.Time       `json:"start_date"`
-	Term        int32           `json:"term"`
-	Tags        []db.StatusTags `json:"tags"`
+type HackathonInfo struct {
+	HackathonID int32                  `json:"hackathon_id"`
+	Name        string                 `json:"name"`
+	Icon        string                 `json:"icon"`
+	Description string                 `json:"description"`
+	Link        string                 `json:"link"`
+	Expired     time.Time              `json:"expired"`
+	StartDate   time.Time              `json:"start_date"`
+	Term        int32                  `json:"term"`
+	Tags        []repository.StatusTag `json:"tags"`
 }
 
 type GetRoomResponse struct {
-	RoomID            uuid.UUID            `json:"room_id"`
-	Title             string               `json:"title"`
-	Description       string               `json:"description"`
-	MemberLimit       int32                `json:"member_limit"`
-	IsStatus          bool                 `json:"is_status"`
-	CreateAt          time.Time            `json:"create_at"`
-	Hackathon         hackathonInfo        `json:"hackathon"`
-	NowMember         []db.NowRoomAccounts `json:"now_member"`
-	MembersTechTags   []db.RoomTechTags    `json:"members_tech_tags"`
-	MembersFrameworks []db.RoomFramework   `json:"members_frameworks"`
+	RoomID            uuid.UUID         `json:"room_id"`
+	Title             string            `json:"title"`
+	Description       string            `json:"description"`
+	MemberLimit       int32             `json:"member_limit"`
+	IsStatus          bool              `json:"is_status"`
+	CreateAt          time.Time         `json:"create_at"`
+	Hackathon         HackathonInfo     `json:"hackathon"`
+	NowMember         []NowRoomAccounts `json:"now_member"`
+	MembersTechTags   []RoomTechTags    `json:"members_tech_tags"`
+	MembersFrameworks []RoomFramework   `json:"members_frameworks"`
 }
 
 type AddChatRequestBody struct {
@@ -94,8 +95,8 @@ type UpdateRoomRequestBody struct {
 }
 
 type RoomUsecase interface {
-	ListRooms
-	CreateRoom
+	ListRooms(ctx context.Context, query ListRoomsRequest) (result []ListRoomResponse, err error)
+	CreateRoom(ctx context.Context, id uuid.UUID) (result GetRoomResponse, err error)
 	GetRoom
 	AddAccountInRoom
 	UpdateRoom

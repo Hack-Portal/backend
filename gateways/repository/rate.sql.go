@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: rate.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -20,9 +20,9 @@ type CreateRateParams struct {
 	Rate   int32  `json:"rate"`
 }
 
-func (q *Queries) CreateRate(ctx context.Context, arg CreateRateParams) (RateEntries, error) {
+func (q *Queries) CreateRate(ctx context.Context, arg CreateRateParams) (RateEntry, error) {
 	row := q.db.QueryRowContext(ctx, createRate, arg.UserID, arg.Rate)
-	var i RateEntries
+	var i RateEntry
 	err := row.Scan(&i.UserID, &i.Rate, &i.CreateAt)
 	return i, err
 }
@@ -40,15 +40,15 @@ type ListRateParams struct {
 	Offset int32  `json:"offset"`
 }
 
-func (q *Queries) ListRate(ctx context.Context, arg ListRateParams) ([]RateEntries, error) {
+func (q *Queries) ListRate(ctx context.Context, arg ListRateParams) ([]RateEntry, error) {
 	rows, err := q.db.QueryContext(ctx, listRate, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []RateEntries{}
+	items := []RateEntry{}
 	for rows.Next() {
-		var i RateEntries
+		var i RateEntry
 		if err := rows.Scan(&i.UserID, &i.Rate, &i.CreateAt); err != nil {
 			return nil, err
 		}

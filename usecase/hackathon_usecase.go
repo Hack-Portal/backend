@@ -5,16 +5,16 @@ import (
 	"database/sql"
 	"time"
 
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/domain"
+	"github.com/hackhack-Geek-vol6/backend/gateways/repository"
 )
 
 type hackathonUsecase struct {
-	store          db.Store
+	store          repository.Store
 	contextTimeout time.Duration
 }
 
-func NewHackathonUsercase(store db.Store, timeout time.Duration) domain.HackathonUsecase {
+func NewHackathonUsercase(store repository.Store, timeout time.Duration) domain.HackathonUsecase {
 	return &hackathonUsecase{
 		store:          store,
 		contextTimeout: timeout,
@@ -30,7 +30,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.Cre
 		return
 	}
 
-	hackathon, err := hu.store.CreateHackathon(ctx, db.CreateHackathonParams{
+	hackathon, err := hu.store.CreateHackathon(ctx, repository.CreateHackathonParams{
 		Name: body.Name,
 		Icon: sql.NullString{
 			String: Icon,
@@ -47,7 +47,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.Cre
 	}
 
 	for _, statusTag := range body.CreateHackathonRequestBody.StatusTags {
-		_, err := hu.store.CreateHackathonStatusTag(ctx, db.CreateHackathonStatusTagParams{HackathonID: hackathon.HackathonID, StatusID: statusTag})
+		_, err := hu.store.CreateHackathonStatusTag(ctx, repository.CreateHackathonStatusTagParams{HackathonID: hackathon.HackathonID, StatusID: statusTag})
 		if err != nil {
 			return domain.HackathonResponses{}, err
 		}
@@ -58,7 +58,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.Cre
 		return
 	}
 
-	var tags []db.StatusTags
+	var tags []repository.StatusTag
 	for _, statusTag := range statusTags {
 		tag, err := hu.store.GetStatusTagByStatusID(ctx, statusTag.StatusID)
 		if err != nil {
@@ -92,7 +92,7 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query domain.Lis
 		expired = time.Now()
 	}
 
-	hackathons, err := hu.store.ListHackathons(ctx, db.ListHackathonsParams{
+	hackathons, err := hu.store.ListHackathons(ctx, repository.ListHackathonsParams{
 		Expired: expired,
 		Limit:   query.PageSize,
 		Offset:  (query.PageId - 1) * query.PageSize,
@@ -102,7 +102,7 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query domain.Lis
 	}
 
 	for _, hackathon := range hackathons {
-		var tags []db.StatusTags
+		var tags []repository.StatusTag
 
 		statusTags, err := hu.store.GetHackathonStatusTagsByHackathonID(ctx, hackathon.HackathonID)
 		if err != nil {
@@ -144,7 +144,7 @@ func (hu *hackathonUsecase) GetHackathon(ctx context.Context, id int32) (result 
 		return
 	}
 
-	var tags []db.StatusTags
+	var tags []repository.StatusTag
 	for _, statusTag := range statusTags {
 		tag, err := hu.store.GetStatusTagByStatusID(ctx, statusTag.StatusID)
 		if err != nil {

@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: frameworks.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -30,9 +30,9 @@ WHERE
     framework_id = $1
 `
 
-func (q *Queries) GetFrameworksByID(ctx context.Context, frameworkID int32) (Frameworks, error) {
+func (q *Queries) GetFrameworksByID(ctx context.Context, frameworkID int32) (Framework, error) {
 	row := q.db.QueryRowContext(ctx, getFrameworksByID, frameworkID)
-	var i Frameworks
+	var i Framework
 	err := row.Scan(&i.FrameworkID, &i.TechTagID, &i.Framework)
 	return i, err
 }
@@ -46,15 +46,15 @@ LIMIT
     $1
 `
 
-func (q *Queries) ListFrameworks(ctx context.Context, limit int32) ([]Frameworks, error) {
+func (q *Queries) ListFrameworks(ctx context.Context, limit int32) ([]Framework, error) {
 	rows, err := q.db.QueryContext(ctx, listFrameworks, limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Frameworks{}
+	items := []Framework{}
 	for rows.Next() {
-		var i Frameworks
+		var i Framework
 		if err := rows.Scan(&i.FrameworkID, &i.TechTagID, &i.Framework); err != nil {
 			return nil, err
 		}
@@ -79,9 +79,9 @@ type UpdateFrameworksByIDParams struct {
 	FrameworkID int32  `json:"framework_id"`
 }
 
-func (q *Queries) UpdateFrameworksByID(ctx context.Context, arg UpdateFrameworksByIDParams) (Frameworks, error) {
+func (q *Queries) UpdateFrameworksByID(ctx context.Context, arg UpdateFrameworksByIDParams) (Framework, error) {
 	row := q.db.QueryRowContext(ctx, updateFrameworksByID, arg.Framework, arg.TechTagID, arg.FrameworkID)
-	var i Frameworks
+	var i Framework
 	err := row.Scan(&i.FrameworkID, &i.TechTagID, &i.Framework)
 	return i, err
 }

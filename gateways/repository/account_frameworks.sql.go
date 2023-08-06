@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: account_frameworks.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -22,9 +22,9 @@ type CreateAccountFrameworkParams struct {
 	FrameworkID int32  `json:"framework_id"`
 }
 
-func (q *Queries) CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFrameworks, error) {
+func (q *Queries) CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFramework, error) {
 	row := q.db.QueryRowContext(ctx, createAccountFramework, arg.UserID, arg.FrameworkID)
-	var i AccountFrameworks
+	var i AccountFramework
 	err := row.Scan(&i.UserID, &i.FrameworkID)
 	return i, err
 }

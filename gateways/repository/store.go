@@ -1,4 +1,4 @@
-package db
+package repository
 
 import (
 	"context"
@@ -7,8 +7,6 @@ import (
 
 	"cloud.google.com/go/firestore"
 	fb "firebase.google.com/go"
-	"github.com/hackhack-Geek-vol6/backend/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/domain"
 )
 
 const (
@@ -18,14 +16,6 @@ const (
 
 type Store interface {
 	Querier
-	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (domain.AccountResponses, error)
-	GetAccountTxByID(ctx context.Context, ID string) (domain.AccountResponses, error)
-	GetAccountTxByEmail(ctx context.Context, email string) (domain.AccountResponses, error)
-	UpdateAccountTx(ctx context.Context, arg UpdateAccountTxParams) (domain.AccountResponses, error)
-
-	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error)
-	CreateHackathonTx(ctx context.Context, config *bootstrap.Env, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
-	ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error)
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
 	WriteFireStore(ctx context.Context, arg WriteFireStoreParam) (*firestore.WriteResult, error)
@@ -48,7 +38,7 @@ func NewStore(db *sql.DB, app *fb.App) *SQLStore {
 
 // トランザクションを実行する用の雛形
 func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
-	tx, err := store.db.BeginTx(ctx, nil)
+	tx, err := store.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return err
 	}

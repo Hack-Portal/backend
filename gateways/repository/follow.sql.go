@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: follow.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -21,11 +21,43 @@ type CreateFollowParams struct {
 	FromUserID string `json:"from_user_id"`
 }
 
-func (q *Queries) CreateFollow(ctx context.Context, arg CreateFollowParams) (Follows, error) {
+func (q *Queries) CreateFollow(ctx context.Context, arg CreateFollowParams) (Follow, error) {
 	row := q.db.QueryRowContext(ctx, createFollow, arg.ToUserID, arg.FromUserID)
-	var i Follows
+	var i Follow
 	err := row.Scan(&i.ToUserID, &i.FromUserID, &i.CreateAt)
 	return i, err
+}
+
+const listFollowByFromUserID = `-- name: ListFollowByFromUserID :many
+SELECT
+  to_user_id, from_user_id, create_at
+FROM
+  follows
+WHERE
+  from_user_id = $1
+`
+
+func (q *Queries) ListFollowByFromUserID(ctx context.Context, fromUserID string) ([]Follow, error) {
+	rows, err := q.db.QueryContext(ctx, listFollowByFromUserID, fromUserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Follow{}
+	for rows.Next() {
+		var i Follow
+		if err := rows.Scan(&i.ToUserID, &i.FromUserID, &i.CreateAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listFollowByToUserID = `-- name: ListFollowByToUserID :many
@@ -37,15 +69,15 @@ WHERE
   to_user_id = $1
 `
 
-func (q *Queries) ListFollowByToUserID(ctx context.Context, toUserID string) ([]Follows, error) {
+func (q *Queries) ListFollowByToUserID(ctx context.Context, toUserID string) ([]Follow, error) {
 	rows, err := q.db.QueryContext(ctx, listFollowByToUserID, toUserID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Follows{}
+	items := []Follow{}
 	for rows.Next() {
-		var i Follows
+		var i Follow
 		if err := rows.Scan(&i.ToUserID, &i.FromUserID, &i.CreateAt); err != nil {
 			return nil, err
 		}
