@@ -20,6 +20,7 @@ type Store interface {
 	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
 	CreateRoomTx(ctx context.Context, arg CreateRoomTxParams) (CreateRoomTxResult, error)
 	CreateHackathonTx(ctx context.Context, config *util.EnvConfig, arg CreateHackathonTxParams) (CreateHackathonTxResult, error)
+	CreatePastWorkTx(ctx context.Context, arg CreatePastWorkTxParams) (CreatePastWorkTxResult, error)
 	ListRoomTx(ctx context.Context, arg ListRoomTxParam) ([]ListRoomTxResult, error)
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)

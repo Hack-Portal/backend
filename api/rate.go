@@ -29,7 +29,7 @@ type RateResponses struct {
 // @Success			200				{object}		RateResponses		"success response"
 // @Failure 		400				{object}		ErrorResponse		"error response"
 // @Failure 		500				{object}		ErrorResponse		"error response"
-// @Router       	/accounts/:id/rate 		[post]
+// @Router       	/accounts/{id}/rate 		[post]
 func (server *Server) CreateRate(ctx *gin.Context) {
 	var (
 		reqURI  AccountRequestWildCard
@@ -82,7 +82,7 @@ type ListRateParams struct {
 // @Success			200				{array}			RateResponses	"success response"
 // @Failure 		400				{object}		ErrorResponse		"error response"
 // @Failure 		500				{object}		ErrorResponse		"error response"
-// @Router       	/accounts/:id/rate 		[get]
+// @Router       	/accounts/{id}/rate 		[get]
 func (server *Server) ListRate(ctx *gin.Context) {
 	var (
 		reqURI   AccountRequestWildCard

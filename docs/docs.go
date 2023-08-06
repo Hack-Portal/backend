@@ -68,7 +68,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:from_user_id/follow": {
+        "/accounts/{from_user_id}/follow": {
             "post": {
                 "description": "Follow!!!!!!!!",
                 "produces": [
@@ -102,7 +102,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Follows"
+                                "$ref": "#/definitions/db.Follows"
                             }
                         }
                     },
@@ -146,7 +146,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
                         }
@@ -166,7 +166,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:id/rate": {
+        "/accounts/{id}/rate": {
             "get": {
                 "description": "List Rate for User",
                 "produces": [
@@ -254,7 +254,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:user_id": {
+        "/accounts/{user_id}": {
             "get": {
                 "description": "Return a user from the id specified in the path",
                 "produces": [
@@ -425,7 +425,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bookmarks/:hackathon_id": {
+        "/bookmarks/{hackathon_id}": {
             "get": {
                 "description": "Get my bookmarks",
                 "produces": [
@@ -524,7 +524,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks"
+                                "$ref": "#/definitions/db.Frameworks"
                             }
                         }
                     },
@@ -550,18 +550,24 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "boolean",
+                        "description": "page size",
                         "name": "expired",
-                        "in": "formData"
+                        "in": "path",
+                        "required": true
                     },
                     {
                         "type": "integer",
-                        "name": "page_id",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
+                        "description": "page size",
                         "name": "page_size",
-                        "in": "formData"
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page id",
+                        "name": "page_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -630,7 +636,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/hackathons/:hackathon_id": {
+        "/hackathons/{hackathon_id}": {
             "get": {
                 "description": "Get Hackathon",
                 "produces": [
@@ -687,7 +693,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Locates"
+                                "$ref": "#/definitions/db.Locates"
                             }
                         }
                     },
@@ -788,7 +794,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id": {
+        "/rooms/{room_id}": {
             "get": {
                 "description": "Get Room",
                 "produces": [
@@ -916,7 +922,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id/addchat": {
+        "/rooms/{room_id}/addchat": {
             "post": {
                 "description": "Add Chat Room",
                 "produces": [
@@ -966,7 +972,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id/members": {
+        "/rooms/{room_id}/members": {
             "post": {
                 "description": "Add Account In Rooms",
                 "produces": [
@@ -1062,7 +1068,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags"
+                                "$ref": "#/definitions/db.TechTags"
                             }
                         }
                     },
@@ -1174,7 +1180,7 @@ const docTemplate = `{
                 "frameworks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks"
+                        "$ref": "#/definitions/db.Frameworks"
                     }
                 },
                 "icon": {
@@ -1195,7 +1201,7 @@ const docTemplate = `{
                 "tech_tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags"
+                        "$ref": "#/definitions/db.TechTags"
                     }
                 },
                 "user_id": {
@@ -1323,7 +1329,7 @@ const docTemplate = `{
                 "frameworks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks"
+                        "$ref": "#/definitions/db.Frameworks"
                     }
                 },
                 "icon": {
@@ -1344,7 +1350,7 @@ const docTemplate = `{
                 "tech_tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags"
+                        "$ref": "#/definitions/db.TechTags"
                     }
                 },
                 "user_id": {
@@ -1426,7 +1432,7 @@ const docTemplate = `{
                 "status_tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags"
+                        "$ref": "#/definitions/db.StatusTags"
                     }
                 },
                 "term": {
@@ -1552,7 +1558,7 @@ const docTemplate = `{
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags"
+                        "$ref": "#/definitions/db.StatusTags"
                     }
                 },
                 "term": {
@@ -1604,6 +1610,34 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "db.Follows": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "from_user_id": {
+                    "type": "string"
+                },
+                "to_user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Frameworks": {
+            "type": "object",
+            "properties": {
+                "framework": {
+                    "type": "string"
+                },
+                "framework_id": {
+                    "type": "integer"
+                },
+                "tech_tag_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -1667,6 +1701,17 @@ const docTemplate = `{
                 }
             }
         },
+        "db.Locates": {
+            "type": "object",
+            "properties": {
+                "locate_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "db.NowRoomAccounts": {
             "type": "object",
             "properties": {
@@ -1688,7 +1733,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "framework": {
-                    "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks"
+                    "$ref": "#/definitions/db.Frameworks"
                 }
             }
         },
@@ -1713,50 +1758,11 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "tech_tag": {
-                    "$ref": "#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags"
+                    "$ref": "#/definitions/db.TechTags"
                 }
             }
         },
-        "github_com_hackhack-Geek-vol6_backend_db_sqlc.Follows": {
-            "type": "object",
-            "properties": {
-                "create_at": {
-                    "type": "string"
-                },
-                "from_user_id": {
-                    "type": "string"
-                },
-                "to_user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks": {
-            "type": "object",
-            "properties": {
-                "framework": {
-                    "type": "string"
-                },
-                "framework_id": {
-                    "type": "integer"
-                },
-                "tech_tag_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_hackhack-Geek-vol6_backend_db_sqlc.Locates": {
-            "type": "object",
-            "properties": {
-                "locate_id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags": {
+        "db.StatusTags": {
             "type": "object",
             "properties": {
                 "status": {
@@ -1767,7 +1773,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags": {
+        "db.TechTags": {
             "type": "object",
             "properties": {
                 "language": {
