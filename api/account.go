@@ -159,7 +159,7 @@ type GetAccountResponses struct {
 // @Success			200			{object}		GetAccountResponses	"Get success response"
 // @Failure 		400			{object}		ErrorResponse		"bad request response"
 // @Failure 		500			{object}		ErrorResponse		"server error response"
-// @Router       	/accounts/:user_id 			[get]
+// @Router       	/accounts/{user_id} 			[get]
 func (server *Server) GetAccount(ctx *gin.Context) {
 	var request AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -284,7 +284,7 @@ type UpdateAccountResponse struct {
 // @Success			200							{object}	UpdateAccountResponse		"Update success response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
-// @Router       	/accounts/:user_id 			[put]
+// @Router       	/accounts/{user_id} 			[put]
 func (server *Server) UpdateAccount(ctx *gin.Context) {
 	var (
 		requestBody UpdateAccountRequestBody
@@ -438,7 +438,7 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body UpdateAccount
 // @Success			200			{object}		DeleteResponse	"delete success response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
-// @Router       	/accounts/:user_id 		[delete]
+// @Router       	/accounts/{user_id} 		[delete]
 func (server *Server) DeleteAccount(ctx *gin.Context) {
 	var request AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
