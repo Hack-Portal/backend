@@ -13,6 +13,7 @@ import (
 type Querier interface {
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
 	CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFrameworks, error)
+	CreateAccountPastWorks(ctx context.Context, arg CreateAccountPastWorksParams) (AccountPastWorks, error)
 	CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTags, error)
 	CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmarks, error)
 	CreateFollow(ctx context.Context, arg CreateFollowParams) (Follows, error)
@@ -25,6 +26,7 @@ type Querier interface {
 	CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error)
 	DeleteAccountFrameworksByUserID(ctx context.Context, userID string) error
+	DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
 	DeleteAccounttagsByUserID(ctx context.Context, userID string) error
 	DeleteFrameworksByID(ctx context.Context, frameworkID int32) error
 	DeleteHackathonByID(ctx context.Context, hackathonID int32) error
@@ -35,6 +37,7 @@ type Querier interface {
 	DeleteTechTagByID(ctx context.Context, techTagID int32) error
 	GetAccountByEmail(ctx context.Context, email string) (GetAccountByEmailRow, error)
 	GetAccountByID(ctx context.Context, userID string) (GetAccountByIDRow, error)
+	GetAccountPastWorksByOpus(ctx context.Context, opus int32) ([]AccountPastWorks, error)
 	GetFrameworksByID(ctx context.Context, frameworkID int32) (Frameworks, error)
 	GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathons, error)
 	GetHackathonStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]HackathonStatusTags, error)
