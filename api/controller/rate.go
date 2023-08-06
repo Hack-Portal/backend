@@ -2,23 +2,10 @@ package controller
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 )
-
-// レートエントリーを作る時のリクエストパラメータ
-type CreateRateRequestBody struct {
-	Rate int32 `json:"rate"`
-}
-
-// レートエントリーに関するレスポンス
-type RateResponses struct {
-	UserID   string    `json:"user_id"`
-	Rate     int32     `json:"rate"`
-	CreateAt time.Time `json:"create_at"`
-}
 
 // CreateRate	godoc
 // @Summary			Create Rate
@@ -66,11 +53,6 @@ func (server *Server) CreateRate(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, rate)
-}
-
-type ListRateParams struct {
-	PageSize int32 `form:"page_size"`
-	PageId   int32 `form:"page_id"`
 }
 
 // ListRate	godoc
