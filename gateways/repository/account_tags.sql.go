@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: account_tags.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -22,9 +22,9 @@ type CreateAccountTagsParams struct {
 	TechTagID int32  `json:"tech_tag_id"`
 }
 
-func (q *Queries) CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTags, error) {
+func (q *Queries) CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTag, error) {
 	row := q.db.QueryRowContext(ctx, createAccountTags, arg.UserID, arg.TechTagID)
-	var i AccountTags
+	var i AccountTag
 	err := row.Scan(&i.UserID, &i.TechTagID)
 	return i, err
 }

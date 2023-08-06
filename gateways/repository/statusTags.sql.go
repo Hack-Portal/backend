@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: statusTags.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -24,9 +24,9 @@ const getStatusTagByStatusID = `-- name: GetStatusTagByStatusID :one
 SELECT status_id, status FROM status_tags WHERE status_id = $1
 `
 
-func (q *Queries) GetStatusTagByStatusID(ctx context.Context, statusID int32) (StatusTags, error) {
+func (q *Queries) GetStatusTagByStatusID(ctx context.Context, statusID int32) (StatusTag, error) {
 	row := q.db.QueryRowContext(ctx, getStatusTagByStatusID, statusID)
-	var i StatusTags
+	var i StatusTag
 	err := row.Scan(&i.StatusID, &i.Status)
 	return i, err
 }
@@ -39,15 +39,15 @@ ON status_tags.status_id = hackathon_status_tags.status_id
 where hackathon_id = $1
 `
 
-func (q *Queries) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]StatusTags, error) {
+func (q *Queries) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]StatusTag, error) {
 	rows, err := q.db.QueryContext(ctx, getStatusTagsByHackathonID, hackathonID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []StatusTags{}
+	items := []StatusTag{}
 	for rows.Next() {
-		var i StatusTags
+		var i StatusTag
 		if err := rows.Scan(&i.StatusID, &i.Status); err != nil {
 			return nil, err
 		}
@@ -67,15 +67,15 @@ SELECT status_id, status
 FROM status_tags
 `
 
-func (q *Queries) ListStatusTags(ctx context.Context) ([]StatusTags, error) {
+func (q *Queries) ListStatusTags(ctx context.Context) ([]StatusTag, error) {
 	rows, err := q.db.QueryContext(ctx, listStatusTags)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []StatusTags{}
+	items := []StatusTag{}
 	for rows.Next() {
-		var i StatusTags
+		var i StatusTag
 		if err := rows.Scan(&i.StatusID, &i.Status); err != nil {
 			return nil, err
 		}
@@ -98,9 +98,9 @@ SET
 WHERE status_id = $1 RETURNING status_id, status
 `
 
-func (q *Queries) UpdateStatusTagByStatusID(ctx context.Context, status string) (StatusTags, error) {
+func (q *Queries) UpdateStatusTagByStatusID(ctx context.Context, status string) (StatusTag, error) {
 	row := q.db.QueryRowContext(ctx, updateStatusTagByStatusID, status)
-	var i StatusTags
+	var i StatusTag
 	err := row.Scan(&i.StatusID, &i.Status)
 	return i, err
 }

@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: bookmark.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -21,9 +21,9 @@ type CreateBookmarkParams struct {
 	UserID      string `json:"user_id"`
 }
 
-func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmarks, error) {
+func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmark, error) {
 	row := q.db.QueryRowContext(ctx, createBookmark, arg.HackathonID, arg.UserID)
-	var i Bookmarks
+	var i Bookmark
 	err := row.Scan(
 		&i.HackathonID,
 		&i.UserID,
@@ -42,15 +42,15 @@ WHERE
     user_id = $1 AND is_delete = false
 `
 
-func (q *Queries) ListBookmarkByUserID(ctx context.Context, userID string) ([]Bookmarks, error) {
+func (q *Queries) ListBookmarkByUserID(ctx context.Context, userID string) ([]Bookmark, error) {
 	rows, err := q.db.QueryContext(ctx, listBookmarkByUserID, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Bookmarks{}
+	items := []Bookmark{}
 	for rows.Next() {
-		var i Bookmarks
+		var i Bookmark
 		if err := rows.Scan(
 			&i.HackathonID,
 			&i.UserID,
@@ -85,9 +85,9 @@ type SoftRemoveBookmarkParams struct {
 	HackathonID int32  `json:"hackathon_id"`
 }
 
-func (q *Queries) SoftRemoveBookmark(ctx context.Context, arg SoftRemoveBookmarkParams) (Bookmarks, error) {
+func (q *Queries) SoftRemoveBookmark(ctx context.Context, arg SoftRemoveBookmarkParams) (Bookmark, error) {
 	row := q.db.QueryRowContext(ctx, softRemoveBookmark, arg.UserID, arg.HackathonID)
-	var i Bookmarks
+	var i Bookmark
 	err := row.Scan(
 		&i.HackathonID,
 		&i.UserID,

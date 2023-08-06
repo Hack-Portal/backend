@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: tech_tags.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -22,9 +22,9 @@ const getTechTagByID = `-- name: GetTechTagByID :one
 SELECT tech_tag_id, language FROM tech_tags WHERE tech_tag_id = $1
 `
 
-func (q *Queries) GetTechTagByID(ctx context.Context, techTagID int32) (TechTags, error) {
+func (q *Queries) GetTechTagByID(ctx context.Context, techTagID int32) (TechTag, error) {
 	row := q.db.QueryRowContext(ctx, getTechTagByID, techTagID)
-	var i TechTags
+	var i TechTag
 	err := row.Scan(&i.TechTagID, &i.Language)
 	return i, err
 }
@@ -33,15 +33,15 @@ const listTechTag = `-- name: ListTechTag :many
 SELECT tech_tag_id, language FROM tech_tags
 `
 
-func (q *Queries) ListTechTag(ctx context.Context) ([]TechTags, error) {
+func (q *Queries) ListTechTag(ctx context.Context) ([]TechTag, error) {
 	rows, err := q.db.QueryContext(ctx, listTechTag)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []TechTags{}
+	items := []TechTag{}
 	for rows.Next() {
-		var i TechTags
+		var i TechTag
 		if err := rows.Scan(&i.TechTagID, &i.Language); err != nil {
 			return nil, err
 		}
@@ -60,9 +60,9 @@ const updateTechTagByID = `-- name: UpdateTechTagByID :one
 UPDATE tech_tags SET language = $1 WHERE tech_tag_id = $1 RETURNING tech_tag_id, language
 `
 
-func (q *Queries) UpdateTechTagByID(ctx context.Context, language string) (TechTags, error) {
+func (q *Queries) UpdateTechTagByID(ctx context.Context, language string) (TechTag, error) {
 	row := q.db.QueryRowContext(ctx, updateTechTagByID, language)
-	var i TechTags
+	var i TechTag
 	err := row.Scan(&i.TechTagID, &i.Language)
 	return i, err
 }

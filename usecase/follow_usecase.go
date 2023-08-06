@@ -4,23 +4,23 @@ import (
 	"context"
 	"time"
 
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/domain"
+	"github.com/hackhack-Geek-vol6/backend/gateways/repository"
 )
 
 type followUsecase struct {
-	store          db.Store
+	store          repository.Store
 	contextTimeout time.Duration
 }
 
-func NewFollowUsercase(store db.Store, timeout time.Duration) domain.FollowUsecase {
+func NewFollowUsercase(store repository.Store, timeout time.Duration) domain.FollowUsecase {
 	return &followUsecase{
 		store:          store,
 		contextTimeout: timeout,
 	}
 }
 
-func (fu *followUsecase) CreateFollow(ctx context.Context, body db.CreateFollowParams) (result domain.FollowResponse, err error) {
+func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.CreateFollowParams) (result domain.FollowResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 
@@ -37,7 +37,7 @@ func (fu *followUsecase) CreateFollow(ctx context.Context, body db.CreateFollowP
 	return
 }
 
-func (fu *followUsecase) RemoveFollow(ctx context.Context, body db.RemoveFollowParams) error {
+func (fu *followUsecase) RemoveFollow(ctx context.Context, body repository.RemoveFollowParams) error {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 

@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: account.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -53,7 +53,7 @@ type CreateAccountParams struct {
 	ShowRate        bool           `json:"show_rate"`
 }
 
-func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error) {
+func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error) {
 	row := q.db.QueryRowContext(ctx, createAccount,
 		arg.UserID,
 		arg.Username,
@@ -66,7 +66,7 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 		arg.ShowLocate,
 		arg.ShowRate,
 	)
-	var i Accounts
+	var i Account
 	err := row.Scan(
 		&i.UserID,
 		&i.Username,
@@ -275,9 +275,9 @@ WHERE
     user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
 `
 
-func (q *Queries) SoftDeleteAccount(ctx context.Context, userID string) (Accounts, error) {
+func (q *Queries) SoftDeleteAccount(ctx context.Context, userID string) (Account, error) {
 	row := q.db.QueryRowContext(ctx, softDeleteAccount, userID)
-	var i Accounts
+	var i Account
 	err := row.Scan(
 		&i.UserID,
 		&i.Username,
@@ -326,7 +326,7 @@ type UpdateAccountParams struct {
 	ShowRate        bool           `json:"show_rate"`
 }
 
-func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Accounts, error) {
+func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error) {
 	row := q.db.QueryRowContext(ctx, updateAccount,
 		arg.UserID,
 		arg.Username,
@@ -339,7 +339,7 @@ func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (A
 		arg.ShowLocate,
 		arg.ShowRate,
 	)
-	var i Accounts
+	var i Account
 	err := row.Scan(
 		&i.UserID,
 		&i.Username,
@@ -372,9 +372,9 @@ type UpdateRateByUserIDParams struct {
 	Rate   int32  `json:"rate"`
 }
 
-func (q *Queries) UpdateRateByUserID(ctx context.Context, arg UpdateRateByUserIDParams) (Accounts, error) {
+func (q *Queries) UpdateRateByUserID(ctx context.Context, arg UpdateRateByUserIDParams) (Account, error) {
 	row := q.db.QueryRowContext(ctx, updateRateByUserID, arg.UserID, arg.Rate)
-	var i Accounts
+	var i Account
 	err := row.Scan(
 		&i.UserID,
 		&i.Username,

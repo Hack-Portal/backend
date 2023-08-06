@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: rooms_accounts.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -28,9 +28,9 @@ type CreateRoomsAccountsParams struct {
 	IsOwner bool      `json:"is_owner"`
 }
 
-func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error) {
+func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error) {
 	row := q.db.QueryRowContext(ctx, createRoomsAccounts, arg.UserID, arg.RoomID, arg.IsOwner)
-	var i RoomsAccounts
+	var i RoomsAccount
 	err := row.Scan(
 		&i.UserID,
 		&i.RoomID,

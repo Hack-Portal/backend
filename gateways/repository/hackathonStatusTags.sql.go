@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: hackathonStatusTags.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -25,9 +25,9 @@ type CreateHackathonStatusTagParams struct {
 	StatusID    int32 `json:"status_id"`
 }
 
-func (q *Queries) CreateHackathonStatusTag(ctx context.Context, arg CreateHackathonStatusTagParams) (HackathonStatusTags, error) {
+func (q *Queries) CreateHackathonStatusTag(ctx context.Context, arg CreateHackathonStatusTagParams) (HackathonStatusTag, error) {
 	row := q.db.QueryRowContext(ctx, createHackathonStatusTag, arg.HackathonID, arg.StatusID)
-	var i HackathonStatusTags
+	var i HackathonStatusTag
 	err := row.Scan(&i.HackathonID, &i.StatusID)
 	return i, err
 }
@@ -47,15 +47,15 @@ FROM hackathon_status_tags
 WHERE hackathon_id = $1
 `
 
-func (q *Queries) GetHackathonStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]HackathonStatusTags, error) {
+func (q *Queries) GetHackathonStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]HackathonStatusTag, error) {
 	rows, err := q.db.QueryContext(ctx, getHackathonStatusTagsByHackathonID, hackathonID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []HackathonStatusTags{}
+	items := []HackathonStatusTag{}
 	for rows.Next() {
-		var i HackathonStatusTags
+		var i HackathonStatusTag
 		if err := rows.Scan(&i.HackathonID, &i.StatusID); err != nil {
 			return nil, err
 		}

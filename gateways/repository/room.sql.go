@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: room.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -33,7 +33,7 @@ type CreateRoomParams struct {
 	IsDelete    bool      `json:"is_delete"`
 }
 
-func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, error) {
+func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error) {
 	row := q.db.QueryRowContext(ctx, createRoom,
 		arg.RoomID,
 		arg.HackathonID,
@@ -42,7 +42,7 @@ func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, 
 		arg.MemberLimit,
 		arg.IsDelete,
 	)
-	var i Rooms
+	var i Room
 	err := row.Scan(
 		&i.RoomID,
 		&i.HackathonID,
@@ -59,9 +59,9 @@ const getRoomsByID = `-- name: GetRoomsByID :one
 SELECT room_id, hackathon_id, title, description, member_limit, create_at, is_delete FROM rooms WHERE room_id = $1
 `
 
-func (q *Queries) GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Rooms, error) {
+func (q *Queries) GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error) {
 	row := q.db.QueryRowContext(ctx, getRoomsByID, roomID)
-	var i Rooms
+	var i Room
 	err := row.Scan(
 		&i.RoomID,
 		&i.HackathonID,
@@ -90,15 +90,15 @@ WHERE
 LIMIT $1
 `
 
-func (q *Queries) ListRoom(ctx context.Context, limit int32) ([]Rooms, error) {
+func (q *Queries) ListRoom(ctx context.Context, limit int32) ([]Room, error) {
 	rows, err := q.db.QueryContext(ctx, listRoom, limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Rooms{}
+	items := []Room{}
 	for rows.Next() {
-		var i Rooms
+		var i Room
 		if err := rows.Scan(
 			&i.RoomID,
 			&i.HackathonID,
@@ -130,9 +130,9 @@ WHERE
     room_id = $1 RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
 `
 
-func (q *Queries) SoftDeleteRoomByID(ctx context.Context, roomID uuid.UUID) (Rooms, error) {
+func (q *Queries) SoftDeleteRoomByID(ctx context.Context, roomID uuid.UUID) (Room, error) {
 	row := q.db.QueryRowContext(ctx, softDeleteRoomByID, roomID)
-	var i Rooms
+	var i Room
 	err := row.Scan(
 		&i.RoomID,
 		&i.HackathonID,
@@ -165,7 +165,7 @@ type UpdateRoomByIDParams struct {
 	RoomID      uuid.UUID `json:"room_id"`
 }
 
-func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Rooms, error) {
+func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Room, error) {
 	row := q.db.QueryRowContext(ctx, updateRoomByID,
 		arg.HackathonID,
 		arg.Title,
@@ -173,7 +173,7 @@ func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) 
 		arg.MemberLimit,
 		arg.RoomID,
 	)
-	var i Rooms
+	var i Room
 	err := row.Scan(
 		&i.RoomID,
 		&i.HackathonID,

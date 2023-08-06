@@ -4,44 +4,44 @@ import (
 	"context"
 	"time"
 
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/domain"
+	"github.com/hackhack-Geek-vol6/backend/gateways/repository"
 )
 
 type rateUsecase struct {
-	store          db.Store
+	store          repository.Store
 	contextTimeout time.Duration
 }
 
-func NewRateUsercase(store db.Store, timeout time.Duration) domain.RateUsecase {
+func NewRateUsercase(store repository.Store, timeout time.Duration) domain.RateUsecase {
 	return &rateUsecase{
 		store:          store,
 		contextTimeout: timeout,
 	}
 }
 
-func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body db.CreateRateParams) (db.RateEntries, error) {
+func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.CreateRateParams) (repository.RateEntry, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	rate, err := ru.store.CreateRate(ctx, body)
 	if err != nil {
-		return db.RateEntries{}, err
+		return repository.RateEntry{}, err
 	}
 
-	_, err = ru.store.UpdateRateByUserID(ctx, db.UpdateRateByUserIDParams{UserID: body.UserID, Rate: body.Rate})
+	_, err = ru.store.UpdateRateByUserID(ctx, repository.UpdateRateByUserIDParams{UserID: body.UserID, Rate: body.Rate})
 	if err != nil {
-		return db.RateEntries{}, err
+		return repository.RateEntry{}, err
 	}
 
 	return rate, nil
 }
 
-func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domain.ListRateParams) ([]db.RateEntries, error) {
+func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domain.ListRateParams) ([]repository.RateEntry, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	rates, err := ru.store.ListRate(ctx, db.ListRateParams{
+	rates, err := ru.store.ListRate(ctx, repository.ListRateParams{
 		UserID: id,
 		Limit:  query.PageSize,
 		Offset: (query.PageId - 1) * query.PageSize,

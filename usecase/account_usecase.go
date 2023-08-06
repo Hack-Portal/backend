@@ -4,16 +4,16 @@ import (
 	"context"
 	"time"
 
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/domain"
+	"github.com/hackhack-Geek-vol6/backend/gateways/repository"
 )
 
 type accountUsecase struct {
-	store          db.Store
+	store          repository.Store
 	contextTimeout time.Duration
 }
 
-func NewAccountUsercase(store db.Store, timeout time.Duration) domain.AccountUsecase {
+func NewAccountUsercase(store repository.Store, timeout time.Duration) domain.AccountUsecase {
 	return &accountUsecase{
 		store:          store,
 		contextTimeout: timeout,
@@ -34,14 +34,14 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	return au.store.GetAccountTxByEmail(ctx, email)
 }
 
-func (au *accountUsecase) CreateAccount(ctx context.Context, body db.CreateAccountTxParams) (domain.AccountResponses, error) {
+func (au *accountUsecase) CreateAccount(ctx context.Context, body repository.CreateAccountTxParams) (domain.AccountResponses, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
 	return au.store.CreateAccountTx(ctx, body)
 }
 
-func (au *accountUsecase) UpdateAccount(ctx context.Context, body db.UpdateAccountTxParams) (domain.AccountResponses, error) {
+func (au *accountUsecase) UpdateAccount(ctx context.Context, body repository.UpdateAccountTxParams) (domain.AccountResponses, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 

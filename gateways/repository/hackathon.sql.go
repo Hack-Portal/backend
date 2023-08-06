@@ -3,7 +3,7 @@
 //   sqlc v1.19.1
 // source: hackathon.sql
 
-package db
+package repository
 
 import (
 	"context"
@@ -36,7 +36,7 @@ type CreateHackathonParams struct {
 	Term        int32          `json:"term"`
 }
 
-func (q *Queries) CreateHackathon(ctx context.Context, arg CreateHackathonParams) (Hackathons, error) {
+func (q *Queries) CreateHackathon(ctx context.Context, arg CreateHackathonParams) (Hackathon, error) {
 	row := q.db.QueryRowContext(ctx, createHackathon,
 		arg.Name,
 		arg.Icon,
@@ -46,7 +46,7 @@ func (q *Queries) CreateHackathon(ctx context.Context, arg CreateHackathonParams
 		arg.StartDate,
 		arg.Term,
 	)
-	var i Hackathons
+	var i Hackathon
 	err := row.Scan(
 		&i.HackathonID,
 		&i.Name,
@@ -81,9 +81,9 @@ WHERE
   hackathon_id = $1
 `
 
-func (q *Queries) GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathons, error) {
+func (q *Queries) GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathon, error) {
 	row := q.db.QueryRowContext(ctx, getHackathonByID, hackathonID)
-	var i Hackathons
+	var i Hackathon
 	err := row.Scan(
 		&i.HackathonID,
 		&i.Name,
@@ -116,15 +116,15 @@ type ListHackathonsParams struct {
 	Offset  int32     `json:"offset"`
 }
 
-func (q *Queries) ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathons, error) {
+func (q *Queries) ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathon, error) {
 	rows, err := q.db.QueryContext(ctx, listHackathons, arg.Expired, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Hackathons{}
+	items := []Hackathon{}
 	for rows.Next() {
-		var i Hackathons
+		var i Hackathon
 		if err := rows.Scan(
 			&i.HackathonID,
 			&i.Name,
