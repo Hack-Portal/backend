@@ -27,6 +27,17 @@ type CreatePastWorkResponse struct {
 }
 
 // 過去作品を登録する
+// CreatePastWork godoc
+// @Summary Create pastWork
+// @Description create pastWork
+// @Tags past_works
+// @Accept  json
+// @Produce  json
+// @Param past_work body CreatePastWorkRequestBody true "past work"
+// @Success 200 {object} CreatePastWorkResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /past_works [post]
 func (server *Server) CreatePastWork(ctx *gin.Context) {
 	var req CreatePastWorkRequestBody
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -63,6 +74,17 @@ type PastWorksRequestWildCard struct {
 	Opus int32 `uri:"opus"`
 }
 
+// GetPastWork godoc
+// @Summary Get pastWork
+// @Description get pastWork
+// @Tags past_works
+// @Accept  json
+// @Produce  json
+// @Param opus path int true "PastWorks API wildcard"
+// @Success 200 {object} CreatePastWorkResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /past_works/{opus} [get]
 func (server *Server) GetPastWork(ctx *gin.Context) {
 	var req PastWorksRequestWildCard
 	if err := ctx.ShouldBindUri(&req); err != nil {
@@ -101,6 +123,19 @@ func (server *Server) GetPastWork(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// ListPastWorks godoc
+// @Summary List pastWorks
+// @Description list pastWorks
+// @Tags past_works
+// @Accept  json
+// @Produce  json
+// @Param opus query int false "opus"
+// @Param name query string false "name"
+// @Param explanatory_text query string false "explanatory_text"
+// @Success 200 {array} CreatePastWorkResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /past_works [get]
 func (server *Server) ListPastWorks(ctx *gin.Context) {
 	var request ListHackathonsParams
 	if err := ctx.ShouldBindQuery(&request); err != nil {
