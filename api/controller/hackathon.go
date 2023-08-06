@@ -10,32 +10,6 @@ import (
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 )
 
-// ハッカソンを作る時のリクエストパラメータ
-type CreateHackathonRequestBody struct {
-	Name        string    `json:"name"`
-	Icon        string    `json:"icon"`
-	Description string    `json:"description"`
-	Link        string    `json:"link"`
-	Expired     time.Time `json:"expired"`
-	StartDate   time.Time `json:"start_date"`
-	Term        int32     `json:"term"`
-	StatusTags  []int32   `json:"status_tags"`
-}
-
-// ハッカソンに関するレスポンス
-type HackathonResponses struct {
-	HackathonID int32     `json:"hackathon_id"`
-	Name        string    `json:"name"`
-	Icon        string    `json:"icon"`
-	Description string    `json:"description"`
-	Link        string    `json:"link"`
-	Expired     time.Time `json:"expired"`
-	StartDate   time.Time `json:"start_date"`
-	Term        int32     `json:"term"`
-
-	StatusTags []db.StatusTags `json:"status_tags"`
-}
-
 // CreateHackathon	godoc
 // @Summary			Create Hackathon
 // @Description		Register a hackathon from given parameters
@@ -119,12 +93,6 @@ func (server *Server) CreateHackathon(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-// ハッカソン取得
-// ハッカソンを取得する際のパラメータ
-type HackathonRequestWildCard struct {
-	HackathonID int32 `uri:"hackathon_id"`
-}
-
 // GetHackathon	godoc
 // @Summary			Get Hackathon
 // @Description		Get Hackathon
@@ -169,22 +137,6 @@ func (server *Server) GetHackathon(ctx *gin.Context) {
 
 // ハッカソン一覧取得
 // ハッカソン一覧を取得する際のパラメータ
-type ListHackathonsParams struct {
-	PageSize int32 `form:"page_size"`
-	PageId   int32 `form:"page_id"`
-	Expired  bool  `form:"expired"`
-}
-
-type ListHackathonsResponses struct {
-	HackathonID int32     `json:"hackathon_id"`
-	Name        string    `json:"name"`
-	Icon        string    `json:"icon"`
-	Expired     time.Time `json:"expired"`
-	StartDate   time.Time `json:"start_date"`
-	Term        int32     `json:"term"`
-
-	StatusTags []db.StatusTags `json:"status_tags"`
-}
 
 // ListHackathons	godoc
 // @Summary			List Hackathon
