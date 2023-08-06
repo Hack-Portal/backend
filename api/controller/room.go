@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	uuid5 "github.com/gofrs/uuid/v5"
@@ -13,18 +12,6 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/util"
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
-
-type RoomsRequestWildCard struct {
-	RoomID string `uri:"room_id"`
-}
-
-type CreateRoomRequestBody struct {
-	HackathonID int32  `json:"hackathon_id" binding:"required"`
-	Title       string `json:"title" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	MemberLimit int32  `json:"member_limit" binding:"required"`
-	UserID      string `json:"user_id" binding:"required"`
-}
 
 // CreateRoom		godoc
 // @Summary			Create Rooms
@@ -190,14 +177,6 @@ func (server *Server) RemoveAccountInRoom(ctx *gin.Context) {
 
 }
 
-type ListRoomsRequest struct {
-	PageSize int32 `form:"page_size"`
-}
-
-type ListRoomsResponse struct {
-	Rooms []GetRoomResponse `json:"get_rooms_response"`
-}
-
 // ListRooms	godoc
 // @Summary			List Account
 // @Description		List Account
@@ -220,31 +199,6 @@ func (server *Server) ListRooms(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, response)
-}
-
-type hackathonInfo struct {
-	HackathonID int32           `json:"hackathon_id"`
-	Name        string          `json:"name"`
-	Icon        string          `json:"icon"`
-	Description string          `json:"description"`
-	Link        string          `json:"link"`
-	Expired     time.Time       `json:"expired"`
-	StartDate   time.Time       `json:"start_date"`
-	Term        int32           `json:"term"`
-	Tags        []db.StatusTags `json:"tags"`
-}
-
-type GetRoomResponse struct {
-	RoomID            uuid.UUID            `json:"room_id"`
-	Title             string               `json:"title"`
-	Description       string               `json:"description"`
-	MemberLimit       int32                `json:"member_limit"`
-	IsStatus          bool                 `json:"is_status"`
-	CreateAt          time.Time            `json:"create_at"`
-	Hackathon         hackathonInfo        `json:"hackathon"`
-	NowMember         []db.NowRoomAccounts `json:"now_member"`
-	MembersTechTags   []db.RoomTechTags    `json:"members_tech_tags"`
-	MembersFrameworks []db.RoomFramework   `json:"members_frameworks"`
 }
 
 // GetRoom	godoc
@@ -366,9 +320,6 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 
 // チャットを追加する
 // 認証必須
-type AddChatRequestBody struct {
-	Message string `json:"message" binding:"required"`
-}
 
 // AddChat	godoc
 // @Summary			Add Chat Room
@@ -443,12 +394,6 @@ func checkAccount(accounts []db.GetRoomsAccountsByRoomIDRow, roomId string) bool
 		}
 	}
 	return false
-}
-
-type UpdateRoomRequestBody struct {
-	Title       string `json:"title" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	MemberLimit int32  `json:"member_limit" binding:"required"`
 }
 
 // UpdateRoom	godoc

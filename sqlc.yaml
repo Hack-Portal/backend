@@ -10,3 +10,4 @@ packages:
     emit_interface: true
     emit_exact_table_names: true
     emit_empty_slices: true
+    emit_pointers_for_null_types: true

@@ -4,8 +4,15 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/bootstrap"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/hackhack-Geek-vol6/backend/domain"
 )
+
+type RateController struct {
+	RateUsecase domain.RateUsecase
+	Env         *bootstrap.Env
+}
 
 // CreateRate	godoc
 // @Summary			Create Rate
@@ -17,10 +24,10 @@ import (
 // @Failure 		400				{object}		ErrorResponse		"error response"
 // @Failure 		500				{object}		ErrorResponse		"error response"
 // @Router       	/accounts/:id/rate 		[post]
-func (server *Server) CreateRate(ctx *gin.Context) {
+func (rc *RateController) CreateRate(ctx *gin.Context) {
 	var (
-		reqURI  AccountRequestWildCard
-		reqBody CreateRateRequestBody
+		reqURI  domain.AccountRequestWildCard
+		reqBody domain.CreateRateRequestBody
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -30,9 +37,9 @@ func (server *Server) CreateRate(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	// れーとエントリを追加
-	rate, err := server.store.CreateRate(ctx, db.CreateRateParams{
-		UserID: reqURI.ID,
+
+	response, err := rc.RateUsecase.CreateRateEntry(ctx, db.CreateRateParams{
+		UserID: reqURI.UserID,
 		Rate:   reqBody.Rate,
 	})
 
@@ -41,18 +48,7 @@ func (server *Server) CreateRate(ctx *gin.Context) {
 		return
 	}
 
-	// アカウントのレートを更新
-	_, err = server.store.UpdateRateByUserID(ctx, db.UpdateRateByUserIDParams{
-		UserID: reqURI.ID,
-		Rate:   reqBody.Rate,
-	})
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, rate)
+	ctx.JSON(http.StatusOK, response)
 }
 
 // ListRate	godoc
@@ -66,10 +62,10 @@ func (server *Server) CreateRate(ctx *gin.Context) {
 // @Failure 		400				{object}		ErrorResponse		"error response"
 // @Failure 		500				{object}		ErrorResponse		"error response"
 // @Router       	/accounts/:id/rate 		[get]
-func (server *Server) ListRate(ctx *gin.Context) {
+func (rc *RateController) ListRate(ctx *gin.Context) {
 	var (
-		reqURI   AccountRequestWildCard
-		reqQuery ListRateParams
+		reqURI   domain.AccountRequestWildCard
+		reqQuery domain.ListRateParams
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -82,15 +78,11 @@ func (server *Server) ListRate(ctx *gin.Context) {
 		return
 	}
 
-	rates, err := server.store.ListRate(ctx, db.ListRateParams{
-		UserID: reqURI.ID,
-		Limit:  reqQuery.PageSize,
-		Offset: (reqQuery.PageId - 1) * reqQuery.PageSize,
-	})
+	response, err := rc.RateUsecase.ListRateEntry(ctx, reqURI.UserID, reqQuery)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, rates)
+	ctx.JSON(http.StatusOK, response)
 }

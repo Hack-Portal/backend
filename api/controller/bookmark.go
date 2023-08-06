@@ -82,7 +82,7 @@ func (bc *BookmarkController) RemoveBookmark(ctx *gin.Context) {
 // @Failure 		400							{object}		ErrorResponse		"bad request response"
 // @Failure 		500							{object}		ErrorResponse		"server error response"
 // @Router       	/bookmarks/:user_id  		[get]
-func (bc *BookmarkController) ListBookmarkToHackathon(ctx *gin.Context) {
+func (bc *BookmarkController) ListBookmark(ctx *gin.Context) {
 	var (
 		reqURI  domain.BookmarkRequestWildCard
 		reqBody domain.ListBookmarkRequestQueries

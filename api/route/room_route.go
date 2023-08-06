@@ -12,7 +12,7 @@ func NewRoomRouter(env *bootstrap.Env, timeout time.Duration, store db.Store, gr
 
 	roomRepository := repository.NewRoomRepository(store, domain.CollectionRoom)
 	roomController := controller.RoomController{
-		RoomUsecase: usercase.NewRoomUsercase(roomRepository, timeout),
+		RoomUsecase: usecase.NewRoomUsercase(roomRepository, timeout),
 		Env:         env,
 	}
 

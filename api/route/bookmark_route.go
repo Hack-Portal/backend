@@ -17,5 +17,7 @@ func NewBookmarkRouter(env *bootstrap.Env, timeout time.Duration, store db.Store
 		BookmarkUsecase: usecase.NewBookmarkUsercase(bookmarkRepository, timeout),
 		Env:             env,
 	}
-
+	group.POST("/bookmarks", bookmarkController.CreateBookmark)
+	group.GET("/bookmarks/:user_id", bookmarkController.ListBookmark)
+	group.DELETE("/bookmarks/:user_id", bookmarkController.RemoveBookmark)
 }

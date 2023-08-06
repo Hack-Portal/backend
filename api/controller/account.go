@@ -117,7 +117,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	}
 
 	// アカウント取得
-	result, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.ID)
+	result, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.UserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -179,7 +179,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 			return
 		}
 	}
-	account, err := ac.AccountUsecase.GetAccountByID(ctx, reqURI.ID)
+	account, err := ac.AccountUsecase.GetAccountByID(ctx, reqURI.UserID)
 
 	result, err := ac.AccountUsecase.UpdateAccount(ctx, parseUpdateAccountParam(account, reqBody))
 	result.Icon = imageURL

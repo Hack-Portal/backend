@@ -28,6 +28,12 @@ func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body db.CreateRatePa
 	if err != nil {
 		return db.RateEntries{}, err
 	}
+
+	_, err = ru.store.UpdateRateByUserID(ctx, db.UpdateRateByUserIDParams{UserID: body.UserID, Rate: body.Rate})
+	if err != nil {
+		return db.RateEntries{}, err
+	}
+
 	return rate, nil
 }
 

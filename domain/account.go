@@ -9,7 +9,7 @@ import (
 
 // アカウントのパス用のクエリ
 type AccountRequestWildCard struct {
-	ID string `uri:"id"`
+	UserID string `uri:"user_id"`
 }
 
 // アカウント作成のリクエストパラメータ

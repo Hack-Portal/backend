@@ -9,8 +9,8 @@ import (
 )
 
 type EtcController struct {
-	Etc domain.EtcUsecase
-	Env *bootstrap.Env
+	EtcUsecase domain.EtcUsecase
+	Env        *bootstrap.Env
 }
 
 // ListFrameworks	godoc
@@ -22,7 +22,7 @@ type EtcController struct {
 // @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/frameworks	[get]
 func (ec *EtcController) ListFrameworks(ctx *gin.Context) {
-	response, err := ec.Etc.GetFramework(ctx, 1000)
+	response, err := ec.EtcUsecase.GetFramework(ctx, 1000)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -39,7 +39,7 @@ func (ec *EtcController) ListFrameworks(ctx *gin.Context) {
 // @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/locates	[get]
 func (ec *EtcController) ListLocation(ctx *gin.Context) {
-	response, err := ec.Etc.GetLocat(ctx)
+	response, err := ec.EtcUsecase.GetLocat(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -56,10 +56,14 @@ func (ec *EtcController) ListLocation(ctx *gin.Context) {
 // @Failure 		500		{object}	ErrorResponse	"error response"
 // @Router       	/tech_tags			[get]
 func (ec *EtcController) ListTechTags(ctx *gin.Context) {
-	response, err := ec.Etc.GetTechTag(ctx)
+	response, err := ec.EtcUsecase.GetTechTag(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	ctx.JSON(http.StatusOK, response)
+}
+
+func (ec *EtcController) Ping(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 }

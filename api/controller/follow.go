@@ -40,7 +40,10 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 		return
 	}
 
-	response, err := fc.FollowUsecase.CreateFollow(ctx, db.CreateFollowParams{ToUserID: reqBody.ToUserID, FromUserID: reqURI.ID})
+	response, err := fc.FollowUsecase.CreateFollow(ctx, db.CreateFollowParams{
+		ToUserID:   reqBody.ToUserID,
+		FromUserID: reqURI.UserID,
+	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
