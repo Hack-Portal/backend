@@ -11,8 +11,7 @@ type CreateFollowRequestBody struct {
 }
 
 type RemoveFollowRequestQueries struct {
-	ToUserID   string `json:"to_user_id" binding:"required"`
-	FromUserID string `json:"from_user_id" binding:"required"`
+	ToUserID string `json:"to_user_id" binding:"required"`
 }
 
 type GetFollowRequestQueries struct {
@@ -29,6 +28,6 @@ type FollowResponse struct {
 
 type FollowUsecase interface {
 	CreateFollow(ctx context.Context, body db.CreateFollowParams) (result FollowResponse, err error)
-	RemoveFollow(ctx context.Context, body db.SoftRemoveBookmarkParams) (err error)
+	RemoveFollow(ctx context.Context, body db.RemoveFollowParams) error
 	GetFollowByToID(ctx context.Context, ID string) (result []FollowResponse, err error)
 }

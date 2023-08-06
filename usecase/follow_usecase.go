@@ -37,12 +37,11 @@ func (fu *followUsecase) CreateFollow(ctx context.Context, body db.CreateFollowP
 	return
 }
 
-func (fu *followUsecase) RemoveFollow(ctx context.Context, body db.SoftRemoveBookmarkParams) (err error) {
+func (fu *followUsecase) RemoveFollow(ctx context.Context, body db.RemoveFollowParams) error {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 
-	_, err = fu.store.SoftRemoveBookmark(ctx, body)
-	return
+	return fu.store.RemoveFollow(ctx, body)
 }
 
 func (fu *followUsecase) GetFollowByToID(ctx context.Context, ID string) (result []domain.FollowResponse, err error) {
