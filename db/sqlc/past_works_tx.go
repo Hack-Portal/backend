@@ -58,8 +58,8 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg CreatePastWorkT
 		// 過去作品IDからアカウントのレコードを登録する
 		for _, account := range arg.AccountPastWorks {
 			_, err = q.CreateAccountPastWorks(ctx, CreateAccountPastWorksParams{
-				Opus:    result.Opus,
-				Account: account,
+				Opus:   result.Opus,
+				UserID: account,
 			})
 			if err != nil {
 				return err

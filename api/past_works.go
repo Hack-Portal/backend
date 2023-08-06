@@ -57,3 +57,86 @@ func (server *Server) CreatePastWork(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, response)
 }
+
+// 過去作品取得
+type PastWorksRequestWildCard struct {
+	Opus int32 `uri:"opus"`
+}
+
+func (server *Server) GetPastWork(ctx *gin.Context) {
+	var req PastWorksRequestWildCard
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	pastWork, err := server.store.GetPastWorksByOpus(ctx, req.Opus)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	pastWorkTags, err := server.store.ListPastWorkTagsByOpus(ctx, req.Opus)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	pastWorkFrameworks, err := server.store.GetPastWorkFrameworksByOpus(ctx, req.Opus)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	accountPastWorks, err := server.store.GetAccountPastWorksByOpus(ctx, req.Opus)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	response := CreatePastWorkResponse{
+		Opus:               pastWork.Opus,
+		Name:               pastWork.Name,
+		ThumbnailImage:     pastWork.ThumbnailImage,
+		ExplanatoryText:    pastWork.ExplanatoryText,
+		PastWorkTags:       pastWorkTags,
+		PastWorkFrameworks: pastWorkFrameworks,
+		AccountPastWorks:   accountPastWorks,
+	}
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (server *Server) ListPastWorks(ctx *gin.Context) {
+	var request ListHackathonsParams
+	if err := ctx.ShouldBindQuery(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	pastWorks, err := server.store.ListPastWorks(ctx, db.ListPastWorksParams{})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	var response []CreatePastWorkResponse
+	for _, pastWork := range pastWorks {
+		pastWorkTags, err := server.store.ListPastWorkTagsByOpus(ctx, pastWork.Opus)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		pastWorkFrameworks, err := server.store.GetPastWorkFrameworksByOpus(ctx, pastWork.Opus)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		accountPastWorks, err := server.store.GetAccountPastWorksByOpus(ctx, pastWork.Opus)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		response = append(response, CreatePastWorkResponse{
+			Opus:               pastWork.Opus,
+			Name:               pastWork.Name,
+			ExplanatoryText:    pastWork.ExplanatoryText,
+			PastWorkTags:       pastWorkTags,
+			PastWorkFrameworks: pastWorkFrameworks,
+			AccountPastWorks:   accountPastWorks,
+		})
+	}
+	ctx.JSON(http.StatusOK, response)
+}
