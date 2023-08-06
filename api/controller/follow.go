@@ -8,10 +8,6 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
-type CreateFollowRequestBody struct {
-	ToUserID string `json:"to_user_id" binding:"required"`
-}
-
 // TODO:レスポンス変更　=> accounts
 // CreateFollow	godoc
 // @Summary			Create Follow
@@ -84,11 +80,6 @@ func checkFollow(accounts []db.Follows, userID string) bool {
 	return false
 }
 
-type RemoveFollowRequestQueries struct {
-	ToUserID   string `json:"to_user_id" binding:"required"`
-	FromUserID string `json:"from_user_id" binding:"required"`
-}
-
 // TODO:レスポンス修正
 // RemoveFollow	godoc
 // @Summary			Remove follow
@@ -131,12 +122,6 @@ func (server *Server) RemoveFollow(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, DeleteResponse{Result: "Delete Successful"})
-}
-
-type GetFollowRequestQueries struct {
-	Mode     bool   `form:"mode"`
-	PageSize string `form:"page_size"`
-	PageID   string `form:"page_id"`
 }
 
 func (server *Server) GetFollow(ctx *gin.Context) {
