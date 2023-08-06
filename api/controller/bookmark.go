@@ -2,27 +2,17 @@ package controller
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/bootstrap"
 	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/hackhack-Geek-vol6/backend/domain"
 	"github.com/hackhack-Geek-vol6/backend/util/token"
 )
 
-type CreateBookmarkRequestBody struct {
-	UserID      string `json:"user_id"`
-	HackathonID int32  `json:"hackathon_id"`
-}
-
-type BookmarkResponse struct {
-	HackathonID int32     `json:"hackathon_id"`
-	Name        string    `json:"name"`
-	Icon        string    `json:"icon"`
-	Description string    `json:"description"`
-	Link        string    `json:"link"`
-	Expired     time.Time `json:"expired"`
-	StartDate   time.Time `json:"start_date"`
-	Term        int32     `json:"term"`
+type BookmarkController struct {
+	BookmarkUsecase domain.BookmarkUsecase
+	Env             *bootstrap.Env
 }
 
 // CreateBookmark	godoc
@@ -35,8 +25,8 @@ type BookmarkResponse struct {
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/bookmarks 					[post]
-func (server *Server) CreateBookmark(ctx *gin.Context) {
-	var request CreateBookmarkRequestBody
+func (bc *BookmarkController) CreateBookmark(ctx *gin.Context) {
+	var request domain.CreateBookmarkRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -81,10 +71,6 @@ func (server *Server) CreateBookmark(ctx *gin.Context) {
 		Term:        hackathon.Term,
 	}
 	ctx.JSON(http.StatusOK, response)
-}
-
-type RemoveBookmarkRequestURI struct {
-	HackathonID int32 `uri:"hackathon_id"`
 }
 
 // RemoveBookmark	godoc
@@ -138,11 +124,6 @@ func (server *Server) RemoveBookmark(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, response)
-}
-
-type ListBookmarkRequestQueries struct {
-	PageSize int32 `form:"page_size" binding:"required"`
-	PageID   int32 `form:"page_id" binding:"required"`
 }
 
 // ListBookmarkToHackathon	godoc

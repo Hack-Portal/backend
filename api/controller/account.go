@@ -18,7 +18,7 @@ import (
 )
 
 type AccountController struct {
-	AccountUsecase domain.AccountRepository
+	AccountUsecase domain.AccountUsecase
 	Env            *bootstrap.Env
 }
 
@@ -187,8 +187,9 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// TODO:parseUpdateAccountParamの修正
 // 型変換
-func parseUpdateAccountParam(account db.GetAccountByEmailRow, body domain.UpdateAccountRequest) (result db.UpdateAccountParams) {
+func parseUpdateAccountParam(account db.GetAccountByEmailRow, body domain.UpdateAccountRequest) (result db.UpdateAccountTxParams) {
 	result.UserID = account.UserID
 	if util.StringLength(body.Username) != 0 {
 		if util.EqualString(account.Username, body.Username) {
