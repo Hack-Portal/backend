@@ -18,9 +18,4 @@ func NewBookmarkRouter(env *bootstrap.Env, timeout time.Duration, store db.Store
 		Env:             env,
 	}
 
-	group.POST("/accounts", bookmarkController.CreateAccount)
-
-	group.GET("/accounts/:id", bookmarkController.GetAccount)
-	group.PUT("/accounts/:id", bookmarkController.UpdateAccount)
-	group.DELETE("/acccounts/:id", bookmarkController.DeleteAccount)
 }
