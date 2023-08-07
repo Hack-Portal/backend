@@ -1,10 +1,9 @@
 package domain
 
 import (
-	"context"
 	"time"
 
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 )
 
 type HackathonRequestWildCard struct {
@@ -36,7 +35,7 @@ type HackathonResponses struct {
 	StartDate   time.Time `json:"start_date"`
 	Term        int32     `json:"term"`
 
-	StatusTags []db.StatusTags `json:"status_tags"`
+	StatusTags []repository.StatusTag `json:"status_tags"`
 }
 
 type ListHackathonsParams struct {
@@ -53,11 +52,5 @@ type ListHackathonsResponses struct {
 	StartDate   time.Time `json:"start_date"`
 	Term        int32     `json:"term"`
 
-	StatusTags []db.StatusTags `json:"status_tags"`
-}
-
-type HackathonUsecase interface {
-	CreateHackathon(ctx context.Context, body CreateHackathonParams) (result HackathonResponses, err error)
-	GetHackathon(ctx context.Context, id int32) (result HackathonResponses, err error)
-	ListHackathons(ctx context.Context, query ListHackathonsParams) (result []ListHackathonsResponses, err error)
+	StatusTags []repository.StatusTag `json:"status_tags"`
 }

@@ -1,11 +1,10 @@
 package domain
 
 import (
-	"context"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/hackhack-Geek-vol6/backend/gateways/repository"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 )
 
 type RoomsRequestWildCard struct {
@@ -92,14 +91,4 @@ type UpdateRoomRequestBody struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
 	MemberLimit int32  `json:"member_limit" binding:"required"`
-}
-
-type RoomUsecase interface {
-	ListRooms(ctx context.Context, query ListRoomsRequest) (result []ListRoomResponse, err error)
-	CreateRoom(ctx context.Context, id uuid.UUID) (result GetRoomResponse, err error)
-	GetRoom
-	AddAccountInRoom
-	UpdateRoom
-	DeleteRoom
-	AddAccountIn
 }

@@ -1,11 +1,5 @@
 package domain
 
-import (
-	"context"
-
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
-)
-
 type CreateFollowRequestBody struct {
 	ToUserID string `json:"to_user_id" binding:"required"`
 }
@@ -24,10 +18,4 @@ type FollowResponse struct {
 	UserID   string `json:"user_id"`
 	Username string `json:"username"`
 	Icon     string `json:"icon"`
-}
-
-type FollowUsecase interface {
-	CreateFollow(ctx context.Context, body db.CreateFollowParams) (result FollowResponse, err error)
-	RemoveFollow(ctx context.Context, body db.RemoveFollowParams) error
-	GetFollowByToID(ctx context.Context, ID string) (result []FollowResponse, err error)
 }

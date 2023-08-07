@@ -1,10 +1,7 @@
 package domain
 
 import (
-	"context"
 	"time"
-
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 )
 
 type CreateBookmarkRequest struct {
@@ -32,10 +29,4 @@ type RemoveBookmarkRequestQueries struct {
 type ListBookmarkRequestQueries struct {
 	PageSize int32 `form:"page_size" binding:"required"`
 	PageID   int32 `form:"page_id" binding:"required"`
-}
-
-type BookmarkUsecase interface {
-	CreateBookmark(ctx context.Context, body db.CreateBookmarkParams) (BookmarkResponse, error)
-	GetBookmarks(ctx context.Context, id string, query ListBookmarkRequestQueries) (result []BookmarkResponse, err error)
-	RemoveBookmark(ctx context.Context, userID string, hackathonID int32) error
 }

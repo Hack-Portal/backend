@@ -1,10 +1,9 @@
 package domain
 
 import (
-	"context"
 	"time"
 
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 )
 
 // アカウントのパス用のクエリ
@@ -38,8 +37,8 @@ type AccountResponses struct {
 	ShowLocate      bool   `json:"show_locate"`
 	ShowRate        bool   `json:"show_rate"`
 
-	TechTags   []db.TechTags   `json:"tech_tags"`
-	Frameworks []db.Frameworks `json:"frameworks"`
+	TechTags   []repository.TechTag   `json:"tech_tags"`
+	Frameworks []repository.Framework `json:"frameworks"`
 
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -53,13 +52,4 @@ type UpdateAccountRequest struct {
 	HashedPassword  string `json:"hashed_password"`
 	ShowLocate      bool   `json:"show_locate"`
 	ShowRate        bool   `json:"show_rate"`
-}
-
-type AccountUsecase interface {
-	GetAccountByID(ctx context.Context, id string) (AccountResponses, error)
-	GetAccountByEmail(ctx context.Context, email string) (AccountResponses, error)
-	CreateAccount(ctx context.Context, body db.CreateAccountTxParams) (AccountResponses, error)
-	UpdateAccount(ctx context.Context, body db.UpdateAccountTxParams) (AccountResponses, error)
-	DeleteAccount(ctx context.Context, id string) error
-	UploadImage(ctx context.Context, body []byte) (string, error)
 }
