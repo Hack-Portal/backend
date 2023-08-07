@@ -886,11 +886,6 @@ paths:
       parameters:
       - description: page size
         in: path
-        name: expired
-        required: true
-        type: boolean
-      - description: page size
-        in: path
         name: page_size
         required: true
         type: integer

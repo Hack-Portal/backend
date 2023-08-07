@@ -549,13 +549,6 @@ const docTemplate = `{
                 "summary": "List Hackathon",
                 "parameters": [
                     {
-                        "type": "boolean",
-                        "description": "page size",
-                        "name": "expired",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "page size",
                         "name": "page_size",

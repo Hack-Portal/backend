@@ -191,7 +191,6 @@ type ListHackathonsResponses struct {
 // @Description		List Hackathon
 // @Tags			Hackathon
 // @Produce			json
-// @Param			expired				path	 boolean				true	"page size"
 // @Param			page_size				path	 int32					true	"page size"
 // @Param			page_id					path	 int32					true	"page id"
 // @Success			200						{array}		HackathonResponses		"success response"
