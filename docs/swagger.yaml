@@ -65,7 +65,7 @@ definitions:
         type: string
       frameworks:
         items:
-          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks'
+          $ref: '#/definitions/db.Frameworks'
         type: array
       icon:
         type: string
@@ -79,7 +79,7 @@ definitions:
         type: boolean
       tech_tags:
         items:
-          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags'
+          $ref: '#/definitions/db.TechTags'
         type: array
       user_id:
         type: string
@@ -120,6 +120,54 @@ definitions:
         type: array
       term:
         type: integer
+    type: object
+  api.CreatePastWorkRequestBody:
+    properties:
+      account_past_works:
+        items:
+          type: string
+        type: array
+      explanatory_text:
+        type: string
+      name:
+        type: string
+      past_work_frameworks:
+        items:
+          type: integer
+        type: array
+      past_work_tags:
+        items:
+          type: integer
+        type: array
+      thumbnail_image:
+        items:
+          type: integer
+        type: array
+    type: object
+  api.CreatePastWorkResponse:
+    properties:
+      account_past_works:
+        items:
+          $ref: '#/definitions/db.AccountPastWorks'
+        type: array
+      explanatory_text:
+        type: string
+      name:
+        type: string
+      opus:
+        type: integer
+      past_work_frameworks:
+        items:
+          $ref: '#/definitions/db.PastWorkFrameworks'
+        type: array
+      past_work_tags:
+        items:
+          $ref: '#/definitions/db.PastWorkTags'
+        type: array
+      thumbnail_image:
+        items:
+          type: integer
+        type: array
     type: object
   api.CreateRateRequestBody:
     properties:
@@ -163,7 +211,7 @@ definitions:
         type: string
       frameworks:
         items:
-          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks'
+          $ref: '#/definitions/db.Frameworks'
         type: array
       icon:
         type: string
@@ -177,7 +225,7 @@ definitions:
         type: boolean
       tech_tags:
         items:
-          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags'
+          $ref: '#/definitions/db.TechTags'
         type: array
       user_id:
         type: string
@@ -231,7 +279,7 @@ definitions:
         type: string
       status_tags:
         items:
-          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags'
+          $ref: '#/definitions/db.StatusTags'
         type: array
       term:
         type: integer
@@ -314,10 +362,17 @@ definitions:
         type: string
       tags:
         items:
-          $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags'
+          $ref: '#/definitions/db.StatusTags'
         type: array
       term:
         type: integer
+    type: object
+  db.AccountPastWorks:
+    properties:
+      opus:
+        type: integer
+      user_id:
+        type: string
     type: object
   db.CreateRoomTxResult:
     properties:
@@ -349,6 +404,24 @@ definitions:
         type: array
       title:
         type: string
+    type: object
+  db.Follows:
+    properties:
+      create_at:
+        type: string
+      from_user_id:
+        type: string
+      to_user_id:
+        type: string
+    type: object
+  db.Frameworks:
+    properties:
+      framework:
+        type: string
+      framework_id:
+        type: integer
+      tech_tag_id:
+        type: integer
     type: object
   db.ListRoomTxHackathonInfo:
     properties:
@@ -389,6 +462,13 @@ definitions:
       title:
         type: string
     type: object
+  db.Locates:
+    properties:
+      locate_id:
+        type: integer
+      name:
+        type: string
+    type: object
   db.NowRoomAccounts:
     properties:
       icon:
@@ -398,12 +478,26 @@ definitions:
       user_id:
         type: string
     type: object
+  db.PastWorkFrameworks:
+    properties:
+      framework_id:
+        type: integer
+      opus:
+        type: integer
+    type: object
+  db.PastWorkTags:
+    properties:
+      opus:
+        type: integer
+      tech_tag_id:
+        type: integer
+    type: object
   db.RoomFramework:
     properties:
       count:
         type: integer
       framework:
-        $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks'
+        $ref: '#/definitions/db.Frameworks'
     type: object
   db.RoomHackathonData:
     properties:
@@ -419,41 +513,16 @@ definitions:
       count:
         type: integer
       tech_tag:
-        $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags'
+        $ref: '#/definitions/db.TechTags'
     type: object
-  github_com_hackhack-Geek-vol6_backend_db_sqlc.Follows:
-    properties:
-      create_at:
-        type: string
-      from_user_id:
-        type: string
-      to_user_id:
-        type: string
-    type: object
-  github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks:
-    properties:
-      framework:
-        type: string
-      framework_id:
-        type: integer
-      tech_tag_id:
-        type: integer
-    type: object
-  github_com_hackhack-Geek-vol6_backend_db_sqlc.Locates:
-    properties:
-      locate_id:
-        type: integer
-      name:
-        type: string
-    type: object
-  github_com_hackhack-Geek-vol6_backend_db_sqlc.StatusTags:
+  db.StatusTags:
     properties:
       status:
         type: string
       status_id:
         type: integer
     type: object
-  github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags:
+  db.TechTags:
     properties:
       language:
         type: string
@@ -502,7 +571,7 @@ paths:
       summary: Create new account
       tags:
       - Accounts
-  /accounts/:from_user_id/follow:
+  /accounts/{from_user_id}/follow:
     delete:
       description: Unfollow
       parameters:
@@ -519,7 +588,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.DeleteResponse'
         "400":
@@ -554,7 +623,7 @@ paths:
           description: succsss response
           schema:
             items:
-              $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Follows'
+              $ref: '#/definitions/db.Follows'
             type: array
         "400":
           description: error response
@@ -567,7 +636,7 @@ paths:
       summary: Create Follow
       tags:
       - Accounts
-  /accounts/:id/rate:
+  /accounts/{id}/rate:
     get:
       description: List Rate for User
       parameters:
@@ -624,7 +693,7 @@ paths:
       summary: Create Rate
       tags:
       - Rate
-  /accounts/:user_id:
+  /accounts/{user_id}:
     delete:
       description: Only you can delete your account (logical delete)
       parameters:
@@ -737,7 +806,7 @@ paths:
       summary: Create new bookmark
       tags:
       - Bookmark
-  /bookmarks/:hackathon_id:
+  /bookmarks/{hackathon_id}:
     delete:
       description: Delete the bookmark of the specified hackathon ID
       parameters:
@@ -802,7 +871,7 @@ paths:
           description: success response
           schema:
             items:
-              $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Frameworks'
+              $ref: '#/definitions/db.Frameworks'
             type: array
         "500":
           description: error response
@@ -815,14 +884,20 @@ paths:
     get:
       description: List Hackathon
       parameters:
-      - in: formData
+      - description: page size
+        in: path
         name: expired
+        required: true
         type: boolean
-      - in: formData
-        name: page_id
-        type: integer
-      - in: formData
+      - description: page size
+        in: path
         name: page_size
+        required: true
+        type: integer
+      - description: page id
+        in: path
+        name: page_id
+        required: true
         type: integer
       produces:
       - application/json
@@ -871,7 +946,7 @@ paths:
       summary: Create Hackathon
       tags:
       - Hackathon
-  /hackathons/:hackathon_id:
+  /hackathons/{hackathon_id}:
     get:
       description: Get Hackathon
       parameters:
@@ -908,7 +983,7 @@ paths:
           description: success response
           schema:
             items:
-              $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.Locates'
+              $ref: '#/definitions/db.Locates'
             type: array
         "500":
           description: error response
@@ -917,6 +992,98 @@ paths:
       summary: Get Frameworks
       tags:
       - Locates
+  /past_works:
+    get:
+      description: list pastWorks
+      parameters:
+      - description: page_size
+        in: path
+        name: page_size
+        required: true
+        type: integer
+      - description: page_id
+        in: path
+        name: page_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.CreatePastWorkResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: List pastWorks
+      tags:
+      - past_works
+    post:
+      consumes:
+      - application/json
+      description: create pastWork
+      parameters:
+      - description: past work
+        in: body
+        name: past_work
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreatePastWorkRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CreatePastWorkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create pastWork
+      tags:
+      - past_works
+  /past_works/{opus}:
+    get:
+      consumes:
+      - application/json
+      description: get pastWork
+      parameters:
+      - description: PastWorks API wildcard
+        in: path
+        name: opus
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CreatePastWorkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get pastWork
+      tags:
+      - past_works
   /rooms:
     get:
       description: List Account
@@ -975,7 +1142,7 @@ paths:
       summary: Create Rooms
       tags:
       - Rooms
-  /rooms/:room_id:
+  /rooms/{room_id}:
     delete:
       description: delete Room
       parameters:
@@ -1060,7 +1227,7 @@ paths:
       summary: update Room
       tags:
       - Rooms
-  /rooms/:room_id/addchat:
+  /rooms/{room_id}/addchat:
     post:
       description: Add Chat Room
       parameters:
@@ -1093,7 +1260,7 @@ paths:
       summary: Add Chat Room
       tags:
       - Rooms
-  /rooms/:room_id/members:
+  /rooms/{room_id}/members:
     delete:
       description: Remove Account In Rooms
       parameters:
@@ -1156,7 +1323,7 @@ paths:
           description: success response
           schema:
             items:
-              $ref: '#/definitions/github_com_hackhack-Geek-vol6_backend_db_sqlc.TechTags'
+              $ref: '#/definitions/db.TechTags'
             type: array
         "500":
           description: error response

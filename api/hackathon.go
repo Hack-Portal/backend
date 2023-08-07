@@ -134,7 +134,7 @@ type HackathonRequestWildCard struct {
 // @Success			200				{object}		HackathonResponses		"success response"
 // @Failure 		400				{object}		ErrorResponse			"error response"
 // @Failure 		500				{object}		ErrorResponse			"error response"
-// @Router       	/hackathons/:hackathon_id 		[get]
+// @Router       	/hackathons/{hackathon_id} 		[get]
 func (server *Server) GetHackathon(ctx *gin.Context) {
 	var reqURI HackathonRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -191,7 +191,9 @@ type ListHackathonsResponses struct {
 // @Description		List Hackathon
 // @Tags			Hackathon
 // @Produce			json
-// @Param			ListHackathonsParams	formData 	ListHackathonsParams	true	"List hackathon Request queries"
+// @Param			expired				path	 boolean				true	"page size"
+// @Param			page_size				path	 int32					true	"page size"
+// @Param			page_id					path	 int32					true	"page id"
 // @Success			200						{array}		HackathonResponses		"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"

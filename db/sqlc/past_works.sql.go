@@ -11,29 +11,22 @@ import (
 
 const createPastWorks = `-- name: CreatePastWorks :one
 INSERT INTO past_works (
-    opus,
     name,
     thumbnail_image,
     explanatory_text
   )
-VALUES ($1, $2, $3, $4)
+VALUES ($1, $2, $3)
 RETURNING opus, name, thumbnail_image, explanatory_text, create_at, is_delete
 `
 
 type CreatePastWorksParams struct {
-	Opus            int32  `json:"opus"`
 	Name            string `json:"name"`
 	ThumbnailImage  []byte `json:"thumbnail_image"`
 	ExplanatoryText string `json:"explanatory_text"`
 }
 
 func (q *Queries) CreatePastWorks(ctx context.Context, arg CreatePastWorksParams) (PastWorks, error) {
-	row := q.db.QueryRowContext(ctx, createPastWorks,
-		arg.Opus,
-		arg.Name,
-		arg.ThumbnailImage,
-		arg.ExplanatoryText,
-	)
+	row := q.db.QueryRowContext(ctx, createPastWorks, arg.Name, arg.ThumbnailImage, arg.ExplanatoryText)
 	var i PastWorks
 	err := row.Scan(
 		&i.Opus,

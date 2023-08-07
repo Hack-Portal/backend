@@ -13,6 +13,7 @@ import (
 type Querier interface {
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
 	CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFrameworks, error)
+	CreateAccountPastWorks(ctx context.Context, arg CreateAccountPastWorksParams) (AccountPastWorks, error)
 	CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTags, error)
 	CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmarks, error)
 	CreateFollow(ctx context.Context, arg CreateFollowParams) (Follows, error)
@@ -25,6 +26,7 @@ type Querier interface {
 	CreateRoom(ctx context.Context, arg CreateRoomParams) (Rooms, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccounts, error)
 	DeleteAccountFrameworksByUserID(ctx context.Context, userID string) error
+	DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
 	DeleteAccounttagsByUserID(ctx context.Context, userID string) error
 	DeleteFrameworksByID(ctx context.Context, frameworkID int32) error
 	DeleteHackathonByID(ctx context.Context, hackathonID int32) error
@@ -39,7 +41,6 @@ type Querier interface {
 	GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathons, error)
 	GetHackathonStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]HackathonStatusTags, error)
 	GetLocateByID(ctx context.Context, locateID int32) (Locates, error)
-	GetPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFrameworks, error)
 	GetPastWorksByOpus(ctx context.Context, opus int32) (PastWorks, error)
 	GetRoomsAccountsByRoomID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByRoomIDRow, error)
 	GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Rooms, error)
@@ -47,6 +48,7 @@ type Querier interface {
 	GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]StatusTags, error)
 	GetTechTagByID(ctx context.Context, techTagID int32) (TechTags, error)
 	ListAccountFrameworksByUserID(ctx context.Context, userID string) ([]ListAccountFrameworksByUserIDRow, error)
+	ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]AccountPastWorks, error)
 	ListAccountTagsByUserID(ctx context.Context, userID string) ([]ListAccountTagsByUserIDRow, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
 	ListBookmarkByUserID(ctx context.Context, userID string) ([]Bookmarks, error)
@@ -54,6 +56,7 @@ type Querier interface {
 	ListFrameworks(ctx context.Context, limit int32) ([]Frameworks, error)
 	ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathons, error)
 	ListLocates(ctx context.Context) ([]Locates, error)
+	ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFrameworks, error)
 	ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]PastWorkTags, error)
 	ListPastWorks(ctx context.Context, arg ListPastWorksParams) ([]ListPastWorksRow, error)
 	ListRate(ctx context.Context, arg ListRateParams) ([]RateEntries, error)

@@ -28,7 +28,8 @@ func (q *Queries) CreatePastWorkTag(ctx context.Context, arg CreatePastWorkTagPa
 }
 
 const deletePastWorkTagsByOpus = `-- name: DeletePastWorkTagsByOpus :exec
-DELETE FROM past_work_tags WHERE opus = $1
+DELETE FROM past_work_tags
+WHERE opus = $1
 `
 
 func (q *Queries) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error {

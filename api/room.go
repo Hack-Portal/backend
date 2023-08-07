@@ -102,7 +102,7 @@ func (server *Server) CreateRoom(ctx *gin.Context) {
 // @Success			200			{object}	db.CreateRoomTxResult	"success response"
 // @Failure 		400			{object}	ErrorResponse			"error response"
 // @Failure 		500			{object}	ErrorResponse			"error response"
-// @Router       	/rooms/:room_id/members	[post]
+// @Router       	/rooms/{room_id}/members	[post]
 func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 	var reqURI RoomsRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -146,7 +146,7 @@ func (server *Server) AddAccountInRoom(ctx *gin.Context) {
 // @Success			200			{object}	DeleteResponse	"success response"
 // @Failure 		400			{object}	ErrorResponse	"error response"
 // @Failure 		500			{object}	ErrorResponse	"error response"
-// @Router       	/rooms/:room_id/members	[delete]
+// @Router       	/rooms/{room_id}/members	[delete]
 func (server *Server) RemoveAccountInRoom(ctx *gin.Context) {
 	var (
 		reqURI RoomsRequestWildCard
@@ -256,7 +256,7 @@ type GetRoomResponse struct {
 // @Success			200		{object}	GetRoomResponse		"success response"
 // @Failure 		400		{object}	ErrorResponse		"error response"
 // @Failure 		500		{object}	ErrorResponse		"error response"
-// @Router       	/rooms/:room_id		[get]
+// @Router       	/rooms/{room_id}		[get]
 func (server *Server) GetRoom(ctx *gin.Context) {
 	var request RoomsRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -380,7 +380,7 @@ type AddChatRequestBody struct {
 // @Success			200					{object}	GetRoomResponse		"success response"
 // @Failure 		400					{object}	ErrorResponse		"error response"
 // @Failure 		500					{object}	ErrorResponse		"error response"
-// @Router       	/rooms/:room_id/addchat			[post]
+// @Router       	/rooms/{room_id}/addchat			[post]
 func (server *Server) AddChat(ctx *gin.Context) {
 	var requestURI RoomsRequestWildCard
 	var requestBody AddChatRequestBody
@@ -461,7 +461,7 @@ type UpdateRoomRequestBody struct {
 // @Success			200						{object}	GetRoomResponse			"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
-// @Router       	/rooms/:room_id			[put]
+// @Router       	/rooms/{room_id}			[put]
 func (server *Server) UpdateRoom(ctx *gin.Context) {
 	var (
 		reqURI  RoomsRequestWildCard
@@ -557,7 +557,7 @@ func parseUpdateRoomParam(room db.Rooms, reqBody UpdateRoomRequestBody) (result 
 // @Success			200		{object}	DeleteResponse	"success response"
 // @Failure 		400		{object}	ErrorResponse	"error response"
 // @Failure 		500		{object}	ErrorResponse	"error response"
-// @Router       	/rooms/:room_id		[delete]
+// @Router       	/rooms/{room_id}		[delete]
 func (server *Server) DeleteRoom(ctx *gin.Context) {
 	var (
 		reqURI RoomsRequestWildCard

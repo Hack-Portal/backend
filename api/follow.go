@@ -23,7 +23,7 @@ type CreateFollowRequestBody struct {
 // @Success			200							{array}		db.Follows					"succsss response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/:from_user_id/follow			[post]
+// @Router       	/accounts/{from_user_id}/follow			[post]
 func (server *Server) CreateFollow(ctx *gin.Context) {
 	var (
 		reqURI  AccountRequestWildCard
@@ -100,7 +100,7 @@ type RemoveFollowRequestQueries struct {
 // @Success			200							{object}	DeleteResponse				"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/:from_user_id/follow			[delete]
+// @Router       	/accounts/{from_user_id}/follow			[delete]
 func (server *Server) RemoveFollow(ctx *gin.Context) {
 	var (
 		reqURI   AccountRequestWildCard

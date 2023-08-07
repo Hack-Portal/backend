@@ -37,14 +37,14 @@ func (q *Queries) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32
 	return err
 }
 
-const getPastWorkFrameworksByOpus = `-- name: GetPastWorkFrameworksByOpus :many
+const listPastWorkFrameworksByOpus = `-- name: ListPastWorkFrameworksByOpus :many
 SELECT opus, framework_id
 FROM past_work_frameworks
 WHERE opus = $1
 `
 
-func (q *Queries) GetPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFrameworks, error) {
-	rows, err := q.db.QueryContext(ctx, getPastWorkFrameworksByOpus, opus)
+func (q *Queries) ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFrameworks, error) {
+	rows, err := q.db.QueryContext(ctx, listPastWorkFrameworksByOpus, opus)
 	if err != nil {
 		return nil, err
 	}
