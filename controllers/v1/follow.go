@@ -82,7 +82,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, DeleteResponse{Result: "Delete Successful"})
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: "Delete Successful"})
 }
 
 func (fc *FollowController) GetFollow(ctx *gin.Context) {
