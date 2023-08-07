@@ -43,7 +43,7 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg CreatePastWorkT
 				return err
 			}
 		}
-		pastTag, err := q.GetPastWorkTagsByOpus(ctx, result.Opus)
+		pastTag, err := q.ListPastWorkTagsByOpus(ctx, result.Opus)
 		if err != nil {
 			return err
 		}
@@ -59,7 +59,7 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg CreatePastWorkT
 				return err
 			}
 		}
-		framework, err := q.GetPastWorkFrameworksByOpus(ctx, result.Opus)
+		framework, err := q.ListPastWorkFrameworksByOpus(ctx, result.Opus)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg CreatePastWorkT
 				return err
 			}
 		}
-		account, err := q.GetAccountPastWorksByOpus(ctx, result.Opus)
+		account, err := q.ListAccountPastWorksByOpus(ctx, result.Opus)
 		if err != nil {
 			return err
 		}
