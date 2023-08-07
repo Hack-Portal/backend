@@ -37,42 +37,14 @@ func (q *Queries) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) erro
 	return err
 }
 
-const getPastWorkTagsByOpus = `-- name: GetPastWorkTagsByOpus :many
+const listPastWorkTagsByOpus = `-- name: ListPastWorkTagsByOpus :many
 SELECT opus, tech_tag_id
 FROM past_work_tags
 WHERE opus = $1
 `
 
-func (q *Queries) GetPastWorkTagsByOpus(ctx context.Context, opus int32) ([]PastWorkTags, error) {
-	rows, err := q.db.QueryContext(ctx, getPastWorkTagsByOpus, opus)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []PastWorkTags{}
-	for rows.Next() {
-		var i PastWorkTags
-		if err := rows.Scan(&i.Opus, &i.TechTagID); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listPastWorkTags = `-- name: ListPastWorkTags :many
-SELECT opus, tech_tag_id
-FROM past_work_tags
-`
-
-func (q *Queries) ListPastWorkTags(ctx context.Context) ([]PastWorkTags, error) {
-	rows, err := q.db.QueryContext(ctx, listPastWorkTags)
+func (q *Queries) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]PastWorkTags, error) {
+	rows, err := q.db.QueryContext(ctx, listPastWorkTagsByOpus, opus)
 	if err != nil {
 		return nil, err
 	}
