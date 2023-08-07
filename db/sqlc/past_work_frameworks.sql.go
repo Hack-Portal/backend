@@ -65,3 +65,31 @@ func (q *Queries) GetPastWorkFrameworksByOpus(ctx context.Context, opus int32) (
 	}
 	return items, nil
 }
+
+const listPastWorkFrameworks = `-- name: ListPastWorkFrameworks :many
+SELECT opus, framework_id
+FROM past_work_frameworks
+`
+
+func (q *Queries) ListPastWorkFrameworks(ctx context.Context) ([]PastWorkFrameworks, error) {
+	rows, err := q.db.QueryContext(ctx, listPastWorkFrameworks)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []PastWorkFrameworks{}
+	for rows.Next() {
+		var i PastWorkFrameworks
+		if err := rows.Scan(&i.Opus, &i.FrameworkID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

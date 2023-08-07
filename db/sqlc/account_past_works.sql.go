@@ -65,3 +65,31 @@ func (q *Queries) GetAccountPastWorksByOpus(ctx context.Context, opus int32) ([]
 	}
 	return items, nil
 }
+
+const listAccountPastWorks = `-- name: ListAccountPastWorks :many
+SELECT opus, user_id
+FROM account_past_works
+`
+
+func (q *Queries) ListAccountPastWorks(ctx context.Context) ([]AccountPastWorks, error) {
+	rows, err := q.db.QueryContext(ctx, listAccountPastWorks)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []AccountPastWorks{}
+	for rows.Next() {
+		var i AccountPastWorks
+		if err := rows.Scan(&i.Opus, &i.UserID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
