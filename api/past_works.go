@@ -30,7 +30,7 @@ type CreatePastWorkResponse struct {
 // CreatePastWork godoc
 // @Summary Create pastWork
 // @Description create pastWork
-// @Tags past_works
+// @Tags PastWorks
 // @Accept  json
 // @Produce  json
 // @Param past_work body CreatePastWorkRequestBody true "past work"
@@ -77,7 +77,7 @@ type PastWorksRequestWildCard struct {
 // GetPastWork godoc
 // @Summary Get pastWork
 // @Description get pastWork
-// @Tags past_works
+// @Tags PastWorks
 // @Accept  json
 // @Produce  json
 // @Param opus path int true "PastWorks API wildcard"
@@ -126,7 +126,7 @@ func (server *Server) GetPastWork(ctx *gin.Context) {
 // ListPastWorks godoc
 // @Summary List pastWorks
 // @Description list pastWorks
-// @Tags past_works
+// @Tags PastWorks
 // @Produce  json
 // @Param page_size path int32 true "page_size"
 // @Param page_id path int32 true "page_id"

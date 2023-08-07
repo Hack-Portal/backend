@@ -713,7 +713,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "past_works"
+                    "PastWorks"
                 ],
                 "summary": "List pastWorks",
                 "parameters": [
@@ -765,7 +765,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "past_works"
+                    "PastWorks"
                 ],
                 "summary": "Create pastWork",
                 "parameters": [
@@ -811,7 +811,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "past_works"
+                    "PastWorks"
                 ],
                 "summary": "Get pastWork",
                 "parameters": [

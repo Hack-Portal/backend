@@ -1025,7 +1025,7 @@ paths:
             $ref: '#/definitions/api.ErrorResponse'
       summary: List pastWorks
       tags:
-      - past_works
+      - PastWorks
     post:
       consumes:
       - application/json
@@ -1054,7 +1054,7 @@ paths:
             $ref: '#/definitions/api.ErrorResponse'
       summary: Create pastWork
       tags:
-      - past_works
+      - PastWorks
   /past_works/{opus}:
     get:
       consumes:
@@ -1083,7 +1083,7 @@ paths:
             $ref: '#/definitions/api.ErrorResponse'
       summary: Get pastWork
       tags:
-      - past_works
+      - PastWorks
   /rooms:
     get:
       description: List Account
