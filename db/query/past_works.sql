@@ -1,11 +1,10 @@
 -- name: CreatePastWorks :one
 INSERT INTO past_works (
-    opus,
     name,
     thumbnail_image,
     explanatory_text
   )
-VALUES ($1, $2, $3, $4)
+VALUES ($1, $2, $3)
 RETURNING *;
 -- name: GetPastWorksByOpus :one
 SELECT *

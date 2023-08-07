@@ -44,7 +44,7 @@ func (server *Server) CreatePastWork(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	arg := db.CreatePastWorkTxParams{
+	args := db.CreatePastWorkTxParams{
 		Name:               req.Name,
 		ThumbnailImage:     req.ThumbnailImage,
 		ExplanatoryText:    req.ExplanatoryText,
@@ -52,7 +52,7 @@ func (server *Server) CreatePastWork(ctx *gin.Context) {
 		PastWorkFrameworks: req.PastWorkFrameworks,
 		AccountPastWorks:   req.AccountPastWorks,
 	}
-	result, err := server.store.CreatePastWorkTx(ctx, arg)
+	result, err := server.store.CreatePastWorkTx(ctx, args)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

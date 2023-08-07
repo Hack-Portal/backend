@@ -2,8 +2,6 @@ package db
 
 import (
 	"context"
-
-	"github.com/hackhack-Geek-vol6/backend/util"
 )
 
 type CreatePastWorkTxParams struct {
@@ -22,7 +20,7 @@ type CreatePastWorkTxResult struct {
 }
 
 // 過去作品を登録時のトランザクション
-func (store *SQLStore) CreatePastWorkTx(ctx context.Context, config *util.EnvConfig, arg CreatePastWorkTxParams) (CreatePastWorkTxResult, error) {
+func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg CreatePastWorkTxParams) (CreatePastWorkTxResult, error) {
 	var result CreatePastWorkTxResult
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
