@@ -9,31 +9,19 @@ import (
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/storage"
 	"github.com/gofrs/uuid/v5"
+	"github.com/hackhack-Geek-vol6/backend/domain"
 )
-
-type WriteFireStoreParam struct {
-	RoomID  string `json:"room_id"`
-	Index   int    `json:"index"`
-	UID     string `json:"uid"`
-	Message string `json:"message"`
-}
-
-type ChatRoomsWrite struct {
-	UID       string    `json:"uid"`
-	Message   string    `json:"message"`
-	CreatedAt time.Time `json:"created_at"`
-}
 
 const (
 	FireStoreChatRoomCollectionName = "chatrooms"
 )
 
 // fireStoreにデータを追加する
-func (store *SQLStore) WriteFireStore(ctx context.Context, arg WriteFireStoreParam) (*firestore.WriteResult, error) {
+func (store *SQLStore) WriteFireStore(ctx context.Context, arg domain.WriteFireStoreParam) (*firestore.WriteResult, error) {
 	update := []firestore.Update{
 		{
 			Path: fmt.Sprint(arg.Index),
-			Value: ChatRoomsWrite{
+			Value: domain.ChatRoomsWrite{
 				UID:       arg.UID,
 				Message:   arg.Message,
 				CreatedAt: time.Now(),
@@ -68,7 +56,7 @@ func (store *SQLStore) InitChatRoom(ctx context.Context, roomID string) (*firest
 }
 
 // ルームIDからドキュメントを取得する
-func (store *SQLStore) ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]ChatRoomsWrite, error) {
+func (store *SQLStore) ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]domain.ChatRoomsWrite, error) {
 	client, err := store.App.Firestore(ctx)
 	if err != nil {
 		return nil, err
@@ -77,7 +65,7 @@ func (store *SQLStore) ReadDocsByRoomID(ctx context.Context, RoomID string) (map
 	if err != nil {
 		return nil, err
 	}
-	var data map[string]ChatRoomsWrite
+	var data map[string]domain.ChatRoomsWrite
 	dsnap.DataTo(&data)
 	return data, nil
 }

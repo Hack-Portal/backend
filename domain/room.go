@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
+	repository "github.com/hackhack-Geek-vol6/backend/gateways/repository/datasource"
 )
 
 type RoomsRequestWildCard struct {
@@ -62,9 +62,7 @@ type HackathonInfo struct {
 	HackathonID int32                  `json:"hackathon_id"`
 	Name        string                 `json:"name"`
 	Icon        string                 `json:"icon"`
-	Description string                 `json:"description"`
 	Link        string                 `json:"link"`
-	Expired     time.Time              `json:"expired"`
 	StartDate   time.Time              `json:"start_date"`
 	Term        int32                  `json:"term"`
 	Tags        []repository.StatusTag `json:"tags"`
@@ -75,7 +73,7 @@ type GetRoomResponse struct {
 	Title             string            `json:"title"`
 	Description       string            `json:"description"`
 	MemberLimit       int32             `json:"member_limit"`
-	IsStatus          bool              `json:"is_status"`
+	IsDelete          bool              `json:"is_status"`
 	CreateAt          time.Time         `json:"create_at"`
 	Hackathon         HackathonInfo     `json:"hackathon"`
 	NowMember         []NowRoomAccounts `json:"now_member"`
@@ -84,11 +82,64 @@ type GetRoomResponse struct {
 }
 
 type AddChatRequestBody struct {
+	UserID  string `json:"user_id" binding:"required"`
 	Message string `json:"message" binding:"required"`
 }
 
 type UpdateRoomRequestBody struct {
-	Title       string `json:"title" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	MemberLimit int32  `json:"member_limit" binding:"required"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	MemberLimit int32  `json:"member_limit"`
+	HackathonID int32  `json:"hackathonID"`
+}
+
+type CreateRoomParam struct {
+	RoomID      uuid.UUID `json:"room_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	HackathonID int32     `json:"hackathon_id"`
+	MemberLimit int32     `json:"member_limit"`
+	OwnerID     string    `json:"owner_id"`
+}
+
+type UpdateRoomParam struct {
+	RoomID      uuid.UUID `json:"room_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	HackathonID int32     `json:"hackathon_id"`
+	MemberLimit int32     `json:"member_limit"`
+	OwnerEmail  string    `json:"owner_email"`
+}
+
+type DeleteRoomParam struct {
+	OwnerEmail string    `json:"owner_email"`
+	RoomID     uuid.UUID `json:"room_id"`
+}
+
+type AddAccountInRoomParam struct {
+	UserID string    `json:"user_id"`
+	RoomID uuid.UUID `json:"room_id"`
+}
+
+type AddAccountInRoomRequestBody struct {
+	UserID string `json:"user_id"`
+}
+
+type AddChatParams struct {
+	RoomID  uuid.UUID `json:"room_id"`
+	UserID  string    `json:"user_id"`
+	Message string    `json:"message"`
+}
+
+type WriteFireStoreParam struct {
+	RoomID  string `json:"room_id"`
+	Index   int    `json:"index"`
+	UID     string `json:"uid"`
+	Message string `json:"message"`
+}
+
+type ChatRoomsWrite struct {
+	UID       string    `json:"uid"`
+	Message   string    `json:"message"`
+	CreatedAt time.Time `json:"created_at"`
 }

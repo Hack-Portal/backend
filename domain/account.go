@@ -3,7 +3,7 @@ package domain
 import (
 	"time"
 
-	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
+	repository "github.com/hackhack-Geek-vol6/backend/gateways/repository/datasource"
 )
 
 // アカウントのパス用のクエリ
@@ -13,16 +13,15 @@ type AccountRequestWildCard struct {
 
 // アカウント作成のリクエストパラメータ
 type CreateAccountRequest struct {
-	UserID          string  `json:"user_id" binding:"required"`
-	Username        string  `json:"username" binding:"required"`
-	Icon            string  `json:"icon"`
-	ExplanatoryText string  `json:"explanatory_text"`
-	LocateID        int32   `json:"locate_id" binding:"required"`
-	Password        string  `json:"password"`
-	ShowLocate      bool    `json:"show_locate" binding:"required"`
-	ShowRate        bool    `json:"show_rate" binding:"required"`
-	TechTags        []int32 `json:"tech_tags"`
-	Frameworks      []int32 `json:"frameworks"`
+	UserID          string `json:"user_id" binding:"required"`
+	Username        string `json:"username" binding:"required"`
+	ExplanatoryText string `json:"explanatory_text"`
+	LocateID        int32  `json:"locate_id" binding:"required"`
+	ShowLocate      bool   `json:"show_locate" binding:"required"`
+	ShowRate        bool   `json:"show_rate" binding:"required"`
+
+	TechTags   []int32 `json:"tech_tags"`
+	Frameworks []int32 `json:"frameworks"`
 }
 
 // アカウント取得のレスポンス
@@ -48,8 +47,21 @@ type UpdateAccountRequest struct {
 	Username        string `json:"username"`
 	ExplanatoryText string `json:"explanatory_text"`
 	LocateID        int32  `json:"locate_id"`
-	Rate            int32  `json:"rate"`
-	HashedPassword  string `json:"hashed_password"`
 	ShowLocate      bool   `json:"show_locate"`
 	ShowRate        bool   `json:"show_rate"`
+
+	TechTags   []int32 `json:"tech_tags"`
+	Frameworks []int32 `json:"frameworks"`
+}
+
+type CreateAccountParams struct {
+	AccountInfo         repository.CreateAccountParams
+	AccountTechTag      []int32
+	AccountFrameworkTag []int32
+}
+
+type UpdateAccountParam struct {
+	AccountInfo         repository.Account
+	AccountTechTag      []int32
+	AccountFrameworkTag []int32
 }

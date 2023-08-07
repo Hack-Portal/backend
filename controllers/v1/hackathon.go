@@ -8,10 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/domain"
+	"github.com/hackhack-Geek-vol6/backend/usecase/inputport"
 )
 
 type HackathonController struct {
-	HackathonUsecase domain.HackathonUsecase
+	HackathonUsecase inputport.HackathonUsecase
 	Env              *bootstrap.Env
 }
 

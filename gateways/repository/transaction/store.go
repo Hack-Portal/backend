@@ -7,6 +7,8 @@ import (
 
 	"cloud.google.com/go/firestore"
 	fb "firebase.google.com/go"
+	"github.com/google/uuid"
+	"github.com/hackhack-Geek-vol6/backend/domain"
 	repository "github.com/hackhack-Geek-vol6/backend/gateways/repository/datasource"
 )
 
@@ -17,10 +19,23 @@ const (
 
 type Store interface {
 	repository.Querier
+	// Account Tx
+	CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (domain.AccountResponses, error)
+	GetAccountTxByID(ctx context.Context, ID string) (domain.AccountResponses, error)
+	GetAccountTxByEmail(ctx context.Context, email string) (domain.AccountResponses, error)
+	UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (domain.AccountResponses, error)
+	// Room Tx
+	CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (domain.GetRoomResponse, error)
+	GetRoomTx(ctx context.Context, id uuid.UUID) (domain.GetRoomResponse, error)
+	ListRoomTx(ctx context.Context, query domain.ListRoomsRequest) ([]domain.ListRoomResponse, error)
+	UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (domain.GetRoomResponse, error)
+	DeleteRoomTx(ctx context.Context, args domain.DeleteRoomParam) error
+	AddAccountInRoom(ctx context.Context, args domain.AddAccountInRoomParam) error
+
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
-	WriteFireStore(ctx context.Context, arg WriteFireStoreParam) (*firestore.WriteResult, error)
-	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]ChatRoomsWrite, error)
+	WriteFireStore(ctx context.Context, arg domain.WriteFireStoreParam) (*firestore.WriteResult, error)
+	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]domain.ChatRoomsWrite, error)
 	UploadImage(ctx context.Context, file []byte) (string, error)
 }
 type SQLStore struct {

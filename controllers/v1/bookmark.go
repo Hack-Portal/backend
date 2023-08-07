@@ -6,12 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/domain"
+	repository "github.com/hackhack-Geek-vol6/backend/gateways/repository/datasource"
+	"github.com/hackhack-Geek-vol6/backend/usecase/inputport"
 )
 
 type BookmarkController struct {
-	BookmarkUsecase domain.BookmarkUsecase
+	BookmarkUsecase inputport.BookmarkUsecase
 	Env             *bootstrap.Env
 }
 
@@ -32,7 +33,7 @@ func (bc *BookmarkController) CreateBookmark(ctx *gin.Context) {
 		return
 	}
 
-	response, err := bc.BookmarkUsecase.CreateBookmark(ctx, db.CreateBookmarkParams{HackathonID: reqBody.HackathonID, UserID: reqBody.UserID})
+	response, err := bc.BookmarkUsecase.CreateBookmark(ctx, repository.CreateBookmarkParams{HackathonID: reqBody.HackathonID, UserID: reqBody.UserID})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -69,7 +70,7 @@ func (bc *BookmarkController) RemoveBookmark(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, DeleteResponse{Result: fmt.Sprintf("delete successful")})
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("delete successful")})
 }
 
 // ListBookmarkToHackathon	godoc

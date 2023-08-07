@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/util/jwt"
 )
 
 const (
@@ -31,13 +32,13 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		accessToken := fields[0]
-		hCS, err := token.JwtDecode.DecomposeFB(accessToken)
+		hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		payload, err := token.JwtDecode.DecodeClaimFB(hCS[1])
+		payload, err := jwt.JwtDecode.DecodeClaimFB(hCS[1])
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return

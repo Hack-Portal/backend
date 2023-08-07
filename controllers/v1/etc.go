@@ -5,11 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/domain"
+	"github.com/hackhack-Geek-vol6/backend/usecase/inputport"
 )
 
 type EtcController struct {
-	EtcUsecase domain.EtcUsecase
+	EtcUsecase inputport.EtcUsecase
 	Env        *bootstrap.Env
 }
 

@@ -3,20 +3,21 @@ package controller
 import (
 	"bytes"
 	"database/sql"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/internal/domain"
-	"github.com/hackhack-Geek-vol6/backend/internal/middleware"
-	"github.com/hackhack-Geek-vol6/backend/util/token"
+	"github.com/hackhack-Geek-vol6/backend/domain"
+	repository "github.com/hackhack-Geek-vol6/backend/gateways/repository/datasource"
+	"github.com/hackhack-Geek-vol6/backend/gateways/repository/transaction"
+	"github.com/hackhack-Geek-vol6/backend/usecase/inputport"
 	"github.com/lib/pq"
 )
 
 type AccountController struct {
-	AccountUsecase domain.AccountUsecase
+	AccountUsecase inputport.AccountUsecase
 	Env            *bootstrap.Env
 }
 
@@ -31,42 +32,44 @@ type AccountController struct {
 // @Failure 		500							{object}		ErrorResponse				"server error response"
 // @Router       	/accounts 	[post]
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
-	var request domain.CreateAccountRequest
-	if err := ctx.ShouldBindJSON(&request); err != nil {
+	var (
+		reqBody domain.CreateAccountRequest
+		image   *bytes.Buffer
+	)
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	result, err := ac.AccountUsecase.CreateAccount(ctx, db.CreateAccountTxParams{
-		Accounts: db.Accounts{
-			UserID:   request.UserID,
-			Username: request.Username,
-			Icon: sql.NullString{
-				String: request.Icon,
-				Valid:  true,
-			},
-			ExplanatoryText: sql.NullString{
-				String: request.ExplanatoryText,
-				Valid:  true,
-			},
-			LocateID: request.LocateID,
-			Rate:     0,
-			HashedPassword: sql.NullString{
-				String: request.Password,
-				Valid:  true,
-			},
-			ShowLocate: request.ShowLocate,
-			ShowRate:   request.ShowRate,
-		},
-		AccountTechTag:      request.TechTags,
-		AccountFrameworkTag: request.Frameworks,
-	})
+	file, _, err := ctx.Request.FormFile(ImageKey)
+	if err != nil {
+		switch err.Error() {
+		case MultiPartNextPartEoF:
+			ctx.JSON(400, errorResponse(err))
+			return
+		case HttpNoSuchFile:
+			ctx.JSON(400, errorResponse(err))
+			return
+		case RequestContentTypeIsnt:
+			break
+		default:
+			ctx.JSON(400, errorResponse(err))
+			return
+		}
+	} else {
+		image = bytes.NewBuffer(nil)
+		if _, err := io.Copy(image, file); err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+	}
 
+	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image.Bytes())
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
-			case db.ForeignKeyViolation, db.UniqueViolation:
+			case transaction.ForeignKeyViolation, transaction.UniqueViolation:
 				ctx.JSON(http.StatusForbidden, errorResponse(err))
 				return
 			}
@@ -74,27 +77,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, result)
-}
-
-// アカウントを取得する際のパラメータ
-type AccountRequestWildCard struct {
-	ID string `uri:"id"`
-}
-
-type GetAccountResponses struct {
-	UserID          string `json:"user_id"`
-	Username        string `json:"username"`
-	Icon            string `json:"icon"`
-	ExplanatoryText string `json:"explanatory_text"`
-	Rate            int32  `json:"rate"`
-	Email           string `json:"email"`
-	Locate          string `json:"locate"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate"`
-
-	TechTags   []db.TechTags   `json:"tech_tags"`
-	Frameworks []db.Frameworks `json:"frameworks"`
+	ctx.JSON(http.StatusOK, response)
 }
 
 // GetAccount		godoc
@@ -114,14 +97,13 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 		return
 	}
 
-	// アカウント取得
-	result, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.UserID)
+	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.UserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, result)
+	ctx.JSON(http.StatusOK, response)
 }
 
 // UpdateAccount	godoc
@@ -137,9 +119,9 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 // @Router       	/accounts/:user_id 			[put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	var (
-		reqBody  domain.UpdateAccountRequest
-		reqURI   domain.AccountRequestWildCard
-		imageURL string
+		reqBody domain.UpdateAccountRequest
+		reqURI  domain.AccountRequestWildCard
+		image   *bytes.Buffer
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -165,89 +147,37 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 			return
 		}
 	} else {
-		// 画像がある場合
-		buf := bytes.NewBuffer(nil)
-		if _, err := io.Copy(buf, file); err != nil {
-			ctx.JSON(500, errorResponse(err))
-			return
-		}
-		imageURL, err = ac.AccountUsecase.UploadImage(ctx, buf.Bytes())
-		if err != nil {
-			ctx.JSON(500, errorResponse(err))
+		image = bytes.NewBuffer(nil)
+		if _, err := io.Copy(image, file); err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
 	}
-	account, err := ac.AccountUsecase.GetAccountByID(ctx, reqURI.UserID)
 
-	result, err := ac.AccountUsecase.UpdateAccount(ctx, parseUpdateAccountParam(account, reqBody))
-	result.Icon = imageURL
-
-	ctx.JSON(http.StatusOK, result)
-}
-
-// TODO:parseUpdateAccountParamの修正
-// 型変換
-func parseUpdateAccountParam(account db.GetAccountByEmailRow, body domain.UpdateAccountRequest) (result db.UpdateAccountTxParams) {
-	result.UserID = account.UserID
-	if util.StringLength(body.Username) != 0 {
-		if util.EqualString(account.Username, body.Username) {
-			result.Username = account.Username
-		}
-		result.Username = body.Username
+	response, err := ac.AccountUsecase.UpdateAccount(
+		ctx,
+		domain.UpdateAccountParam{
+			AccountInfo: repository.Account{
+				UserID:   reqURI.UserID,
+				Username: reqBody.Username,
+				ExplanatoryText: sql.NullString{
+					String: reqBody.ExplanatoryText,
+					Valid:  true,
+				},
+				LocateID:   reqBody.LocateID,
+				ShowLocate: reqBody.ShowLocate,
+				ShowRate:   reqBody.ShowRate,
+			},
+			AccountTechTag:      reqBody.TechTags,
+			AccountFrameworkTag: reqBody.Frameworks,
+		},
+		image.Bytes())
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
 	}
 
-	if !util.EqualString(account.ExplanatoryText.String, body.ExplanatoryText) {
-		if util.StringLength(body.ExplanatoryText) != 0 {
-			result.ExplanatoryText = sql.NullString{
-				String: body.ExplanatoryText,
-				Valid:  true,
-			}
-		} else {
-			result.ExplanatoryText = sql.NullString{
-				Valid: false,
-			}
-		}
-
-	} else {
-		result.ExplanatoryText = account.ExplanatoryText
-	}
-
-	if body.LocateID != 0 {
-		if util.Equalint(int(account.LocateID), int(body.LocateID)) {
-			result.LocateID = account.LocateID
-		} else {
-			result.LocateID = body.LocateID
-		}
-	}
-
-	if body.Rate != 0 {
-		if util.Equalint(int(account.Rate), int(body.Rate)) {
-			result.Rate = account.Rate
-		} else {
-			result.Rate = body.Rate
-		}
-	}
-
-	if util.StringLength(body.HashedPassword) != 0 {
-		var hashedPassword string
-		hashedPassword, _ = util.HashPassword(body.HashedPassword)
-		if util.EqualString(account.HashedPassword.String, hashedPassword) {
-			result.HashedPassword = account.HashedPassword
-		}
-		result.HashedPassword = sql.NullString{
-			String: hashedPassword,
-			Valid:  true,
-		}
-	} else {
-		result.HashedPassword = sql.NullString{
-			Valid: false,
-		}
-	}
-
-	result.ShowLocate = body.ShowLocate
-	result.ShowRate = body.ShowRate
-
-	return
+	ctx.JSON(http.StatusOK, response)
 }
 
 // DeleteAccount	godoc
@@ -261,31 +191,18 @@ func parseUpdateAccountParam(account db.GetAccountByEmailRow, body domain.Update
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts/:user_id 		[delete]
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
-	var request AccountRequestWildCard
-	if err := ctx.ShouldBindUri(&request); err != nil {
+	var reqURI domain.AccountRequestWildCard
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*token.FireBaseCustomToken)
-	account, err := ac.AccountUsecase.GetAccountByEmail(ctx, payload.Email)
+	err := ac.AccountUsecase.DeleteAccount(ctx, reqURI.UserID)
+
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if account.UserID != request.ID {
-		err := errors.New("valid user id")
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
 
-	err = ac.AccountUsecase.DeleteAccount(ctx, request.ID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-	ctx.JSON(http.StatusOK, DeleteResponse{
-		Result: "success",
-	})
-
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("delete successful")})
 }

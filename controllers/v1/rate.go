@@ -5,12 +5,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/domain"
+	repository "github.com/hackhack-Geek-vol6/backend/gateways/repository/datasource"
+	"github.com/hackhack-Geek-vol6/backend/usecase/inputport"
 )
 
 type RateController struct {
-	RateUsecase domain.RateUsecase
+	RateUsecase inputport.RateUsecase
 	Env         *bootstrap.Env
 }
 
@@ -38,7 +39,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 		return
 	}
 
-	response, err := rc.RateUsecase.CreateRateEntry(ctx, db.CreateRateParams{
+	response, err := rc.RateUsecase.CreateRateEntry(ctx, repository.CreateRateParams{
 		UserID: reqURI.UserID,
 		Rate:   reqBody.Rate,
 	})

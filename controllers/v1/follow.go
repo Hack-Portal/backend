@@ -5,12 +5,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
 	"github.com/hackhack-Geek-vol6/backend/domain"
+	repository "github.com/hackhack-Geek-vol6/backend/gateways/repository/datasource"
+	"github.com/hackhack-Geek-vol6/backend/usecase/inputport"
 )
 
 type FollowController struct {
-	FollowUsecase domain.FollowUsecase
+	FollowUsecase inputport.FollowUsecase
 	Env           *bootstrap.Env
 }
 
@@ -40,7 +41,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 		return
 	}
 
-	response, err := fc.FollowUsecase.CreateFollow(ctx, db.CreateFollowParams{
+	response, err := fc.FollowUsecase.CreateFollow(ctx, repository.CreateFollowParams{
 		ToUserID:   reqBody.ToUserID,
 		FromUserID: reqURI.UserID,
 	})
@@ -65,7 +66,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 // @Router       	/accounts/:from_user_id/follow			[delete]
 func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	var (
-		reqURI   AccountRequestWildCard
+		reqURI   domain.AccountRequestWildCard
 		reqQuery domain.RemoveFollowRequestQueries
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -76,7 +77,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := fc.FollowUsecase.RemoveFollow(ctx, db.RemoveFollowParams{ToUserID: reqQuery.ToUserID, FromUserID: reqURI.ID}); err != nil {
+	if err := fc.FollowUsecase.RemoveFollow(ctx, repository.RemoveFollowParams{ToUserID: reqQuery.ToUserID, FromUserID: reqURI.UserID}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -86,7 +87,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 
 func (fc *FollowController) GetFollow(ctx *gin.Context) {
 	var (
-		reqURI   AccountRequestWildCard
+		reqURI   domain.AccountRequestWildCard
 		reqQuery domain.GetFollowRequestQueries
 		result   []domain.FollowResponse
 		err      error
@@ -102,7 +103,7 @@ func (fc *FollowController) GetFollow(ctx *gin.Context) {
 
 	// TODO:　ToFollowからの取得と FromFollowからの取得　両方作る
 	if reqQuery.Mode {
-		result, err = fc.FollowUsecase.GetFollowByToID(ctx, reqURI.ID)
+		result, err = fc.FollowUsecase.GetFollowByToID(ctx, reqURI.UserID)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return

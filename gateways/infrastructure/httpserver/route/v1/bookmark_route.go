@@ -5,13 +5,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/internal/controller/v1"
-	"github.com/hackhack-Geek-vol6/backend/internal/usecase"
-	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
+	controller "github.com/hackhack-Geek-vol6/backend/controllers/v1"
+	"github.com/hackhack-Geek-vol6/backend/gateways/repository/transaction"
+	usecase "github.com/hackhack-Geek-vol6/backend/usecase/interactor"
 )
 
 // ブックマークのルーティングを定義する
-func NewBookmarkRouter(env *bootstrap.Env, timeout time.Duration, store repository.Store, group *gin.RouterGroup) {
+func NewBookmarkRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group *gin.RouterGroup) {
 	bookmarkController := controller.BookmarkController{
 		BookmarkUsecase: usecase.NewBookmarkUsercase(store, timeout),
 		Env:             env,

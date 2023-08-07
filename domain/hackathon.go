@@ -3,7 +3,7 @@ package domain
 import (
 	"time"
 
-	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
+	repository "github.com/hackhack-Geek-vol6/backend/gateways/repository/datasource"
 )
 
 type HackathonRequestWildCard struct {
