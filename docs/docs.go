@@ -709,9 +709,6 @@ const docTemplate = `{
         "/past_works": {
             "get": {
                 "description": "list pastWorks",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -722,21 +719,17 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "opus",
-                        "name": "opus",
-                        "in": "query"
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "path",
+                        "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "name",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "explanatory_text",
-                        "name": "explanatory_text",
-                        "in": "query"
+                        "type": "integer",
+                        "description": "page_id",
+                        "name": "page_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {

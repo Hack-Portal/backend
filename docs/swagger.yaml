@@ -994,22 +994,18 @@ paths:
       - Locates
   /past_works:
     get:
-      consumes:
-      - application/json
       description: list pastWorks
       parameters:
-      - description: opus
-        in: query
-        name: opus
+      - description: page_size
+        in: path
+        name: page_size
+        required: true
         type: integer
-      - description: name
-        in: query
-        name: name
-        type: string
-      - description: explanatory_text
-        in: query
-        name: explanatory_text
-        type: string
+      - description: page_id
+        in: path
+        name: page_id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
