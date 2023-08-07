@@ -45,11 +45,12 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, config *util.EnvCon
 				return err
 			}
 		}
-		pastTags, err := q.GetPastWorkTagsByOpus(ctx, result.Opus)
+		pastTag, err := q.GetPastWorkTagsByOpus(ctx, result.Opus)
 		if err != nil {
 			return err
 		}
-		result.PastWorkTags = pastTags
+		result.PastWorkTags = pastTag
+
 		// 過去作品IDからフレームワークのレコードを登録する
 		for _, framework_id := range arg.PastWorkFrameworks {
 			_, err = q.CreatePastWorkFrameworks(ctx, CreatePastWorkFrameworksParams{
@@ -60,6 +61,12 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, config *util.EnvCon
 				return err
 			}
 		}
+		framework, err := q.GetPastWorkFrameworksByOpus(ctx, result.Opus)
+		if err != nil {
+			return err
+		}
+		result.PastWorkFrameworks = framework
+
 		// 過去作品IDからアカウントのレコードを登録する
 		for _, account := range arg.AccountPastWorks {
 			_, err = q.CreateAccountPastWorks(ctx, CreateAccountPastWorksParams{
@@ -70,6 +77,11 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, config *util.EnvCon
 				return err
 			}
 		}
+		account, err := q.GetAccountPastWorksByOpus(ctx, result.Opus)
+		if err != nil {
+			return err
+		}
+		result.AccountPastWorks = account
 		return nil
 	})
 	return result, err

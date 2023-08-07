@@ -96,7 +96,7 @@ func (server *Server) GetPastWork(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	pastWorkTags, err := server.store.ListPastWorkTagsByOpus(ctx, req.Opus)
+	pastWorkTags, err := server.store.GetPastWorkTagsByOpus(ctx, req.Opus)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -150,7 +150,7 @@ func (server *Server) ListPastWorks(ctx *gin.Context) {
 	}
 	var response []CreatePastWorkResponse
 	for _, pastWork := range pastWorks {
-		pastWorkTags, err := server.store.ListPastWorkTagsByOpus(ctx, pastWork.Opus)
+		pastWorkTags, err := server.store.GetPastWorkTagsByOpus(ctx, pastWork.Opus)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
