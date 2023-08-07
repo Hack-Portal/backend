@@ -706,6 +706,152 @@ const docTemplate = `{
                 }
             }
         },
+        "/past_works": {
+            "get": {
+                "description": "list pastWorks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "past_works"
+                ],
+                "summary": "List pastWorks",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "opus",
+                        "name": "opus",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "explanatory_text",
+                        "name": "explanatory_text",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.CreatePastWorkResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "create pastWork",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "past_works"
+                ],
+                "summary": "Create pastWork",
+                "parameters": [
+                    {
+                        "description": "past work",
+                        "name": "past_work",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreatePastWorkRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.CreatePastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/past_works/{opus}": {
+            "get": {
+                "description": "get pastWork",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "past_works"
+                ],
+                "summary": "Get pastWork",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "PastWorks API wildcard",
+                        "name": "opus",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.CreatePastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/rooms": {
             "get": {
                 "description": "List Account",
@@ -1266,6 +1412,79 @@ const docTemplate = `{
                 }
             }
         },
+        "api.CreatePastWorkRequestBody": {
+            "type": "object",
+            "properties": {
+                "account_past_works": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "past_work_frameworks": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "past_work_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "thumbnail_image": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "api.CreatePastWorkResponse": {
+            "type": "object",
+            "properties": {
+                "account_past_works": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.AccountPastWorks"
+                    }
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "opus": {
+                    "type": "integer"
+                },
+                "past_work_frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.PastWorkFrameworks"
+                    }
+                },
+                "past_work_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.PastWorkTags"
+                    }
+                },
+                "thumbnail_image": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "api.CreateRateRequestBody": {
             "type": "object",
             "properties": {
@@ -1566,6 +1785,17 @@ const docTemplate = `{
                 }
             }
         },
+        "db.AccountPastWorks": {
+            "type": "object",
+            "properties": {
+                "opus": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "db.CreateRoomTxResult": {
             "type": "object",
             "properties": {
@@ -1723,6 +1953,28 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "string"
+                }
+            }
+        },
+        "db.PastWorkFrameworks": {
+            "type": "object",
+            "properties": {
+                "framework_id": {
+                    "type": "integer"
+                },
+                "opus": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.PastWorkTags": {
+            "type": "object",
+            "properties": {
+                "opus": {
+                    "type": "integer"
+                },
+                "tech_tag_id": {
+                    "type": "integer"
                 }
             }
         },

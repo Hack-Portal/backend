@@ -6,6 +6,9 @@ RETURNING *;
 SELECT *
 FROM account_past_works
 WHERE opus = $1;
+-- name: ListAccountPastWorks :many
+SELECT *
+FROM account_past_works;
 -- name: DeleteAccountPastWorksByOpus :exec
 DELETE FROM account_past_works
 WHERE opus = $1;

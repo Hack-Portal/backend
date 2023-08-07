@@ -127,11 +127,9 @@ func (server *Server) GetPastWork(ctx *gin.Context) {
 // @Summary List pastWorks
 // @Description list pastWorks
 // @Tags past_works
-// @Accept  json
 // @Produce  json
-// @Param opus query int false "opus"
-// @Param name query string false "name"
-// @Param explanatory_text query string false "explanatory_text"
+// @Param page_size path int32 true "page_size"
+// @Param page_id path int32 true "page_id"
 // @Success 200 {array} CreatePastWorkResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -142,7 +140,10 @@ func (server *Server) ListPastWorks(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	pastWorks, err := server.store.ListPastWorks(ctx, db.ListPastWorksParams{})
+	pastWorks, err := server.store.ListPastWorks(ctx, db.ListPastWorksParams{
+		Limit:  request.PageSize,
+		Offset: (request.PageId - 1) * request.PageSize,
+	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

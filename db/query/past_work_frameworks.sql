@@ -6,6 +6,9 @@ RETURNING *;
 SELECT *
 FROM past_work_frameworks
 WHERE opus = $1;
+-- name: ListPastWorkFrameworks :many
+SELECT *
+FROM past_work_frameworks;
 -- name: DeletePastWorkFrameworksByOpus :exec
 DELETE FROM past_work_frameworks
 WHERE opus = $1;

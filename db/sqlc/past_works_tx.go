@@ -2,10 +2,11 @@ package db
 
 import (
 	"context"
+
+	"github.com/hackhack-Geek-vol6/backend/util"
 )
 
 type CreatePastWorkTxParams struct {
-	Opus               int32  `json:"opus"`
 	Name               string `json:"name"`
 	ThumbnailImage     []byte `json:"thumbnail_image"`
 	ExplanatoryText    string `json:"explanatory_text"`
@@ -21,13 +22,12 @@ type CreatePastWorkTxResult struct {
 }
 
 // 過去作品を登録時のトランザクション
-func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg CreatePastWorkTxParams) (CreatePastWorkTxResult, error) {
+func (store *SQLStore) CreatePastWorkTx(ctx context.Context, config *util.EnvConfig, arg CreatePastWorkTxParams) (CreatePastWorkTxResult, error) {
 	var result CreatePastWorkTxResult
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 		// 過去作品を登録する
 		result.PastWorks, err = q.CreatePastWorks(ctx, CreatePastWorksParams{
-			Opus:            arg.Opus,
 			Name:            arg.Name,
 			ThumbnailImage:  arg.ThumbnailImage,
 			ExplanatoryText: arg.ExplanatoryText,
@@ -45,6 +45,11 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg CreatePastWorkT
 				return err
 			}
 		}
+		pastTags, err := q.GetPastWorkTagsByOpus(ctx, result.Opus)
+		if err != nil {
+			return err
+		}
+		result.PastWorkTags = pastTags
 		// 過去作品IDからフレームワークのレコードを登録する
 		for _, framework_id := range arg.PastWorkFrameworks {
 			_, err = q.CreatePastWorkFrameworks(ctx, CreatePastWorkFrameworksParams{

@@ -121,6 +121,54 @@ definitions:
       term:
         type: integer
     type: object
+  api.CreatePastWorkRequestBody:
+    properties:
+      account_past_works:
+        items:
+          type: string
+        type: array
+      explanatory_text:
+        type: string
+      name:
+        type: string
+      past_work_frameworks:
+        items:
+          type: integer
+        type: array
+      past_work_tags:
+        items:
+          type: integer
+        type: array
+      thumbnail_image:
+        items:
+          type: integer
+        type: array
+    type: object
+  api.CreatePastWorkResponse:
+    properties:
+      account_past_works:
+        items:
+          $ref: '#/definitions/db.AccountPastWorks'
+        type: array
+      explanatory_text:
+        type: string
+      name:
+        type: string
+      opus:
+        type: integer
+      past_work_frameworks:
+        items:
+          $ref: '#/definitions/db.PastWorkFrameworks'
+        type: array
+      past_work_tags:
+        items:
+          $ref: '#/definitions/db.PastWorkTags'
+        type: array
+      thumbnail_image:
+        items:
+          type: integer
+        type: array
+    type: object
   api.CreateRateRequestBody:
     properties:
       rate:
@@ -319,6 +367,13 @@ definitions:
       term:
         type: integer
     type: object
+  db.AccountPastWorks:
+    properties:
+      opus:
+        type: integer
+      user_id:
+        type: string
+    type: object
   db.CreateRoomTxResult:
     properties:
       accounts:
@@ -422,6 +477,20 @@ definitions:
         type: boolean
       user_id:
         type: string
+    type: object
+  db.PastWorkFrameworks:
+    properties:
+      framework_id:
+        type: integer
+      opus:
+        type: integer
+    type: object
+  db.PastWorkTags:
+    properties:
+      opus:
+        type: integer
+      tech_tag_id:
+        type: integer
     type: object
   db.RoomFramework:
     properties:
@@ -923,6 +992,102 @@ paths:
       summary: Get Frameworks
       tags:
       - Locates
+  /past_works:
+    get:
+      consumes:
+      - application/json
+      description: list pastWorks
+      parameters:
+      - description: opus
+        in: query
+        name: opus
+        type: integer
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: explanatory_text
+        in: query
+        name: explanatory_text
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.CreatePastWorkResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: List pastWorks
+      tags:
+      - past_works
+    post:
+      consumes:
+      - application/json
+      description: create pastWork
+      parameters:
+      - description: past work
+        in: body
+        name: past_work
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreatePastWorkRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CreatePastWorkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create pastWork
+      tags:
+      - past_works
+  /past_works/{opus}:
+    get:
+      consumes:
+      - application/json
+      description: get pastWork
+      parameters:
+      - description: PastWorks API wildcard
+        in: path
+        name: opus
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CreatePastWorkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get pastWork
+      tags:
+      - past_works
   /rooms:
     get:
       description: List Account
