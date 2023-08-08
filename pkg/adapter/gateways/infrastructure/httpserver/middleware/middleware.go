@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	AuthorizationHeaderKey  = "authorization"
+	AuthorizationHeaderKey  = "DBAuthorization"
 	AuthorizationTypeBearer = "bearer"
 	AuthorizationClaimsKey  = "authorization_claim"
 )
