@@ -107,11 +107,16 @@ WHERE member_limit > (
         WHERE rooms_accounts.room_id = rooms.room_id
     )
     AND is_delete = false
-LIMIT $1
+LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListRooms(ctx context.Context, limit int32) ([]Room, error) {
-	rows, err := q.db.QueryContext(ctx, listRooms, limit)
+type ListRoomsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, error) {
+	rows, err := q.db.QueryContext(ctx, listRooms, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
