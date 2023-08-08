@@ -27,14 +27,14 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRoomsRequ
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	return ru.store.ListRoomTx(ctx, query)
+	return []domain.ListRoomResponse{}, nil
 }
 
 func (ru *roomUsecase) GetRoom(ctx context.Context, id uuid.UUID) (result domain.GetRoomResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	return ru.store.GetRoomTx(ctx, id)
+	return domain.GetRoomResponse{}, nil
 }
 
 func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomParam) (result domain.GetRoomResponse, err error) {
@@ -48,14 +48,14 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		return domain.GetRoomResponse{}, err
 	}
 
-	return ru.store.CreateRoomTx(ctx, body)
+	return domain.GetRoomResponse{}, nil
 }
 
 func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomParam) (result domain.GetRoomResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	return ru.store.UpdateRoomTx(ctx, body)
+	return domain.GetRoomResponse{}, nil
 }
 
 func (ru *roomUsecase) DeleteRoom(ctx context.Context, query domain.DeleteRoomParam) error {

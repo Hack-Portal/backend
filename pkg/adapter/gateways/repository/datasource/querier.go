@@ -25,7 +25,7 @@ type Querier interface {
 	CreateRateEntries(ctx context.Context, arg CreateRateEntriesParams) (RateEntry, error)
 	CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error)
-	DeleteAccountFrameworskByUserID(ctx context.Context, userID string) error
+	DeleteAccountFrameworkByUserID(ctx context.Context, userID string) error
 	DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
 	DeleteAccountTagsByUserID(ctx context.Context, userID string) error
 	DeleteAccounts(ctx context.Context, userID string) (Account, error)
@@ -65,7 +65,7 @@ type Querier interface {
 	ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]PastWorkTag, error)
 	ListPastWorks(ctx context.Context, arg ListPastWorksParams) ([]ListPastWorksRow, error)
 	ListRateEntries(ctx context.Context, arg ListRateEntriesParams) ([]RateEntry, error)
-	ListRooms(ctx context.Context, limit int32) ([]Room, error)
+	ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, error)
 	ListStatusTags(ctx context.Context) ([]StatusTag, error)
 	ListTechTags(ctx context.Context) ([]TechTag, error)
 	UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) (Account, error)

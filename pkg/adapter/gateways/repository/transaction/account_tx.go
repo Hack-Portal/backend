@@ -137,7 +137,7 @@ func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAc
 			return err
 		}
 
-		err = q.DeleteAccountFrameworskByUserID(ctx, latest.UserID)
+		err = q.DeleteAccountFrameworkByUserID(ctx, latest.UserID)
 		if err != nil {
 			return err
 		}

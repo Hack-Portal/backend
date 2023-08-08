@@ -7,7 +7,6 @@ import (
 
 	"cloud.google.com/go/firestore"
 	fb "firebase.google.com/go"
-	"github.com/google/uuid"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 )
@@ -23,10 +22,8 @@ type Store interface {
 	CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (repository.Account, error)
 	UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (repository.Account, error)
 	// Room Tx
-	CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (domain.GetRoomResponse, error)
-	GetRoomTx(ctx context.Context, id uuid.UUID) (domain.GetRoomResponse, error)
-	ListRoomTx(ctx context.Context, query domain.ListRoomsRequest) ([]domain.ListRoomResponse, error)
-	UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (domain.GetRoomResponse, error)
+	CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (repository.Room, error)
+	UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (repository.Room, error)
 	DeleteRoomTx(ctx context.Context, args domain.DeleteRoomParam) error
 	AddAccountInRoom(ctx context.Context, args domain.AddAccountInRoomParam) error
 	// Hackathon Tx

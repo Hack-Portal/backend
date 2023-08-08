@@ -67,11 +67,11 @@ func checkDuplication(members []repository.GetRoomsAccountsByIDRow, id string) b
 	return false
 }
 
-func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (domain.GetRoomResponse, error) {
-	var result domain.GetRoomResponse
+func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (repository.Room, error) {
+	var room repository.Room
 	err := store.execTx(ctx, func(q *repository.Queries) error {
-
-		room, err := q.CreateRooms(ctx, repository.CreateRoomsParams{
+		var err error
+		room, err = q.CreateRooms(ctx, repository.CreateRoomsParams{
 			RoomID:      args.RoomID,
 			HackathonID: args.HackathonID,
 			Title:       args.Title,
@@ -95,7 +95,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 
 		return nil
 	})
-	return result, err
+	return room, err
 }
 
 func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (repository.Room, error) {
