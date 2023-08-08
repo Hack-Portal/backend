@@ -8,7 +8,7 @@ import (
 )
 
 type BookmarkUsecase interface {
-	CreateBookmark(ctx context.Context, body repository.CreateBookmarkParams) (domain.BookmarkResponse, error)
+	CreateBookmark(ctx context.Context, body repository.CreateBookmarksParams) (domain.BookmarkResponse, error)
 	GetBookmarks(ctx context.Context, id string, query domain.ListBookmarkRequestQueries) (result []domain.BookmarkResponse, err error)
 	RemoveBookmark(ctx context.Context, userID string, hackathonID int32) error
 }
