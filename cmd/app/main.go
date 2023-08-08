@@ -8,9 +8,9 @@ import (
 
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
+	v1 "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/route/v1"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	v1 "github.com/hackhack-Geek-vol6/backend/pkg/gateways/infrastructure/httpserver/route/v1"
-	"github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/transaction"
 	_ "github.com/lib/pq"
 	"google.golang.org/api/option"
 )

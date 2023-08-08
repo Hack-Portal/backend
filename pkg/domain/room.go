@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/datasource"
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
 
 type RoomsRequestWildCard struct {

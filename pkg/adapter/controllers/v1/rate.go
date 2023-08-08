@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 

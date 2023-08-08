@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	_ "github.com/hackhack-Geek-vol6/backend/pkg/docs"
-	"github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/transaction"
 )
 
 func setupCors(router *gin.Engine) {

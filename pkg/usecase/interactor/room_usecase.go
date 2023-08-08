@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
-	"github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 

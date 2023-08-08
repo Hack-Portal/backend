@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/datasource"
 )
 
 func stackTagAndFrameworks(ctx context.Context, q *repository.Queries, room repository.Room) ([]domain.RoomTechTags, []domain.RoomFramework, error) {

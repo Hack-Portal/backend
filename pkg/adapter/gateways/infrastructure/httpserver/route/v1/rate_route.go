@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	controller "github.com/hackhack-Geek-vol6/backend/pkg/adapter/controllers/v1"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	controller "github.com/hackhack-Geek-vol6/backend/pkg/controllers/v1"
-	"github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/transaction"
 	usecase "github.com/hackhack-Geek-vol6/backend/pkg/usecase/interactor"
 )
 

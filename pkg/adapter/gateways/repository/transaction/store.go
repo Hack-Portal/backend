@@ -8,8 +8,8 @@ import (
 	"cloud.google.com/go/firestore"
 	fb "firebase.google.com/go"
 	"github.com/google/uuid"
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/datasource"
 )
 
 const (

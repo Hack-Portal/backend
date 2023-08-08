@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	uuid5 "github.com/gofrs/uuid/v5"
 	"github.com/google/uuid"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
-	"github.com/hackhack-Geek-vol6/backend/pkg/gateways/infrastructure/httpserver/middleware"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 )
