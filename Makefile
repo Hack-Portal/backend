@@ -28,6 +28,9 @@ migratedown:
 sqlc:
 	sqlc generate
 
+serverRun:
+	go run ./cmd/app/main.go
+	
 test:
 	go test -v -cover ./...
 	
