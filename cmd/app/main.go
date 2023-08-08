@@ -4,11 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"time"
 
 	firebase "firebase.google.com/go"
-	"github.com/hackhack-Geek-vol6/backend/api"
-	db "github.com/hackhack-Geek-vol6/backend/db/sqlc"
-	"github.com/hackhack-Geek-vol6/backend/util"
+	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
+	v1 "github.com/hackhack-Geek-vol6/backend/pkg/gateways/infrastructure/httpserver/route/v1"
+	"github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/transaction"
 	_ "github.com/lib/pq"
 	"google.golang.org/api/option"
 )
@@ -29,11 +31,8 @@ import (
 // @BasePath  /api/v1
 
 func main() {
-	config, err := util.LoadEnvConfig(".")
-	if err != nil {
-		log.Fatal("cannnot load config", err)
-	}
-	conn, err := sql.Open(config.DBDriver, config.DBSource)
+	env := bootstrap.LoadEnvConfig(".")
+	db, err := sql.Open(env.DBDriver, env.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db", err)
 	}
@@ -44,18 +43,16 @@ func main() {
 
 	serviceAccount := option.WithCredentialsFile("./serviceAccount.json")
 	app, err := firebase.NewApp(context.Background(), firebaseconfig, serviceAccount)
-
 	if err != nil {
 		log.Fatal("cerviceAccount Load error :", err)
 	}
 
-	store := db.NewStore(conn, app)
+	store := transaction.NewStore(db, app)
 
-	server, err := api.NewServer(config, store)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := server.Start(config.ServerPort); err != nil {
-		log.Fatal("cannnot start server :", err)
-	}
+	timeout := time.Duration(env.ContextTimeout) * time.Second
+
+	gin := gin.Default()
+	v1.Setup(&env, timeout, store, gin)
+
+	gin.Run(env.ServerPort)
 }

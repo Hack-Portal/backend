@@ -1,0 +1,34 @@
+package route
+
+import (
+	"time"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
+	_ "github.com/hackhack-Geek-vol6/backend/pkg/docs"
+	"github.com/hackhack-Geek-vol6/backend/pkg/gateways/repository/transaction"
+)
+
+func setupCors(router *gin.Engine) {
+	router.Use(cors.Default())
+}
+
+func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
+	setupCors(gin)
+
+	publicRouter := gin.Group("/v1")
+	// All Public APIs
+	NewEtcRouter(env, timeout, store, publicRouter)
+	NewHackathonRouter(env, timeout, store, publicRouter)
+
+	protectRouter := gin.Group("/v1")
+	//TODO:middlewareの追加
+	protectRouter.Use()
+	// All Protect APIs
+	NewAccountRouter(env, timeout, store, protectRouter)
+	NewBookmarkRouter(env, timeout, store, protectRouter)
+	NewFollowRouter(env, timeout, store, protectRouter)
+	NewRateRouter(env, timeout, store, protectRouter)
+	NewRoomRouter(env, timeout, store, protectRouter)
+}
