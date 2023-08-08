@@ -8,11 +8,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 	"github.com/lib/pq"
 )
 
@@ -64,7 +66,9 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		}
 	}
 
-	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image.Bytes())
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+
+	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image.Bytes(), payload.Email)
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
 		if pqErr, ok := err.(*pq.Error); ok {

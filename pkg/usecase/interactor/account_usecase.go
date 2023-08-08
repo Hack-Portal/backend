@@ -37,7 +37,7 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	return au.store.GetAccountTxByEmail(ctx, email)
 }
 
-func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateAccountRequest, image []byte) (domain.AccountResponses, error) {
+func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateAccountRequest, image []byte, email string) (domain.AccountResponses, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	// 画像が空やないときに処理する
@@ -62,6 +62,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 				String: body.ExplanatoryText,
 				Valid:  true,
 			},
+			Email:      email,
 			LocateID:   body.LocateID,
 			Rate:       0,
 			ShowLocate: body.ShowLocate,
