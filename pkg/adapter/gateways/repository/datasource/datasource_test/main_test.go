@@ -2,21 +2,23 @@ package repository_test
 
 import (
 	"database/sql"
+	"log"
 	"os"
 	"testing"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	bootstrap "github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-
-	// util "github.com/hackhack-Geek-vol6/backend/pkg/util/password"
 	_ "github.com/lib/pq"
 )
 
 var testQueries *repository.Queries
-var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-	bootstrap.LoadEnvConfig("../../../../../../")
+	config := bootstrap.LoadEnvConfig("../../../../../../")
+	testDB, err := sql.Open(config.DBDriver, config.DBSource)
+	if err != nil {
+		log.Fatal("cannnot connection DB :", err)
+	}
 
 	testQueries = repository.New(testDB)
 
