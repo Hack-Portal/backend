@@ -34,7 +34,7 @@ func createTagsAndFrameworks(ctx context.Context, q *repository.Queries, id stri
 			return nil, nil, err
 		}
 
-		techtag, err := q.GetTechTagByID(ctx, accountTag.TechTagID)
+		techtag, err := q.GetTechTagsByID(ctx, accountTag.TechTagID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -43,7 +43,7 @@ func createTagsAndFrameworks(ctx context.Context, q *repository.Queries, id stri
 	}
 
 	for _, accountFrameworkTag := range frameworks {
-		accountFramework, err := q.CreateAccountFramework(ctx, repository.CreateAccountFrameworkParams{
+		accountFramework, err := q.CreateAccountFrameworks(ctx, repository.CreateAccountFrameworksParams{
 			UserID:      id,
 			FrameworkID: accountFrameworkTag,
 		})
@@ -60,7 +60,7 @@ func createTagsAndFrameworks(ctx context.Context, q *repository.Queries, id stri
 	return
 }
 
-func parseAccountResponseRawID(response domain.AccountResponses, account repository.GetAccountByIDRow, locate string) domain.AccountResponses {
+func parseAccountResponseRawID(response domain.AccountResponses, account repository.GetAccountsByIDRow, locate string) domain.AccountResponses {
 	return domain.AccountResponses{
 		UserID:          account.UserID,
 		Username:        account.Username,
@@ -76,7 +76,7 @@ func parseAccountResponseRawID(response domain.AccountResponses, account reposit
 	}
 }
 
-func parseAccountResponseRawEmail(response domain.AccountResponses, account repository.GetAccountByEmailRow, locate string) domain.AccountResponses {
+func parseAccountResponseRawEmail(response domain.AccountResponses, account repository.GetAccountsByEmailRow, locate string) domain.AccountResponses {
 	return domain.AccountResponses{
 		UserID:          account.UserID,
 		Username:        account.Username,
@@ -92,8 +92,8 @@ func parseAccountResponseRawEmail(response domain.AccountResponses, account repo
 	}
 }
 
-func compAccount(request repository.Account, latest repository.GetAccountByIDRow) (result repository.UpdateAccountParams) {
-	result = repository.UpdateAccountParams{
+func compAccount(request repository.Account, latest repository.GetAccountsByIDRow) (result repository.UpdateAccountsParams) {
+	result = repository.UpdateAccountsParams{
 		UserID:         latest.UserID,
 		Icon:           latest.Icon,
 		Rate:           latest.Rate,
@@ -158,12 +158,12 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, args domain.CreateAc
 	var result domain.AccountResponses
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		account, err := q.CreateAccount(ctx, args.AccountInfo)
+		account, err := q.CreateAccounts(ctx, args.AccountInfo)
 		if err != nil {
 			return err
 		}
 
-		locate, err := q.GetLocateByID(ctx, account.LocateID)
+		locate, err := q.GetLocatesByID(ctx, account.LocateID)
 		if err != nil {
 			return err
 		}
@@ -194,7 +194,7 @@ func getAccountTags(ctx context.Context, q *repository.Queries, id string) (rTec
 	}
 
 	for _, techTag := range techTags {
-		techtag, err := q.GetTechTagByID(ctx, techTag.TechTagID.Int32)
+		techtag, err := q.GetTechTagsByID(ctx, techTag.TechTagID.Int32)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -217,12 +217,12 @@ func (store *SQLStore) GetAccountTxByID(ctx context.Context, id string) (domain.
 	var result domain.AccountResponses
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		account, err := q.GetAccountByID(ctx, id)
+		account, err := q.GetAccountsByID(ctx, id)
 		if err != nil {
 			return err
 		}
 
-		locate, err := q.GetLocateByID(ctx, account.LocateID)
+		locate, err := q.GetLocatesByID(ctx, account.LocateID)
 		if err != nil {
 			return err
 		}
@@ -242,12 +242,12 @@ func (store *SQLStore) GetAccountTxByEmail(ctx context.Context, email string) (d
 	var result domain.AccountResponses
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		account, err := q.GetAccountByEmail(ctx, email)
+		account, err := q.GetAccountsByEmail(ctx, email)
 		if err != nil {
 			return err
 		}
 
-		locate, err := q.GetLocateByID(ctx, account.LocateID)
+		locate, err := q.GetLocatesByID(ctx, account.LocateID)
 		if err != nil {
 			return err
 		}
@@ -268,28 +268,28 @@ func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAc
 	var result domain.AccountResponses
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		latest, err := q.GetAccountByID(ctx, args.AccountInfo.UserID)
+		latest, err := q.GetAccountsByID(ctx, args.AccountInfo.UserID)
 		if err != nil {
 			return err
 		}
 
-		account, err := q.UpdateAccount(ctx, compAccount(args.AccountInfo, latest))
+		account, err := q.UpdateAccounts(ctx, compAccount(args.AccountInfo, latest))
 		if err != nil {
 			return err
 		}
 
-		locate, err := q.GetLocateByID(ctx, account.LocateID)
+		locate, err := q.GetLocatesByID(ctx, account.LocateID)
 		if err != nil {
 			return err
 		}
 
 		// 以下タグ部分
-		err = q.DeleteAccounttagsByUserID(ctx, latest.UserID)
+		err = q.DeleteAccountTagsByUserID(ctx, latest.UserID)
 		if err != nil {
 			return err
 		}
 
-		err = q.DeleteAccountFrameworksByUserID(ctx, latest.UserID)
+		err = q.DeleteAccountFrameworskByUserID(ctx, latest.UserID)
 		if err != nil {
 			return err
 		}

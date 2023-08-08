@@ -1,10 +1,10 @@
--- name: CreateBookmark :one
+-- name: CreateBookmarks :one
 INSERT INTO
     bookmarks(hackathon_id, user_id)
 VALUES
     ($1, $2) RETURNING *;
 
--- name: ListBookmarkByUserID :many
+-- name: ListBookmarksByID :many
 SELECT
     *
 FROM
@@ -12,7 +12,7 @@ FROM
 WHERE
     user_id = $1 AND is_delete = false;
 
--- name: SoftRemoveBookmark :one
+-- name: DeleteBookmarksByID :one
 UPDATE
     bookmarks
 SET

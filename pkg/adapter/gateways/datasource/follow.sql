@@ -1,10 +1,10 @@
--- name: CreateFollow :one
+-- name: CreateFollows :one
 INSERT INTO
   follows (to_user_id, from_user_id)
 VALUES
 ($1, $2) RETURNING *;
 
--- name: ListFollowByToUserID :many
+-- name: ListFollowsByToUserID :many
 SELECT
   *
 FROM
@@ -12,15 +12,7 @@ FROM
 WHERE
   to_user_id = $1;
 
--- name: ListFollowByFromUserID :many
-SELECT
-  *
-FROM
-  follows
-WHERE
-  from_user_id = $1;
-  
--- name: RemoveFollow :exec
+-- name: DeleteFollows :exec
 DELETE FROM
   follows
 WHERE

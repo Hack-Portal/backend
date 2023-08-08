@@ -1,12 +1,12 @@
 version: "2"
 sql:
-  - queries: "./gateways/datasource/"
+  - queries: "./pkg/adapter/gateways/datasource/"
     schema: "./cmd/migrations/"
     engine: "postgresql"
     gen:
       go:
         package: "repository"
-        out: "./gateways/datasource/"
+        out: "./pkg/adapter/gateways/repository/datasource/"
         emit_json_tags: true
         emit_prepared_queries: false
         emit_interface: true

@@ -1,4 +1,4 @@
--- name: CreateAccount :one
+-- name: CreateAccounts :one
 INSERT INTO
     accounts (
         user_id,
@@ -26,7 +26,7 @@ VALUES
         $10
     ) RETURNING *;
 
--- name: GetAccountByID :one
+-- name: GetAccountsByID :one
 SELECT
     user_id,
     username,
@@ -45,7 +45,7 @@ FROM
 WHERE
     user_id = $1 AND is_delete = false;
 
--- name: GetAccountByEmail :one
+-- name: GetAccountsByEmail :one
 SELECT
     user_id,
     username,
@@ -87,7 +87,7 @@ WHERE
 LIMIT
     $2 OFFSET $3;
 
--- name: SoftDeleteAccount :one
+-- name: DeleteAccounts :one
 UPDATE
     accounts
 SET
@@ -95,7 +95,7 @@ SET
 WHERE
     user_id = $1 RETURNING *;
 
--- name: UpdateAccount :one
+-- name: UpdateAccounts :one
 UPDATE
     accounts
 SET
@@ -112,7 +112,7 @@ WHERE
     user_id = $1 RETURNING *;
 
 
--- name: UpdateRateByUserID :one
+-- name: UpdateRateByID :one
 UPDATE
     accounts
 SET    

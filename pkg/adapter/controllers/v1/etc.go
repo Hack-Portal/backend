@@ -22,7 +22,7 @@ type EtcController struct {
 // @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/frameworks	[get]
 func (ec *EtcController) ListFrameworks(ctx *gin.Context) {
-	response, err := ec.EtcUsecase.GetFramework(ctx, 1000)
+	response, err := ec.EtcUsecase.GetFramework(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

@@ -14,7 +14,7 @@ func stackTagAndFrameworks(ctx context.Context, q *repository.Queries, room repo
 		roomTechTags   []domain.RoomTechTags
 		roomFrameworks []domain.RoomFramework
 	)
-	accounts, err := q.GetRoomsAccountsByRoomID(ctx, room.RoomID)
+	accounts, err := q.GetRoomsAccountsByID(ctx, room.RoomID)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -75,7 +75,7 @@ func margeFrameworkArray(roomFramework []domain.RoomFramework, framework reposit
 }
 
 func margeRoomAccount(ctx context.Context, q *repository.Queries, id uuid.UUID) (result []domain.NowRoomAccounts, err error) {
-	nowMembers, err := q.GetRoomsAccountsByRoomID(ctx, id)
+	nowMembers, err := q.GetRoomsAccountsByID(ctx, id)
 	if err != nil {
 		return
 	}
@@ -103,13 +103,13 @@ func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, ha
 }
 
 func getHackathonTag(ctx context.Context, q *repository.Queries, id int32) (result []repository.StatusTag, err error) {
-	tags, err := q.GetHackathonStatusTagsByHackathonID(ctx, id)
+	tags, err := q.GetStatusTagsByHackathonID(ctx, id)
 	if err != nil {
 		return
 	}
 
 	for _, tag := range tags {
-		statusTag, err := q.GetStatusTagByStatusID(ctx, tag.StatusID)
+		statusTag, err := q.GetStatusTagsByStatusID(ctx, tag.StatusID)
 		if err != nil {
 			return nil, err
 		}
@@ -119,13 +119,13 @@ func getHackathonTag(ctx context.Context, q *repository.Queries, id int32) (resu
 }
 
 func getRoomMember(ctx context.Context, q *repository.Queries, id uuid.UUID) (result []domain.NowRoomAccounts, err error) {
-	accounts, err := q.GetRoomsAccountsByRoomID(ctx, id)
+	accounts, err := q.GetRoomsAccountsByID(ctx, id)
 	if err != nil {
 		return
 	}
 
 	for _, account := range accounts {
-		user, err := q.GetAccountByID(ctx, account.UserID.String)
+		user, err := q.GetAccountsByID(ctx, account.UserID.String)
 		if err != nil {
 			return nil, err
 		}
@@ -138,7 +138,7 @@ func getRoomMember(ctx context.Context, q *repository.Queries, id uuid.UUID) (re
 	return
 }
 
-func compRoom(request domain.UpdateRoomParam, latest repository.Room, members int32) (result repository.UpdateRoomByIDParams, err error) {
+func compRoom(request domain.UpdateRoomParam, latest repository.Room, members int32) (result repository.UpdateRoomsByIDParams, err error) {
 	result.RoomID = latest.RoomID
 
 	if len(request.Title) != 0 {
@@ -201,7 +201,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 	var result domain.GetRoomResponse
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		room, err := q.CreateRoom(ctx, repository.CreateRoomParams{
+		room, err := q.CreateRooms(ctx, repository.CreateRoomsParams{
 			RoomID:      args.RoomID,
 			HackathonID: args.HackathonID,
 			Title:       args.Title,
@@ -312,7 +312,7 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, query domain.ListRoomsReq
 	var result []domain.ListRoomResponse
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		rooms, err := q.ListRoom(ctx, query.PageSize)
+		rooms, err := q.ListRooms(ctx, query.PageSize)
 		if err != nil {
 			return err
 		}
@@ -369,7 +369,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 			return err
 		}
 
-		owner, err := q.GetAccountByEmail(ctx, body.OwnerEmail)
+		owner, err := q.GetAccountsByEmail(ctx, body.OwnerEmail)
 		if err != nil {
 			return err
 		}
@@ -384,7 +384,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 			return err
 		}
 
-		room, err := q.UpdateRoomByID(ctx, args)
+		room, err := q.UpdateRoomsByID(ctx, args)
 		if err != nil {
 			return err
 		}
@@ -424,7 +424,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomParam) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		owner, err := q.GetAccountByEmail(ctx, args.OwnerEmail)
+		owner, err := q.GetAccountsByEmail(ctx, args.OwnerEmail)
 		if err != nil {
 			return err
 		}
@@ -439,7 +439,7 @@ func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomP
 			return err
 		}
 
-		_, err = q.SoftDeleteRoomByID(ctx, args.RoomID)
+		_, err = q.DeleteRoomsByID(ctx, args.RoomID)
 		if err != nil {
 			return err
 		}

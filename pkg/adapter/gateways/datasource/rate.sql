@@ -1,8 +1,8 @@
--- name: CreateRate :one
+-- name: CreateRateEntries :one
 INSERT INTO rate_entries (user_id, rate)
 VALUES($1, $2)
 RETURNING *;
--- name: ListRate :many
+-- name: ListRateEntries :many
 SELECT *
 FROM rate_entries
 WHERE user_id = $1

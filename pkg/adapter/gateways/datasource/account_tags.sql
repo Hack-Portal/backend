@@ -14,7 +14,7 @@ FROM
 WHERE
     account_tags.user_id = $1;
 
--- name: DeleteAccounttagsByUserID :exec
+-- name: DeleteAccountTagsByUserID :exec
 DELETE FROM
     account_tags
 WHERE

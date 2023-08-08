@@ -39,7 +39,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 		return
 	}
 
-	response, err := rc.RateUsecase.CreateRateEntry(ctx, repository.CreateRateParams{
+	response, err := rc.RateUsecase.CreateRateEntry(ctx, repository.CreateRateEntriesParams{
 		UserID: reqURI.UserID,
 		Rate:   reqBody.Rate,
 	})

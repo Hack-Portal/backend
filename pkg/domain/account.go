@@ -55,7 +55,7 @@ type UpdateAccountRequest struct {
 }
 
 type CreateAccountParams struct {
-	AccountInfo         repository.CreateAccountParams
+	AccountInfo         repository.CreateAccountsParams
 	AccountTechTag      []int32
 	AccountFrameworkTag []int32
 }

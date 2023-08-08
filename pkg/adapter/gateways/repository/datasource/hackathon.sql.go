@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const createHackathon = `-- name: CreateHackathon :one
+const createHackathons = `-- name: CreateHackathons :one
 INSERT INTO
   hackathons (
     name,
@@ -26,7 +26,7 @@ VALUES
 ($1, $2, $3, $4, $5, $6, $7) RETURNING hackathon_id, name, icon, description, link, expired, start_date, term
 `
 
-type CreateHackathonParams struct {
+type CreateHackathonsParams struct {
 	Name        string         `json:"name"`
 	Icon        sql.NullString `json:"icon"`
 	Description string         `json:"description"`
@@ -36,8 +36,8 @@ type CreateHackathonParams struct {
 	Term        int32          `json:"term"`
 }
 
-func (q *Queries) CreateHackathon(ctx context.Context, arg CreateHackathonParams) (Hackathon, error) {
-	row := q.db.QueryRowContext(ctx, createHackathon,
+func (q *Queries) CreateHackathons(ctx context.Context, arg CreateHackathonsParams) (Hackathon, error) {
+	row := q.db.QueryRowContext(ctx, createHackathons,
 		arg.Name,
 		arg.Icon,
 		arg.Description,

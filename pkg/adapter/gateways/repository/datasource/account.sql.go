@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const createAccount = `-- name: CreateAccount :one
+const createAccounts = `-- name: CreateAccounts :one
 INSERT INTO
     accounts (
         user_id,
@@ -40,7 +40,7 @@ VALUES
     ) RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
 `
 
-type CreateAccountParams struct {
+type CreateAccountsParams struct {
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
@@ -53,8 +53,8 @@ type CreateAccountParams struct {
 	ShowRate        bool           `json:"show_rate"`
 }
 
-func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error) {
-	row := q.db.QueryRowContext(ctx, createAccount,
+func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, createAccounts,
 		arg.UserID,
 		arg.Username,
 		arg.Icon,
@@ -85,7 +85,37 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 	return i, err
 }
 
-const getAccountByEmail = `-- name: GetAccountByEmail :one
+const deleteAccounts = `-- name: DeleteAccounts :one
+UPDATE
+    accounts
+SET
+    is_delete = true
+WHERE
+    user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
+`
+
+func (q *Queries) DeleteAccounts(ctx context.Context, userID string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, deleteAccounts, userID)
+	var i Account
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Icon,
+		&i.ExplanatoryText,
+		&i.LocateID,
+		&i.Rate,
+		&i.HashedPassword,
+		&i.Email,
+		&i.CreateAt,
+		&i.ShowLocate,
+		&i.ShowRate,
+		&i.UpdateAt,
+		&i.IsDelete,
+	)
+	return i, err
+}
+
+const getAccountsByEmail = `-- name: GetAccountsByEmail :one
 SELECT
     user_id,
     username,
@@ -105,7 +135,7 @@ WHERE
     email = $1 AND is_delete = false
 `
 
-type GetAccountByEmailRow struct {
+type GetAccountsByEmailRow struct {
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
@@ -120,9 +150,9 @@ type GetAccountByEmailRow struct {
 	UpdateAt        time.Time      `json:"update_at"`
 }
 
-func (q *Queries) GetAccountByEmail(ctx context.Context, email string) (GetAccountByEmailRow, error) {
-	row := q.db.QueryRowContext(ctx, getAccountByEmail, email)
-	var i GetAccountByEmailRow
+func (q *Queries) GetAccountsByEmail(ctx context.Context, email string) (GetAccountsByEmailRow, error) {
+	row := q.db.QueryRowContext(ctx, getAccountsByEmail, email)
+	var i GetAccountsByEmailRow
 	err := row.Scan(
 		&i.UserID,
 		&i.Username,
@@ -140,7 +170,7 @@ func (q *Queries) GetAccountByEmail(ctx context.Context, email string) (GetAccou
 	return i, err
 }
 
-const getAccountByID = `-- name: GetAccountByID :one
+const getAccountsByID = `-- name: GetAccountsByID :one
 SELECT
     user_id,
     username,
@@ -160,7 +190,7 @@ WHERE
     user_id = $1 AND is_delete = false
 `
 
-type GetAccountByIDRow struct {
+type GetAccountsByIDRow struct {
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
@@ -175,9 +205,9 @@ type GetAccountByIDRow struct {
 	UpdateAt        time.Time      `json:"update_at"`
 }
 
-func (q *Queries) GetAccountByID(ctx context.Context, userID string) (GetAccountByIDRow, error) {
-	row := q.db.QueryRowContext(ctx, getAccountByID, userID)
-	var i GetAccountByIDRow
+func (q *Queries) GetAccountsByID(ctx context.Context, userID string) (GetAccountsByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, getAccountsByID, userID)
+	var i GetAccountsByIDRow
 	err := row.Scan(
 		&i.UserID,
 		&i.Username,
@@ -266,37 +296,7 @@ func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]L
 	return items, nil
 }
 
-const softDeleteAccount = `-- name: SoftDeleteAccount :one
-UPDATE
-    accounts
-SET
-    is_delete = true
-WHERE
-    user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
-`
-
-func (q *Queries) SoftDeleteAccount(ctx context.Context, userID string) (Account, error) {
-	row := q.db.QueryRowContext(ctx, softDeleteAccount, userID)
-	var i Account
-	err := row.Scan(
-		&i.UserID,
-		&i.Username,
-		&i.Icon,
-		&i.ExplanatoryText,
-		&i.LocateID,
-		&i.Rate,
-		&i.HashedPassword,
-		&i.Email,
-		&i.CreateAt,
-		&i.ShowLocate,
-		&i.ShowRate,
-		&i.UpdateAt,
-		&i.IsDelete,
-	)
-	return i, err
-}
-
-const updateAccount = `-- name: UpdateAccount :one
+const updateAccounts = `-- name: UpdateAccounts :one
 UPDATE
     accounts
 SET
@@ -313,7 +313,7 @@ WHERE
     user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
 `
 
-type UpdateAccountParams struct {
+type UpdateAccountsParams struct {
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
@@ -326,8 +326,8 @@ type UpdateAccountParams struct {
 	ShowRate        bool           `json:"show_rate"`
 }
 
-func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error) {
-	row := q.db.QueryRowContext(ctx, updateAccount,
+func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateAccounts,
 		arg.UserID,
 		arg.Username,
 		arg.Icon,
@@ -358,7 +358,7 @@ func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (A
 	return i, err
 }
 
-const updateRateByUserID = `-- name: UpdateRateByUserID :one
+const updateRateByID = `-- name: UpdateRateByID :one
 UPDATE
     accounts
 SET    
@@ -367,13 +367,13 @@ WHERE
     user_id = $1 RETURNING user_id, username, icon, explanatory_text, locate_id, rate, hashed_password, email, create_at, show_locate, show_rate, update_at, is_delete
 `
 
-type UpdateRateByUserIDParams struct {
+type UpdateRateByIDParams struct {
 	UserID string `json:"user_id"`
 	Rate   int32  `json:"rate"`
 }
 
-func (q *Queries) UpdateRateByUserID(ctx context.Context, arg UpdateRateByUserIDParams) (Account, error) {
-	row := q.db.QueryRowContext(ctx, updateRateByUserID, arg.UserID, arg.Rate)
+func (q *Queries) UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateRateByID, arg.UserID, arg.Rate)
 	var i Account
 	err := row.Scan(
 		&i.UserID,

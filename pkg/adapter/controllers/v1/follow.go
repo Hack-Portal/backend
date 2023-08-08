@@ -41,7 +41,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 		return
 	}
 
-	response, err := fc.FollowUsecase.CreateFollow(ctx, repository.CreateFollowParams{
+	response, err := fc.FollowUsecase.CreateFollow(ctx, repository.CreateFollowsParams{
 		ToUserID:   reqBody.ToUserID,
 		FromUserID: reqURI.UserID,
 	})
@@ -77,7 +77,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := fc.FollowUsecase.RemoveFollow(ctx, repository.RemoveFollowParams{ToUserID: reqQuery.ToUserID, FromUserID: reqURI.UserID}); err != nil {
+	if err := fc.FollowUsecase.RemoveFollow(ctx, repository.DeleteFollowsParams{ToUserID: reqQuery.ToUserID, FromUserID: reqURI.UserID}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}

@@ -9,32 +9,36 @@ import (
 	"context"
 )
 
-const deleteTechTagByID = `-- name: DeleteTechTagByID :exec
-DELETE FROM tech_tags WHERE tech_tag_id = $1
+const deleteTechTagsByID = `-- name: DeleteTechTagsByID :exec
+DELETE FROM tech_tags
+WHERE tech_tag_id = $1
 `
 
-func (q *Queries) DeleteTechTagByID(ctx context.Context, techTagID int32) error {
-	_, err := q.db.ExecContext(ctx, deleteTechTagByID, techTagID)
+func (q *Queries) DeleteTechTagsByID(ctx context.Context, techTagID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteTechTagsByID, techTagID)
 	return err
 }
 
-const getTechTagByID = `-- name: GetTechTagByID :one
-SELECT tech_tag_id, language FROM tech_tags WHERE tech_tag_id = $1
+const getTechTagsByID = `-- name: GetTechTagsByID :one
+SELECT tech_tag_id, language
+FROM tech_tags
+WHERE tech_tag_id = $1
 `
 
-func (q *Queries) GetTechTagByID(ctx context.Context, techTagID int32) (TechTag, error) {
-	row := q.db.QueryRowContext(ctx, getTechTagByID, techTagID)
+func (q *Queries) GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error) {
+	row := q.db.QueryRowContext(ctx, getTechTagsByID, techTagID)
 	var i TechTag
 	err := row.Scan(&i.TechTagID, &i.Language)
 	return i, err
 }
 
-const listTechTag = `-- name: ListTechTag :many
-SELECT tech_tag_id, language FROM tech_tags
+const listTechTags = `-- name: ListTechTags :many
+SELECT tech_tag_id, language
+FROM tech_tags
 `
 
-func (q *Queries) ListTechTag(ctx context.Context) ([]TechTag, error) {
-	rows, err := q.db.QueryContext(ctx, listTechTag)
+func (q *Queries) ListTechTags(ctx context.Context) ([]TechTag, error) {
+	rows, err := q.db.QueryContext(ctx, listTechTags)
 	if err != nil {
 		return nil, err
 	}
@@ -56,12 +60,15 @@ func (q *Queries) ListTechTag(ctx context.Context) ([]TechTag, error) {
 	return items, nil
 }
 
-const updateTechTagByID = `-- name: UpdateTechTagByID :one
-UPDATE tech_tags SET language = $1 WHERE tech_tag_id = $1 RETURNING tech_tag_id, language
+const updateTechTagsByID = `-- name: UpdateTechTagsByID :one
+UPDATE tech_tags
+SET language = $1
+WHERE tech_tag_id = $1
+RETURNING tech_tag_id, language
 `
 
-func (q *Queries) UpdateTechTagByID(ctx context.Context, language string) (TechTag, error) {
-	row := q.db.QueryRowContext(ctx, updateTechTagByID, language)
+func (q *Queries) UpdateTechTagsByID(ctx context.Context, language string) (TechTag, error) {
+	row := q.db.QueryRowContext(ctx, updateTechTagsByID, language)
 	var i TechTag
 	err := row.Scan(&i.TechTagID, &i.Language)
 	return i, err

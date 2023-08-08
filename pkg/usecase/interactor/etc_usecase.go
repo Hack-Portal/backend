@@ -21,11 +21,11 @@ func NewEtcUsercase(store transaction.Store, timeout time.Duration) inputport.Et
 	}
 }
 
-func (eu *etcUsecase) GetFramework(ctx context.Context, limit int32) ([]repository.Framework, error) {
+func (eu *etcUsecase) GetFramework(ctx context.Context) ([]repository.Framework, error) {
 	ctx, cancel := context.WithTimeout(ctx, eu.contextTimeout)
 	defer cancel()
 
-	return eu.store.ListFrameworks(ctx, limit)
+	return eu.store.ListFrameworks(ctx)
 }
 
 func (eu *etcUsecase) GetLocat(ctx context.Context) ([]repository.Locate, error) {
@@ -38,5 +38,5 @@ func (eu *etcUsecase) GetTechTag(ctx context.Context) ([]repository.TechTag, err
 	ctx, cancel := context.WithTimeout(ctx, eu.contextTimeout)
 	defer cancel()
 
-	return eu.store.ListTechTag(ctx)
+	return eu.store.ListTechTags(ctx)
 }

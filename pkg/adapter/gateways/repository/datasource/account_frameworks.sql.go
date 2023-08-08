@@ -10,34 +10,34 @@ import (
 	"database/sql"
 )
 
-const createAccountFramework = `-- name: CreateAccountFramework :one
+const createAccountFrameworks = `-- name: CreateAccountFrameworks :one
 INSERT INTO
     account_frameworks (user_id, framework_id)
 VALUES
     ($1, $2) RETURNING user_id, framework_id
 `
 
-type CreateAccountFrameworkParams struct {
+type CreateAccountFrameworksParams struct {
 	UserID      string `json:"user_id"`
 	FrameworkID int32  `json:"framework_id"`
 }
 
-func (q *Queries) CreateAccountFramework(ctx context.Context, arg CreateAccountFrameworkParams) (AccountFramework, error) {
-	row := q.db.QueryRowContext(ctx, createAccountFramework, arg.UserID, arg.FrameworkID)
+func (q *Queries) CreateAccountFrameworks(ctx context.Context, arg CreateAccountFrameworksParams) (AccountFramework, error) {
+	row := q.db.QueryRowContext(ctx, createAccountFrameworks, arg.UserID, arg.FrameworkID)
 	var i AccountFramework
 	err := row.Scan(&i.UserID, &i.FrameworkID)
 	return i, err
 }
 
-const deleteAccountFrameworksByUserID = `-- name: DeleteAccountFrameworksByUserID :exec
+const deleteAccountFrameworskByUserID = `-- name: DeleteAccountFrameworskByUserID :exec
 DELETE FROM
     account_frameworks
 WHERE
     user_id = $1
 `
 
-func (q *Queries) DeleteAccountFrameworksByUserID(ctx context.Context, userID string) error {
-	_, err := q.db.ExecContext(ctx, deleteAccountFrameworksByUserID, userID)
+func (q *Queries) DeleteAccountFrameworskByUserID(ctx context.Context, userID string) error {
+	_, err := q.db.ExecContext(ctx, deleteAccountFrameworskByUserID, userID)
 	return err
 }
 

@@ -10,10 +10,8 @@ import (
 )
 
 const deleteFrameworksByID = `-- name: DeleteFrameworksByID :exec
-DELETE FROM
-    frameworks
-WHERE
-    framework_id = $1
+DELETE FROM frameworks
+WHERE framework_id = $1
 `
 
 func (q *Queries) DeleteFrameworksByID(ctx context.Context, frameworkID int32) error {
@@ -22,12 +20,9 @@ func (q *Queries) DeleteFrameworksByID(ctx context.Context, frameworkID int32) e
 }
 
 const getFrameworksByID = `-- name: GetFrameworksByID :one
-SELECT
-    framework_id, tech_tag_id, framework
-FROM
-    frameworks
-WHERE
-    framework_id = $1
+SELECT framework_id, tech_tag_id, framework
+FROM frameworks
+WHERE framework_id = $1
 `
 
 func (q *Queries) GetFrameworksByID(ctx context.Context, frameworkID int32) (Framework, error) {
@@ -38,16 +33,12 @@ func (q *Queries) GetFrameworksByID(ctx context.Context, frameworkID int32) (Fra
 }
 
 const listFrameworks = `-- name: ListFrameworks :many
-SELECT
-    framework_id, tech_tag_id, framework
-FROM
-    frameworks
-LIMIT
-    $1
+SELECT framework_id, tech_tag_id, framework
+FROM frameworks
 `
 
-func (q *Queries) ListFrameworks(ctx context.Context, limit int32) ([]Framework, error) {
-	rows, err := q.db.QueryContext(ctx, listFrameworks, limit)
+func (q *Queries) ListFrameworks(ctx context.Context) ([]Framework, error) {
+	rows, err := q.db.QueryContext(ctx, listFrameworks)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +61,11 @@ func (q *Queries) ListFrameworks(ctx context.Context, limit int32) ([]Framework,
 }
 
 const updateFrameworksByID = `-- name: UpdateFrameworksByID :one
-UPDATE frameworks SET framework = $1 , tech_tag_id = $2 WHERE framework_id = $3 RETURNING framework_id, tech_tag_id, framework
+UPDATE frameworks
+SET framework = $1,
+    tech_tag_id = $2
+WHERE framework_id = $3
+RETURNING framework_id, tech_tag_id, framework
 `
 
 type UpdateFrameworksByIDParams struct {

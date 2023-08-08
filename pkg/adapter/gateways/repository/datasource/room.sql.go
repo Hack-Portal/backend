@@ -11,20 +11,20 @@ import (
 	"github.com/google/uuid"
 )
 
-const createRoom = `-- name: CreateRoom :one
+const createRooms = `-- name: CreateRooms :one
 INSERT INTO rooms (
-    room_id,
-    hackathon_id,
-    title,
-    description,
-    member_limit,
-    is_delete
-)VALUES(
-    $1,$2,$3,$4,$5,$6
-)RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+        room_id,
+        hackathon_id,
+        title,
+        description,
+        member_limit,
+        is_delete
+    )
+VALUES($1, $2, $3, $4, $5, $6)
+RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
 `
 
-type CreateRoomParams struct {
+type CreateRoomsParams struct {
 	RoomID      uuid.UUID `json:"room_id"`
 	HackathonID int32     `json:"hackathon_id"`
 	Title       string    `json:"title"`
@@ -33,8 +33,8 @@ type CreateRoomParams struct {
 	IsDelete    bool      `json:"is_delete"`
 }
 
-func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error) {
-	row := q.db.QueryRowContext(ctx, createRoom,
+func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error) {
+	row := q.db.QueryRowContext(ctx, createRooms,
 		arg.RoomID,
 		arg.HackathonID,
 		arg.Title,
@@ -55,8 +55,32 @@ func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, e
 	return i, err
 }
 
+const deleteRoomsByID = `-- name: DeleteRoomsByID :one
+UPDATE rooms
+SET is_delete = true
+WHERE room_id = $1
+RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+`
+
+func (q *Queries) DeleteRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error) {
+	row := q.db.QueryRowContext(ctx, deleteRoomsByID, roomID)
+	var i Room
+	err := row.Scan(
+		&i.RoomID,
+		&i.HackathonID,
+		&i.Title,
+		&i.Description,
+		&i.MemberLimit,
+		&i.CreateAt,
+		&i.IsDelete,
+	)
+	return i, err
+}
+
 const getRoomsByID = `-- name: GetRoomsByID :one
-SELECT room_id, hackathon_id, title, description, member_limit, create_at, is_delete FROM rooms WHERE room_id = $1
+SELECT room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+FROM rooms
+WHERE room_id = $1
 `
 
 func (q *Queries) GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error) {
@@ -74,24 +98,20 @@ func (q *Queries) GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, err
 	return i, err
 }
 
-const listRoom = `-- name: ListRoom :many
-SELECT 
-    room_id, hackathon_id, title, description, member_limit, create_at, is_delete 
-FROM 
-    rooms 
-WHERE 
-    member_limit > (
-        SELECT count(*) 
-        FROM rooms_accounts 
+const listRooms = `-- name: ListRooms :many
+SELECT room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+FROM rooms
+WHERE member_limit > (
+        SELECT count(*)
+        FROM rooms_accounts
         WHERE rooms_accounts.room_id = rooms.room_id
-        ) 
-    AND
-    is_delete = false
+    )
+    AND is_delete = false
 LIMIT $1
 `
 
-func (q *Queries) ListRoom(ctx context.Context, limit int32) ([]Room, error) {
-	rows, err := q.db.QueryContext(ctx, listRoom, limit)
+func (q *Queries) ListRooms(ctx context.Context, limit int32) ([]Room, error) {
+	rows, err := q.db.QueryContext(ctx, listRooms, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -121,43 +141,17 @@ func (q *Queries) ListRoom(ctx context.Context, limit int32) ([]Room, error) {
 	return items, nil
 }
 
-const softDeleteRoomByID = `-- name: SoftDeleteRoomByID :one
-UPDATE
-    rooms
-SET
-    is_delete = true
-WHERE
-    room_id = $1 RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
-`
-
-func (q *Queries) SoftDeleteRoomByID(ctx context.Context, roomID uuid.UUID) (Room, error) {
-	row := q.db.QueryRowContext(ctx, softDeleteRoomByID, roomID)
-	var i Room
-	err := row.Scan(
-		&i.RoomID,
-		&i.HackathonID,
-		&i.Title,
-		&i.Description,
-		&i.MemberLimit,
-		&i.CreateAt,
-		&i.IsDelete,
-	)
-	return i, err
-}
-
-const updateRoomByID = `-- name: UpdateRoomByID :one
-UPDATE
-    rooms
-SET
-    hackathon_id = $1,
+const updateRoomsByID = `-- name: UpdateRoomsByID :one
+UPDATE rooms
+SET hackathon_id = $1,
     title = $2,
     description = $3,
     member_limit = $4
-WHERE
-    room_id = $5 RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+WHERE room_id = $5
+RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
 `
 
-type UpdateRoomByIDParams struct {
+type UpdateRoomsByIDParams struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
@@ -165,8 +159,8 @@ type UpdateRoomByIDParams struct {
 	RoomID      uuid.UUID `json:"room_id"`
 }
 
-func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Room, error) {
-	row := q.db.QueryRowContext(ctx, updateRoomByID,
+func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams) (Room, error) {
+	row := q.db.QueryRowContext(ctx, updateRoomsByID,
 		arg.HackathonID,
 		arg.Title,
 		arg.Description,

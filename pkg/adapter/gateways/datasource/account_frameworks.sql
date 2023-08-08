@@ -1,4 +1,4 @@
--- name: CreateAccountFramework :one
+-- name: CreateAccountFrameworks :one
 INSERT INTO
     account_frameworks (user_id, framework_id)
 VALUES
@@ -15,7 +15,7 @@ FROM
 WHERE
     account_frameworks.user_Id = $1;
 
--- name: DeleteAccountFrameworksByUserID :exec
+-- name: DeleteAccountFrameworskByUserID :exec
 DELETE FROM
     account_frameworks
 WHERE

@@ -40,7 +40,21 @@ func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccoun
 	return i, err
 }
 
-const getRoomsAccountsByRoomID = `-- name: GetRoomsAccountsByRoomID :many
+const deleteRoomsAccountsByID = `-- name: DeleteRoomsAccountsByID :exec
+DELETE FROM rooms_accounts WHERE room_id = $1 AND user_id = $2
+`
+
+type DeleteRoomsAccountsByIDParams struct {
+	RoomID uuid.UUID `json:"room_id"`
+	UserID string    `json:"user_id"`
+}
+
+func (q *Queries) DeleteRoomsAccountsByID(ctx context.Context, arg DeleteRoomsAccountsByIDParams) error {
+	_, err := q.db.ExecContext(ctx, deleteRoomsAccountsByID, arg.RoomID, arg.UserID)
+	return err
+}
+
+const getRoomsAccountsByID = `-- name: GetRoomsAccountsByID :many
 SELECT 
     accounts.user_id, 
     accounts.icon,
@@ -55,21 +69,21 @@ WHERE
     rooms_accounts.room_id = $1
 `
 
-type GetRoomsAccountsByRoomIDRow struct {
+type GetRoomsAccountsByIDRow struct {
 	UserID  sql.NullString `json:"user_id"`
 	Icon    sql.NullString `json:"icon"`
 	IsOwner bool           `json:"is_owner"`
 }
 
-func (q *Queries) GetRoomsAccountsByRoomID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByRoomIDRow, error) {
-	rows, err := q.db.QueryContext(ctx, getRoomsAccountsByRoomID, roomID)
+func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, getRoomsAccountsByID, roomID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetRoomsAccountsByRoomIDRow{}
+	items := []GetRoomsAccountsByIDRow{}
 	for rows.Next() {
-		var i GetRoomsAccountsByRoomIDRow
+		var i GetRoomsAccountsByIDRow
 		if err := rows.Scan(&i.UserID, &i.Icon, &i.IsOwner); err != nil {
 			return nil, err
 		}
@@ -82,18 +96,4 @@ func (q *Queries) GetRoomsAccountsByRoomID(ctx context.Context, roomID uuid.UUID
 		return nil, err
 	}
 	return items, nil
-}
-
-const removeAccountInRoom = `-- name: RemoveAccountInRoom :exec
-DELETE FROM rooms_accounts WHERE room_id = $1 AND user_id = $2
-`
-
-type RemoveAccountInRoomParams struct {
-	RoomID uuid.UUID `json:"room_id"`
-	UserID string    `json:"user_id"`
-}
-
-func (q *Queries) RemoveAccountInRoom(ctx context.Context, arg RemoveAccountInRoomParams) error {
-	_, err := q.db.ExecContext(ctx, removeAccountInRoom, arg.RoomID, arg.UserID)
-	return err
 }

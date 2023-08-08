@@ -22,16 +22,16 @@ func NewRateUsercase(store transaction.Store, timeout time.Duration) inputport.R
 	}
 }
 
-func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.CreateRateParams) (repository.RateEntry, error) {
+func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.CreateRateEntriesParams) (repository.RateEntry, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	rate, err := ru.store.CreateRate(ctx, body)
+	rate, err := ru.store.CreateRateEntries(ctx, body)
 	if err != nil {
 		return repository.RateEntry{}, err
 	}
 
-	_, err = ru.store.UpdateRateByUserID(ctx, repository.UpdateRateByUserIDParams{UserID: body.UserID, Rate: body.Rate})
+	_, err = ru.store.UpdateRateByID(ctx, repository.UpdateRateByIDParams{UserID: body.UserID, Rate: body.Rate})
 	if err != nil {
 		return repository.RateEntry{}, err
 	}
@@ -43,7 +43,7 @@ func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domai
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	rates, err := ru.store.ListRate(ctx, repository.ListRateParams{
+	rates, err := ru.store.ListRateEntries(ctx, repository.ListRateEntriesParams{
 		UserID: id,
 		Limit:  query.PageSize,
 		Offset: (query.PageId - 1) * query.PageSize,

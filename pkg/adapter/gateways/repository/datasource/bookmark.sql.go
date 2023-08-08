@@ -9,20 +9,20 @@ import (
 	"context"
 )
 
-const createBookmark = `-- name: CreateBookmark :one
+const createBookmarks = `-- name: CreateBookmarks :one
 INSERT INTO
     bookmarks(hackathon_id, user_id)
 VALUES
     ($1, $2) RETURNING hackathon_id, user_id, create_at, is_delete
 `
 
-type CreateBookmarkParams struct {
+type CreateBookmarksParams struct {
 	HackathonID int32  `json:"hackathon_id"`
 	UserID      string `json:"user_id"`
 }
 
-func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmark, error) {
-	row := q.db.QueryRowContext(ctx, createBookmark, arg.HackathonID, arg.UserID)
+func (q *Queries) CreateBookmarks(ctx context.Context, arg CreateBookmarksParams) (Bookmark, error) {
+	row := q.db.QueryRowContext(ctx, createBookmarks, arg.HackathonID, arg.UserID)
 	var i Bookmark
 	err := row.Scan(
 		&i.HackathonID,
@@ -33,7 +33,34 @@ func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) 
 	return i, err
 }
 
-const listBookmarkByUserID = `-- name: ListBookmarkByUserID :many
+const deleteBookmarksByID = `-- name: DeleteBookmarksByID :one
+UPDATE
+    bookmarks
+SET
+    is_delete = true
+WHERE
+    user_id = $1
+    AND hackathon_id = $2 RETURNING hackathon_id, user_id, create_at, is_delete
+`
+
+type DeleteBookmarksByIDParams struct {
+	UserID      string `json:"user_id"`
+	HackathonID int32  `json:"hackathon_id"`
+}
+
+func (q *Queries) DeleteBookmarksByID(ctx context.Context, arg DeleteBookmarksByIDParams) (Bookmark, error) {
+	row := q.db.QueryRowContext(ctx, deleteBookmarksByID, arg.UserID, arg.HackathonID)
+	var i Bookmark
+	err := row.Scan(
+		&i.HackathonID,
+		&i.UserID,
+		&i.CreateAt,
+		&i.IsDelete,
+	)
+	return i, err
+}
+
+const listBookmarksByID = `-- name: ListBookmarksByID :many
 SELECT
     hackathon_id, user_id, create_at, is_delete
 FROM
@@ -42,8 +69,8 @@ WHERE
     user_id = $1 AND is_delete = false
 `
 
-func (q *Queries) ListBookmarkByUserID(ctx context.Context, userID string) ([]Bookmark, error) {
-	rows, err := q.db.QueryContext(ctx, listBookmarkByUserID, userID)
+func (q *Queries) ListBookmarksByID(ctx context.Context, userID string) ([]Bookmark, error) {
+	rows, err := q.db.QueryContext(ctx, listBookmarksByID, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -68,31 +95,4 @@ func (q *Queries) ListBookmarkByUserID(ctx context.Context, userID string) ([]Bo
 		return nil, err
 	}
 	return items, nil
-}
-
-const softRemoveBookmark = `-- name: SoftRemoveBookmark :one
-UPDATE
-    bookmarks
-SET
-    is_delete = true
-WHERE
-    user_id = $1
-    AND hackathon_id = $2 RETURNING hackathon_id, user_id, create_at, is_delete
-`
-
-type SoftRemoveBookmarkParams struct {
-	UserID      string `json:"user_id"`
-	HackathonID int32  `json:"hackathon_id"`
-}
-
-func (q *Queries) SoftRemoveBookmark(ctx context.Context, arg SoftRemoveBookmarkParams) (Bookmark, error) {
-	row := q.db.QueryRowContext(ctx, softRemoveBookmark, arg.UserID, arg.HackathonID)
-	var i Bookmark
-	err := row.Scan(
-		&i.HackathonID,
-		&i.UserID,
-		&i.CreateAt,
-		&i.IsDelete,
-	)
-	return i, err
 }

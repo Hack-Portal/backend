@@ -29,15 +29,15 @@ func (q *Queries) CreateAccountTags(ctx context.Context, arg CreateAccountTagsPa
 	return i, err
 }
 
-const deleteAccounttagsByUserID = `-- name: DeleteAccounttagsByUserID :exec
+const deleteAccountTagsByUserID = `-- name: DeleteAccountTagsByUserID :exec
 DELETE FROM
     account_tags
 WHERE
     user_id = $1
 `
 
-func (q *Queries) DeleteAccounttagsByUserID(ctx context.Context, userID string) error {
-	_, err := q.db.ExecContext(ctx, deleteAccounttagsByUserID, userID)
+func (q *Queries) DeleteAccountTagsByUserID(ctx context.Context, userID string) error {
+	_, err := q.db.ExecContext(ctx, deleteAccountTagsByUserID, userID)
 	return err
 }
 

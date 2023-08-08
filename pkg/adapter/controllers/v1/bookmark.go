@@ -33,7 +33,7 @@ func (bc *BookmarkController) CreateBookmark(ctx *gin.Context) {
 		return
 	}
 
-	response, err := bc.BookmarkUsecase.CreateBookmark(ctx, repository.CreateBookmarkParams{HackathonID: reqBody.HackathonID, UserID: reqBody.UserID})
+	response, err := bc.BookmarkUsecase.CreateBookmark(ctx, repository.CreateBookmarksParams{HackathonID: reqBody.HackathonID, UserID: reqBody.UserID})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

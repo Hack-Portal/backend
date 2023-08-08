@@ -1,4 +1,4 @@
--- name: CreateHackathon :one
+-- name: CreateHackathons :one
 INSERT INTO
   hackathons (
     name,

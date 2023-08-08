@@ -51,7 +51,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 	}
 
 	return au.store.CreateAccountTx(ctx, domain.CreateAccountParams{
-		AccountInfo: repository.CreateAccountParams{
+		AccountInfo: repository.CreateAccountsParams{
 			UserID:   body.UserID,
 			Username: body.Username,
 			Icon: sql.NullString{
@@ -95,6 +95,6 @@ func (au *accountUsecase) UpdateAccount(ctx context.Context, body domain.UpdateA
 func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
-	_, err := au.store.SoftDeleteAccount(ctx, id)
+	_, err := au.store.DeleteAccounts(ctx, id)
 	return err
 }

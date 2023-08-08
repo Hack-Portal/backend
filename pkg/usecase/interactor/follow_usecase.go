@@ -22,16 +22,16 @@ func NewFollowUsercase(store transaction.Store, timeout time.Duration) inputport
 	}
 }
 
-func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.CreateFollowParams) (result domain.FollowResponse, err error) {
+func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.CreateFollowsParams) (result domain.FollowResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 
-	follow, err := fu.store.CreateFollow(ctx, body)
+	follow, err := fu.store.CreateFollows(ctx, body)
 	if err != nil {
 		return
 	}
 
-	account, err := fu.store.GetAccountByID(ctx, follow.ToUserID)
+	account, err := fu.store.GetAccountsByID(ctx, follow.ToUserID)
 	if err != nil {
 		return
 	}
@@ -39,23 +39,23 @@ func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.Creat
 	return
 }
 
-func (fu *followUsecase) RemoveFollow(ctx context.Context, body repository.RemoveFollowParams) error {
+func (fu *followUsecase) RemoveFollow(ctx context.Context, body repository.DeleteFollowsParams) error {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 
-	return fu.store.RemoveFollow(ctx, body)
+	return fu.store.DeleteFollows(ctx, body)
 }
 
 func (fu *followUsecase) GetFollowByToID(ctx context.Context, ID string) (result []domain.FollowResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 
-	follows, err := fu.store.ListFollowByToUserID(ctx, ID)
+	follows, err := fu.store.ListFollowsByToUserID(ctx, ID)
 	if err != nil {
 		return
 	}
 	for _, follow := range follows {
-		account, err := fu.store.GetAccountByID(ctx, follow.FromUserID)
+		account, err := fu.store.GetAccountsByID(ctx, follow.FromUserID)
 		if err != nil {
 			return nil, err
 		}
