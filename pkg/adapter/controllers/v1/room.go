@@ -23,7 +23,7 @@ type RoomController struct {
 // @Description		List Account
 // @Tags			Rooms
 // @Produce			json
-// @Param			room_id path 		string					true	"Rooms API wildcard"
+// @Param			ListRoomsRequest 	query 		ListRoomsRequest	true	"List Rooms Request"
 // @Success			200		{array}		[]db.ListRoomTxResult	"success response"
 // @Failure 		400		{object}	ErrorResponse			"error response"
 // @Failure 		500		{object}	ErrorResponse			"error response"

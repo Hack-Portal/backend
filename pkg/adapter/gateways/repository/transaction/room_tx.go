@@ -312,7 +312,10 @@ func (store *SQLStore) ListRoomTx(ctx context.Context, query domain.ListRoomsReq
 	var result []domain.ListRoomResponse
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		rooms, err := q.ListRooms(ctx, query.PageSize)
+		rooms, err := q.ListRooms(ctx, repository.ListRoomsParams{
+			Limit:  query.PageSize,
+			Offset: query.PageID,
+		})
 		if err != nil {
 			return err
 		}

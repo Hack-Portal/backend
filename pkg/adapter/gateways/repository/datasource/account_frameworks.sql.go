@@ -29,15 +29,15 @@ func (q *Queries) CreateAccountFrameworks(ctx context.Context, arg CreateAccount
 	return i, err
 }
 
-const deleteAccountFrameworskByUserID = `-- name: DeleteAccountFrameworskByUserID :exec
+const deleteAccountFrameworkByUserID = `-- name: DeleteAccountFrameworkByUserID :exec
 DELETE FROM
     account_frameworks
 WHERE
     user_id = $1
 `
 
-func (q *Queries) DeleteAccountFrameworskByUserID(ctx context.Context, userID string) error {
-	_, err := q.db.ExecContext(ctx, deleteAccountFrameworskByUserID, userID)
+func (q *Queries) DeleteAccountFrameworkByUserID(ctx context.Context, userID string) error {
+	_, err := q.db.ExecContext(ctx, deleteAccountFrameworkByUserID, userID)
 	return err
 }
 

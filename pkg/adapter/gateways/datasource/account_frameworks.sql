@@ -15,7 +15,7 @@ FROM
 WHERE
     account_frameworks.user_Id = $1;
 
--- name: DeleteAccountFrameworskByUserID :exec
+-- name: DeleteAccountFrameworkByUserID :exec
 DELETE FROM
     account_frameworks
 WHERE
