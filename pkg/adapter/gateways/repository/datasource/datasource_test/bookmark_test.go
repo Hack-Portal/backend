@@ -4,16 +4,17 @@ import (
 	"context"
 	"testing"
 
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/stretchr/testify/require"
 )
 
-func createBookmarkTest(t *testing.T, account Accounts) Bookmarks {
+func createBookmarkTest(t *testing.T, account repository.Account) repository.Bookmark {
 	hackathon := createHackathonTest(t)
-	arg := CreateBookmarkParams{
+	arg := repository.CreateBookmarksParams{
 		HackathonID: hackathon.HackathonID,
 		UserID:      account.UserID,
 	}
-	bookmark, err := testQueries.CreateBookmark(context.Background(), arg)
+	bookmark, err := testQueries.CreateBookmarks(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, bookmark)
 
@@ -31,12 +32,12 @@ func TestListBookmark(t *testing.T) {
 	n := 5
 	account := createAccountTest(t)
 
-	var bookmarks []Bookmarks
+	var bookmarks []repository.Bookmark
 	for i := 0; i < n; i++ {
 		bookmark := createBookmarkTest(t, account)
 		bookmarks = append(bookmarks, bookmark)
 	}
-	results, err := testQueries.ListBookmarkByUserID(context.Background(), account.UserID)
+	results, err := testQueries.ListBookmarksByID(context.Background(), account.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, results)
 	require.Len(t, results, n)
@@ -51,18 +52,18 @@ func TestListBookmark(t *testing.T) {
 func TestSoftRemoveBookmark(t *testing.T) {
 	n := 5
 	account := createAccountTest(t)
-	var lastBookMark Bookmarks
+	var lastBookMark repository.Bookmark
 	for i := 0; i < n; i++ {
 		lastBookMark = createBookmarkTest(t, account)
 	}
 
-	_, err := testQueries.SoftRemoveBookmark(context.Background(), SoftRemoveBookmarkParams{
+	_, err := testQueries.DeleteBookmarksByID(context.Background(), repository.DeleteBookmarksByIDParams{
 		UserID:      lastBookMark.UserID,
 		HackathonID: lastBookMark.HackathonID,
 	})
 	require.NoError(t, err)
 
-	listBookmark, err := testQueries.ListBookmarkByUserID(context.Background(), account.UserID)
+	listBookmark, err := testQueries.ListBookmarksByID(context.Background(), account.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, listBookmark)
 

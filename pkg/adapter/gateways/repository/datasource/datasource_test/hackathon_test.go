@@ -5,14 +5,14 @@ import (
 	"testing"
 	"time"
 
-	domain "github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/password"
 	"github.com/stretchr/testify/require"
 )
 
-func createHackathonTest(t *testing.T) Hackathons {
+func createHackathonTest(t *testing.T) repository.Hackathon {
 
-	arg := domain.CreateHackathonRequestBody{
+	arg := repository.CreateHackathonsParams{
 		Name:        util.RandomString(8),
 		Description: util.RandomString(8),
 		Link:        util.RandomString(8),
@@ -24,7 +24,7 @@ func createHackathonTest(t *testing.T) Hackathons {
 		Term:      int32(util.Random(100)),
 	}
 
-	hackathon, err := testQueries.CreateHackathon(context.Background(), arg)
+	hackathon, err := testQueries.CreateHackathons(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, hackathon)
 
@@ -64,7 +64,7 @@ func TestListHackathon(t *testing.T) {
 	for i := 0; i < n; i++ {
 		createHackathonTest(t)
 	}
-	arg := domain.ListHackathonsParams{
+	arg := repository.ListHackathonsParams{
 		Expired: time.Now(),
 		Limit:   int32(n),
 		Offset:  0,

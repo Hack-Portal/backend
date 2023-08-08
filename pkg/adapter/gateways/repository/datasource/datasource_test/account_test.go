@@ -5,12 +5,13 @@ import (
 	"database/sql"
 	"testing"
 
-	domain "github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/password"
 	"github.com/stretchr/testify/require"
 )
 
-func createAccountTest(t *testing.T) Accounts {
+func createAccountTest(t *testing.T) repository.Account {
 	arg := domain.CreateAccountRequest{
 		UserID:     util.RandomString(8),
 		Username:   util.RandomString(8),
@@ -21,7 +22,7 @@ func createAccountTest(t *testing.T) Accounts {
 		ShowLocate: true,
 	}
 
-	account, err := testQueries.CreateAccount(context.Background(), arg)
+	account, err := testQueries.CreateAccounts(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
 
