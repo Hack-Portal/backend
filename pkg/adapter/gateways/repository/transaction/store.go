@@ -20,10 +20,8 @@ const (
 type Store interface {
 	repository.Querier
 	// Account Tx
-	CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (domain.AccountResponses, error)
-	GetAccountTxByID(ctx context.Context, ID string) (domain.AccountResponses, error)
-	GetAccountTxByEmail(ctx context.Context, email string) (domain.AccountResponses, error)
-	UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (domain.AccountResponses, error)
+	CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (repository.Account, error)
+	UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (repository.Account, error)
 	// Room Tx
 	CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (domain.GetRoomResponse, error)
 	GetRoomTx(ctx context.Context, id uuid.UUID) (domain.GetRoomResponse, error)
@@ -31,6 +29,10 @@ type Store interface {
 	UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (domain.GetRoomResponse, error)
 	DeleteRoomTx(ctx context.Context, args domain.DeleteRoomParam) error
 	AddAccountInRoom(ctx context.Context, args domain.AddAccountInRoomParam) error
+	// Hackathon Tx
+
+	// PastWork Tx
+	CreatePastWorkTx(ctx context.Context, arg domain.CreatePastWorkParams) (repository.PastWork, error)
 
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)

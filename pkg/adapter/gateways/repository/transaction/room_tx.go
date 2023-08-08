@@ -4,139 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/google/uuid"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 )
-
-func stackTagAndFrameworks(ctx context.Context, q *repository.Queries, room repository.Room) ([]domain.RoomTechTags, []domain.RoomFramework, error) {
-	var (
-		roomTechTags   []domain.RoomTechTags
-		roomFrameworks []domain.RoomFramework
-	)
-	accounts, err := q.GetRoomsAccountsByID(ctx, room.RoomID)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	for _, account := range accounts {
-		techTags, err := q.ListAccountTagsByUserID(ctx, account.UserID.String)
-		if err != nil {
-			return nil, nil, err
-		}
-		for _, techTag := range techTags {
-			roomTechTags = margeTechTagArray(roomTechTags, repository.TechTag{
-				TechTagID: techTag.TechTagID.Int32,
-				Language:  techTag.Language.String,
-			})
-		}
-
-		frameworks, err := q.ListAccountFrameworksByUserID(ctx, account.UserID.String)
-		if err != nil {
-			return nil, nil, err
-		}
-		for _, framework := range frameworks {
-			roomFrameworks = margeFrameworkArray(roomFrameworks, repository.Framework{
-				FrameworkID: framework.FrameworkID.Int32,
-				TechTagID:   framework.TechTagID.Int32,
-				Framework:   framework.Framework.String,
-			})
-		}
-	}
-	return roomTechTags, roomFrameworks, nil
-}
-
-func margeTechTagArray(roomTechTags []domain.RoomTechTags, techtag repository.TechTag) []domain.RoomTechTags {
-	for _, roomTechTag := range roomTechTags {
-		if roomTechTag.TechTag == techtag {
-			roomTechTag.Count++
-		}
-	}
-	roomTechTags = append(roomTechTags, domain.RoomTechTags{
-		TechTag: techtag,
-		Count:   1,
-	})
-
-	return roomTechTags
-}
-
-func margeFrameworkArray(roomFramework []domain.RoomFramework, framework repository.Framework) []domain.RoomFramework {
-	for _, roomFramework := range roomFramework {
-		if roomFramework.Framework == framework {
-			roomFramework.Count++
-		}
-	}
-	roomFramework = append(roomFramework, domain.RoomFramework{
-		Framework: framework,
-		Count:     1,
-	})
-
-	return roomFramework
-}
-
-func margeRoomAccount(ctx context.Context, q *repository.Queries, id uuid.UUID) (result []domain.NowRoomAccounts, err error) {
-	nowMembers, err := q.GetRoomsAccountsByID(ctx, id)
-	if err != nil {
-		return
-	}
-
-	for _, nowMember := range nowMembers {
-		result = append(result, domain.NowRoomAccounts{
-			UserID:  nowMember.UserID.String,
-			Icon:    nowMember.Icon.String,
-			IsOwner: nowMember.IsOwner,
-		})
-	}
-	return
-}
-
-func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, hackathon domain.HackathonInfo) domain.GetRoomResponse {
-	return domain.GetRoomResponse{
-		RoomID:      room.RoomID,
-		Title:       room.Title,
-		Description: room.Description,
-		MemberLimit: room.MemberLimit,
-		IsDelete:    room.IsDelete,
-		CreateAt:    room.CreateAt,
-		Hackathon:   hackathon,
-	}
-}
-
-func getHackathonTag(ctx context.Context, q *repository.Queries, id int32) (result []repository.StatusTag, err error) {
-	tags, err := q.GetStatusTagsByHackathonID(ctx, id)
-	if err != nil {
-		return
-	}
-
-	for _, tag := range tags {
-		statusTag, err := q.GetStatusTagsByStatusID(ctx, tag.StatusID)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, statusTag)
-	}
-	return
-}
-
-func getRoomMember(ctx context.Context, q *repository.Queries, id uuid.UUID) (result []domain.NowRoomAccounts, err error) {
-	accounts, err := q.GetRoomsAccountsByID(ctx, id)
-	if err != nil {
-		return
-	}
-
-	for _, account := range accounts {
-		user, err := q.GetAccountsByID(ctx, account.UserID.String)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, domain.NowRoomAccounts{
-			UserID:  user.UserID,
-			Icon:    user.Icon.String,
-			IsOwner: account.IsOwner,
-		})
-	}
-	return
-}
 
 func compRoom(request domain.UpdateRoomParam, latest repository.Room, members int32) (result repository.UpdateRoomsByIDParams, err error) {
 	result.RoomID = latest.RoomID
@@ -179,18 +49,18 @@ func compRoom(request domain.UpdateRoomParam, latest repository.Room, members in
 	return
 }
 
-func checkOwner(members []domain.NowRoomAccounts, id string) bool {
+func checkOwner(members []repository.GetRoomsAccountsByIDRow, id string) bool {
 	for _, member := range members {
-		if member.UserID == id {
+		if member.UserID.String == id {
 			return member.IsOwner
 		}
 	}
 	return false
 }
 
-func checkDuplication(members []domain.NowRoomAccounts, id string) bool {
+func checkDuplication(members []repository.GetRoomsAccountsByIDRow, id string) bool {
 	for _, member := range members {
-		if member.UserID == id {
+		if member.UserID.String == id {
 			return true
 		}
 	}
@@ -213,16 +83,6 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 			return err
 		}
 
-		hackathon, err := q.GetHackathonByID(ctx, args.HackathonID)
-		if err != nil {
-			return err
-		}
-
-		hackathonTag, err := getHackathonTag(ctx, q, args.HackathonID)
-		if err != nil {
-			return err
-		}
-
 		_, err = q.CreateRoomsAccounts(ctx, repository.CreateRoomsAccountsParams{
 			UserID:  args.OwnerID,
 			RoomID:  room.RoomID,
@@ -233,130 +93,13 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 			return err
 		}
 
-		techTags, frameworks, err := stackTagAndFrameworks(ctx, q, room)
-		if err != nil {
-			return err
-		}
-
-		members, err := getRoomMember(ctx, q, room.RoomID)
-		if err != nil {
-			return err
-		}
-
-		result = parseRoomResponse(result, room, domain.HackathonInfo{
-			HackathonID: hackathon.HackathonID,
-			Name:        hackathon.Name,
-			Icon:        hackathon.Icon.String,
-			Link:        hackathon.Link,
-			StartDate:   hackathon.StartDate,
-			Term:        hackathon.Term,
-			Tags:        hackathonTag,
-		})
-		result.NowMember = members
-		result.MembersTechTags = techTags
-		result.MembersFrameworks = frameworks
-
 		return nil
 	})
 	return result, err
 }
 
-func (store *SQLStore) GetRoomTx(ctx context.Context, id uuid.UUID) (domain.GetRoomResponse, error) {
-	var result domain.GetRoomResponse
-	err := store.execTx(ctx, func(q *repository.Queries) error {
-
-		room, err := q.GetRoomsByID(ctx, id)
-		if err != nil {
-			return err
-		}
-
-		hackathon, err := q.GetHackathonByID(ctx, room.HackathonID)
-		if err != nil {
-			return err
-		}
-
-		hackathonTag, err := getHackathonTag(ctx, q, room.HackathonID)
-		if err != nil {
-			return err
-		}
-
-		techTags, frameworks, err := stackTagAndFrameworks(ctx, q, room)
-		if err != nil {
-			return err
-		}
-
-		members, err := getRoomMember(ctx, q, room.RoomID)
-		if err != nil {
-			return err
-		}
-
-		result = parseRoomResponse(result, room, domain.HackathonInfo{
-			HackathonID: hackathon.HackathonID,
-			Name:        hackathon.Name,
-			Icon:        hackathon.Icon.String,
-			Link:        hackathon.Link,
-			StartDate:   hackathon.StartDate,
-			Term:        hackathon.Term,
-			Tags:        hackathonTag,
-		})
-		result.NowMember = members
-		result.MembersTechTags = techTags
-		result.MembersFrameworks = frameworks
-
-		return nil
-	})
-	return result, err
-}
-
-func (store *SQLStore) ListRoomTx(ctx context.Context, query domain.ListRoomsRequest) ([]domain.ListRoomResponse, error) {
-	var result []domain.ListRoomResponse
-	err := store.execTx(ctx, func(q *repository.Queries) error {
-
-		rooms, err := q.ListRooms(ctx, query.PageSize)
-		if err != nil {
-			return err
-		}
-
-		for _, room := range rooms {
-			hackathon, err := q.GetHackathonByID(ctx, room.HackathonID)
-			if err != nil {
-				return err
-			}
-
-			techTags, frameworks, err := stackTagAndFrameworks(ctx, q, room)
-			if err != nil {
-				return err
-			}
-
-			members, err := getRoomMember(ctx, q, room.RoomID)
-			if err != nil {
-				return err
-			}
-
-			result = append(result, domain.ListRoomResponse{
-				Rooms: domain.ListRoomRoomInfo{
-					RoomID:      room.RoomID,
-					Title:       room.Title,
-					MemberLimit: room.MemberLimit,
-					CreatedAt:   room.CreateAt,
-				},
-				Hackathon: domain.ListRoomHackathonInfo{
-					HackathonID:   hackathon.HackathonID,
-					HackathonName: hackathon.Name,
-					Icon:          hackathon.Icon.String,
-				},
-				NowMember:         members,
-				MembersTechTags:   techTags,
-				MembersFrameworks: frameworks,
-			})
-		}
-		return nil
-	})
-	return result, err
-}
-
-func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (domain.GetRoomResponse, error) {
-	var result domain.GetRoomResponse
+func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (repository.Room, error) {
+	var room repository.Room
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
 		latest, err := q.GetRoomsByID(ctx, body.RoomID)
@@ -364,7 +107,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 			return err
 		}
 
-		members, err := getRoomMember(ctx, q, latest.RoomID)
+		members, err := q.GetRoomsAccountsByID(ctx, latest.RoomID)
 		if err != nil {
 			return err
 		}
@@ -384,41 +127,13 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 			return err
 		}
 
-		room, err := q.UpdateRoomsByID(ctx, args)
+		room, err = q.UpdateRoomsByID(ctx, args)
 		if err != nil {
 			return err
 		}
-
-		hackathon, err := q.GetHackathonByID(ctx, room.HackathonID)
-		if err != nil {
-			return err
-		}
-
-		hackathonTag, err := getHackathonTag(ctx, q, room.HackathonID)
-		if err != nil {
-			return err
-		}
-
-		techTags, frameworks, err := stackTagAndFrameworks(ctx, q, room)
-		if err != nil {
-			return err
-		}
-
-		result = parseRoomResponse(result, room, domain.HackathonInfo{
-			HackathonID: hackathon.HackathonID,
-			Name:        hackathon.Name,
-			Icon:        hackathon.Icon.String,
-			Link:        hackathon.Link,
-			StartDate:   hackathon.StartDate,
-			Term:        hackathon.Term,
-			Tags:        hackathonTag,
-		})
-		result.NowMember = members
-		result.MembersTechTags = techTags
-		result.MembersFrameworks = frameworks
 		return nil
 	})
-	return result, err
+	return room, err
 }
 
 func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomParam) error {
@@ -429,7 +144,7 @@ func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomP
 			return err
 		}
 
-		members, err := getRoomMember(ctx, q, args.RoomID)
+		members, err := q.GetRoomsAccountsByID(ctx, args.RoomID)
 		if err != nil {
 			return err
 		}
@@ -452,7 +167,7 @@ func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomP
 func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAccountInRoomParam) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		members, err := getRoomMember(ctx, q, args.RoomID)
+		members, err := q.GetRoomsAccountsByID(ctx, args.RoomID)
 		if err != nil {
 			return err
 		}

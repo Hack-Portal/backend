@@ -8,88 +8,30 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 )
 
-func parseAccountResponse(response domain.AccountResponses, account repository.Account, locate string) domain.AccountResponses {
-	return domain.AccountResponses{
-		UserID:          account.UserID,
-		Username:        account.Username,
-		Icon:            account.Icon.String,
-		ExplanatoryText: account.ExplanatoryText.String,
-		Rate:            account.Rate,
-		Email:           account.Email,
-		Locate:          locate,
-		ShowRate:        account.ShowRate,
-		ShowLocate:      account.ShowLocate,
-		TechTags:        response.TechTags,
-		Frameworks:      response.Frameworks,
-	}
-}
-
-func createTagsAndFrameworks(ctx context.Context, q *repository.Queries, id string, techTags, frameworks []int32) (tag []repository.TechTag, fw []repository.Framework, err error) {
+func createAccountTags(ctx context.Context, q *repository.Queries, id string, techTags []int32) error {
 	for _, techTag := range techTags {
-		accountTag, err := q.CreateAccountTags(ctx, repository.CreateAccountTagsParams{
+		_, err := q.CreateAccountTags(ctx, repository.CreateAccountTagsParams{
 			UserID:    id,
 			TechTagID: techTag,
 		})
 		if err != nil {
-			return nil, nil, err
+			return err
 		}
-
-		techtag, err := q.GetTechTagsByID(ctx, accountTag.TechTagID)
-		if err != nil {
-			return nil, nil, err
-		}
-
-		tag = append(tag, techtag)
 	}
+	return nil
+}
 
-	for _, accountFrameworkTag := range frameworks {
-		accountFramework, err := q.CreateAccountFrameworks(ctx, repository.CreateAccountFrameworksParams{
+func createAccountFrameworks(ctx context.Context, q *repository.Queries, id string, frameworks []int32) error {
+	for _, framework := range frameworks {
+		_, err := q.CreateAccountFrameworks(ctx, repository.CreateAccountFrameworksParams{
 			UserID:      id,
-			FrameworkID: accountFrameworkTag,
+			FrameworkID: framework,
 		})
 		if err != nil {
-			return nil, nil, err
+			return err
 		}
-
-		framework, err := q.GetFrameworksByID(ctx, accountFramework.FrameworkID)
-		if err != nil {
-			return nil, nil, err
-		}
-		fw = append(fw, framework)
 	}
-	return
-}
-
-func parseAccountResponseRawID(response domain.AccountResponses, account repository.GetAccountsByIDRow, locate string) domain.AccountResponses {
-	return domain.AccountResponses{
-		UserID:          account.UserID,
-		Username:        account.Username,
-		Icon:            account.Icon.String,
-		ExplanatoryText: account.ExplanatoryText.String,
-		Rate:            account.Rate,
-		Email:           account.Email,
-		Locate:          locate,
-		ShowRate:        account.ShowRate,
-		ShowLocate:      account.ShowLocate,
-		TechTags:        response.TechTags,
-		Frameworks:      response.Frameworks,
-	}
-}
-
-func parseAccountResponseRawEmail(response domain.AccountResponses, account repository.GetAccountsByEmailRow, locate string) domain.AccountResponses {
-	return domain.AccountResponses{
-		UserID:          account.UserID,
-		Username:        account.Username,
-		Icon:            account.Icon.String,
-		ExplanatoryText: account.ExplanatoryText.String,
-		Rate:            account.Rate,
-		Email:           account.Email,
-		Locate:          locate,
-		ShowRate:        account.ShowRate,
-		ShowLocate:      account.ShowLocate,
-		TechTags:        response.TechTags,
-		Frameworks:      response.Frameworks,
-	}
+	return nil
 }
 
 func compAccount(request repository.Account, latest repository.GetAccountsByIDRow) (result repository.UpdateAccountsParams) {
@@ -154,131 +96,37 @@ func compAccount(request repository.Account, latest repository.GetAccountsByIDRo
 	return
 }
 
-func (store *SQLStore) CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (domain.AccountResponses, error) {
-	var result domain.AccountResponses
+func (store *SQLStore) CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (repository.Account, error) {
+	var account repository.Account
 	err := store.execTx(ctx, func(q *repository.Queries) error {
-
-		account, err := q.CreateAccounts(ctx, args.AccountInfo)
+		var err error
+		account, err = q.CreateAccounts(ctx, args.AccountInfo)
 		if err != nil {
 			return err
 		}
 
-		locate, err := q.GetLocatesByID(ctx, account.LocateID)
-		if err != nil {
+		if err := createAccountFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountTechTag); err != nil {
 			return err
 		}
 
-		techTags, frameworks, err := createTagsAndFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountTechTag, args.AccountFrameworkTag)
-		if err != nil {
+		if err := createAccountFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountFrameworkTag); err != nil {
 			return err
 		}
-
-		result = parseAccountResponse(result, account, locate.Name)
-		result.TechTags = techTags
-		result.Frameworks = frameworks
 
 		return nil
 	})
-	return result, err
+	return account, err
 }
 
-func getAccountTags(ctx context.Context, q *repository.Queries, id string) (rTechTags []repository.TechTag, rFrameworks []repository.Framework, err error) {
-	techTags, err := q.ListAccountTagsByUserID(ctx, id)
-	if err != nil {
-		return
-	}
-
-	frameworks, err := q.ListAccountFrameworksByUserID(ctx, id)
-	if err != nil {
-		return
-	}
-
-	for _, techTag := range techTags {
-		techtag, err := q.GetTechTagsByID(ctx, techTag.TechTagID.Int32)
-		if err != nil {
-			return nil, nil, err
-		}
-
-		rTechTags = append(rTechTags, techtag)
-	}
-
-	for _, framework := range frameworks {
-		framework, err := q.GetFrameworksByID(ctx, framework.FrameworkID.Int32)
-		if err != nil {
-			return nil, nil, err
-		}
-		rFrameworks = append(rFrameworks, framework)
-	}
-
-	return
-}
-
-func (store *SQLStore) GetAccountTxByID(ctx context.Context, id string) (domain.AccountResponses, error) {
-	var result domain.AccountResponses
+func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (repository.Account, error) {
+	var account repository.Account
 	err := store.execTx(ctx, func(q *repository.Queries) error {
-
-		account, err := q.GetAccountsByID(ctx, id)
-		if err != nil {
-			return err
-		}
-
-		locate, err := q.GetLocatesByID(ctx, account.LocateID)
-		if err != nil {
-			return err
-		}
-
-		techTags, frameworks, err := getAccountTags(ctx, q, account.UserID)
-
-		result = parseAccountResponseRawID(result, account, locate.Name)
-		result.TechTags = techTags
-		result.Frameworks = frameworks
-
-		return nil
-	})
-	return result, err
-}
-
-func (store *SQLStore) GetAccountTxByEmail(ctx context.Context, email string) (domain.AccountResponses, error) {
-	var result domain.AccountResponses
-	err := store.execTx(ctx, func(q *repository.Queries) error {
-
-		account, err := q.GetAccountsByEmail(ctx, email)
-		if err != nil {
-			return err
-		}
-
-		locate, err := q.GetLocatesByID(ctx, account.LocateID)
-		if err != nil {
-			return err
-		}
-
-		techTags, frameworks, err := getAccountTags(ctx, q, account.UserID)
-		result = parseAccountResponseRawEmail(result, account, locate.Name)
-		result.TechTags = techTags
-		result.Frameworks = frameworks
-
-		return nil
-	})
-	return result, err
-}
-
-// アカウントの新旧の比較をする
-
-func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (domain.AccountResponses, error) {
-	var result domain.AccountResponses
-	err := store.execTx(ctx, func(q *repository.Queries) error {
-
 		latest, err := q.GetAccountsByID(ctx, args.AccountInfo.UserID)
 		if err != nil {
 			return err
 		}
 
-		account, err := q.UpdateAccounts(ctx, compAccount(args.AccountInfo, latest))
-		if err != nil {
-			return err
-		}
-
-		locate, err := q.GetLocatesByID(ctx, account.LocateID)
+		account, err = q.UpdateAccounts(ctx, compAccount(args.AccountInfo, latest))
 		if err != nil {
 			return err
 		}
@@ -294,16 +142,15 @@ func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAc
 			return err
 		}
 
-		techTags, frameworks, err := createTagsAndFrameworks(ctx, q, latest.UserID, args.AccountTechTag, args.AccountFrameworkTag)
-		if err != nil {
+		if err := createAccountFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountTechTag); err != nil {
 			return err
 		}
 
-		result = parseAccountResponse(result, account, locate.Name)
-		result.TechTags = techTags
-		result.Frameworks = frameworks
+		if err := createAccountFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountFrameworkTag); err != nil {
+			return err
+		}
 
 		return nil
 	})
-	return result, err
+	return account, err
 }
