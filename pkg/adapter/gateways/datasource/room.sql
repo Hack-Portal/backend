@@ -22,7 +22,7 @@ WHERE member_limit > (
         WHERE rooms_accounts.room_id = rooms.room_id
     )
     AND is_delete = false
-LIMIT $1;
+LIMIT $1 OFFSET $2;
 -- name: DeleteRoomsByID :one
 UPDATE rooms
 SET is_delete = true
