@@ -59,10 +59,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 		}
 	}
 
-	response, err := hc.HackathonUsecase.CreateHackathon(ctx, domain.CreateHackathonParams{
-		CreateHackathonRequestBody: reqBody,
-		Image:                      image.Bytes(),
-	})
+	response, err := hc.HackathonUsecase.CreateHackathon(ctx, reqBody, image.Bytes())
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
