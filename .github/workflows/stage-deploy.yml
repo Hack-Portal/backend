@@ -54,6 +54,7 @@ jobs:
       run: |
         git config --global user.email ${{ secrets.EMAIL_GITHUB }}
         git config --global user.name ${{ secrets.USERNAME_GITHUB }}
+        git remote set-url origin ${{secrets.CONFIG_REPOSITORY}}
         
         cd config/manifest/stage
 
