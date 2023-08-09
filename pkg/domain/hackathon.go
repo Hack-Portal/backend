@@ -20,11 +20,6 @@ type CreateHackathonRequestBody struct {
 	StatusTags  []int32   `json:"status_tags"`
 }
 
-type CreateHackathonParams struct {
-	CreateHackathonRequestBody
-	Image []byte `json:"image"`
-}
-
 type HackathonResponses struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Name        string    `json:"name"`
@@ -53,4 +48,9 @@ type ListHackathonsResponses struct {
 	Term        int32     `json:"term"`
 
 	StatusTags []repository.StatusTag `json:"status_tags"`
+}
+
+type CreateHackathonParams struct {
+	Hackathon  repository.CreateHackathonsParams
+	StatusTags []int32 `json:"status_tags"`
 }

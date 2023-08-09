@@ -23,50 +23,37 @@ func NewHackathonUsercase(store transaction.Store, timeout time.Duration) inputp
 	}
 }
 
-func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.CreateHackathonParams) (result domain.HackathonResponses, err error) {
+func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.CreateHackathonRequestBody, image []byte) (result domain.HackathonResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
 	defer cancel()
 
-	Icon, err := hu.store.UploadImage(ctx, body.Image)
+	Icon, err := hu.store.UploadImage(ctx, image)
 	if err != nil {
 		return
 	}
 
-	hackathon, err := hu.store.CreateHackathons(ctx, repository.CreateHackathonsParams{
-		Name: body.Name,
-		Icon: sql.NullString{
-			String: Icon,
-			Valid:  true,
+	hackathon, err := hu.store.CreateHackathonTx(ctx, domain.CreateHackathonParams{
+		Hackathon: repository.CreateHackathonsParams{
+			Name: body.Name,
+			Icon: sql.NullString{
+				String: Icon,
+				Valid:  true,
+			},
+			Description: body.Description,
+			Link:        body.Link,
+			Expired:     body.Expired,
+			StartDate:   body.StartDate,
+			Term:        body.Term,
 		},
-		Description: body.Description,
-		Link:        body.Link,
-		Expired:     body.Expired,
-		StartDate:   body.StartDate,
-		Term:        body.Term,
+		StatusTags: body.StatusTags,
 	})
 	if err != nil {
 		return
 	}
 
-	for _, statusTag := range body.CreateHackathonRequestBody.StatusTags {
-		_, err := hu.store.CreateHackathonStatusTags(ctx, repository.CreateHackathonStatusTagsParams{HackathonID: hackathon.HackathonID, StatusID: statusTag})
-		if err != nil {
-			return domain.HackathonResponses{}, err
-		}
-	}
-
-	statusTags, err := hu.store.GetStatusTagsByHackathonID(ctx, hackathon.HackathonID)
+	statusTags, err := getHackathonTag(ctx, hu.store, hackathon.HackathonID)
 	if err != nil {
 		return
-	}
-
-	var tags []repository.StatusTag
-	for _, statusTag := range statusTags {
-		tag, err := hu.store.GetStatusTagsByStatusID(ctx, statusTag.StatusID)
-		if err != nil {
-			return domain.HackathonResponses{}, err
-		}
-		tags = append(tags, tag)
 	}
 
 	result = domain.HackathonResponses{
@@ -78,7 +65,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.Cre
 		Expired:     hackathon.Expired,
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
-		StatusTags:  tags,
+		StatusTags:  statusTags,
 	}
 	return
 }
