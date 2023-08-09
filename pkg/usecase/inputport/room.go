@@ -8,7 +8,7 @@ import (
 )
 
 type RoomUsecase interface {
-	ListRooms(ctx context.Context, query domain.ListRoomsRequest) (result []domain.ListRoomResponse, err error)
+	ListRooms(ctx context.Context, query domain.ListRoomsRequest) ([]domain.ListRoomResponse, error)
 	GetRoom(ctx context.Context, id uuid.UUID) (result domain.GetRoomResponse, err error)
 	CreateRoom(ctx context.Context, body domain.CreateRoomParam) (result domain.GetRoomResponse, err error)
 	UpdateRoom(ctx context.Context, body domain.UpdateRoomParam) (result domain.GetRoomResponse, err error)

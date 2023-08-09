@@ -32,6 +32,6 @@ serverRun:
 	go run ./cmd/app/main.go
 	
 test:
-	go test -v -cover ./...
+	go test -coverpkg=./...  ./...
 	
 .PHONY: postgresRun postgresStart postgresStop connectDB createdb dropdb installmigrate migrateup migratedown sqlc test 

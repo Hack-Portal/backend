@@ -61,6 +61,7 @@ func (q *Queries) ListFollowsByToUserID(ctx context.Context, toUserID string) ([
 		return nil, err
 	}
 	defer rows.Close()
+	
 	items := []Follow{}
 	for rows.Next() {
 		var i Follow

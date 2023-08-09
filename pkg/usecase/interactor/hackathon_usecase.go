@@ -169,14 +169,14 @@ func (hu *hackathonUsecase) GetHackathon(ctx context.Context, id int32) (result 
 	return
 }
 
-func getHackathonTag(ctx context.Context, q *repository.Queries, id int32) (result []repository.StatusTag, err error) {
-	tags, err := q.GetStatusTagsByHackathonID(ctx, id)
+func getHackathonTag(ctx context.Context, store transaction.Store, id int32) (result []repository.StatusTag, err error) {
+	tags, err := store.GetStatusTagsByHackathonID(ctx, id)
 	if err != nil {
 		return
 	}
 
 	for _, tag := range tags {
-		statusTag, err := q.GetStatusTagsByStatusID(ctx, tag.StatusID)
+		statusTag, err := store.GetStatusTagsByStatusID(ctx, tag.StatusID)
 		if err != nil {
 			return nil, err
 		}
