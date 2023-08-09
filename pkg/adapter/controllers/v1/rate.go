@@ -39,17 +39,15 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 		return
 	}
 
-	response, err := rc.RateUsecase.CreateRateEntry(ctx, repository.CreateRateEntriesParams{
+	if err := rc.RateUsecase.CreateRateEntry(ctx, repository.CreateRateEntriesParams{
 		UserID: reqURI.UserID,
 		Rate:   reqBody.Rate,
-	})
-
-	if err != nil {
+	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: "Rate Update Successful"})
 }
 
 // ListRate	godoc

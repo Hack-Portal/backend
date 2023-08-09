@@ -22,21 +22,15 @@ func NewRateUsercase(store transaction.Store, timeout time.Duration) inputport.R
 	}
 }
 
-func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.CreateRateEntriesParams) (repository.RateEntry, error) {
+func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.CreateRateEntriesParams) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	rate, err := ru.store.CreateRateEntries(ctx, body)
-	if err != nil {
-		return repository.RateEntry{}, err
+	if err := ru.store.CreateRateEntitieTx(ctx, body); err != nil {
+		return err
 	}
 
-	_, err = ru.store.UpdateRateByID(ctx, repository.UpdateRateByIDParams{UserID: body.UserID, Rate: body.Rate})
-	if err != nil {
-		return repository.RateEntry{}, err
-	}
-
-	return rate, nil
+	return nil
 }
 
 func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domain.ListRateParams) ([]repository.RateEntry, error) {
