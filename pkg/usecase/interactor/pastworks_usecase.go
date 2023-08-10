@@ -13,7 +13,7 @@ func parsePastworkMembers(ctx context.Context, q *repository.Queries, id []strin
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, domain.PastWorkMembers{UserID: account.UserID, Name: account.Username, Icon: account.Icon.String})
+		result = append(result, domain.PastWorkMembers{AccountID: account.AccountID, Name: account.Username, Icon: account.Icon.String})
 	}
 	return
 }

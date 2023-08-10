@@ -136,7 +136,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 
 	account, err := au.store.CreateAccountTx(ctx, domain.CreateAccountParams{
 		AccountInfo: repository.CreateAccountsParams{
-			UserID:   body.UserID,
+			UserID:   body.AccountID,
 			Username: body.Username,
 			Icon: sql.NullString{
 				String: imageURL,
@@ -220,7 +220,7 @@ func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
 
 func parseAccountResponse(account repository.Account, locate string, techTags []repository.TechTag, frameworks []repository.Framework) domain.AccountResponses {
 	return domain.AccountResponses{
-		UserID:          account.UserID,
+		AccountID:       account.AccountID,
 		Username:        account.Username,
 		Icon:            account.Icon.String,
 		ExplanatoryText: account.ExplanatoryText.String,

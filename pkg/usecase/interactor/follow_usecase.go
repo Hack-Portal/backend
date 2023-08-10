@@ -35,7 +35,7 @@ func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.Creat
 	if err != nil {
 		return
 	}
-	result = domain.FollowResponse{UserID: account.UserID, Username: account.Username, Icon: account.Icon.String}
+	result = domain.FollowResponse{AccountID: account.AccountID, Username: account.Username, Icon: account.Icon.String}
 	return
 }
 
@@ -60,9 +60,9 @@ func (fu *followUsecase) GetFollowByToID(ctx context.Context, ID string) (result
 			return nil, err
 		}
 		result = append(result, domain.FollowResponse{
-			UserID:   account.UserID,
-			Username: account.Username,
-			Icon:     account.Icon.String,
+			AccountID: account.AccountID,
+			Username:  account.Username,
+			Icon:      account.Icon.String,
 		})
 	}
 	return

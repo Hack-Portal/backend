@@ -225,7 +225,7 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) e
 	_, err = ru.store.WriteFireStore(ctx, domain.WriteFireStoreParam{
 		RoomID:  body.RoomID.String(),
 		Index:   len(data) + 1,
-		UID:     body.UserID,
+		UID:     body.AccountID,
 		Message: body.Message,
 	})
 
@@ -305,9 +305,9 @@ func margeRoomAccount(ctx context.Context, q *repository.Queries, id uuid.UUID) 
 
 	for _, nowMember := range nowMembers {
 		result = append(result, domain.NowRoomAccounts{
-			UserID:  nowMember.AccountID.String,
-			Icon:    nowMember.Icon.String,
-			IsOwner: nowMember.IsOwner,
+			AccountID: nowMember.AccountID.String,
+			Icon:      nowMember.Icon.String,
+			IsOwner:   nowMember.IsOwner,
 		})
 	}
 	return
@@ -337,9 +337,9 @@ func getRoomMember(ctx context.Context, store transaction.Store, id uuid.UUID) (
 			return nil, err
 		}
 		result = append(result, domain.NowRoomAccounts{
-			UserID:  user.UserID,
-			Icon:    user.Icon.String,
-			IsOwner: account.IsOwner,
+			AccountID: user.AccountID,
+			Icon:      user.Icon.String,
+			IsOwner:   account.IsOwner,
 		})
 	}
 	return
