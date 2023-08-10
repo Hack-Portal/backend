@@ -19,7 +19,6 @@ func createRoomsTest(t *testing.T) repository.Room {
 		Title:       util.RandomString(8),
 		Description: util.RandomString(100),
 		MemberLimit: 5,
-		IsDelete:    false,
 	}
 
 	room, err := testQueries.CreateRooms(context.Background(), arg)
@@ -31,7 +30,6 @@ func createRoomsTest(t *testing.T) repository.Room {
 	require.Equal(t, arg.Title, room.Title)
 	require.Equal(t, arg.Description, room.Description)
 	require.Equal(t, arg.MemberLimit, room.MemberLimit)
-	require.Equal(t, arg.IsDelete, room.IsDelete)
 	require.NotZero(t, room.CreateAt)
 	return room
 }

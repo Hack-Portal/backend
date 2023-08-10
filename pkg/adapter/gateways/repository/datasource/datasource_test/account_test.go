@@ -85,7 +85,7 @@ func TestListAccount(t *testing.T) {
 func TestGetAccountByEmail(t *testing.T) {
 	account := createAccountTest(t)
 	// TODO:userからemailを取得して代入する
-	result, err := testQueries.GetAccountsByEmail(context.Background(), string("test"))
+	result, err := testQueries.GetAccountsByEmail(context.Background(), sql.NullString{String: "test", Valid: true})
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 
