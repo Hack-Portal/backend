@@ -33,7 +33,7 @@ type Store interface {
 	CreatePastWorkTx(ctx context.Context, arg domain.CreatePastWorkParams) (repository.PastWork, error)
 
 	// Rate Entities Tx
-	CreateRateEntitieTx(ctx context.Context, arg repository.CreateRateEntriesParams) error
+	CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntriesParams) error
 
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
