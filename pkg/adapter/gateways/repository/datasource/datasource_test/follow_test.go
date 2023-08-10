@@ -29,19 +29,19 @@ func createFollowTest(t *testing.T, to, from repository.Account) repository.Foll
 // Createのテスト
 func TestCreateFollow(t *testing.T) {
 	// ２つのアカウントを追加
-	toAccount := createAccountTest(t)
-	fromAccount := createAccountTest(t)
+	toAccount := CreateAccountTest(t)
+	fromAccount := CreateAccountTest(t)
 
 	createFollowTest(t, toAccount, fromAccount)
 }
 
 func TestRemoveFollow(t *testing.T) {
 	n := 5
-	toAccount := createAccountTest(t)
+	toAccount := CreateAccountTest(t)
 	var lastFollow repository.Follow
 
 	for i := 0; i < n; i++ {
-		fromAccount := createAccountTest(t)
+		fromAccount := CreateAccountTest(t)
 		lastFollow = createFollowTest(t, toAccount, fromAccount)
 	}
 

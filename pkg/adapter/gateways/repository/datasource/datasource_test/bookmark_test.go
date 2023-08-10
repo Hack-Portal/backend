@@ -24,13 +24,13 @@ func createBookmarkTest(t *testing.T, account repository.Account) repository.Boo
 }
 
 func TestCreateBookmark(t *testing.T) {
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	createBookmarkTest(t, account)
 }
 
 func TestListBookmark(t *testing.T) {
 	n := 5
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 
 	var bookmarks []repository.Bookmark
 	for i := 0; i < n; i++ {
@@ -51,7 +51,7 @@ func TestListBookmark(t *testing.T) {
 
 func TestSoftRemoveBookmark(t *testing.T) {
 	n := 5
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	var lastBookMark repository.Bookmark
 	for i := 0; i < n; i++ {
 		lastBookMark = createBookmarkTest(t, account)

@@ -26,13 +26,13 @@ func createRoomsAccountsTest(t *testing.T, room repository.Room, account reposit
 
 func TestCreateRoomsAccounts(t *testing.T) {
 	room := createRoomsTest(t)
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	createRoomsAccountsTest(t, room, account)
 }
 
 func TestGetRoomsAccounts(t *testing.T) {
 	room := createRoomsTest(t)
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	n := 5
 
 	for i := 0; i < n; i++ {
@@ -48,7 +48,7 @@ func TestGetRoomsAccounts(t *testing.T) {
 // ToDo:時間のあるとき実装する
 // func TestRemoveAccountInRoom(t *testing.T) {
 // 	room := createRoomsTest(t)
-// 	account := createAccountTest(t)
+// 	account := CreateAccountTest(t)
 // 	roomAccount := createRoomsAccountsTest(t, room, account)
 // 	log.Println("1 :", roomAccount)
 

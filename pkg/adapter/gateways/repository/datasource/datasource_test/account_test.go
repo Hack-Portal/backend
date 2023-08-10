@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createAccountTest(t *testing.T) repository.Account {
+func CreateAccountTest(t *testing.T) repository.Account {
 	arg := repository.CreateAccountsParams{
 		UserID:     util.RandomString(8),
 		Username:   util.RandomString(8),
@@ -37,11 +37,11 @@ func createAccountTest(t *testing.T) repository.Account {
 }
 
 func TestCreateAccount(t *testing.T) {
-	createAccountTest(t)
+	CreateAccountTest(t)
 }
 
 func TestGetAccountByID(t *testing.T) {
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 
 	result, err := testQueries.GetAccountsByID(context.Background(), account.UserID)
 	require.NoError(t, err)
@@ -67,7 +67,7 @@ func TestListAccount(t *testing.T) {
 	n := 10
 
 	for i := 0; i < n; i++ {
-		lastAccount = createAccountTest(t)
+		lastAccount = CreateAccountTest(t)
 	}
 
 	username := util.Remove5Strings(lastAccount.Username)
@@ -83,7 +83,7 @@ func TestListAccount(t *testing.T) {
 }
 
 func TestGetAccountByEmail(t *testing.T) {
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	// TODO:userからemailを取得して代入する
 	result, err := testQueries.GetAccountsByEmail(context.Background(), sql.NullString{String: "test", Valid: true})
 	require.NoError(t, err)
@@ -101,7 +101,7 @@ func TestGetAccountByEmail(t *testing.T) {
 }
 
 func TestSoftDeleteAccount(t *testing.T) {
-	account1 := createAccountTest(t)
+	account1 := CreateAccountTest(t)
 
 	deletedAccount, err := testQueries.DeleteAccounts(context.Background(), account1.UserID)
 	require.NoError(t, err)
@@ -113,7 +113,7 @@ func TestSoftDeleteAccount(t *testing.T) {
 }
 
 func TestUpdateAccount(t *testing.T) {
-	baseAccount := createAccountTest(t)
+	baseAccount := CreateAccountTest(t)
 	testCase := []struct {
 		name      string
 		arg       repository.UpdateAccountsParams

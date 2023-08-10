@@ -30,13 +30,13 @@ func createAccountFrameworksTest(t *testing.T, account repository.Account) repos
 }
 
 func TestCreateAccountFrameworks(t *testing.T) {
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	createAccountFrameworksTest(t, account)
 }
 
 func TestListAccountFrameworks(t *testing.T) {
 	n := 5
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	for i := 0; i < n; i++ {
 		createAccountFrameworksTest(t, account)
 	}
@@ -53,7 +53,7 @@ func TestListAccountFrameworks(t *testing.T) {
 
 func TestDeleteAccountFrameworksByUserID(t *testing.T) {
 	n := 5
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	for i := 0; i < n; i++ {
 		createAccountFrameworksTest(t, account)
 	}

@@ -29,13 +29,13 @@ func createAccountTagsTest(t *testing.T, account repository.Account) repository.
 }
 
 func TestCreateAccountTang(t *testing.T) {
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	createAccountTagsTest(t, account)
 }
 
 func TestGetAccountTag(t *testing.T) {
 	n := 5
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	for i := 0; i < n; i++ {
 		createAccountTagsTest(t, account)
 	}
@@ -48,7 +48,7 @@ func TestGetAccountTag(t *testing.T) {
 
 func TestDeleteAccountTagByUserID(t *testing.T) {
 	n := 5
-	account := createAccountTest(t)
+	account := CreateAccountTest(t)
 	for i := 0; i < n; i++ {
 		createAccountTagsTest(t, account)
 	}
