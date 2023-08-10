@@ -16,7 +16,6 @@ func createAccountTest(t *testing.T) repository.Account {
 		Username:   util.RandomString(8),
 		LocateID:   int32(util.Random(47)),
 		Rate:       0,
-		Email:      util.RandomEmail(),
 		ShowRate:   true,
 		ShowLocate: true,
 	}
@@ -29,8 +28,6 @@ func createAccountTest(t *testing.T) repository.Account {
 	require.Equal(t, arg.Username, account.Username)
 	require.Equal(t, arg.LocateID, account.LocateID)
 	require.Equal(t, arg.Rate, account.Rate)
-	require.Equal(t, arg.HashedPassword, account.HashedPassword)
-	require.Equal(t, arg.Email, account.Email)
 	require.Equal(t, arg.ShowLocate, account.ShowLocate)
 	require.Equal(t, arg.ShowRate, account.ShowRate)
 
@@ -87,8 +84,8 @@ func TestListAccount(t *testing.T) {
 
 func TestGetAccountByEmail(t *testing.T) {
 	account := createAccountTest(t)
-
-	result, err := testQueries.GetAccountsByEmail(context.Background(), account.Email)
+	// TODO:userからemailを取得して代入する
+	result, err := testQueries.GetAccountsByEmail(context.Background(), string("test"))
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 
@@ -125,14 +122,12 @@ func TestUpdateAccount(t *testing.T) {
 		{
 			name: "update-username",
 			arg: repository.UpdateAccountsParams{
-				UserID:          baseAccount.UserID,
+				AccountID:       baseAccount.AccountID,
 				Username:        "changed-name",
 				Icon:            baseAccount.Icon,
 				ExplanatoryText: baseAccount.ExplanatoryText,
 				LocateID:        baseAccount.LocateID,
 				Rate:            baseAccount.Rate,
-				HashedPassword:  baseAccount.HashedPassword,
-				Email:           baseAccount.Email,
 				ShowLocate:      baseAccount.ShowLocate,
 				ShowRate:        baseAccount.ShowRate,
 			},
@@ -142,8 +137,6 @@ func TestUpdateAccount(t *testing.T) {
 				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
 				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
 				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
-				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
 				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
 				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
 			},
@@ -151,8 +144,8 @@ func TestUpdateAccount(t *testing.T) {
 		{
 			name: "update-icon",
 			arg: repository.UpdateAccountsParams{
-				UserID:   baseAccount.UserID,
-				Username: baseAccount.Username,
+				AccountID: baseAccount.AccountID,
+				Username:  baseAccount.Username,
 				Icon: sql.NullString{
 					String: "chenged-icon",
 					Valid:  true,
@@ -160,8 +153,6 @@ func TestUpdateAccount(t *testing.T) {
 				ExplanatoryText: baseAccount.ExplanatoryText,
 				LocateID:        baseAccount.LocateID,
 				Rate:            baseAccount.Rate,
-				HashedPassword:  baseAccount.HashedPassword,
-				Email:           baseAccount.Email,
 				ShowLocate:      baseAccount.ShowLocate,
 				ShowRate:        baseAccount.ShowRate,
 			},
@@ -171,8 +162,6 @@ func TestUpdateAccount(t *testing.T) {
 				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
 				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
 				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
-				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
 				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
 				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
 			},
@@ -180,19 +169,17 @@ func TestUpdateAccount(t *testing.T) {
 		{
 			name: "update-ExplanatoryText",
 			arg: repository.UpdateAccountsParams{
-				UserID:   baseAccount.UserID,
-				Username: baseAccount.Username,
-				Icon:     baseAccount.Icon,
+				AccountID: baseAccount.AccountID,
+				Username:  baseAccount.Username,
+				Icon:      baseAccount.Icon,
 				ExplanatoryText: sql.NullString{
 					String: "changed-explanatoryText",
 					Valid:  true,
 				},
-				LocateID:       baseAccount.LocateID,
-				Rate:           baseAccount.Rate,
-				HashedPassword: baseAccount.HashedPassword,
-				Email:          baseAccount.Email,
-				ShowLocate:     baseAccount.ShowLocate,
-				ShowRate:       baseAccount.ShowRate,
+				LocateID:   baseAccount.LocateID,
+				Rate:       baseAccount.Rate,
+				ShowLocate: baseAccount.ShowLocate,
+				ShowRate:   baseAccount.ShowRate,
 			},
 			checkData: func(t *testing.T, arg repository.UpdateAccountsParams, baseAccount, UpdatedAccount repository.Account) {
 				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
@@ -200,8 +187,6 @@ func TestUpdateAccount(t *testing.T) {
 				require.Equal(t, arg.ExplanatoryText, UpdatedAccount.ExplanatoryText)
 				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
 				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
-				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
 				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
 				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
 			},
@@ -209,14 +194,12 @@ func TestUpdateAccount(t *testing.T) {
 		{
 			name: "update-LocateID",
 			arg: repository.UpdateAccountsParams{
-				UserID:          baseAccount.UserID,
+				AccountID:       baseAccount.AccountID,
 				Username:        baseAccount.Username,
 				Icon:            baseAccount.Icon,
 				ExplanatoryText: baseAccount.ExplanatoryText,
 				LocateID:        1,
 				Rate:            baseAccount.Rate,
-				HashedPassword:  baseAccount.HashedPassword,
-				Email:           baseAccount.Email,
 				ShowLocate:      baseAccount.ShowLocate,
 				ShowRate:        baseAccount.ShowRate,
 			},
@@ -226,8 +209,6 @@ func TestUpdateAccount(t *testing.T) {
 				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
 				require.Equal(t, arg.LocateID, UpdatedAccount.LocateID)
 				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
-				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
 				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
 				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
 			},
@@ -235,14 +216,12 @@ func TestUpdateAccount(t *testing.T) {
 		{
 			name: "update-Rate",
 			arg: repository.UpdateAccountsParams{
-				UserID:          baseAccount.UserID,
+				AccountID:       baseAccount.AccountID,
 				Username:        baseAccount.Username,
 				Icon:            baseAccount.Icon,
 				ExplanatoryText: baseAccount.ExplanatoryText,
 				LocateID:        baseAccount.LocateID,
 				Rate:            10,
-				HashedPassword:  baseAccount.HashedPassword,
-				Email:           baseAccount.Email,
 				ShowLocate:      baseAccount.ShowLocate,
 				ShowRate:        baseAccount.ShowRate,
 			},
@@ -252,63 +231,6 @@ func TestUpdateAccount(t *testing.T) {
 				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
 				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
 				require.Equal(t, arg.Rate, UpdatedAccount.Rate)
-				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
-				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
-				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
-			},
-		},
-		{
-			name: "update-HashedPassword",
-			arg: repository.UpdateAccountsParams{
-				UserID:          baseAccount.UserID,
-				Username:        baseAccount.Username,
-				Icon:            baseAccount.Icon,
-				ExplanatoryText: baseAccount.ExplanatoryText,
-				LocateID:        baseAccount.LocateID,
-				Rate:            baseAccount.Rate,
-				HashedPassword: sql.NullString{
-					String: "changed-password",
-					Valid:  true,
-				},
-				Email:      baseAccount.Email,
-				ShowLocate: baseAccount.ShowLocate,
-				ShowRate:   baseAccount.ShowRate,
-			},
-			checkData: func(t *testing.T, arg repository.UpdateAccountsParams, baseAccount, UpdatedAccount repository.Account) {
-				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
-				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
-				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
-				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
-				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
-				require.Equal(t, arg.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
-				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
-				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
-			},
-		},
-		{
-			name: "update-Email",
-			arg: repository.UpdateAccountsParams{
-				UserID:          baseAccount.UserID,
-				Username:        baseAccount.Username,
-				Icon:            baseAccount.Icon,
-				ExplanatoryText: baseAccount.ExplanatoryText,
-				LocateID:        baseAccount.LocateID,
-				Rate:            baseAccount.Rate,
-				HashedPassword:  baseAccount.HashedPassword,
-				Email:           util.RandomEmail(),
-				ShowLocate:      baseAccount.ShowLocate,
-				ShowRate:        baseAccount.ShowRate,
-			},
-			checkData: func(t *testing.T, arg repository.UpdateAccountsParams, baseAccount, UpdatedAccount repository.Account) {
-				require.Equal(t, baseAccount.Username, UpdatedAccount.Username)
-				require.Equal(t, baseAccount.Icon, UpdatedAccount.Icon)
-				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
-				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
-				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
-				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, arg.Email, UpdatedAccount.Email)
 				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
 				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
 			},
@@ -316,14 +238,12 @@ func TestUpdateAccount(t *testing.T) {
 		{
 			name: "update-ShowLocate",
 			arg: repository.UpdateAccountsParams{
-				UserID:          baseAccount.UserID,
+				AccountID:       baseAccount.AccountID,
 				Username:        baseAccount.Username,
 				Icon:            baseAccount.Icon,
 				ExplanatoryText: baseAccount.ExplanatoryText,
 				LocateID:        baseAccount.LocateID,
 				Rate:            baseAccount.Rate,
-				HashedPassword:  baseAccount.HashedPassword,
-				Email:           baseAccount.Email,
 				ShowLocate:      false,
 				ShowRate:        baseAccount.ShowRate,
 			},
@@ -333,8 +253,6 @@ func TestUpdateAccount(t *testing.T) {
 				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
 				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
 				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
-				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
 				require.Equal(t, arg.ShowLocate, UpdatedAccount.ShowLocate)
 				require.Equal(t, baseAccount.ShowRate, UpdatedAccount.ShowRate)
 			},
@@ -342,14 +260,12 @@ func TestUpdateAccount(t *testing.T) {
 		{
 			name: "update-ShowRate",
 			arg: repository.UpdateAccountsParams{
-				UserID:          baseAccount.UserID,
+				AccountID:       baseAccount.AccountID,
 				Username:        baseAccount.Username,
 				Icon:            baseAccount.Icon,
 				ExplanatoryText: baseAccount.ExplanatoryText,
 				LocateID:        baseAccount.LocateID,
 				Rate:            baseAccount.Rate,
-				HashedPassword:  baseAccount.HashedPassword,
-				Email:           baseAccount.Email,
 				ShowLocate:      baseAccount.ShowLocate,
 				ShowRate:        false,
 			},
@@ -359,8 +275,6 @@ func TestUpdateAccount(t *testing.T) {
 				require.Equal(t, baseAccount.ExplanatoryText, UpdatedAccount.ExplanatoryText)
 				require.Equal(t, baseAccount.LocateID, UpdatedAccount.LocateID)
 				require.Equal(t, baseAccount.Rate, UpdatedAccount.Rate)
-				require.Equal(t, baseAccount.HashedPassword, UpdatedAccount.HashedPassword)
-				require.Equal(t, baseAccount.Email, UpdatedAccount.Email)
 				require.Equal(t, baseAccount.ShowLocate, UpdatedAccount.ShowLocate)
 				require.Equal(t, arg.ShowRate, UpdatedAccount.ShowRate)
 			},

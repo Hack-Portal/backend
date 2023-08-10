@@ -14,7 +14,7 @@ func createAccountTagsTest(t *testing.T, account repository.Account) repository.
 	techs := util.Random(len(tags) - 1)
 
 	arg := repository.CreateAccountTagsParams{
-		UserID:    account.UserID,
+		AccountID: account.AccountID,
 		TechTagID: tags[techs].TechTagID,
 	}
 	accountTags, err := testQueries.CreateAccountTags(context.Background(), arg)
@@ -22,7 +22,7 @@ func createAccountTagsTest(t *testing.T, account repository.Account) repository.
 	require.NoError(t, err)
 	require.NotEmpty(t, accountTags)
 
-	require.Equal(t, arg.UserID, accountTags.UserID)
+	require.Equal(t, arg.AccountID, accountTags.AccountID)
 	require.Equal(t, arg.TechTagID, accountTags.TechTagID)
 
 	return accountTags

@@ -12,17 +12,17 @@ func createFollowTest(t *testing.T, to, from repository.Account) repository.Foll
 	// アカウント追加のパラメタを満たす
 	arg := repository.CreateFollowsParams{
 		// 送り元ユーザID
-		ToUserID: to.UserID,
+		ToAccountID: to.AccountID,
 		// 送り先ユーザID
-		FromUserID: from.UserID,
+		FromAccountID: from.AccountID,
 	}
 	// 実行する
 	follow, err := testQueries.CreateFollows(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, follow)
 
-	require.Equal(t, arg.ToUserID, follow.ToUserID)
-	require.Equal(t, arg.FromUserID, follow.FromUserID)
+	require.Equal(t, arg.ToAccountID, follow.ToAccountID)
+	require.Equal(t, arg.FromAccountID, follow.FromAccountID)
 	return follow
 }
 
@@ -46,8 +46,8 @@ func TestRemoveFollow(t *testing.T) {
 	}
 
 	err := testQueries.DeleteFollows(context.Background(), repository.DeleteFollowsParams{
-		ToUserID:   lastFollow.ToUserID,
-		FromUserID: lastFollow.FromUserID,
+		ToAccountID:   lastFollow.ToAccountID,
+		FromAccountID: lastFollow.FromAccountID,
 	})
 
 	require.NoError(t, err)

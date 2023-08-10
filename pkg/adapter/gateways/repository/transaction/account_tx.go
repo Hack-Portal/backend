@@ -11,7 +11,7 @@ import (
 func createAccountTags(ctx context.Context, q *repository.Queries, id string, techTags []int32) error {
 	for _, techTag := range techTags {
 		_, err := q.CreateAccountTags(ctx, repository.CreateAccountTagsParams{
-			UserID:    id,
+			AccountID: id,
 			TechTagID: techTag,
 		})
 		if err != nil {
@@ -24,7 +24,7 @@ func createAccountTags(ctx context.Context, q *repository.Queries, id string, te
 func createAccountFrameworks(ctx context.Context, q *repository.Queries, id string, frameworks []int32) error {
 	for _, framework := range frameworks {
 		_, err := q.CreateAccountFrameworks(ctx, repository.CreateAccountFrameworksParams{
-			UserID:      id,
+			AccountID:   id,
 			FrameworkID: framework,
 		})
 		if err != nil {
@@ -36,11 +36,9 @@ func createAccountFrameworks(ctx context.Context, q *repository.Queries, id stri
 
 func compAccount(request repository.Account, latest repository.GetAccountsByIDRow) (result repository.UpdateAccountsParams) {
 	result = repository.UpdateAccountsParams{
-		UserID:         latest.UserID,
-		Icon:           latest.Icon,
-		Rate:           latest.Rate,
-		HashedPassword: latest.HashedPassword,
-		Email:          latest.Email,
+		AccountID: latest.AccountID,
+		Icon:      latest.Icon,
+		Rate:      latest.Rate,
 	}
 
 	if len(request.Username) != 0 {

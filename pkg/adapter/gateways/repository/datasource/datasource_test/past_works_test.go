@@ -12,7 +12,7 @@ import (
 func createPastWorksTest(t *testing.T) repository.PastWork {
 	arg := repository.CreatePastWorksParams{
 		Name:            util.RandomString(8),
-		ThumbnailImage:  []byte(util.RandomString(8)),
+		ThumbnailImage:  util.RandomString(8),
 		ExplanatoryText: util.RandomString(32),
 	}
 	past_work, err := testQueries.CreatePastWorks(context.Background(), arg)

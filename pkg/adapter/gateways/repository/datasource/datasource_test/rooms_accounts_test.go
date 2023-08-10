@@ -11,16 +11,16 @@ import (
 func createRoomsAccountsTest(t *testing.T, room repository.Room, account repository.Account) repository.RoomsAccount {
 
 	arg := repository.CreateRoomsAccountsParams{
-		UserID:  account.UserID,
-		RoomID:  room.RoomID,
-		IsOwner: false,
+		AccountID: account.AccountID,
+		RoomID:    room.RoomID,
+		IsOwner:   false,
 	}
 	roomsAccounts, err := testQueries.CreateRoomsAccounts(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, roomsAccounts)
 
 	require.Equal(t, arg.RoomID, roomsAccounts.RoomID)
-	require.Equal(t, arg.UserID, roomsAccounts.UserID)
+	require.Equal(t, arg.AccountID, roomsAccounts.AccountID)
 	return roomsAccounts
 }
 

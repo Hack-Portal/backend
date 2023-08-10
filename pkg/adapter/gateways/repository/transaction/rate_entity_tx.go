@@ -14,7 +14,7 @@ func (store *SQLStore) CreateRateEntityTx(ctx context.Context, arg repository.Cr
 			return err
 		}
 
-		_, err = q.UpdateRateByID(ctx, repository.UpdateRateByIDParams{UserID: arg.UserID, Rate: arg.Rate})
+		_, err = q.UpdateRateByID(ctx, repository.UpdateRateByIDParams{AccountID: arg.AccountID, Rate: arg.Rate})
 		if err != nil {
 			return err
 		}

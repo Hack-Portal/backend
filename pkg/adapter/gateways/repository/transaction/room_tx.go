@@ -51,7 +51,7 @@ func compRoom(request domain.UpdateRoomParam, latest repository.Room, members in
 
 func checkOwner(members []repository.GetRoomsAccountsByIDRow, id string) bool {
 	for _, member := range members {
-		if member.UserID.String == id {
+		if member.AccountID.String == id {
 			return member.IsOwner
 		}
 	}
@@ -60,7 +60,7 @@ func checkOwner(members []repository.GetRoomsAccountsByIDRow, id string) bool {
 
 func checkDuplication(members []repository.GetRoomsAccountsByIDRow, id string) bool {
 	for _, member := range members {
-		if member.UserID.String == id {
+		if member.AccountID.String == id {
 			return true
 		}
 	}
@@ -84,9 +84,9 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 		}
 
 		_, err = q.CreateRoomsAccounts(ctx, repository.CreateRoomsAccountsParams{
-			UserID:  args.OwnerID,
-			RoomID:  room.RoomID,
-			IsOwner: true,
+			AccountID: args.OwnerID,
+			RoomID:    room.RoomID,
+			IsOwner:   true,
 		})
 
 		if err != nil {
@@ -172,15 +172,15 @@ func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAcco
 			return err
 		}
 
-		if !checkDuplication(members, args.UserID) {
+		if !checkDuplication(members, args.AccountID) {
 			err := errors.New("あんたすでにルームおるやん")
 			return err
 		}
 
 		_, err = q.CreateRoomsAccounts(ctx, repository.CreateRoomsAccountsParams{
-			UserID:  args.UserID,
-			RoomID:  args.RoomID,
-			IsOwner: false,
+			AccountID: args.AccountID,
+			RoomID:    args.RoomID,
+			IsOwner:   false,
 		})
 		if err != nil {
 			return err

@@ -40,7 +40,7 @@ type PastWorkMembers struct {
 
 type CreatePastWorkParams struct {
 	Name               string   `json:"name"`
-	ThumbnailImage     []byte   `json:"thumbnail_image"`
+	ThumbnailImage     string   `json:"thumbnail_image"`
 	ExplanatoryText    string   `json:"explanatory_text"`
 	PastWorkTags       []int32  `json:"past_work_tags"`
 	PastWorkFrameworks []int32  `json:"past_work_frameworks"`

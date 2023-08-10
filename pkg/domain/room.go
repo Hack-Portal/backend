@@ -117,8 +117,8 @@ type DeleteRoomParam struct {
 }
 
 type AddAccountInRoomParam struct {
-	UserID string    `json:"user_id"`
-	RoomID uuid.UUID `json:"room_id"`
+	AccountID string    `json:"user_id"`
+	RoomID    uuid.UUID `json:"room_id"`
 }
 
 type AddAccountInRoomRequestBody struct {
