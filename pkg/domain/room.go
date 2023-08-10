@@ -100,6 +100,7 @@ type CreateRoomParam struct {
 	HackathonID int32     `json:"hackathon_id"`
 	MemberLimit int32     `json:"member_limit"`
 	OwnerID     string    `json:"owner_id"`
+	IncludeRate bool      `json:"include_rate"`
 }
 
 type UpdateRoomParam struct {

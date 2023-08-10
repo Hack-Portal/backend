@@ -93,13 +93,13 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query domain.Lis
 	for _, hackathon := range hackathons {
 		var tags []repository.StatusTag
 
-		statusTags, err := hu.store.GetStatusTagsByHackathonID(ctx, hackathon.HackathonID)
+		statusTags, err := hu.store.ListHackathonStatusTagsByID(ctx, hackathon.HackathonID)
 		if err != nil {
 			return nil, err
 		}
 
 		for _, statusTag := range statusTags {
-			tag, err := hu.store.GetStatusTagsByStatusID(ctx, statusTag.StatusID)
+			tag, err := hu.store.GetStatusTagsByTag(ctx, statusTag.StatusID)
 			if err != nil {
 				return nil, err
 			}
@@ -128,14 +128,14 @@ func (hu *hackathonUsecase) GetHackathon(ctx context.Context, id int32) (result 
 		return domain.HackathonResponses{}, err
 	}
 
-	statusTags, err := hu.store.GetStatusTagsByHackathonID(ctx, hackathon.HackathonID)
+	statusTags, err := hu.store.ListHackathonStatusTagsByID(ctx, hackathon.HackathonID)
 	if err != nil {
 		return
 	}
 
 	var tags []repository.StatusTag
 	for _, statusTag := range statusTags {
-		tag, err := hu.store.GetStatusTagsByStatusID(ctx, statusTag.StatusID)
+		tag, err := hu.store.GetStatusTagsByTag(ctx, statusTag.StatusID)
 		if err != nil {
 			return domain.HackathonResponses{}, err
 		}
@@ -157,13 +157,13 @@ func (hu *hackathonUsecase) GetHackathon(ctx context.Context, id int32) (result 
 }
 
 func getHackathonTag(ctx context.Context, store transaction.Store, id int32) (result []repository.StatusTag, err error) {
-	tags, err := store.GetStatusTagsByHackathonID(ctx, id)
+	tags, err := store.ListHackathonStatusTagsByID(ctx, id)
 	if err != nil {
 		return
 	}
 
 	for _, tag := range tags {
-		statusTag, err := store.GetStatusTagsByStatusID(ctx, tag.StatusID)
+		statusTag, err := store.GetStatusTagsByTag(ctx, tag.StatusID)
 		if err != nil {
 			return nil, err
 		}

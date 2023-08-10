@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
@@ -77,7 +78,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 			Title:       args.Title,
 			Description: args.Description,
 			MemberLimit: args.MemberLimit,
-			IsDelete:    false,
+			IncludeRate: args.IncludeRate,
 		})
 		if err != nil {
 			return err
@@ -112,7 +113,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 			return err
 		}
 
-		owner, err := q.GetAccountsByEmail(ctx, body.OwnerEmail)
+		owner, err := q.GetAccountsByEmail(ctx, sql.NullString{String: body.OwnerEmail, Valid: true})
 		if err != nil {
 			return err
 		}
@@ -139,7 +140,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomParam) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		owner, err := q.GetAccountsByEmail(ctx, args.OwnerEmail)
+		owner, err := q.GetAccountsByEmail(ctx, sql.NullString{String: args.OwnerEmail, Valid: true})
 		if err != nil {
 			return err
 		}

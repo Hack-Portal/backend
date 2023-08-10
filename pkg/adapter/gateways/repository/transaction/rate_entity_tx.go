@@ -6,10 +6,10 @@ import (
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
 
-func (store *SQLStore) CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntriesParams) error {
+func (store *SQLStore) CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntitiesParams) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		var err error
-		_, err = q.CreateRateEntries(ctx, arg)
+		_, err = q.CreateRateEntities(ctx, arg)
 		if err != nil {
 			return err
 		}

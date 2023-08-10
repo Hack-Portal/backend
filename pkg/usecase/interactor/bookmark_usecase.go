@@ -38,7 +38,7 @@ func (bu *bookmarkUsecase) CreateBookmark(ctx context.Context, body repository.C
 	return domain.BookmarkResponse{
 		HackathonID: result.HackathonID,
 		Name:        result.Name,
-		Icon:        *&result.Icon.String,
+		Icon:        result.Icon.String,
 		Description: result.Description,
 		Link:        result.Link,
 		Expired:     result.Expired,
@@ -63,7 +63,7 @@ func (bu *bookmarkUsecase) GetBookmarks(ctx context.Context, id string, query do
 		result = append(result, domain.BookmarkResponse{
 			HackathonID: hackathon.HackathonID,
 			Name:        hackathon.Name,
-			Icon:        *&hackathon.Icon.String,
+			Icon:        hackathon.Icon.String,
 			Description: hackathon.Description,
 			Link:        hackathon.Link,
 			Expired:     hackathon.Expired,

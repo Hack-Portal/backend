@@ -34,7 +34,7 @@ func createAccountFrameworks(ctx context.Context, q *repository.Queries, id stri
 	return nil
 }
 
-func compAccount(request repository.Account, latest repository.GetAccountsByIDRow) (result repository.UpdateAccountsParams) {
+func compAccount(request repository.Account, latest repository.Account) (result repository.UpdateAccountsParams) {
 	result = repository.UpdateAccountsParams{
 		AccountID: latest.AccountID,
 		Icon:      latest.Icon,

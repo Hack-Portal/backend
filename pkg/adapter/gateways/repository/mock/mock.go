@@ -6,6 +6,7 @@ package mock_transaction
 
 import (
 	context "context"
+	sql "database/sql"
 	reflect "reflect"
 
 	firestore "cloud.google.com/go/firestore"
@@ -157,6 +158,21 @@ func (mr *MockStoreMockRecorder) CreateFollows(ctx, arg interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFollows", reflect.TypeOf((*MockStore)(nil).CreateFollows), ctx, arg)
 }
 
+// CreateFrameworks mocks base method.
+func (m *MockStore) CreateFrameworks(ctx context.Context, arg repository.CreateFrameworksParams) (repository.Framework, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateFrameworks", ctx, arg)
+	ret0, _ := ret[0].(repository.Framework)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateFrameworks indicates an expected call of CreateFrameworks.
+func (mr *MockStoreMockRecorder) CreateFrameworks(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFrameworks", reflect.TypeOf((*MockStore)(nil).CreateFrameworks), ctx, arg)
+}
+
 // CreateHackathonStatusTags mocks base method.
 func (m *MockStore) CreateHackathonStatusTags(ctx context.Context, arg repository.CreateHackathonStatusTagsParams) (repository.HackathonStatusTag, error) {
 	m.ctrl.T.Helper()
@@ -262,8 +278,23 @@ func (mr *MockStoreMockRecorder) CreatePastWorks(ctx, arg interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePastWorks", reflect.TypeOf((*MockStore)(nil).CreatePastWorks), ctx, arg)
 }
 
+// CreateRateEntities mocks base method.
+func (m *MockStore) CreateRateEntities(ctx context.Context, arg repository.CreateRateEntitiesParams) (repository.RateEntity, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateRateEntities", ctx, arg)
+	ret0, _ := ret[0].(repository.RateEntity)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateRateEntities indicates an expected call of CreateRateEntities.
+func (mr *MockStoreMockRecorder) CreateRateEntities(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRateEntities", reflect.TypeOf((*MockStore)(nil).CreateRateEntities), ctx, arg)
+}
+
 // CreateRateEntityTx mocks base method.
-func (m *MockStore) CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntriesParams) error {
+func (m *MockStore) CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntitiesParams) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateRateEntityTx", ctx, arg)
 	ret0, _ := ret[0].(error)
@@ -276,19 +307,19 @@ func (mr *MockStoreMockRecorder) CreateRateEntityTx(ctx, arg interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRateEntityTx", reflect.TypeOf((*MockStore)(nil).CreateRateEntityTx), ctx, arg)
 }
 
-// CreateRateEntries mocks base method.
-func (m *MockStore) CreateRateEntries(ctx context.Context, arg repository.CreateRateEntriesParams) (repository.RateEntity, error) {
+// CreateRoles mocks base method.
+func (m *MockStore) CreateRoles(ctx context.Context, role string) (repository.Role, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateRateEntries", ctx, arg)
-	ret0, _ := ret[0].(repository.RateEntity)
+	ret := m.ctrl.Call(m, "CreateRoles", ctx, role)
+	ret0, _ := ret[0].(repository.Role)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CreateRateEntries indicates an expected call of CreateRateEntries.
-func (mr *MockStoreMockRecorder) CreateRateEntries(ctx, arg interface{}) *gomock.Call {
+// CreateRoles indicates an expected call of CreateRoles.
+func (mr *MockStoreMockRecorder) CreateRoles(ctx, role interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRateEntries", reflect.TypeOf((*MockStore)(nil).CreateRateEntries), ctx, arg)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRoles", reflect.TypeOf((*MockStore)(nil).CreateRoles), ctx, role)
 }
 
 // CreateRoomTx mocks base method.
@@ -334,6 +365,21 @@ func (m *MockStore) CreateRoomsAccounts(ctx context.Context, arg repository.Crea
 func (mr *MockStoreMockRecorder) CreateRoomsAccounts(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRoomsAccounts", reflect.TypeOf((*MockStore)(nil).CreateRoomsAccounts), ctx, arg)
+}
+
+// CreateUsers mocks base method.
+func (m *MockStore) CreateUsers(ctx context.Context, arg repository.CreateUsersParams) (repository.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateUsers", ctx, arg)
+	ret0, _ := ret[0].(repository.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateUsers indicates an expected call of CreateUsers.
+func (mr *MockStoreMockRecorder) CreateUsers(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUsers", reflect.TypeOf((*MockStore)(nil).CreateUsers), ctx, arg)
 }
 
 // DeleteAccountFrameworkByUserID mocks base method.
@@ -563,11 +609,25 @@ func (mr *MockStoreMockRecorder) DeleteTechTagsByID(ctx, techTagID interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTechTagsByID", reflect.TypeOf((*MockStore)(nil).DeleteTechTagsByID), ctx, techTagID)
 }
 
+// DeleteUsersByID mocks base method.
+func (m *MockStore) DeleteUsersByID(ctx context.Context, arg repository.DeleteUsersByIDParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteUsersByID", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteUsersByID indicates an expected call of DeleteUsersByID.
+func (mr *MockStoreMockRecorder) DeleteUsersByID(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUsersByID", reflect.TypeOf((*MockStore)(nil).DeleteUsersByID), ctx, arg)
+}
+
 // GetAccountsByEmail mocks base method.
-func (m *MockStore) GetAccountsByEmail(ctx context.Context, email string) (repository.GetAccountsByEmailRow, error) {
+func (m *MockStore) GetAccountsByEmail(ctx context.Context, email sql.NullString) (repository.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountsByEmail", ctx, email)
-	ret0, _ := ret[0].(repository.GetAccountsByEmailRow)
+	ret0, _ := ret[0].(repository.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -579,10 +639,10 @@ func (mr *MockStoreMockRecorder) GetAccountsByEmail(ctx, email interface{}) *gom
 }
 
 // GetAccountsByID mocks base method.
-func (m *MockStore) GetAccountsByID(ctx context.Context, accountID string) (repository.GetAccountsByIDRow, error) {
+func (m *MockStore) GetAccountsByID(ctx context.Context, accountID string) (repository.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountsByID", ctx, accountID)
-	ret0, _ := ret[0].(repository.GetAccountsByIDRow)
+	ret0, _ := ret[0].(repository.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -653,6 +713,21 @@ func (mr *MockStoreMockRecorder) GetPastWorksByOpus(ctx, opus interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPastWorksByOpus", reflect.TypeOf((*MockStore)(nil).GetPastWorksByOpus), ctx, opus)
 }
 
+// GetRolesByID mocks base method.
+func (m *MockStore) GetRolesByID(ctx context.Context, roleID int32) (repository.Role, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRolesByID", ctx, roleID)
+	ret0, _ := ret[0].(repository.Role)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRolesByID indicates an expected call of GetRolesByID.
+func (mr *MockStoreMockRecorder) GetRolesByID(ctx, roleID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRolesByID", reflect.TypeOf((*MockStore)(nil).GetRolesByID), ctx, roleID)
+}
+
 // GetRoomsAccountsByID mocks base method.
 func (m *MockStore) GetRoomsAccountsByID(ctx context.Context, roomID uuid.UUID) ([]repository.GetRoomsAccountsByIDRow, error) {
 	m.ctrl.T.Helper()
@@ -698,21 +773,6 @@ func (mr *MockStoreMockRecorder) GetStatusTagsByHackathonID(ctx, hackathonID int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatusTagsByHackathonID", reflect.TypeOf((*MockStore)(nil).GetStatusTagsByHackathonID), ctx, hackathonID)
 }
 
-// GetStatusTagsByStatusID mocks base method.
-func (m *MockStore) GetStatusTagsByStatusID(ctx context.Context, statusID int32) (repository.StatusTag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetStatusTagsByStatusID", ctx, statusID)
-	ret0, _ := ret[0].(repository.StatusTag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetStatusTagsByStatusID indicates an expected call of GetStatusTagsByStatusID.
-func (mr *MockStoreMockRecorder) GetStatusTagsByStatusID(ctx, statusID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatusTagsByStatusID", reflect.TypeOf((*MockStore)(nil).GetStatusTagsByStatusID), ctx, statusID)
-}
-
 // GetTechTagsByID mocks base method.
 func (m *MockStore) GetTechTagsByID(ctx context.Context, techTagID int32) (repository.TechTag, error) {
 	m.ctrl.T.Helper()
@@ -726,6 +786,36 @@ func (m *MockStore) GetTechTagsByID(ctx context.Context, techTagID int32) (repos
 func (mr *MockStoreMockRecorder) GetTechTagsByID(ctx, techTagID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTechTagsByID", reflect.TypeOf((*MockStore)(nil).GetTechTagsByID), ctx, techTagID)
+}
+
+// GetUsersByEmail mocks base method.
+func (m *MockStore) GetUsersByEmail(ctx context.Context, email sql.NullString) (repository.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersByEmail", ctx, email)
+	ret0, _ := ret[0].(repository.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersByEmail indicates an expected call of GetUsersByEmail.
+func (mr *MockStoreMockRecorder) GetUsersByEmail(ctx, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersByEmail", reflect.TypeOf((*MockStore)(nil).GetUsersByEmail), ctx, email)
+}
+
+// GetUsersByID mocks base method.
+func (m *MockStore) GetUsersByID(ctx context.Context, userID string) (repository.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersByID", ctx, userID)
+	ret0, _ := ret[0].(repository.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersByID indicates an expected call of GetUsersByID.
+func (mr *MockStoreMockRecorder) GetUsersByID(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersByID", reflect.TypeOf((*MockStore)(nil).GetUsersByID), ctx, userID)
 }
 
 // InitChatRoom mocks base method.
@@ -789,10 +879,10 @@ func (mr *MockStoreMockRecorder) ListAccountTagsByUserID(ctx, accountID interfac
 }
 
 // ListAccounts mocks base method.
-func (m *MockStore) ListAccounts(ctx context.Context, arg repository.ListAccountsParams) ([]repository.ListAccountsRow, error) {
+func (m *MockStore) ListAccounts(ctx context.Context, arg repository.ListAccountsParams) ([]repository.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccounts", ctx, arg)
-	ret0, _ := ret[0].([]repository.ListAccountsRow)
+	ret0, _ := ret[0].([]repository.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -816,6 +906,21 @@ func (m *MockStore) ListBookmarksByID(ctx context.Context, accountID string) ([]
 func (mr *MockStoreMockRecorder) ListBookmarksByID(ctx, accountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListBookmarksByID", reflect.TypeOf((*MockStore)(nil).ListBookmarksByID), ctx, accountID)
+}
+
+// ListFollowsByFromUserID mocks base method.
+func (m *MockStore) ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]repository.Follow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListFollowsByFromUserID", ctx, fromAccountID)
+	ret0, _ := ret[0].([]repository.Follow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListFollowsByFromUserID indicates an expected call of ListFollowsByFromUserID.
+func (mr *MockStoreMockRecorder) ListFollowsByFromUserID(ctx, fromAccountID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFollowsByFromUserID", reflect.TypeOf((*MockStore)(nil).ListFollowsByFromUserID), ctx, fromAccountID)
 }
 
 // ListFollowsByToUserID mocks base method.
@@ -938,19 +1043,34 @@ func (mr *MockStoreMockRecorder) ListPastWorks(ctx, arg interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPastWorks", reflect.TypeOf((*MockStore)(nil).ListPastWorks), ctx, arg)
 }
 
-// ListRateEntries mocks base method.
-func (m *MockStore) ListRateEntries(ctx context.Context, arg repository.ListRateEntriesParams) ([]repository.RateEntity, error) {
+// ListRateEntities mocks base method.
+func (m *MockStore) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListRateEntries", ctx, arg)
+	ret := m.ctrl.Call(m, "ListRateEntities", ctx, arg)
 	ret0, _ := ret[0].([]repository.RateEntity)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListRateEntries indicates an expected call of ListRateEntries.
-func (mr *MockStoreMockRecorder) ListRateEntries(ctx, arg interface{}) *gomock.Call {
+// ListRateEntities indicates an expected call of ListRateEntities.
+func (mr *MockStoreMockRecorder) ListRateEntities(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRateEntries", reflect.TypeOf((*MockStore)(nil).ListRateEntries), ctx, arg)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRateEntities", reflect.TypeOf((*MockStore)(nil).ListRateEntities), ctx, arg)
+}
+
+// ListRoles mocks base method.
+func (m *MockStore) ListRoles(ctx context.Context) ([]repository.Role, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRoles", ctx)
+	ret0, _ := ret[0].([]repository.Role)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListRoles indicates an expected call of ListRoles.
+func (mr *MockStoreMockRecorder) ListRoles(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoles", reflect.TypeOf((*MockStore)(nil).ListRoles), ctx)
 }
 
 // ListRooms mocks base method.
@@ -1058,6 +1178,21 @@ func (mr *MockStoreMockRecorder) UpdateFrameworksByID(ctx, arg interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFrameworksByID", reflect.TypeOf((*MockStore)(nil).UpdateFrameworksByID), ctx, arg)
 }
 
+// UpdatePastWorksByID mocks base method.
+func (m *MockStore) UpdatePastWorksByID(ctx context.Context, arg repository.UpdatePastWorksByIDParams) (repository.PastWork, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePastWorksByID", ctx, arg)
+	ret0, _ := ret[0].(repository.PastWork)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdatePastWorksByID indicates an expected call of UpdatePastWorksByID.
+func (mr *MockStoreMockRecorder) UpdatePastWorksByID(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePastWorksByID", reflect.TypeOf((*MockStore)(nil).UpdatePastWorksByID), ctx, arg)
+}
+
 // UpdateRateByID mocks base method.
 func (m *MockStore) UpdateRateByID(ctx context.Context, arg repository.UpdateRateByIDParams) (repository.Account, error) {
 	m.ctrl.T.Helper()
@@ -1103,21 +1238,6 @@ func (mr *MockStoreMockRecorder) UpdateRoomsByID(ctx, arg interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRoomsByID", reflect.TypeOf((*MockStore)(nil).UpdateRoomsByID), ctx, arg)
 }
 
-// UpdateStatusTagsByStatusID mocks base method.
-func (m *MockStore) UpdateStatusTagsByStatusID(ctx context.Context, status string) (repository.StatusTag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateStatusTagsByStatusID", ctx, status)
-	ret0, _ := ret[0].(repository.StatusTag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateStatusTagsByStatusID indicates an expected call of UpdateStatusTagsByStatusID.
-func (mr *MockStoreMockRecorder) UpdateStatusTagsByStatusID(ctx, status interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStatusTagsByStatusID", reflect.TypeOf((*MockStore)(nil).UpdateStatusTagsByStatusID), ctx, status)
-}
-
 // UpdateTechTagsByID mocks base method.
 func (m *MockStore) UpdateTechTagsByID(ctx context.Context, language string) (repository.TechTag, error) {
 	m.ctrl.T.Helper()
@@ -1131,6 +1251,21 @@ func (m *MockStore) UpdateTechTagsByID(ctx context.Context, language string) (re
 func (mr *MockStoreMockRecorder) UpdateTechTagsByID(ctx, language interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTechTagsByID", reflect.TypeOf((*MockStore)(nil).UpdateTechTagsByID), ctx, language)
+}
+
+// UpdateUsersByID mocks base method.
+func (m *MockStore) UpdateUsersByID(ctx context.Context, arg repository.UpdateUsersByIDParams) (repository.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateUsersByID", ctx, arg)
+	ret0, _ := ret[0].(repository.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateUsersByID indicates an expected call of UpdateUsersByID.
+func (mr *MockStoreMockRecorder) UpdateUsersByID(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUsersByID", reflect.TypeOf((*MockStore)(nil).UpdateUsersByID), ctx, arg)
 }
 
 // UploadImage mocks base method.

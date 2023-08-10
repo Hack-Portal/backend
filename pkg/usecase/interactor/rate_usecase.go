@@ -22,7 +22,7 @@ func NewRateUsercase(store transaction.Store, timeout time.Duration) inputport.R
 	}
 }
 
-func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.CreateRateEntriesParams) error {
+func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.CreateRateEntitiesParams) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -37,7 +37,7 @@ func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domai
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	rates, err := ru.store.ListRateEntries(ctx, repository.ListRateEntriesParams{
+	rates, err := ru.store.ListRateEntities(ctx, repository.ListRateEntitiesParams{
 		AccountID: id,
 		Limit:     query.PageSize,
 		Offset:    (query.PageId - 1) * query.PageSize,

@@ -76,7 +76,7 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
-	account, err := au.store.GetAccountsByEmail(ctx, email)
+	account, err := au.store.GetAccountsByEmail(ctx, sql.NullString{String: email, Valid: true})
 	if err != nil {
 		return domain.AccountResponses{}, err
 	}

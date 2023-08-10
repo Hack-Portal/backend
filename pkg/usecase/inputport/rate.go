@@ -8,6 +8,6 @@ import (
 )
 
 type RateUsecase interface {
-	CreateRateEntry(ctx context.Context, body repository.CreateRateEntriesParams) error
+	CreateRateEntry(ctx context.Context, body repository.CreateRateEntitiesParams) error
 	ListRateEntry(ctx context.Context, id string, query domain.ListRateParams) ([]repository.RateEntity, error)
 }
