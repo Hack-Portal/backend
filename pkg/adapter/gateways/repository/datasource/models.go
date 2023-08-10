@@ -12,34 +12,50 @@ import (
 )
 
 type Account struct {
+	AccountID       string         `json:"account_id"`
 	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
-	HashedPassword  sql.NullString `json:"hashed_password"`
-	Email           string         `json:"email"`
-	CreateAt        time.Time      `json:"create_at"`
+	Charactor       sql.NullInt32  `json:"charactor"`
 	ShowLocate      bool           `json:"show_locate"`
 	ShowRate        bool           `json:"show_rate"`
+	CreateAt        time.Time      `json:"create_at"`
 	UpdateAt        time.Time      `json:"update_at"`
 	IsDelete        bool           `json:"is_delete"`
 }
 
 type AccountFramework struct {
-	UserID      string `json:"user_id"`
+	AccountID   string `json:"account_id"`
 	FrameworkID int32  `json:"framework_id"`
 }
 
 type AccountPastWork struct {
-	Opus   int32  `json:"opus"`
-	UserID string `json:"user_id"`
+	Opus      int32  `json:"opus"`
+	AccountID string `json:"account_id"`
 }
 
 type AccountTag struct {
-	UserID    string `json:"user_id"`
+	AccountID string `json:"account_id"`
 	TechTagID int32  `json:"tech_tag_id"`
+}
+
+type AccountsAchievment struct {
+	AccountID    string    `json:"account_id"`
+	AchievmentID int32     `json:"achievment_id"`
+	CreateAt     time.Time `json:"create_at"`
+}
+
+type Achievment struct {
+	AchievmentID int32     `json:"achievment_id"`
+	Achievment   string    `json:"achievment"`
+	Description  string    `json:"description"`
+	Icon         string    `json:"icon"`
+	Conditions   string    `json:"conditions"`
+	CreateAt     time.Time `json:"create_at"`
+	IsDelete     bool      `json:"is_delete"`
 }
 
 type Award struct {
@@ -47,17 +63,23 @@ type Award struct {
 	Name    string `json:"name"`
 }
 
+type AwardDatum struct {
+	AwardDataID int32 `json:"award_data_id"`
+	AwardID     int32 `json:"award_id"`
+	HackathonID int32 `json:"hackathon_id"`
+}
+
 type Bookmark struct {
 	HackathonID int32     `json:"hackathon_id"`
-	UserID      string    `json:"user_id"`
+	AccountID   string    `json:"account_id"`
 	CreateAt    time.Time `json:"create_at"`
 	IsDelete    bool      `json:"is_delete"`
 }
 
 type Follow struct {
-	ToUserID   string    `json:"to_user_id"`
-	FromUserID string    `json:"from_user_id"`
-	CreateAt   time.Time `json:"create_at"`
+	ToAccountID   string    `json:"to_account_id"`
+	FromAccountID string    `json:"from_account_id"`
+	CreateAt      time.Time `json:"create_at"`
 }
 
 type Framework struct {
@@ -82,24 +104,20 @@ type HackathonStatusTag struct {
 	StatusID    int32 `json:"status_id"`
 }
 
-type HackathonsDatum struct {
-	Opus        int32 `json:"opus"`
-	AwardID     int32 `json:"award_id"`
-	HackathonID int32 `json:"hackathon_id"`
-}
-
 type Locate struct {
 	LocateID int32  `json:"locate_id"`
 	Name     string `json:"name"`
 }
 
 type PastWork struct {
-	Opus            int32     `json:"opus"`
-	Name            string    `json:"name"`
-	ThumbnailImage  []byte    `json:"thumbnail_image"`
-	ExplanatoryText string    `json:"explanatory_text"`
-	CreateAt        time.Time `json:"create_at"`
-	IsDelete        bool      `json:"is_delete"`
+	Opus            int32         `json:"opus"`
+	Name            string        `json:"name"`
+	ThumbnailImage  string        `json:"thumbnail_image"`
+	ExplanatoryText string        `json:"explanatory_text"`
+	AwardDataID     sql.NullInt32 `json:"award_data_id"`
+	CreateAt        time.Time     `json:"create_at"`
+	UpdateAt        time.Time     `json:"update_at"`
+	IsDelete        bool          `json:"is_delete"`
 }
 
 type PastWorkFramework struct {
@@ -112,10 +130,15 @@ type PastWorkTag struct {
 	TechTagID int32 `json:"tech_tag_id"`
 }
 
-type RateEntry struct {
-	UserID   string    `json:"user_id"`
-	Rate     int32     `json:"rate"`
-	CreateAt time.Time `json:"create_at"`
+type RateEntity struct {
+	AccountID string    `json:"account_id"`
+	Rate      int32     `json:"rate"`
+	CreateAt  time.Time `json:"create_at"`
+}
+
+type Role struct {
+	RoleID int32  `json:"role_id"`
+	Role   string `json:"role"`
 }
 
 type Room struct {
@@ -124,15 +147,18 @@ type Room struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	MemberLimit int32     `json:"member_limit"`
+	IncludeRate bool      `json:"include_rate"`
 	CreateAt    time.Time `json:"create_at"`
+	UpdateAt    time.Time `json:"update_at"`
 	IsDelete    bool      `json:"is_delete"`
 }
 
 type RoomsAccount struct {
-	UserID   string    `json:"user_id"`
-	RoomID   uuid.UUID `json:"room_id"`
-	IsOwner  bool      `json:"is_owner"`
-	CreateAt time.Time `json:"create_at"`
+	AccountID string    `json:"account_id"`
+	RoomID    uuid.UUID `json:"room_id"`
+	Role      int32     `json:"role"`
+	IsOwner   bool      `json:"is_owner"`
+	CreateAt  time.Time `json:"create_at"`
 }
 
 type StatusTag struct {
@@ -143,4 +169,22 @@ type StatusTag struct {
 type TechTag struct {
 	TechTagID int32  `json:"tech_tag_id"`
 	Language  string `json:"language"`
+}
+
+type Tutor struct {
+	TutorID     string         `json:"tutor_id"`
+	Title       string         `json:"Title"`
+	Description sql.NullString `json:"description"`
+	CreateAt    time.Time      `json:"create_at"`
+	UpdateAt    time.Time      `json:"update_at"`
+	IsDelete    bool           `json:"is_delete"`
+}
+
+type User struct {
+	UserID         string    `json:"user_id"`
+	Email          string    `json:"email"`
+	HashedPassword string    `json:"hashed_password"`
+	CreateAt       time.Time `json:"create_at"`
+	UpdateAt       time.Time `json:"update_at"`
+	IsDelete       bool      `json:"is_delete"`
 }

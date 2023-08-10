@@ -12,20 +12,20 @@ import (
 
 const createAccountTags = `-- name: CreateAccountTags :one
 INSERT INTO
-    account_tags (user_id, tech_tag_id)
+    account_tags (account_id, tech_tag_id)
 VALUES
-($1, $2) RETURNING user_id, tech_tag_id
+($1, $2) RETURNING account_id, tech_tag_id
 `
 
 type CreateAccountTagsParams struct {
-	UserID    string `json:"user_id"`
+	AccountID string `json:"account_id"`
 	TechTagID int32  `json:"tech_tag_id"`
 }
 
 func (q *Queries) CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTag, error) {
-	row := q.db.QueryRowContext(ctx, createAccountTags, arg.UserID, arg.TechTagID)
+	row := q.db.QueryRowContext(ctx, createAccountTags, arg.AccountID, arg.TechTagID)
 	var i AccountTag
-	err := row.Scan(&i.UserID, &i.TechTagID)
+	err := row.Scan(&i.AccountID, &i.TechTagID)
 	return i, err
 }
 
@@ -33,11 +33,11 @@ const deleteAccountTagsByUserID = `-- name: DeleteAccountTagsByUserID :exec
 DELETE FROM
     account_tags
 WHERE
-    user_id = $1
+    account_id = $1
 `
 
-func (q *Queries) DeleteAccountTagsByUserID(ctx context.Context, userID string) error {
-	_, err := q.db.ExecContext(ctx, deleteAccountTagsByUserID, userID)
+func (q *Queries) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error {
+	_, err := q.db.ExecContext(ctx, deleteAccountTagsByUserID, accountID)
 	return err
 }
 
@@ -49,7 +49,7 @@ FROM
     account_tags
     LEFT OUTER JOIN tech_tags ON account_tags.tech_tag_id = tech_tags.tech_tag_id
 WHERE
-    account_tags.user_id = $1
+    account_tags.account_id = $1
 `
 
 type ListAccountTagsByUserIDRow struct {
@@ -57,8 +57,8 @@ type ListAccountTagsByUserIDRow struct {
 	Language  sql.NullString `json:"language"`
 }
 
-func (q *Queries) ListAccountTagsByUserID(ctx context.Context, userID string) ([]ListAccountTagsByUserIDRow, error) {
-	rows, err := q.db.QueryContext(ctx, listAccountTagsByUserID, userID)
+func (q *Queries) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]ListAccountTagsByUserIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAccountTagsByUserID, accountID)
 	if err != nil {
 		return nil, err
 	}

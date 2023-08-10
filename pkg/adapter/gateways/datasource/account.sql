@@ -1,14 +1,13 @@
 -- name: CreateAccounts :one
 INSERT INTO
     accounts (
-        user_id,
+        account_id,
         username,
         icon,
         explanatory_text,
         locate_id,
         rate,
-        hashed_password,
-        email,
+        user_id,
         show_locate,
         show_rate
     )
@@ -22,20 +21,18 @@ VALUES
         $6,
         $7,
         $8,
-        $9,
-        $10
+        $9
     ) RETURNING *;
 
 -- name: GetAccountsByID :one
 SELECT
-    user_id,
+    account_id,
     username,
     icon,
     explanatory_text,
     locate_id,
     rate,
-    hashed_password,
-    email,
+    user_id,
     show_locate,
     show_rate,
     create_at,
@@ -43,18 +40,17 @@ SELECT
 FROM
     accounts
 WHERE
-    user_id = $1 AND is_delete = false;
+    account_id = $1 AND is_delete = false;
 
 -- name: GetAccountsByEmail :one
 SELECT
-    user_id,
+    account_id,
     username,
     icon,
     explanatory_text,
     locate_id,
     rate,
-    hashed_password,
-    email,
+    user_id,
     show_locate,
     show_rate,
     create_at,
@@ -62,11 +58,13 @@ SELECT
 FROM
     accounts
 WHERE
-    email = $1 AND is_delete = false;
+    user_id = (
+        SELECT user_id FROM users WHERE email = $1
+    ) AND is_delete = false;
 
 -- name: ListAccounts :many
 SELECT
-    user_id,
+    account_id,
     username,
     icon,
     (
@@ -93,7 +91,7 @@ UPDATE
 SET
     is_delete = true
 WHERE
-    user_id = $1 RETURNING *;
+    account_id = $1 RETURNING *;
 
 -- name: UpdateAccounts :one
 UPDATE
@@ -104,12 +102,10 @@ SET
     explanatory_text = $4,
     locate_id = $5,
     rate = $6,
-    hashed_password = $7,
-    email = $8,
-    show_locate = $9,
-    show_rate = $10
+    show_locate = $7,
+    show_rate = $8
 WHERE
-    user_id = $1 RETURNING *;
+    account_id = $1 RETURNING *;
 
 
 -- name: UpdateRateByID :one
@@ -118,4 +114,4 @@ UPDATE
 SET    
     rate = $2
 WHERE
-    user_id = $1 RETURNING *;
+    account_id = $1 RETURNING *;

@@ -1,6 +1,6 @@
 -- name: CreateFollows :one
 INSERT INTO
-  follows (to_user_id, from_user_id)
+  follows (to_account_id, from_account_id)
 VALUES
 ($1, $2) RETURNING *;
 
@@ -10,11 +10,11 @@ SELECT
 FROM
   follows
 WHERE
-  to_user_id = $1;
+  to_account_id = $1;
 
 -- name: DeleteFollows :exec
 DELETE FROM
   follows
 WHERE
-  to_user_id = $1
-  AND from_user_id = $2;
+  to_account_id = $1
+  AND from_account_id = $2;

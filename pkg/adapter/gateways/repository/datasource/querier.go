@@ -22,13 +22,13 @@ type Querier interface {
 	CreatePastWorkFrameworks(ctx context.Context, arg CreatePastWorkFrameworksParams) (PastWorkFramework, error)
 	CreatePastWorkTags(ctx context.Context, arg CreatePastWorkTagsParams) (PastWorkTag, error)
 	CreatePastWorks(ctx context.Context, arg CreatePastWorksParams) (PastWork, error)
-	CreateRateEntries(ctx context.Context, arg CreateRateEntriesParams) (RateEntry, error)
+	CreateRateEntries(ctx context.Context, arg CreateRateEntriesParams) (RateEntity, error)
 	CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error)
-	DeleteAccountFrameworkByUserID(ctx context.Context, userID string) error
+	DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
 	DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
-	DeleteAccountTagsByUserID(ctx context.Context, userID string) error
-	DeleteAccounts(ctx context.Context, userID string) (Account, error)
+	DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
+	DeleteAccounts(ctx context.Context, accountID string) (Account, error)
 	DeleteBookmarksByID(ctx context.Context, arg DeleteBookmarksByIDParams) (Bookmark, error)
 	DeleteFollows(ctx context.Context, arg DeleteFollowsParams) error
 	DeleteFrameworksByID(ctx context.Context, frameworkID int32) error
@@ -41,7 +41,7 @@ type Querier interface {
 	DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error
 	DeleteTechTagsByID(ctx context.Context, techTagID int32) error
 	GetAccountsByEmail(ctx context.Context, email string) (GetAccountsByEmailRow, error)
-	GetAccountsByID(ctx context.Context, userID string) (GetAccountsByIDRow, error)
+	GetAccountsByID(ctx context.Context, accountID string) (GetAccountsByIDRow, error)
 	GetFrameworksByID(ctx context.Context, frameworkID int32) (Framework, error)
 	GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathon, error)
 	GetLocatesByID(ctx context.Context, locateID int32) (Locate, error)
@@ -51,12 +51,12 @@ type Querier interface {
 	GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]StatusTag, error)
 	GetStatusTagsByStatusID(ctx context.Context, statusID int32) (StatusTag, error)
 	GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error)
-	ListAccountFrameworksByUserID(ctx context.Context, userID string) ([]ListAccountFrameworksByUserIDRow, error)
+	ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error)
 	ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]AccountPastWork, error)
-	ListAccountTagsByUserID(ctx context.Context, userID string) ([]ListAccountTagsByUserIDRow, error)
+	ListAccountTagsByUserID(ctx context.Context, accountID string) ([]ListAccountTagsByUserIDRow, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
-	ListBookmarksByID(ctx context.Context, userID string) ([]Bookmark, error)
-	ListFollowsByToUserID(ctx context.Context, toUserID string) ([]Follow, error)
+	ListBookmarksByID(ctx context.Context, accountID string) ([]Bookmark, error)
+	ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]Follow, error)
 	ListFrameworks(ctx context.Context) ([]Framework, error)
 	ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]HackathonStatusTag, error)
 	ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathon, error)
@@ -64,7 +64,7 @@ type Querier interface {
 	ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFramework, error)
 	ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]PastWorkTag, error)
 	ListPastWorks(ctx context.Context, arg ListPastWorksParams) ([]ListPastWorksRow, error)
-	ListRateEntries(ctx context.Context, arg ListRateEntriesParams) ([]RateEntry, error)
+	ListRateEntries(ctx context.Context, arg ListRateEntriesParams) ([]RateEntity, error)
 	ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, error)
 	ListStatusTags(ctx context.Context) ([]StatusTag, error)
 	ListTechTags(ctx context.Context) ([]TechTag, error)

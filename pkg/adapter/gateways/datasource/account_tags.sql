@@ -1,6 +1,6 @@
 -- name: CreateAccountTags :one
 INSERT INTO
-    account_tags (user_id, tech_tag_id)
+    account_tags (account_id, tech_tag_id)
 VALUES
 ($1, $2) RETURNING *;
 
@@ -12,10 +12,10 @@ FROM
     account_tags
     LEFT OUTER JOIN tech_tags ON account_tags.tech_tag_id = tech_tags.tech_tag_id
 WHERE
-    account_tags.user_id = $1;
+    account_tags.account_id = $1;
 
 -- name: DeleteAccountTagsByUserID :exec
 DELETE FROM
     account_tags
 WHERE
-    user_id = $1;
+    account_id = $1;

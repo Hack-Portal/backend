@@ -10,46 +10,46 @@ import (
 )
 
 const createRateEntries = `-- name: CreateRateEntries :one
-INSERT INTO rate_entries (user_id, rate)
+INSERT INTO rate_entities (account_id, rate)
 VALUES($1, $2)
-RETURNING user_id, rate, create_at
+RETURNING account_id, rate, create_at
 `
 
 type CreateRateEntriesParams struct {
-	UserID string `json:"user_id"`
-	Rate   int32  `json:"rate"`
+	AccountID string `json:"account_id"`
+	Rate      int32  `json:"rate"`
 }
 
-func (q *Queries) CreateRateEntries(ctx context.Context, arg CreateRateEntriesParams) (RateEntry, error) {
-	row := q.db.QueryRowContext(ctx, createRateEntries, arg.UserID, arg.Rate)
-	var i RateEntry
-	err := row.Scan(&i.UserID, &i.Rate, &i.CreateAt)
+func (q *Queries) CreateRateEntries(ctx context.Context, arg CreateRateEntriesParams) (RateEntity, error) {
+	row := q.db.QueryRowContext(ctx, createRateEntries, arg.AccountID, arg.Rate)
+	var i RateEntity
+	err := row.Scan(&i.AccountID, &i.Rate, &i.CreateAt)
 	return i, err
 }
 
 const listRateEntries = `-- name: ListRateEntries :many
-SELECT user_id, rate, create_at
-FROM rate_entries
-WHERE user_id = $1
+SELECT account_id, rate, create_at
+FROM rate_entities
+WHERE account_id = $1
 LIMIT $2 OFFSET $3
 `
 
 type ListRateEntriesParams struct {
-	UserID string `json:"user_id"`
-	Limit  int32  `json:"limit"`
-	Offset int32  `json:"offset"`
+	AccountID string `json:"account_id"`
+	Limit     int32  `json:"limit"`
+	Offset    int32  `json:"offset"`
 }
 
-func (q *Queries) ListRateEntries(ctx context.Context, arg ListRateEntriesParams) ([]RateEntry, error) {
-	rows, err := q.db.QueryContext(ctx, listRateEntries, arg.UserID, arg.Limit, arg.Offset)
+func (q *Queries) ListRateEntries(ctx context.Context, arg ListRateEntriesParams) ([]RateEntity, error) {
+	rows, err := q.db.QueryContext(ctx, listRateEntries, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []RateEntry{}
+	items := []RateEntity{}
 	for rows.Next() {
-		var i RateEntry
-		if err := rows.Scan(&i.UserID, &i.Rate, &i.CreateAt); err != nil {
+		var i RateEntity
+		if err := rows.Scan(&i.AccountID, &i.Rate, &i.CreateAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

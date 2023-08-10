@@ -1,5 +1,5 @@
 -- name: CreateAccountPastWorks :one
-INSERT INTO account_past_works (opus, user_id)
+INSERT INTO account_past_works (opus, account_id)
 VALUES ($1, $2)
 RETURNING *;
 -- name: ListAccountPastWorksByOpus :many

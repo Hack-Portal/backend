@@ -21,7 +21,7 @@ INSERT INTO rooms (
         is_delete
     )
 VALUES($1, $2, $3, $4, $5, $6)
-RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
 `
 
 type CreateRoomsParams struct {
@@ -49,7 +49,9 @@ func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room,
 		&i.Title,
 		&i.Description,
 		&i.MemberLimit,
+		&i.IncludeRate,
 		&i.CreateAt,
+		&i.UpdateAt,
 		&i.IsDelete,
 	)
 	return i, err
@@ -59,7 +61,7 @@ const deleteRoomsByID = `-- name: DeleteRoomsByID :one
 UPDATE rooms
 SET is_delete = true
 WHERE room_id = $1
-RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
 `
 
 func (q *Queries) DeleteRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error) {
@@ -71,14 +73,16 @@ func (q *Queries) DeleteRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, 
 		&i.Title,
 		&i.Description,
 		&i.MemberLimit,
+		&i.IncludeRate,
 		&i.CreateAt,
+		&i.UpdateAt,
 		&i.IsDelete,
 	)
 	return i, err
 }
 
 const getRoomsByID = `-- name: GetRoomsByID :one
-SELECT room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
 FROM rooms
 WHERE room_id = $1
 `
@@ -92,14 +96,16 @@ func (q *Queries) GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, err
 		&i.Title,
 		&i.Description,
 		&i.MemberLimit,
+		&i.IncludeRate,
 		&i.CreateAt,
+		&i.UpdateAt,
 		&i.IsDelete,
 	)
 	return i, err
 }
 
 const listRooms = `-- name: ListRooms :many
-SELECT room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
 FROM rooms
 WHERE member_limit > (
         SELECT count(*)
@@ -130,7 +136,9 @@ func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, e
 			&i.Title,
 			&i.Description,
 			&i.MemberLimit,
+			&i.IncludeRate,
 			&i.CreateAt,
+			&i.UpdateAt,
 			&i.IsDelete,
 		); err != nil {
 			return nil, err
@@ -153,7 +161,7 @@ SET hackathon_id = $1,
     description = $3,
     member_limit = $4
 WHERE room_id = $5
-RETURNING room_id, hackathon_id, title, description, member_limit, create_at, is_delete
+RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
 `
 
 type UpdateRoomsByIDParams struct {
@@ -179,7 +187,9 @@ func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams
 		&i.Title,
 		&i.Description,
 		&i.MemberLimit,
+		&i.IncludeRate,
 		&i.CreateAt,
+		&i.UpdateAt,
 		&i.IsDelete,
 	)
 	return i, err

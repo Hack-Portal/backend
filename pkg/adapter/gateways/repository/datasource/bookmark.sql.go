@@ -11,22 +11,22 @@ import (
 
 const createBookmarks = `-- name: CreateBookmarks :one
 INSERT INTO
-    bookmarks(hackathon_id, user_id)
+    bookmarks(hackathon_id, account_id)
 VALUES
-    ($1, $2) RETURNING hackathon_id, user_id, create_at, is_delete
+    ($1, $2) RETURNING hackathon_id, account_id, create_at, is_delete
 `
 
 type CreateBookmarksParams struct {
 	HackathonID int32  `json:"hackathon_id"`
-	UserID      string `json:"user_id"`
+	AccountID   string `json:"account_id"`
 }
 
 func (q *Queries) CreateBookmarks(ctx context.Context, arg CreateBookmarksParams) (Bookmark, error) {
-	row := q.db.QueryRowContext(ctx, createBookmarks, arg.HackathonID, arg.UserID)
+	row := q.db.QueryRowContext(ctx, createBookmarks, arg.HackathonID, arg.AccountID)
 	var i Bookmark
 	err := row.Scan(
 		&i.HackathonID,
-		&i.UserID,
+		&i.AccountID,
 		&i.CreateAt,
 		&i.IsDelete,
 	)
@@ -39,21 +39,21 @@ UPDATE
 SET
     is_delete = true
 WHERE
-    user_id = $1
-    AND hackathon_id = $2 RETURNING hackathon_id, user_id, create_at, is_delete
+    account_id = $1
+    AND hackathon_id = $2 RETURNING hackathon_id, account_id, create_at, is_delete
 `
 
 type DeleteBookmarksByIDParams struct {
-	UserID      string `json:"user_id"`
+	AccountID   string `json:"account_id"`
 	HackathonID int32  `json:"hackathon_id"`
 }
 
 func (q *Queries) DeleteBookmarksByID(ctx context.Context, arg DeleteBookmarksByIDParams) (Bookmark, error) {
-	row := q.db.QueryRowContext(ctx, deleteBookmarksByID, arg.UserID, arg.HackathonID)
+	row := q.db.QueryRowContext(ctx, deleteBookmarksByID, arg.AccountID, arg.HackathonID)
 	var i Bookmark
 	err := row.Scan(
 		&i.HackathonID,
-		&i.UserID,
+		&i.AccountID,
 		&i.CreateAt,
 		&i.IsDelete,
 	)
@@ -62,15 +62,15 @@ func (q *Queries) DeleteBookmarksByID(ctx context.Context, arg DeleteBookmarksBy
 
 const listBookmarksByID = `-- name: ListBookmarksByID :many
 SELECT
-    hackathon_id, user_id, create_at, is_delete
+    hackathon_id, account_id, create_at, is_delete
 FROM
     bookmarks
 WHERE
-    user_id = $1 AND is_delete = false
+    account_id = $1 AND is_delete = false
 `
 
-func (q *Queries) ListBookmarksByID(ctx context.Context, userID string) ([]Bookmark, error) {
-	rows, err := q.db.QueryContext(ctx, listBookmarksByID, userID)
+func (q *Queries) ListBookmarksByID(ctx context.Context, accountID string) ([]Bookmark, error) {
+	rows, err := q.db.QueryContext(ctx, listBookmarksByID, accountID)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (q *Queries) ListBookmarksByID(ctx context.Context, userID string) ([]Bookm
 		var i Bookmark
 		if err := rows.Scan(
 			&i.HackathonID,
-			&i.UserID,
+			&i.AccountID,
 			&i.CreateAt,
 			&i.IsDelete,
 		); err != nil {

@@ -16,12 +16,12 @@ INSERT INTO past_works (
     explanatory_text
   )
 VALUES ($1, $2, $3)
-RETURNING opus, name, thumbnail_image, explanatory_text, create_at, is_delete
+RETURNING opus, name, thumbnail_image, explanatory_text, award_data_id, create_at, update_at, is_delete
 `
 
 type CreatePastWorksParams struct {
 	Name            string `json:"name"`
-	ThumbnailImage  []byte `json:"thumbnail_image"`
+	ThumbnailImage  string `json:"thumbnail_image"`
 	ExplanatoryText string `json:"explanatory_text"`
 }
 
@@ -33,14 +33,16 @@ func (q *Queries) CreatePastWorks(ctx context.Context, arg CreatePastWorksParams
 		&i.Name,
 		&i.ThumbnailImage,
 		&i.ExplanatoryText,
+		&i.AwardDataID,
 		&i.CreateAt,
+		&i.UpdateAt,
 		&i.IsDelete,
 	)
 	return i, err
 }
 
 const getPastWorksByOpus = `-- name: GetPastWorksByOpus :one
-SELECT opus, name, thumbnail_image, explanatory_text, create_at, is_delete
+SELECT opus, name, thumbnail_image, explanatory_text, award_data_id, create_at, update_at, is_delete
 FROM past_works
 WHERE opus = $1
 `
@@ -53,7 +55,9 @@ func (q *Queries) GetPastWorksByOpus(ctx context.Context, opus int32) (PastWork,
 		&i.Name,
 		&i.ThumbnailImage,
 		&i.ExplanatoryText,
+		&i.AwardDataID,
 		&i.CreateAt,
+		&i.UpdateAt,
 		&i.IsDelete,
 	)
 	return i, err

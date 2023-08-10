@@ -11,20 +11,20 @@ import (
 
 const createFollows = `-- name: CreateFollows :one
 INSERT INTO
-  follows (to_user_id, from_user_id)
+  follows (to_account_id, from_account_id)
 VALUES
-($1, $2) RETURNING to_user_id, from_user_id, create_at
+($1, $2) RETURNING to_account_id, from_account_id, create_at
 `
 
 type CreateFollowsParams struct {
-	ToUserID   string `json:"to_user_id"`
-	FromUserID string `json:"from_user_id"`
+	ToAccountID   string `json:"to_account_id"`
+	FromAccountID string `json:"from_account_id"`
 }
 
 func (q *Queries) CreateFollows(ctx context.Context, arg CreateFollowsParams) (Follow, error) {
-	row := q.db.QueryRowContext(ctx, createFollows, arg.ToUserID, arg.FromUserID)
+	row := q.db.QueryRowContext(ctx, createFollows, arg.ToAccountID, arg.FromAccountID)
 	var i Follow
-	err := row.Scan(&i.ToUserID, &i.FromUserID, &i.CreateAt)
+	err := row.Scan(&i.ToAccountID, &i.FromAccountID, &i.CreateAt)
 	return i, err
 }
 
@@ -32,40 +32,39 @@ const deleteFollows = `-- name: DeleteFollows :exec
 DELETE FROM
   follows
 WHERE
-  to_user_id = $1
-  AND from_user_id = $2
+  to_account_id = $1
+  AND from_account_id = $2
 `
 
 type DeleteFollowsParams struct {
-	ToUserID   string `json:"to_user_id"`
-	FromUserID string `json:"from_user_id"`
+	ToAccountID   string `json:"to_account_id"`
+	FromAccountID string `json:"from_account_id"`
 }
 
 func (q *Queries) DeleteFollows(ctx context.Context, arg DeleteFollowsParams) error {
-	_, err := q.db.ExecContext(ctx, deleteFollows, arg.ToUserID, arg.FromUserID)
+	_, err := q.db.ExecContext(ctx, deleteFollows, arg.ToAccountID, arg.FromAccountID)
 	return err
 }
 
 const listFollowsByToUserID = `-- name: ListFollowsByToUserID :many
 SELECT
-  to_user_id, from_user_id, create_at
+  to_account_id, from_account_id, create_at
 FROM
   follows
 WHERE
-  to_user_id = $1
+  to_account_id = $1
 `
 
-func (q *Queries) ListFollowsByToUserID(ctx context.Context, toUserID string) ([]Follow, error) {
-	rows, err := q.db.QueryContext(ctx, listFollowsByToUserID, toUserID)
+func (q *Queries) ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]Follow, error) {
+	rows, err := q.db.QueryContext(ctx, listFollowsByToUserID, toAccountID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	
 	items := []Follow{}
 	for rows.Next() {
 		var i Follow
-		if err := rows.Scan(&i.ToUserID, &i.FromUserID, &i.CreateAt); err != nil {
+		if err := rows.Scan(&i.ToAccountID, &i.FromAccountID, &i.CreateAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

@@ -10,20 +10,20 @@ import (
 )
 
 const createAccountPastWorks = `-- name: CreateAccountPastWorks :one
-INSERT INTO account_past_works (opus, user_id)
+INSERT INTO account_past_works (opus, account_id)
 VALUES ($1, $2)
-RETURNING opus, user_id
+RETURNING opus, account_id
 `
 
 type CreateAccountPastWorksParams struct {
-	Opus   int32  `json:"opus"`
-	UserID string `json:"user_id"`
+	Opus      int32  `json:"opus"`
+	AccountID string `json:"account_id"`
 }
 
 func (q *Queries) CreateAccountPastWorks(ctx context.Context, arg CreateAccountPastWorksParams) (AccountPastWork, error) {
-	row := q.db.QueryRowContext(ctx, createAccountPastWorks, arg.Opus, arg.UserID)
+	row := q.db.QueryRowContext(ctx, createAccountPastWorks, arg.Opus, arg.AccountID)
 	var i AccountPastWork
-	err := row.Scan(&i.Opus, &i.UserID)
+	err := row.Scan(&i.Opus, &i.AccountID)
 	return i, err
 }
 
@@ -38,7 +38,7 @@ func (q *Queries) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) 
 }
 
 const listAccountPastWorksByOpus = `-- name: ListAccountPastWorksByOpus :many
-SELECT opus, user_id
+SELECT opus, account_id
 FROM account_past_works
 WHERE opus = $1
 `
@@ -52,7 +52,7 @@ func (q *Queries) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([
 	items := []AccountPastWork{}
 	for rows.Next() {
 		var i AccountPastWork
-		if err := rows.Scan(&i.Opus, &i.UserID); err != nil {
+		if err := rows.Scan(&i.Opus, &i.AccountID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

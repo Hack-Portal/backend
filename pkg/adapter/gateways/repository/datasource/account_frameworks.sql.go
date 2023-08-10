@@ -12,20 +12,20 @@ import (
 
 const createAccountFrameworks = `-- name: CreateAccountFrameworks :one
 INSERT INTO
-    account_frameworks (user_id, framework_id)
+    account_frameworks (account_id, framework_id)
 VALUES
-    ($1, $2) RETURNING user_id, framework_id
+    ($1, $2) RETURNING account_id, framework_id
 `
 
 type CreateAccountFrameworksParams struct {
-	UserID      string `json:"user_id"`
+	AccountID   string `json:"account_id"`
 	FrameworkID int32  `json:"framework_id"`
 }
 
 func (q *Queries) CreateAccountFrameworks(ctx context.Context, arg CreateAccountFrameworksParams) (AccountFramework, error) {
-	row := q.db.QueryRowContext(ctx, createAccountFrameworks, arg.UserID, arg.FrameworkID)
+	row := q.db.QueryRowContext(ctx, createAccountFrameworks, arg.AccountID, arg.FrameworkID)
 	var i AccountFramework
-	err := row.Scan(&i.UserID, &i.FrameworkID)
+	err := row.Scan(&i.AccountID, &i.FrameworkID)
 	return i, err
 }
 
@@ -33,11 +33,11 @@ const deleteAccountFrameworkByUserID = `-- name: DeleteAccountFrameworkByUserID 
 DELETE FROM
     account_frameworks
 WHERE
-    user_id = $1
+    account_id = $1
 `
 
-func (q *Queries) DeleteAccountFrameworkByUserID(ctx context.Context, userID string) error {
-	_, err := q.db.ExecContext(ctx, deleteAccountFrameworkByUserID, userID)
+func (q *Queries) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error {
+	_, err := q.db.ExecContext(ctx, deleteAccountFrameworkByUserID, accountID)
 	return err
 }
 
@@ -50,7 +50,7 @@ FROM
     account_frameworks
     LEFT OUTER JOIN frameworks ON account_frameworks.framework_id = frameworks.framework_id
 WHERE
-    account_frameworks.user_Id = $1
+    account_frameworks.account_id = $1
 `
 
 type ListAccountFrameworksByUserIDRow struct {
@@ -59,8 +59,8 @@ type ListAccountFrameworksByUserIDRow struct {
 	Framework   sql.NullString `json:"framework"`
 }
 
-func (q *Queries) ListAccountFrameworksByUserID(ctx context.Context, userID string) ([]ListAccountFrameworksByUserIDRow, error) {
-	rows, err := q.db.QueryContext(ctx, listAccountFrameworksByUserID, userID)
+func (q *Queries) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAccountFrameworksByUserID, accountID)
 	if err != nil {
 		return nil, err
 	}
