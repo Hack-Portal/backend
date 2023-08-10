@@ -19,7 +19,7 @@ type Account struct {
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
-	Charactor       sql.NullInt32  `json:"charactor"`
+	Character       sql.NullInt32  `json:"character"`
 	ShowLocate      bool           `json:"show_locate"`
 	ShowRate        bool           `json:"show_rate"`
 	CreateAt        time.Time      `json:"create_at"`
@@ -154,11 +154,11 @@ type Room struct {
 }
 
 type RoomsAccount struct {
-	AccountID string    `json:"account_id"`
-	RoomID    uuid.UUID `json:"room_id"`
-	Role      int32     `json:"role"`
-	IsOwner   bool      `json:"is_owner"`
-	CreateAt  time.Time `json:"create_at"`
+	AccountID string        `json:"account_id"`
+	RoomID    uuid.UUID     `json:"room_id"`
+	Role      sql.NullInt32 `json:"role"`
+	IsOwner   bool          `json:"is_owner"`
+	CreateAt  time.Time     `json:"create_at"`
 }
 
 type StatusTag struct {
@@ -181,10 +181,10 @@ type Tutor struct {
 }
 
 type User struct {
-	UserID         string    `json:"user_id"`
-	Email          string    `json:"email"`
-	HashedPassword string    `json:"hashed_password"`
-	CreateAt       time.Time `json:"create_at"`
-	UpdateAt       time.Time `json:"update_at"`
-	IsDelete       bool      `json:"is_delete"`
+	UserID         string         `json:"user_id"`
+	Email          sql.NullString `json:"email"`
+	HashedPassword sql.NullString `json:"hashed_password"`
+	CreateAt       time.Time      `json:"create_at"`
+	UpdateAt       time.Time      `json:"update_at"`
+	IsDelete       bool           `json:"is_delete"`
 }

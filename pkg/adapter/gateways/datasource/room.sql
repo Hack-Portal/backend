@@ -38,6 +38,6 @@ SET hackathon_id = $1,
     title = $2,
     description = $3,
     member_limit = $4,
-    update_at = $5,
+    update_at = $5
 WHERE room_id = $6
 RETURNING *;

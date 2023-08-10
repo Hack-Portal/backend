@@ -51,17 +51,6 @@ func (q *Queries) GetStatusTagsByHackathonID(ctx context.Context, hackathonID in
 	return items, nil
 }
 
-const getStatusTagsByStatusID = `-- name: GetStatusTagsByStatusID :one
-SELECT status_id, status FROM status_tags WHERE status_id = $1
-`
-
-func (q *Queries) GetStatusTagsByStatusID(ctx context.Context, statusID int32) (StatusTag, error) {
-	row := q.db.QueryRowContext(ctx, getStatusTagsByStatusID, statusID)
-	var i StatusTag
-	err := row.Scan(&i.StatusID, &i.Status)
-	return i, err
-}
-
 const listStatusTags = `-- name: ListStatusTags :many
 SELECT status_id, status
 FROM status_tags
@@ -88,19 +77,4 @@ func (q *Queries) ListStatusTags(ctx context.Context) ([]StatusTag, error) {
 		return nil, err
 	}
 	return items, nil
-}
-
-const updateStatusTagsByStatusID = `-- name: UpdateStatusTagsByStatusID :one
-UPDATE
-    status_tags
-SET
-    status = $1
-WHERE status_id = $1 RETURNING status_id, status
-`
-
-func (q *Queries) UpdateStatusTagsByStatusID(ctx context.Context, status string) (StatusTag, error) {
-	row := q.db.QueryRowContext(ctx, updateStatusTagsByStatusID, status)
-	var i StatusTag
-	err := row.Scan(&i.StatusID, &i.Status)
-	return i, err
 }

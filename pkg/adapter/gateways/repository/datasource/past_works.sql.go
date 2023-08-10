@@ -7,26 +7,35 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"time"
 )
 
 const createPastWorks = `-- name: CreatePastWorks :one
 INSERT INTO past_works (
     name,
     thumbnail_image,
-    explanatory_text
+    explanatory_text,
+    award_data_id
   )
-VALUES ($1, $2, $3)
+VALUES ($1, $2, $3,$4)
 RETURNING opus, name, thumbnail_image, explanatory_text, award_data_id, create_at, update_at, is_delete
 `
 
 type CreatePastWorksParams struct {
-	Name            string `json:"name"`
-	ThumbnailImage  string `json:"thumbnail_image"`
-	ExplanatoryText string `json:"explanatory_text"`
+	Name            string        `json:"name"`
+	ThumbnailImage  string        `json:"thumbnail_image"`
+	ExplanatoryText string        `json:"explanatory_text"`
+	AwardDataID     sql.NullInt32 `json:"award_data_id"`
 }
 
 func (q *Queries) CreatePastWorks(ctx context.Context, arg CreatePastWorksParams) (PastWork, error) {
-	row := q.db.QueryRowContext(ctx, createPastWorks, arg.Name, arg.ThumbnailImage, arg.ExplanatoryText)
+	row := q.db.QueryRowContext(ctx, createPastWorks,
+		arg.Name,
+		arg.ThumbnailImage,
+		arg.ExplanatoryText,
+		arg.AwardDataID,
+	)
 	var i PastWork
 	err := row.Scan(
 		&i.Opus,
@@ -103,4 +112,47 @@ func (q *Queries) ListPastWorks(ctx context.Context, arg ListPastWorksParams) ([
 		return nil, err
 	}
 	return items, nil
+}
+
+const updatePastWorksByID = `-- name: UpdatePastWorksByID :one
+UPDATE past_works
+SET name = $1,
+    thumbnail_image = $2,
+    explanatory_text = $3,
+    award_data_id = $4,
+    update_at = $5
+WHERE opus = $6
+RETURNING opus, name, thumbnail_image, explanatory_text, award_data_id, create_at, update_at, is_delete
+`
+
+type UpdatePastWorksByIDParams struct {
+	Name            string        `json:"name"`
+	ThumbnailImage  string        `json:"thumbnail_image"`
+	ExplanatoryText string        `json:"explanatory_text"`
+	AwardDataID     sql.NullInt32 `json:"award_data_id"`
+	UpdateAt        time.Time     `json:"update_at"`
+	Opus            int32         `json:"opus"`
+}
+
+func (q *Queries) UpdatePastWorksByID(ctx context.Context, arg UpdatePastWorksByIDParams) (PastWork, error) {
+	row := q.db.QueryRowContext(ctx, updatePastWorksByID,
+		arg.Name,
+		arg.ThumbnailImage,
+		arg.ExplanatoryText,
+		arg.AwardDataID,
+		arg.UpdateAt,
+		arg.Opus,
+	)
+	var i PastWork
+	err := row.Scan(
+		&i.Opus,
+		&i.Name,
+		&i.ThumbnailImage,
+		&i.ExplanatoryText,
+		&i.AwardDataID,
+		&i.CreateAt,
+		&i.UpdateAt,
+		&i.IsDelete,
+	)
+	return i, err
 }

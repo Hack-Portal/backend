@@ -4,7 +4,7 @@ INSERT INTO users (
     hashed_password
 )VALUES(
     $1,$2
-)RETURNING*;
+)RETURNING *;
 
 -- name: GetUsersByID :one
 SELECT * FROM users WHERE user_id = $1;

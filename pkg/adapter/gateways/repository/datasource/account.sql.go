@@ -15,12 +15,13 @@ const createAccounts = `-- name: CreateAccounts :one
 INSERT INTO
     accounts (
         account_id,
+        user_id,
         username,
         icon,
         explanatory_text,
         locate_id,
         rate,
-        user_id,
+        character,
         show_locate,
         show_rate
     )
@@ -34,18 +35,20 @@ VALUES
         $6,
         $7,
         $8,
-        $9
-    ) RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, charactor, show_locate, show_rate, create_at, update_at, is_delete
+        $9,
+        $10
+    ) RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
 `
 
 type CreateAccountsParams struct {
 	AccountID       string         `json:"account_id"`
+	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
-	UserID          string         `json:"user_id"`
+	Character       sql.NullInt32  `json:"character"`
 	ShowLocate      bool           `json:"show_locate"`
 	ShowRate        bool           `json:"show_rate"`
 }
@@ -53,12 +56,13 @@ type CreateAccountsParams struct {
 func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error) {
 	row := q.db.QueryRowContext(ctx, createAccounts,
 		arg.AccountID,
+		arg.UserID,
 		arg.Username,
 		arg.Icon,
 		arg.ExplanatoryText,
 		arg.LocateID,
 		arg.Rate,
-		arg.UserID,
+		arg.Character,
 		arg.ShowLocate,
 		arg.ShowRate,
 	)
@@ -71,7 +75,7 @@ func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) 
 		&i.ExplanatoryText,
 		&i.LocateID,
 		&i.Rate,
-		&i.Charactor,
+		&i.Character,
 		&i.ShowLocate,
 		&i.ShowRate,
 		&i.CreateAt,
@@ -87,7 +91,7 @@ UPDATE
 SET
     is_delete = true
 WHERE
-    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, charactor, show_locate, show_rate, create_at, update_at, is_delete
+    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
 `
 
 func (q *Queries) DeleteAccounts(ctx context.Context, accountID string) (Account, error) {
@@ -101,7 +105,7 @@ func (q *Queries) DeleteAccounts(ctx context.Context, accountID string) (Account
 		&i.ExplanatoryText,
 		&i.LocateID,
 		&i.Rate,
-		&i.Charactor,
+		&i.Character,
 		&i.ShowLocate,
 		&i.ShowRate,
 		&i.CreateAt,
@@ -113,17 +117,7 @@ func (q *Queries) DeleteAccounts(ctx context.Context, accountID string) (Account
 
 const getAccountsByEmail = `-- name: GetAccountsByEmail :one
 SELECT
-    account_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    user_id,
-    show_locate,
-    show_rate,
-    create_at,
-    update_at
+    account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
 FROM
     accounts
 WHERE
@@ -132,107 +126,60 @@ WHERE
     ) AND is_delete = false
 `
 
-type GetAccountsByEmailRow struct {
-	AccountID       string         `json:"account_id"`
-	Username        string         `json:"username"`
-	Icon            sql.NullString `json:"icon"`
-	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	LocateID        int32          `json:"locate_id"`
-	Rate            int32          `json:"rate"`
-	UserID          string         `json:"user_id"`
-	ShowLocate      bool           `json:"show_locate"`
-	ShowRate        bool           `json:"show_rate"`
-	CreateAt        time.Time      `json:"create_at"`
-	UpdateAt        time.Time      `json:"update_at"`
-}
-
-func (q *Queries) GetAccountsByEmail(ctx context.Context, email string) (GetAccountsByEmailRow, error) {
+func (q *Queries) GetAccountsByEmail(ctx context.Context, email sql.NullString) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getAccountsByEmail, email)
-	var i GetAccountsByEmailRow
+	var i Account
 	err := row.Scan(
 		&i.AccountID,
+		&i.UserID,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
 		&i.LocateID,
 		&i.Rate,
-		&i.UserID,
+		&i.Character,
 		&i.ShowLocate,
 		&i.ShowRate,
 		&i.CreateAt,
 		&i.UpdateAt,
+		&i.IsDelete,
 	)
 	return i, err
 }
 
 const getAccountsByID = `-- name: GetAccountsByID :one
 SELECT
-    account_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    user_id,
-    show_locate,
-    show_rate,
-    create_at,
-    update_at
+    account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
 FROM
     accounts
 WHERE
     account_id = $1 AND is_delete = false
 `
 
-type GetAccountsByIDRow struct {
-	AccountID       string         `json:"account_id"`
-	Username        string         `json:"username"`
-	Icon            sql.NullString `json:"icon"`
-	ExplanatoryText sql.NullString `json:"explanatory_text"`
-	LocateID        int32          `json:"locate_id"`
-	Rate            int32          `json:"rate"`
-	UserID          string         `json:"user_id"`
-	ShowLocate      bool           `json:"show_locate"`
-	ShowRate        bool           `json:"show_rate"`
-	CreateAt        time.Time      `json:"create_at"`
-	UpdateAt        time.Time      `json:"update_at"`
-}
-
-func (q *Queries) GetAccountsByID(ctx context.Context, accountID string) (GetAccountsByIDRow, error) {
+func (q *Queries) GetAccountsByID(ctx context.Context, accountID string) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getAccountsByID, accountID)
-	var i GetAccountsByIDRow
+	var i Account
 	err := row.Scan(
 		&i.AccountID,
+		&i.UserID,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
 		&i.LocateID,
 		&i.Rate,
-		&i.UserID,
+		&i.Character,
 		&i.ShowLocate,
 		&i.ShowRate,
 		&i.CreateAt,
 		&i.UpdateAt,
+		&i.IsDelete,
 	)
 	return i, err
 }
 
 const listAccounts = `-- name: ListAccounts :many
 SELECT
-    account_id,
-    username,
-    icon,
-    (
-        SELECT
-            name
-        FROM
-            locates
-        WHERE
-            locate_id = accounts.locate_id
-    ) as locate,
-    rate,
-    show_locate,
-    show_rate
+    account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
 FROM
     accounts
 WHERE
@@ -247,33 +194,29 @@ type ListAccountsParams struct {
 	Offset   int32  `json:"offset"`
 }
 
-type ListAccountsRow struct {
-	AccountID  string         `json:"account_id"`
-	Username   string         `json:"username"`
-	Icon       sql.NullString `json:"icon"`
-	Locate     string         `json:"locate"`
-	Rate       int32          `json:"rate"`
-	ShowLocate bool           `json:"show_locate"`
-	ShowRate   bool           `json:"show_rate"`
-}
-
-func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error) {
+func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error) {
 	rows, err := q.db.QueryContext(ctx, listAccounts, arg.Username, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListAccountsRow{}
+	items := []Account{}
 	for rows.Next() {
-		var i ListAccountsRow
+		var i Account
 		if err := rows.Scan(
 			&i.AccountID,
+			&i.UserID,
 			&i.Username,
 			&i.Icon,
-			&i.Locate,
+			&i.ExplanatoryText,
+			&i.LocateID,
 			&i.Rate,
+			&i.Character,
 			&i.ShowLocate,
 			&i.ShowRate,
+			&i.CreateAt,
+			&i.UpdateAt,
+			&i.IsDelete,
 		); err != nil {
 			return nil, err
 		}
@@ -297,10 +240,12 @@ SET
     explanatory_text = $4,
     locate_id = $5,
     rate = $6,
-    show_locate = $7,
-    show_rate = $8
+    character = $7,
+    show_locate = $8,
+    show_rate = $9,
+    update_at = $10
 WHERE
-    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, charactor, show_locate, show_rate, create_at, update_at, is_delete
+    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
 `
 
 type UpdateAccountsParams struct {
@@ -310,8 +255,10 @@ type UpdateAccountsParams struct {
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
 	LocateID        int32          `json:"locate_id"`
 	Rate            int32          `json:"rate"`
+	Character       sql.NullInt32  `json:"character"`
 	ShowLocate      bool           `json:"show_locate"`
 	ShowRate        bool           `json:"show_rate"`
+	UpdateAt        time.Time      `json:"update_at"`
 }
 
 func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) (Account, error) {
@@ -322,8 +269,10 @@ func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) 
 		arg.ExplanatoryText,
 		arg.LocateID,
 		arg.Rate,
+		arg.Character,
 		arg.ShowLocate,
 		arg.ShowRate,
+		arg.UpdateAt,
 	)
 	var i Account
 	err := row.Scan(
@@ -334,7 +283,7 @@ func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) 
 		&i.ExplanatoryText,
 		&i.LocateID,
 		&i.Rate,
-		&i.Charactor,
+		&i.Character,
 		&i.ShowLocate,
 		&i.ShowRate,
 		&i.CreateAt,
@@ -348,18 +297,20 @@ const updateRateByID = `-- name: UpdateRateByID :one
 UPDATE
     accounts
 SET    
-    rate = $2
+    rate = $2,
+    update_at = $3
 WHERE
-    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, charactor, show_locate, show_rate, create_at, update_at, is_delete
+    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
 `
 
 type UpdateRateByIDParams struct {
-	AccountID string `json:"account_id"`
-	Rate      int32  `json:"rate"`
+	AccountID string    `json:"account_id"`
+	Rate      int32     `json:"rate"`
+	UpdateAt  time.Time `json:"update_at"`
 }
 
 func (q *Queries) UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) (Account, error) {
-	row := q.db.QueryRowContext(ctx, updateRateByID, arg.AccountID, arg.Rate)
+	row := q.db.QueryRowContext(ctx, updateRateByID, arg.AccountID, arg.Rate, arg.UpdateAt)
 	var i Account
 	err := row.Scan(
 		&i.AccountID,
@@ -369,7 +320,7 @@ func (q *Queries) UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) 
 		&i.ExplanatoryText,
 		&i.LocateID,
 		&i.Rate,
-		&i.Charactor,
+		&i.Character,
 		&i.ShowLocate,
 		&i.ShowRate,
 		&i.CreateAt,

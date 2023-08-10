@@ -6,6 +6,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -17,14 +18,17 @@ type Querier interface {
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
 	CreateBookmarks(ctx context.Context, arg CreateBookmarksParams) (Bookmark, error)
 	CreateFollows(ctx context.Context, arg CreateFollowsParams) (Follow, error)
+	CreateFrameworks(ctx context.Context, arg CreateFrameworksParams) (Framework, error)
 	CreateHackathonStatusTags(ctx context.Context, arg CreateHackathonStatusTagsParams) (HackathonStatusTag, error)
 	CreateHackathons(ctx context.Context, arg CreateHackathonsParams) (Hackathon, error)
 	CreatePastWorkFrameworks(ctx context.Context, arg CreatePastWorkFrameworksParams) (PastWorkFramework, error)
 	CreatePastWorkTags(ctx context.Context, arg CreatePastWorkTagsParams) (PastWorkTag, error)
 	CreatePastWorks(ctx context.Context, arg CreatePastWorksParams) (PastWork, error)
-	CreateRateEntries(ctx context.Context, arg CreateRateEntriesParams) (RateEntity, error)
+	CreateRateEntities(ctx context.Context, arg CreateRateEntitiesParams) (RateEntity, error)
+	CreateRoles(ctx context.Context, role string) (Role, error)
 	CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error)
+	CreateUsers(ctx context.Context, arg CreateUsersParams) (User, error)
 	DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
 	DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
 	DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
@@ -40,22 +44,26 @@ type Querier interface {
 	DeleteRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error)
 	DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error
 	DeleteTechTagsByID(ctx context.Context, techTagID int32) error
-	GetAccountsByEmail(ctx context.Context, email string) (GetAccountsByEmailRow, error)
-	GetAccountsByID(ctx context.Context, accountID string) (GetAccountsByIDRow, error)
+	DeleteUsersByID(ctx context.Context, arg DeleteUsersByIDParams) error
+	GetAccountsByEmail(ctx context.Context, email sql.NullString) (Account, error)
+	GetAccountsByID(ctx context.Context, accountID string) (Account, error)
 	GetFrameworksByID(ctx context.Context, frameworkID int32) (Framework, error)
 	GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathon, error)
 	GetLocatesByID(ctx context.Context, locateID int32) (Locate, error)
 	GetPastWorksByOpus(ctx context.Context, opus int32) (PastWork, error)
+	GetRolesByID(ctx context.Context, roleID int32) (Role, error)
 	GetRoomsAccountsByID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByIDRow, error)
 	GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error)
 	GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]StatusTag, error)
-	GetStatusTagsByStatusID(ctx context.Context, statusID int32) (StatusTag, error)
 	GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error)
+	GetUsersByEmail(ctx context.Context, email sql.NullString) (User, error)
+	GetUsersByID(ctx context.Context, userID string) (User, error)
 	ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error)
 	ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]AccountPastWork, error)
 	ListAccountTagsByUserID(ctx context.Context, accountID string) ([]ListAccountTagsByUserIDRow, error)
-	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error)
+	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error)
 	ListBookmarksByID(ctx context.Context, accountID string) ([]Bookmark, error)
+	ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]Follow, error)
 	ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]Follow, error)
 	ListFrameworks(ctx context.Context) ([]Framework, error)
 	ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]HackathonStatusTag, error)
@@ -64,16 +72,18 @@ type Querier interface {
 	ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFramework, error)
 	ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]PastWorkTag, error)
 	ListPastWorks(ctx context.Context, arg ListPastWorksParams) ([]ListPastWorksRow, error)
-	ListRateEntries(ctx context.Context, arg ListRateEntriesParams) ([]RateEntity, error)
+	ListRateEntities(ctx context.Context, arg ListRateEntitiesParams) ([]RateEntity, error)
+	ListRoles(ctx context.Context) ([]Role, error)
 	ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, error)
 	ListStatusTags(ctx context.Context) ([]StatusTag, error)
 	ListTechTags(ctx context.Context) ([]TechTag, error)
 	UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) (Account, error)
 	UpdateFrameworksByID(ctx context.Context, arg UpdateFrameworksByIDParams) (Framework, error)
+	UpdatePastWorksByID(ctx context.Context, arg UpdatePastWorksByIDParams) (PastWork, error)
 	UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) (Account, error)
 	UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams) (Room, error)
-	UpdateStatusTagsByStatusID(ctx context.Context, status string) (StatusTag, error)
 	UpdateTechTagsByID(ctx context.Context, language string) (TechTag, error)
+	UpdateUsersByID(ctx context.Context, arg UpdateUsersByIDParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

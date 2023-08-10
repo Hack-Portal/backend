@@ -9,39 +9,39 @@ import (
 	"context"
 )
 
-const createRateEntries = `-- name: CreateRateEntries :one
+const createRateEntities = `-- name: CreateRateEntities :one
 INSERT INTO rate_entities (account_id, rate)
 VALUES($1, $2)
 RETURNING account_id, rate, create_at
 `
 
-type CreateRateEntriesParams struct {
+type CreateRateEntitiesParams struct {
 	AccountID string `json:"account_id"`
 	Rate      int32  `json:"rate"`
 }
 
-func (q *Queries) CreateRateEntries(ctx context.Context, arg CreateRateEntriesParams) (RateEntity, error) {
-	row := q.db.QueryRowContext(ctx, createRateEntries, arg.AccountID, arg.Rate)
+func (q *Queries) CreateRateEntities(ctx context.Context, arg CreateRateEntitiesParams) (RateEntity, error) {
+	row := q.db.QueryRowContext(ctx, createRateEntities, arg.AccountID, arg.Rate)
 	var i RateEntity
 	err := row.Scan(&i.AccountID, &i.Rate, &i.CreateAt)
 	return i, err
 }
 
-const listRateEntries = `-- name: ListRateEntries :many
+const listRateEntities = `-- name: ListRateEntities :many
 SELECT account_id, rate, create_at
 FROM rate_entities
 WHERE account_id = $1
 LIMIT $2 OFFSET $3
 `
 
-type ListRateEntriesParams struct {
+type ListRateEntitiesParams struct {
 	AccountID string `json:"account_id"`
 	Limit     int32  `json:"limit"`
 	Offset    int32  `json:"offset"`
 }
 
-func (q *Queries) ListRateEntries(ctx context.Context, arg ListRateEntriesParams) ([]RateEntity, error) {
-	rows, err := q.db.QueryContext(ctx, listRateEntries, arg.AccountID, arg.Limit, arg.Offset)
+func (q *Queries) ListRateEntities(ctx context.Context, arg ListRateEntitiesParams) ([]RateEntity, error) {
+	rows, err := q.db.QueryContext(ctx, listRateEntities, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

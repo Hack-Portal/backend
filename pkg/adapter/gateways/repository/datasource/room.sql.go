@@ -7,6 +7,7 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -18,7 +19,7 @@ INSERT INTO rooms (
         title,
         description,
         member_limit,
-        is_delete
+        include_rate
     )
 VALUES($1, $2, $3, $4, $5, $6)
 RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
@@ -30,7 +31,7 @@ type CreateRoomsParams struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	MemberLimit int32     `json:"member_limit"`
-	IsDelete    bool      `json:"is_delete"`
+	IncludeRate bool      `json:"include_rate"`
 }
 
 func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error) {
@@ -40,7 +41,7 @@ func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room,
 		arg.Title,
 		arg.Description,
 		arg.MemberLimit,
-		arg.IsDelete,
+		arg.IncludeRate,
 	)
 	var i Room
 	err := row.Scan(
@@ -159,8 +160,9 @@ UPDATE rooms
 SET hackathon_id = $1,
     title = $2,
     description = $3,
-    member_limit = $4
-WHERE room_id = $5
+    member_limit = $4,
+    update_at = $5
+WHERE room_id = $6
 RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
 `
 
@@ -169,6 +171,7 @@ type UpdateRoomsByIDParams struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	MemberLimit int32     `json:"member_limit"`
+	UpdateAt    time.Time `json:"update_at"`
 	RoomID      uuid.UUID `json:"room_id"`
 }
 
@@ -178,6 +181,7 @@ func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams
 		arg.Title,
 		arg.Description,
 		arg.MemberLimit,
+		arg.UpdateAt,
 		arg.RoomID,
 	)
 	var i Room

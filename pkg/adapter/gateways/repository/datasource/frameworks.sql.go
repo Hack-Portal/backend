@@ -9,6 +9,25 @@ import (
 	"context"
 )
 
+const createFrameworks = `-- name: CreateFrameworks :one
+INSERT INTO
+  frameworks (framework, tech_tag_id)
+VALUES
+($1, $2) RETURNING framework_id, tech_tag_id, framework
+`
+
+type CreateFrameworksParams struct {
+	Framework string `json:"framework"`
+	TechTagID int32  `json:"tech_tag_id"`
+}
+
+func (q *Queries) CreateFrameworks(ctx context.Context, arg CreateFrameworksParams) (Framework, error) {
+	row := q.db.QueryRowContext(ctx, createFrameworks, arg.Framework, arg.TechTagID)
+	var i Framework
+	err := row.Scan(&i.FrameworkID, &i.TechTagID, &i.Framework)
+	return i, err
+}
+
 const deleteFrameworksByID = `-- name: DeleteFrameworksByID :exec
 DELETE FROM frameworks
 WHERE framework_id = $1

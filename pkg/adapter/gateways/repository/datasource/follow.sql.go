@@ -46,6 +46,38 @@ func (q *Queries) DeleteFollows(ctx context.Context, arg DeleteFollowsParams) er
 	return err
 }
 
+const listFollowsByFromUserID = `-- name: ListFollowsByFromUserID :many
+SELECT
+  to_account_id, from_account_id, create_at
+FROM
+  follows
+WHERE
+  from_account_id = $1
+`
+
+func (q *Queries) ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]Follow, error) {
+	rows, err := q.db.QueryContext(ctx, listFollowsByFromUserID, fromAccountID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Follow{}
+	for rows.Next() {
+		var i Follow
+		if err := rows.Scan(&i.ToAccountID, &i.FromAccountID, &i.CreateAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listFollowsByToUserID = `-- name: ListFollowsByToUserID :many
 SELECT
   to_account_id, from_account_id, create_at

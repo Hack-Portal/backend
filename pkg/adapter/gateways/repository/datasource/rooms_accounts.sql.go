@@ -16,20 +16,27 @@ const createRoomsAccounts = `-- name: CreateRoomsAccounts :one
 INSERT INTO rooms_accounts (
     account_id,
     room_id,
-    is_owner
+    is_owner,
+    role
 )VALUES(
-    $1,$2,$3
+    $1,$2,$3,$4
 )RETURNING account_id, room_id, role, is_owner, create_at
 `
 
 type CreateRoomsAccountsParams struct {
-	AccountID string    `json:"account_id"`
-	RoomID    uuid.UUID `json:"room_id"`
-	IsOwner   bool      `json:"is_owner"`
+	AccountID string        `json:"account_id"`
+	RoomID    uuid.UUID     `json:"room_id"`
+	IsOwner   bool          `json:"is_owner"`
+	Role      sql.NullInt32 `json:"role"`
 }
 
 func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error) {
-	row := q.db.QueryRowContext(ctx, createRoomsAccounts, arg.AccountID, arg.RoomID, arg.IsOwner)
+	row := q.db.QueryRowContext(ctx, createRoomsAccounts,
+		arg.AccountID,
+		arg.RoomID,
+		arg.IsOwner,
+		arg.Role,
+	)
 	var i RoomsAccount
 	err := row.Scan(
 		&i.AccountID,
@@ -59,7 +66,8 @@ const getRoomsAccountsByID = `-- name: GetRoomsAccountsByID :many
 SELECT 
     accounts.account_id, 
     accounts.icon,
-    rooms_accounts.is_owner
+    rooms_accounts.is_owner,
+    rooms_accounts.role    
 FROM 
     rooms_accounts
 LEFT OUTER JOIN 
@@ -74,6 +82,7 @@ type GetRoomsAccountsByIDRow struct {
 	AccountID sql.NullString `json:"account_id"`
 	Icon      sql.NullString `json:"icon"`
 	IsOwner   bool           `json:"is_owner"`
+	Role      sql.NullInt32  `json:"role"`
 }
 
 func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByIDRow, error) {
@@ -85,7 +94,12 @@ func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID uuid.UUID) ([
 	items := []GetRoomsAccountsByIDRow{}
 	for rows.Next() {
 		var i GetRoomsAccountsByIDRow
-		if err := rows.Scan(&i.AccountID, &i.Icon, &i.IsOwner); err != nil {
+		if err := rows.Scan(
+			&i.AccountID,
+			&i.Icon,
+			&i.IsOwner,
+			&i.Role,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
