@@ -1,11 +1,11 @@
 package domain
 
 type CreateFollowRequestBody struct {
-	ToUserID string `json:"to_user_id" binding:"required"`
+	ToAccountID string `json:"to_account_id" binding:"required"`
 }
 
 type RemoveFollowRequestQueries struct {
-	ToUserID string `json:"to_user_id" binding:"required"`
+	ToAccountID string `from:"to_account_id" binding:"required"`
 }
 
 type GetFollowRequestQueries struct {
@@ -15,7 +15,7 @@ type GetFollowRequestQueries struct {
 }
 
 type FollowResponse struct {
-	UserID   string `json:"user_id"`
-	Username string `json:"username"`
-	Icon     string `json:"icon"`
+	AccountID string `json:"account_id"`
+	Username  string `json:"username"`
+	Icon      string `json:"icon"`
 }

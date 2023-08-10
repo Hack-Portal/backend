@@ -33,9 +33,9 @@ type ListPastWorksRequestQuery struct {
 }
 
 type PastWorkMembers struct {
-	UserID string `json:"user_id"`
-	Icon   string `json:"icon"`
-	Name   string `json:"name"`
+	AccountID string `json:"account_id"`
+	Icon      string `json:"icon"`
+	Name      string `json:"name"`
 }
 
 type CreatePastWorkParams struct {

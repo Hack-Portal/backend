@@ -5,7 +5,7 @@ import (
 )
 
 type CreateBookmarkRequest struct {
-	UserID      string `json:"user_id"`
+	AccountID   string `json:"account_id"`
 	HackathonID int32  `json:"hackathon_id"`
 }
 
@@ -21,7 +21,7 @@ type BookmarkResponse struct {
 }
 
 type BookmarkRequestWildCard struct {
-	UserID string `uri:"user_id"`
+	AccountID string `uri:"account_id"`
 }
 type RemoveBookmarkRequestQueries struct {
 	HackathonID int32 `query:"hackathon_id" binding:"required"`

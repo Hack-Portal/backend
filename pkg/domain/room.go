@@ -16,7 +16,7 @@ type CreateRoomRequestBody struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
 	MemberLimit int32  `json:"member_limit" binding:"required"`
-	UserID      string `json:"user_id" binding:"required"`
+	AccountID   string `json:"account_id" binding:"required"`
 }
 
 type ListRoomsRequest struct {
@@ -34,9 +34,9 @@ type RoomFramework struct {
 }
 
 type NowRoomAccounts struct {
-	UserID  string `json:"user_id"`
-	Icon    string `json:"icon"`
-	IsOwner bool   `json:"is_owner"`
+	AccountID string `json:"account_id"`
+	Icon      string `json:"icon"`
+	IsOwner   bool   `json:"is_owner"`
 }
 
 type ListRoomRoomInfo struct {
@@ -82,8 +82,8 @@ type GetRoomResponse struct {
 }
 
 type AddChatRequestBody struct {
-	UserID  string `json:"user_id" binding:"required"`
-	Message string `json:"message" binding:"required"`
+	AccountID string `json:"account_id" binding:"required"`
+	Message   string `json:"message" binding:"required"`
 }
 
 type UpdateRoomRequestBody struct {
@@ -117,18 +117,18 @@ type DeleteRoomParam struct {
 }
 
 type AddAccountInRoomParam struct {
-	AccountID string    `json:"user_id"`
+	AccountID string    `json:"account_id"`
 	RoomID    uuid.UUID `json:"room_id"`
 }
 
 type AddAccountInRoomRequestBody struct {
-	UserID string `json:"user_id"`
+	AccountID string `json:"account_id"`
 }
 
 type AddChatParams struct {
-	RoomID  uuid.UUID `json:"room_id"`
-	UserID  string    `json:"user_id"`
-	Message string    `json:"message"`
+	RoomID    uuid.UUID `json:"room_id"`
+	AccountID string    `json:"account_id"`
+	Message   string    `json:"message"`
 }
 
 type WriteFireStoreParam struct {

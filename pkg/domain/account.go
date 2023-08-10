@@ -8,12 +8,12 @@ import (
 
 // アカウントのパス用のクエリ
 type AccountRequestWildCard struct {
-	UserID string `uri:"user_id"`
+	AccountID string `uri:"account_id"`
 }
 
 // アカウント作成のリクエストパラメータ
 type CreateAccountRequest struct {
-	UserID          string `json:"user_id" binding:"required"`
+	AccountID       string `json:"account_id" binding:"required"`
 	Username        string `json:"username" binding:"required"`
 	ExplanatoryText string `json:"explanatory_text"`
 	LocateID        int32  `json:"locate_id" binding:"required"`
@@ -26,7 +26,7 @@ type CreateAccountRequest struct {
 
 // アカウント取得のレスポンス
 type AccountResponses struct {
-	UserID          string `json:"user_id"`
+	AccountID       string `json:"account_id"`
 	Username        string `json:"username"`
 	Icon            string `json:"icon"`
 	ExplanatoryText string `json:"explanatory_text"`
