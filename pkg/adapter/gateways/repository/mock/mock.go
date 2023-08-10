@@ -67,6 +67,21 @@ func (mr *MockStoreMockRecorder) CreateAccountFrameworks(ctx, arg interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccountFrameworks", reflect.TypeOf((*MockStore)(nil).CreateAccountFrameworks), ctx, arg)
 }
 
+// CreateAccountPastWorks mocks base method.
+func (m *MockStore) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateAccountPastWorks", ctx, arg)
+	ret0, _ := ret[0].(repository.AccountPastWork)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAccountPastWorks indicates an expected call of CreateAccountPastWorks.
+func (mr *MockStoreMockRecorder) CreateAccountPastWorks(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccountPastWorks", reflect.TypeOf((*MockStore)(nil).CreateAccountPastWorks), ctx, arg)
+}
+
 // CreateAccountTags mocks base method.
 func (m *MockStore) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error) {
 	m.ctrl.T.Helper()
@@ -83,10 +98,10 @@ func (mr *MockStoreMockRecorder) CreateAccountTags(ctx, arg interface{}) *gomock
 }
 
 // CreateAccountTx mocks base method.
-func (m *MockStore) CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (domain.AccountResponses, error) {
+func (m *MockStore) CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (repository.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAccountTx", ctx, args)
-	ret0, _ := ret[0].(domain.AccountResponses)
+	ret0, _ := ret[0].(repository.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -157,6 +172,21 @@ func (mr *MockStoreMockRecorder) CreateHackathonStatusTags(ctx, arg interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateHackathonStatusTags", reflect.TypeOf((*MockStore)(nil).CreateHackathonStatusTags), ctx, arg)
 }
 
+// CreateHackathonTx mocks base method.
+func (m *MockStore) CreateHackathonTx(ctx context.Context, args domain.CreateHackathonParams) (repository.Hackathon, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateHackathonTx", ctx, args)
+	ret0, _ := ret[0].(repository.Hackathon)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateHackathonTx indicates an expected call of CreateHackathonTx.
+func (mr *MockStoreMockRecorder) CreateHackathonTx(ctx, args interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateHackathonTx", reflect.TypeOf((*MockStore)(nil).CreateHackathonTx), ctx, args)
+}
+
 // CreateHackathons mocks base method.
 func (m *MockStore) CreateHackathons(ctx context.Context, arg repository.CreateHackathonsParams) (repository.Hackathon, error) {
 	m.ctrl.T.Helper()
@@ -170,6 +200,21 @@ func (m *MockStore) CreateHackathons(ctx context.Context, arg repository.CreateH
 func (mr *MockStoreMockRecorder) CreateHackathons(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateHackathons", reflect.TypeOf((*MockStore)(nil).CreateHackathons), ctx, arg)
+}
+
+// CreatePastWorkFrameworks mocks base method.
+func (m *MockStore) CreatePastWorkFrameworks(ctx context.Context, arg repository.CreatePastWorkFrameworksParams) (repository.PastWorkFramework, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePastWorkFrameworks", ctx, arg)
+	ret0, _ := ret[0].(repository.PastWorkFramework)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreatePastWorkFrameworks indicates an expected call of CreatePastWorkFrameworks.
+func (mr *MockStoreMockRecorder) CreatePastWorkFrameworks(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePastWorkFrameworks", reflect.TypeOf((*MockStore)(nil).CreatePastWorkFrameworks), ctx, arg)
 }
 
 // CreatePastWorkTags mocks base method.
@@ -187,11 +232,55 @@ func (mr *MockStoreMockRecorder) CreatePastWorkTags(ctx, arg interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePastWorkTags", reflect.TypeOf((*MockStore)(nil).CreatePastWorkTags), ctx, arg)
 }
 
+// CreatePastWorkTx mocks base method.
+func (m *MockStore) CreatePastWorkTx(ctx context.Context, arg domain.CreatePastWorkParams) (repository.PastWork, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePastWorkTx", ctx, arg)
+	ret0, _ := ret[0].(repository.PastWork)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreatePastWorkTx indicates an expected call of CreatePastWorkTx.
+func (mr *MockStoreMockRecorder) CreatePastWorkTx(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePastWorkTx", reflect.TypeOf((*MockStore)(nil).CreatePastWorkTx), ctx, arg)
+}
+
+// CreatePastWorks mocks base method.
+func (m *MockStore) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePastWorks", ctx, arg)
+	ret0, _ := ret[0].(repository.PastWork)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreatePastWorks indicates an expected call of CreatePastWorks.
+func (mr *MockStoreMockRecorder) CreatePastWorks(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePastWorks", reflect.TypeOf((*MockStore)(nil).CreatePastWorks), ctx, arg)
+}
+
+// CreateRateEntityTx mocks base method.
+func (m *MockStore) CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntriesParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateRateEntityTx", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateRateEntityTx indicates an expected call of CreateRateEntityTx.
+func (mr *MockStoreMockRecorder) CreateRateEntityTx(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRateEntityTx", reflect.TypeOf((*MockStore)(nil).CreateRateEntityTx), ctx, arg)
+}
+
 // CreateRateEntries mocks base method.
-func (m *MockStore) CreateRateEntries(ctx context.Context, arg repository.CreateRateEntriesParams) (repository.RateEntry, error) {
+func (m *MockStore) CreateRateEntries(ctx context.Context, arg repository.CreateRateEntriesParams) (repository.RateEntity, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateRateEntries", ctx, arg)
-	ret0, _ := ret[0].(repository.RateEntry)
+	ret0, _ := ret[0].(repository.RateEntity)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -203,10 +292,10 @@ func (mr *MockStoreMockRecorder) CreateRateEntries(ctx, arg interface{}) *gomock
 }
 
 // CreateRoomTx mocks base method.
-func (m *MockStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (domain.GetRoomResponse, error) {
+func (m *MockStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (repository.Room, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateRoomTx", ctx, args)
-	ret0, _ := ret[0].(domain.GetRoomResponse)
+	ret0, _ := ret[0].(repository.Room)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -247,47 +336,61 @@ func (mr *MockStoreMockRecorder) CreateRoomsAccounts(ctx, arg interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRoomsAccounts", reflect.TypeOf((*MockStore)(nil).CreateRoomsAccounts), ctx, arg)
 }
 
-// DeleteAccountFrameworskByUserID mocks base method.
-func (m *MockStore) DeleteAccountFrameworskByUserID(ctx context.Context, userID string) error {
+// DeleteAccountFrameworkByUserID mocks base method.
+func (m *MockStore) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteAccountFrameworskByUserID", ctx, userID)
+	ret := m.ctrl.Call(m, "DeleteAccountFrameworkByUserID", ctx, accountID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// DeleteAccountFrameworskByUserID indicates an expected call of DeleteAccountFrameworskByUserID.
-func (mr *MockStoreMockRecorder) DeleteAccountFrameworskByUserID(ctx, userID interface{}) *gomock.Call {
+// DeleteAccountFrameworkByUserID indicates an expected call of DeleteAccountFrameworkByUserID.
+func (mr *MockStoreMockRecorder) DeleteAccountFrameworkByUserID(ctx, accountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountFrameworskByUserID", reflect.TypeOf((*MockStore)(nil).DeleteAccountFrameworskByUserID), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountFrameworkByUserID", reflect.TypeOf((*MockStore)(nil).DeleteAccountFrameworkByUserID), ctx, accountID)
+}
+
+// DeleteAccountPastWorksByOpus mocks base method.
+func (m *MockStore) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAccountPastWorksByOpus", ctx, opus)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAccountPastWorksByOpus indicates an expected call of DeleteAccountPastWorksByOpus.
+func (mr *MockStoreMockRecorder) DeleteAccountPastWorksByOpus(ctx, opus interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountPastWorksByOpus", reflect.TypeOf((*MockStore)(nil).DeleteAccountPastWorksByOpus), ctx, opus)
 }
 
 // DeleteAccountTagsByUserID mocks base method.
-func (m *MockStore) DeleteAccountTagsByUserID(ctx context.Context, userID string) error {
+func (m *MockStore) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteAccountTagsByUserID", ctx, userID)
+	ret := m.ctrl.Call(m, "DeleteAccountTagsByUserID", ctx, accountID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteAccountTagsByUserID indicates an expected call of DeleteAccountTagsByUserID.
-func (mr *MockStoreMockRecorder) DeleteAccountTagsByUserID(ctx, userID interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) DeleteAccountTagsByUserID(ctx, accountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountTagsByUserID", reflect.TypeOf((*MockStore)(nil).DeleteAccountTagsByUserID), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountTagsByUserID", reflect.TypeOf((*MockStore)(nil).DeleteAccountTagsByUserID), ctx, accountID)
 }
 
 // DeleteAccounts mocks base method.
-func (m *MockStore) DeleteAccounts(ctx context.Context, userID string) (repository.Account, error) {
+func (m *MockStore) DeleteAccounts(ctx context.Context, accountID string) (repository.Account, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteAccounts", ctx, userID)
+	ret := m.ctrl.Call(m, "DeleteAccounts", ctx, accountID)
 	ret0, _ := ret[0].(repository.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DeleteAccounts indicates an expected call of DeleteAccounts.
-func (mr *MockStoreMockRecorder) DeleteAccounts(ctx, userID interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) DeleteAccounts(ctx, accountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccounts", reflect.TypeOf((*MockStore)(nil).DeleteAccounts), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccounts", reflect.TypeOf((*MockStore)(nil).DeleteAccounts), ctx, accountID)
 }
 
 // DeleteBookmarksByID mocks base method.
@@ -359,6 +462,20 @@ func (m *MockStore) DeleteHackathonStatusTagsByID(ctx context.Context, hackathon
 func (mr *MockStoreMockRecorder) DeleteHackathonStatusTagsByID(ctx, hackathonID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteHackathonStatusTagsByID", reflect.TypeOf((*MockStore)(nil).DeleteHackathonStatusTagsByID), ctx, hackathonID)
+}
+
+// DeletePastWorkFrameworksByOpus mocks base method.
+func (m *MockStore) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeletePastWorkFrameworksByOpus", ctx, opus)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeletePastWorkFrameworksByOpus indicates an expected call of DeletePastWorkFrameworksByOpus.
+func (mr *MockStoreMockRecorder) DeletePastWorkFrameworksByOpus(ctx, opus interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePastWorkFrameworksByOpus", reflect.TypeOf((*MockStore)(nil).DeletePastWorkFrameworksByOpus), ctx, opus)
 }
 
 // DeletePastWorkTagsByOpus mocks base method.
@@ -446,36 +563,6 @@ func (mr *MockStoreMockRecorder) DeleteTechTagsByID(ctx, techTagID interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTechTagsByID", reflect.TypeOf((*MockStore)(nil).DeleteTechTagsByID), ctx, techTagID)
 }
 
-// GetAccountTxByEmail mocks base method.
-func (m *MockStore) GetAccountTxByEmail(ctx context.Context, email string) (domain.AccountResponses, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAccountTxByEmail", ctx, email)
-	ret0, _ := ret[0].(domain.AccountResponses)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAccountTxByEmail indicates an expected call of GetAccountTxByEmail.
-func (mr *MockStoreMockRecorder) GetAccountTxByEmail(ctx, email interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountTxByEmail", reflect.TypeOf((*MockStore)(nil).GetAccountTxByEmail), ctx, email)
-}
-
-// GetAccountTxByID mocks base method.
-func (m *MockStore) GetAccountTxByID(ctx context.Context, ID string) (domain.AccountResponses, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAccountTxByID", ctx, ID)
-	ret0, _ := ret[0].(domain.AccountResponses)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAccountTxByID indicates an expected call of GetAccountTxByID.
-func (mr *MockStoreMockRecorder) GetAccountTxByID(ctx, ID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountTxByID", reflect.TypeOf((*MockStore)(nil).GetAccountTxByID), ctx, ID)
-}
-
 // GetAccountsByEmail mocks base method.
 func (m *MockStore) GetAccountsByEmail(ctx context.Context, email string) (repository.GetAccountsByEmailRow, error) {
 	m.ctrl.T.Helper()
@@ -492,18 +579,18 @@ func (mr *MockStoreMockRecorder) GetAccountsByEmail(ctx, email interface{}) *gom
 }
 
 // GetAccountsByID mocks base method.
-func (m *MockStore) GetAccountsByID(ctx context.Context, userID string) (repository.GetAccountsByIDRow, error) {
+func (m *MockStore) GetAccountsByID(ctx context.Context, accountID string) (repository.GetAccountsByIDRow, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAccountsByID", ctx, userID)
+	ret := m.ctrl.Call(m, "GetAccountsByID", ctx, accountID)
 	ret0, _ := ret[0].(repository.GetAccountsByIDRow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAccountsByID indicates an expected call of GetAccountsByID.
-func (mr *MockStoreMockRecorder) GetAccountsByID(ctx, userID interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) GetAccountsByID(ctx, accountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountsByID", reflect.TypeOf((*MockStore)(nil).GetAccountsByID), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountsByID", reflect.TypeOf((*MockStore)(nil).GetAccountsByID), ctx, accountID)
 }
 
 // GetFrameworksByID mocks base method.
@@ -551,19 +638,19 @@ func (mr *MockStoreMockRecorder) GetLocatesByID(ctx, locateID interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLocatesByID", reflect.TypeOf((*MockStore)(nil).GetLocatesByID), ctx, locateID)
 }
 
-// GetRoomTx mocks base method.
-func (m *MockStore) GetRoomTx(ctx context.Context, id uuid.UUID) (domain.GetRoomResponse, error) {
+// GetPastWorksByOpus mocks base method.
+func (m *MockStore) GetPastWorksByOpus(ctx context.Context, opus int32) (repository.PastWork, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRoomTx", ctx, id)
-	ret0, _ := ret[0].(domain.GetRoomResponse)
+	ret := m.ctrl.Call(m, "GetPastWorksByOpus", ctx, opus)
+	ret0, _ := ret[0].(repository.PastWork)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetRoomTx indicates an expected call of GetRoomTx.
-func (mr *MockStoreMockRecorder) GetRoomTx(ctx, id interface{}) *gomock.Call {
+// GetPastWorksByOpus indicates an expected call of GetPastWorksByOpus.
+func (mr *MockStoreMockRecorder) GetPastWorksByOpus(ctx, opus interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoomTx", reflect.TypeOf((*MockStore)(nil).GetRoomTx), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPastWorksByOpus", reflect.TypeOf((*MockStore)(nil).GetPastWorksByOpus), ctx, opus)
 }
 
 // GetRoomsAccountsByID mocks base method.
@@ -657,33 +744,48 @@ func (mr *MockStoreMockRecorder) InitChatRoom(ctx, roomID interface{}) *gomock.C
 }
 
 // ListAccountFrameworksByUserID mocks base method.
-func (m *MockStore) ListAccountFrameworksByUserID(ctx context.Context, userID string) ([]repository.ListAccountFrameworksByUserIDRow, error) {
+func (m *MockStore) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]repository.ListAccountFrameworksByUserIDRow, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAccountFrameworksByUserID", ctx, userID)
+	ret := m.ctrl.Call(m, "ListAccountFrameworksByUserID", ctx, accountID)
 	ret0, _ := ret[0].([]repository.ListAccountFrameworksByUserIDRow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListAccountFrameworksByUserID indicates an expected call of ListAccountFrameworksByUserID.
-func (mr *MockStoreMockRecorder) ListAccountFrameworksByUserID(ctx, userID interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) ListAccountFrameworksByUserID(ctx, accountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountFrameworksByUserID", reflect.TypeOf((*MockStore)(nil).ListAccountFrameworksByUserID), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountFrameworksByUserID", reflect.TypeOf((*MockStore)(nil).ListAccountFrameworksByUserID), ctx, accountID)
+}
+
+// ListAccountPastWorksByOpus mocks base method.
+func (m *MockStore) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]repository.AccountPastWork, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAccountPastWorksByOpus", ctx, opus)
+	ret0, _ := ret[0].([]repository.AccountPastWork)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAccountPastWorksByOpus indicates an expected call of ListAccountPastWorksByOpus.
+func (mr *MockStoreMockRecorder) ListAccountPastWorksByOpus(ctx, opus interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountPastWorksByOpus", reflect.TypeOf((*MockStore)(nil).ListAccountPastWorksByOpus), ctx, opus)
 }
 
 // ListAccountTagsByUserID mocks base method.
-func (m *MockStore) ListAccountTagsByUserID(ctx context.Context, userID string) ([]repository.ListAccountTagsByUserIDRow, error) {
+func (m *MockStore) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]repository.ListAccountTagsByUserIDRow, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAccountTagsByUserID", ctx, userID)
+	ret := m.ctrl.Call(m, "ListAccountTagsByUserID", ctx, accountID)
 	ret0, _ := ret[0].([]repository.ListAccountTagsByUserIDRow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListAccountTagsByUserID indicates an expected call of ListAccountTagsByUserID.
-func (mr *MockStoreMockRecorder) ListAccountTagsByUserID(ctx, userID interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) ListAccountTagsByUserID(ctx, accountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountTagsByUserID", reflect.TypeOf((*MockStore)(nil).ListAccountTagsByUserID), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountTagsByUserID", reflect.TypeOf((*MockStore)(nil).ListAccountTagsByUserID), ctx, accountID)
 }
 
 // ListAccounts mocks base method.
@@ -702,33 +804,33 @@ func (mr *MockStoreMockRecorder) ListAccounts(ctx, arg interface{}) *gomock.Call
 }
 
 // ListBookmarksByID mocks base method.
-func (m *MockStore) ListBookmarksByID(ctx context.Context, userID string) ([]repository.Bookmark, error) {
+func (m *MockStore) ListBookmarksByID(ctx context.Context, accountID string) ([]repository.Bookmark, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListBookmarksByID", ctx, userID)
+	ret := m.ctrl.Call(m, "ListBookmarksByID", ctx, accountID)
 	ret0, _ := ret[0].([]repository.Bookmark)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListBookmarksByID indicates an expected call of ListBookmarksByID.
-func (mr *MockStoreMockRecorder) ListBookmarksByID(ctx, userID interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) ListBookmarksByID(ctx, accountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListBookmarksByID", reflect.TypeOf((*MockStore)(nil).ListBookmarksByID), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListBookmarksByID", reflect.TypeOf((*MockStore)(nil).ListBookmarksByID), ctx, accountID)
 }
 
 // ListFollowsByToUserID mocks base method.
-func (m *MockStore) ListFollowsByToUserID(ctx context.Context, toUserID string) ([]repository.Follow, error) {
+func (m *MockStore) ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]repository.Follow, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListFollowsByToUserID", ctx, toUserID)
+	ret := m.ctrl.Call(m, "ListFollowsByToUserID", ctx, toAccountID)
 	ret0, _ := ret[0].([]repository.Follow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListFollowsByToUserID indicates an expected call of ListFollowsByToUserID.
-func (mr *MockStoreMockRecorder) ListFollowsByToUserID(ctx, toUserID interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) ListFollowsByToUserID(ctx, toAccountID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFollowsByToUserID", reflect.TypeOf((*MockStore)(nil).ListFollowsByToUserID), ctx, toUserID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFollowsByToUserID", reflect.TypeOf((*MockStore)(nil).ListFollowsByToUserID), ctx, toAccountID)
 }
 
 // ListFrameworks mocks base method.
@@ -791,6 +893,21 @@ func (mr *MockStoreMockRecorder) ListLocates(ctx interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLocates", reflect.TypeOf((*MockStore)(nil).ListLocates), ctx)
 }
 
+// ListPastWorkFrameworksByOpus mocks base method.
+func (m *MockStore) ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]repository.PastWorkFramework, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListPastWorkFrameworksByOpus", ctx, opus)
+	ret0, _ := ret[0].([]repository.PastWorkFramework)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListPastWorkFrameworksByOpus indicates an expected call of ListPastWorkFrameworksByOpus.
+func (mr *MockStoreMockRecorder) ListPastWorkFrameworksByOpus(ctx, opus interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPastWorkFrameworksByOpus", reflect.TypeOf((*MockStore)(nil).ListPastWorkFrameworksByOpus), ctx, opus)
+}
+
 // ListPastWorkTagsByOpus mocks base method.
 func (m *MockStore) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error) {
 	m.ctrl.T.Helper()
@@ -806,11 +923,26 @@ func (mr *MockStoreMockRecorder) ListPastWorkTagsByOpus(ctx, opus interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPastWorkTagsByOpus", reflect.TypeOf((*MockStore)(nil).ListPastWorkTagsByOpus), ctx, opus)
 }
 
+// ListPastWorks mocks base method.
+func (m *MockStore) ListPastWorks(ctx context.Context, arg repository.ListPastWorksParams) ([]repository.ListPastWorksRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListPastWorks", ctx, arg)
+	ret0, _ := ret[0].([]repository.ListPastWorksRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListPastWorks indicates an expected call of ListPastWorks.
+func (mr *MockStoreMockRecorder) ListPastWorks(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPastWorks", reflect.TypeOf((*MockStore)(nil).ListPastWorks), ctx, arg)
+}
+
 // ListRateEntries mocks base method.
-func (m *MockStore) ListRateEntries(ctx context.Context, arg repository.ListRateEntriesParams) ([]repository.RateEntry, error) {
+func (m *MockStore) ListRateEntries(ctx context.Context, arg repository.ListRateEntriesParams) ([]repository.RateEntity, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRateEntries", ctx, arg)
-	ret0, _ := ret[0].([]repository.RateEntry)
+	ret0, _ := ret[0].([]repository.RateEntity)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -821,34 +953,19 @@ func (mr *MockStoreMockRecorder) ListRateEntries(ctx, arg interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRateEntries", reflect.TypeOf((*MockStore)(nil).ListRateEntries), ctx, arg)
 }
 
-// ListRoomTx mocks base method.
-func (m *MockStore) ListRoomTx(ctx context.Context, query domain.ListRoomsRequest) ([]domain.ListRoomResponse, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListRoomTx", ctx, query)
-	ret0, _ := ret[0].([]domain.ListRoomResponse)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListRoomTx indicates an expected call of ListRoomTx.
-func (mr *MockStoreMockRecorder) ListRoomTx(ctx, query interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoomTx", reflect.TypeOf((*MockStore)(nil).ListRoomTx), ctx, query)
-}
-
 // ListRooms mocks base method.
-func (m *MockStore) ListRooms(ctx context.Context, limit int32) ([]repository.Room, error) {
+func (m *MockStore) ListRooms(ctx context.Context, arg repository.ListRoomsParams) ([]repository.Room, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListRooms", ctx, limit)
+	ret := m.ctrl.Call(m, "ListRooms", ctx, arg)
 	ret0, _ := ret[0].([]repository.Room)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListRooms indicates an expected call of ListRooms.
-func (mr *MockStoreMockRecorder) ListRooms(ctx, limit interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) ListRooms(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRooms", reflect.TypeOf((*MockStore)(nil).ListRooms), ctx, limit)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRooms", reflect.TypeOf((*MockStore)(nil).ListRooms), ctx, arg)
 }
 
 // ListStatusTags mocks base method.
@@ -897,10 +1014,10 @@ func (mr *MockStoreMockRecorder) ReadDocsByRoomID(ctx, RoomID interface{}) *gomo
 }
 
 // UpdateAccountTx mocks base method.
-func (m *MockStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (domain.AccountResponses, error) {
+func (m *MockStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (repository.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAccountTx", ctx, args)
-	ret0, _ := ret[0].(domain.AccountResponses)
+	ret0, _ := ret[0].(repository.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -957,10 +1074,10 @@ func (mr *MockStoreMockRecorder) UpdateRateByID(ctx, arg interface{}) *gomock.Ca
 }
 
 // UpdateRoomTx mocks base method.
-func (m *MockStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (domain.GetRoomResponse, error) {
+func (m *MockStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (repository.Room, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateRoomTx", ctx, body)
-	ret0, _ := ret[0].(domain.GetRoomResponse)
+	ret0, _ := ret[0].(repository.Room)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
