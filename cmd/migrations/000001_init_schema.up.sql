@@ -43,7 +43,7 @@ CREATE TABLE "accounts" (
   "explanatory_text" text,
   "locate_id" int NOT NULL,
   "rate" int NOT NULL,
-  "charactor" int,
+  "character" int,
   "show_locate" boolean NOT NULL,
   "show_rate" boolean NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now()),
@@ -58,7 +58,7 @@ CREATE TABLE "users" (
   "create_at" timestamptz NOT NULL DEFAULT (now()),
   "update_at" timestamptz NOT NULL DEFAULT (now()),
   "is_delete" boolean NOT NULL DEFAULT false,
-  PRIMARY KEY ("user_id", "email", "hashed_password")
+  PRIMARY KEY ("user_id")
 );
 
 CREATE TABLE "rate_entities" (
@@ -126,7 +126,7 @@ CREATE TABLE "rooms" (
 CREATE TABLE "rooms_accounts" (
   "account_id" varchar NOT NULL,
   "room_id" uuid NOT NULL,
-  "role" int NOT NULL,
+  "role" int,
   "is_owner" boolean NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
 );

@@ -12,6 +12,14 @@ FROM
 WHERE
   to_account_id = $1;
 
+-- name: ListFollowsByFromUserID :many
+SELECT
+  *
+FROM
+  follows
+WHERE
+  from_account_id = $1;
+
 -- name: DeleteFollows :exec
 DELETE FROM
   follows

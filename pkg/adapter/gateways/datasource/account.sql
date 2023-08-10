@@ -2,12 +2,13 @@
 INSERT INTO
     accounts (
         account_id,
+        user_id,
         username,
         icon,
         explanatory_text,
         locate_id,
         rate,
-        user_id,
+        character,
         show_locate,
         show_rate
     )
@@ -21,22 +22,13 @@ VALUES
         $6,
         $7,
         $8,
-        $9
+        $9,
+        $10
     ) RETURNING *;
 
 -- name: GetAccountsByID :one
 SELECT
-    account_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    user_id,
-    show_locate,
-    show_rate,
-    create_at,
-    update_at
+    *
 FROM
     accounts
 WHERE
@@ -44,17 +36,7 @@ WHERE
 
 -- name: GetAccountsByEmail :one
 SELECT
-    account_id,
-    username,
-    icon,
-    explanatory_text,
-    locate_id,
-    rate,
-    user_id,
-    show_locate,
-    show_rate,
-    create_at,
-    update_at
+    *
 FROM
     accounts
 WHERE
@@ -64,20 +46,7 @@ WHERE
 
 -- name: ListAccounts :many
 SELECT
-    account_id,
-    username,
-    icon,
-    (
-        SELECT
-            name
-        FROM
-            locates
-        WHERE
-            locate_id = accounts.locate_id
-    ) as locate,
-    rate,
-    show_locate,
-    show_rate
+    *
 FROM
     accounts
 WHERE
@@ -102,8 +71,10 @@ SET
     explanatory_text = $4,
     locate_id = $5,
     rate = $6,
-    show_locate = $7,
-    show_rate = $8
+    character = $7,
+    show_locate = $8,
+    show_rate = $9,
+    update_at = $10
 WHERE
     account_id = $1 RETURNING *;
 
@@ -112,6 +83,7 @@ WHERE
 UPDATE
     accounts
 SET    
-    rate = $2
+    rate = $2,
+    update_at = $3
 WHERE
     account_id = $1 RETURNING *;
