@@ -29,7 +29,7 @@ func createPastWorkFrameworks(ctx context.Context, q *repository.Queries, opus i
 
 func createPastWorkMembers(ctx context.Context, q *repository.Queries, opus int32, id []string) error {
 	for _, userid := range id {
-		_, err := q.CreateAccountPastWorks(ctx, repository.CreateAccountPastWorksParams{Opus: opus, UserID: userid})
+		_, err := q.CreateAccountPastWorks(ctx, repository.CreateAccountPastWorksParams{Opus: opus, AccountID: userid})
 		if err != nil {
 			return err
 		}

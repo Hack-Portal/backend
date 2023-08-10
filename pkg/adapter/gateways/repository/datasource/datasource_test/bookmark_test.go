@@ -12,14 +12,14 @@ func createBookmarkTest(t *testing.T, account repository.Account) repository.Boo
 	hackathon := createHackathonTest(t)
 	arg := repository.CreateBookmarksParams{
 		HackathonID: hackathon.HackathonID,
-		UserID:      account.UserID,
+		AccountID:   account.AccountID,
 	}
 	bookmark, err := testQueries.CreateBookmarks(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, bookmark)
 
 	require.Equal(t, arg.HackathonID, bookmark.HackathonID)
-	require.Equal(t, arg.UserID, bookmark.UserID)
+	require.Equal(t, arg.AccountID, bookmark.AccountID)
 	return bookmark
 }
 
@@ -58,7 +58,7 @@ func TestSoftRemoveBookmark(t *testing.T) {
 	}
 
 	_, err := testQueries.DeleteBookmarksByID(context.Background(), repository.DeleteBookmarksByIDParams{
-		UserID:      lastBookMark.UserID,
+		AccountID:   lastBookMark.AccountID,
 		HackathonID: lastBookMark.HackathonID,
 	})
 	require.NoError(t, err)
