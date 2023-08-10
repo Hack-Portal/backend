@@ -26,7 +26,7 @@ func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.Crea
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	if err := ru.store.CreateRateEntitieTx(ctx, body); err != nil {
+	if err := ru.store.CreateRateEntityTx(ctx, body); err != nil {
 		return err
 	}
 
