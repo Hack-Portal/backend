@@ -101,7 +101,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 		return
 	}
 
-	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.UserID)
+	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -162,7 +162,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		ctx,
 		domain.UpdateAccountParam{
 			AccountInfo: repository.Account{
-				UserID:   reqURI.UserID,
+				UserID:   reqURI.AccountID,
 				Username: reqBody.Username,
 				ExplanatoryText: sql.NullString{
 					String: reqBody.ExplanatoryText,
@@ -201,7 +201,7 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 		return
 	}
 
-	err := ac.AccountUsecase.DeleteAccount(ctx, reqURI.UserID)
+	err := ac.AccountUsecase.DeleteAccount(ctx, reqURI.AccountID)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

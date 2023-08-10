@@ -40,8 +40,8 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 	}
 
 	if err := rc.RateUsecase.CreateRateEntry(ctx, repository.CreateRateEntriesParams{
-		UserID: reqURI.UserID,
-		Rate:   reqBody.Rate,
+		AccountID: reqURI.AccountID,
+		Rate:      reqBody.Rate,
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -77,7 +77,7 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 		return
 	}
 
-	response, err := rc.RateUsecase.ListRateEntry(ctx, reqURI.UserID, reqQuery)
+	response, err := rc.RateUsecase.ListRateEntry(ctx, reqURI.AccountID, reqQuery)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

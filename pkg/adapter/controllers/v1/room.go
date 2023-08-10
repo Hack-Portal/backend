@@ -98,7 +98,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 		Description: reqBody.Description,
 		HackathonID: reqBody.HackathonID,
 		MemberLimit: reqBody.MemberLimit,
-		OwnerID:     reqBody.UserID,
+		OwnerID:     reqBody.AccountID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -224,8 +224,8 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 	}
 
 	if err := rc.RoomUsecase.AddAccountInRoom(ctx, domain.AddAccountInRoomParam{
-		UserID: reqBody.UserID,
-		RoomID: uuid.UUID(roomID),
+		AccountID: reqBody.AccountID,
+		RoomID:    uuid.UUID(roomID),
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -304,9 +304,9 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 	}
 
 	if err := rc.RoomUsecase.AddChat(ctx, domain.AddChatParams{
-		RoomID:  uuid.UUID(roomID),
-		UserID:  reqBody.UserID,
-		Message: reqBody.Message,
+		RoomID:    uuid.UUID(roomID),
+		AccountID: reqBody.AccountID,
+		Message:   reqBody.Message,
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
