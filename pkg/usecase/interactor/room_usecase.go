@@ -243,7 +243,7 @@ func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room re
 	}
 
 	for _, account := range accounts {
-		techTags, err := store.ListAccountTagsByUserID(ctx, account.UserID.String)
+		techTags, err := store.ListAccountTagsByUserID(ctx, account.AccountID.String)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -254,7 +254,7 @@ func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room re
 			})
 		}
 
-		frameworks, err := store.ListAccountFrameworksByUserID(ctx, account.UserID.String)
+		frameworks, err := store.ListAccountFrameworksByUserID(ctx, account.AccountID.String)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -305,7 +305,7 @@ func margeRoomAccount(ctx context.Context, q *repository.Queries, id uuid.UUID) 
 
 	for _, nowMember := range nowMembers {
 		result = append(result, domain.NowRoomAccounts{
-			UserID:  nowMember.UserID.String,
+			UserID:  nowMember.AccountID.String,
 			Icon:    nowMember.Icon.String,
 			IsOwner: nowMember.IsOwner,
 		})
@@ -332,7 +332,7 @@ func getRoomMember(ctx context.Context, store transaction.Store, id uuid.UUID) (
 	}
 
 	for _, account := range accounts {
-		user, err := store.GetAccountsByID(ctx, account.UserID.String)
+		user, err := store.GetAccountsByID(ctx, account.AccountID.String)
 		if err != nil {
 			return nil, err
 		}

@@ -33,14 +33,14 @@ func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.Crea
 	return nil
 }
 
-func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domain.ListRateParams) ([]repository.RateEntry, error) {
+func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domain.ListRateParams) ([]repository.RateEntity, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	rates, err := ru.store.ListRateEntries(ctx, repository.ListRateEntriesParams{
-		UserID: id,
-		Limit:  query.PageSize,
-		Offset: (query.PageId - 1) * query.PageSize,
+		AccountID: id,
+		Limit:     query.PageSize,
+		Offset:    (query.PageId - 1) * query.PageSize,
 	})
 	if err != nil {
 		return nil, err

@@ -31,7 +31,7 @@ func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.Creat
 		return
 	}
 
-	account, err := fu.store.GetAccountsByID(ctx, follow.ToUserID)
+	account, err := fu.store.GetAccountsByID(ctx, follow.ToAccountID)
 	if err != nil {
 		return
 	}
@@ -55,7 +55,7 @@ func (fu *followUsecase) GetFollowByToID(ctx context.Context, ID string) (result
 		return
 	}
 	for _, follow := range follows {
-		account, err := fu.store.GetAccountsByID(ctx, follow.FromUserID)
+		account, err := fu.store.GetAccountsByID(ctx, follow.FromAccountID)
 		if err != nil {
 			return nil, err
 		}

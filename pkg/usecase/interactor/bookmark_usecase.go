@@ -74,10 +74,10 @@ func (bu *bookmarkUsecase) GetBookmarks(ctx context.Context, id string, query do
 	return
 }
 
-func (bu *bookmarkUsecase) RemoveBookmark(ctx context.Context, userID string, hackathonID int32) error {
+func (bu *bookmarkUsecase) RemoveBookmark(ctx context.Context, accountID string, hackathonID int32) error {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
 
-	_, err := bu.store.DeleteBookmarksByID(ctx, repository.DeleteBookmarksByIDParams{UserID: userID, HackathonID: hackathonID})
+	_, err := bu.store.DeleteBookmarksByID(ctx, repository.DeleteBookmarksByIDParams{AccountID: accountID, HackathonID: hackathonID})
 	return err
 }
