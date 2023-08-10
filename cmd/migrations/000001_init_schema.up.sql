@@ -60,7 +60,7 @@ CREATE TABLE "users" (
   PRIMARY KEY ("user_id", "email", "hashed_password")
 );
 
-CREATE TABLE "rate_entries" (
+CREATE TABLE "rate_entities" (
   "account_id" varchar NOT NULL,
   "rate" int NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
@@ -218,8 +218,6 @@ ALTER TABLE "award_data" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons
 
 ALTER TABLE "follows" ADD FOREIGN KEY ("to_account_id") REFERENCES "accounts" ("account_id");
 
-ALTER TABLE "rate_entries" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
-
 ALTER TABLE "account_past_works" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
 
 ALTER TABLE "account_past_works" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
@@ -233,6 +231,8 @@ ALTER TABLE "accounts" ADD FOREIGN KEY ("locate_id") REFERENCES "locates" ("loca
 ALTER TABLE "account_tags" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
 
 ALTER TABLE "account_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
+
+ALTER TABLE "rate_entities" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
 
 
 INSERT INTO locates (name) VALUES 
