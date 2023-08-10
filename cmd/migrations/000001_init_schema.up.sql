@@ -1,14 +1,15 @@
 CREATE TABLE "past_works" (
   "opus" serial PRIMARY KEY,
-  "name" varchar NOT NULL,
-  "thumbnail_image" bytea NOT NULL,
+  "thumbnail_image" text NOT NULL,
   "explanatory_text" text NOT NULL,
+  "award_data_id" int,
   "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "update_at" timestamptz NOT NULL DEFAULT (now()),
   "is_delete" boolean NOT NULL DEFAULT false
 );
 
-CREATE TABLE "hackathons_data" (
-  "opus" int NOT NULL,
+CREATE TABLE "award_data" (
+  "award_data_id" int NOT NULL,
   "award_id" int NOT NULL,
   "hackathon_id" int NOT NULL
 );
@@ -24,7 +25,7 @@ CREATE TABLE "past_work_tags" (
 );
 
 CREATE TABLE "account_tags" (
-  "user_id" varchar NOT NULL,
+  "account_id" varchar NOT NULL,
   "tech_tag_id" int NOT NULL
 );
 
@@ -34,23 +35,33 @@ CREATE TABLE "tech_tags" (
 );
 
 CREATE TABLE "accounts" (
-  "user_id" varchar PRIMARY KEY,
+  "account_id" varchar PRIMARY KEY,
+  "user_id" varchar NOT NULL,
   "username" varchar NOT NULL,
   "icon" text,
   "explanatory_text" text,
   "locate_id" int NOT NULL,
   "rate" int NOT NULL,
-  "hashed_password" varchar,
-  "email" varchar NOT NULL,
-  "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "charactor" int,
   "show_locate" boolean NOT NULL,
   "show_rate" boolean NOT NULL,
+  "create_at" timestamptz NOT NULL DEFAULT (now()),
   "update_at" timestamptz NOT NULL DEFAULT (now()),
   "is_delete" boolean NOT NULL DEFAULT false
 );
 
+CREATE TABLE "users" (
+  "user_id" varchar,
+  "email" varchar,
+  "hashed_password" text,
+  "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "update_at" timestamptz NOT NULL DEFAULT (now()),
+  "is_delete" boolean NOT NULL DEFAULT false,
+  PRIMARY KEY ("user_id", "email", "hashed_password")
+);
+
 CREATE TABLE "rate_entries" (
-  "user_id" varchar NOT NULL,
+  "account_id" varchar NOT NULL,
   "rate" int NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -83,19 +94,19 @@ CREATE TABLE "status_tags" (
 
 CREATE TABLE "bookmarks" (
   "hackathon_id" int NOT NULL,
-  "user_id" varchar NOT NULL,
+  "account_id" varchar NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now()),
   "is_delete" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "account_past_works" (
   "opus" int NOT NULL,
-  "user_id" varchar NOT NULL
+  "account_id" varchar NOT NULL
 );
 
 CREATE TABLE "follows" (
-  "to_user_id" varchar NOT NULL,
-  "from_user_id" varchar NOT NULL,
+  "to_account_id" varchar NOT NULL,
+  "from_account_id" varchar NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -105,15 +116,23 @@ CREATE TABLE "rooms" (
   "title" varchar NOT NULL,
   "description" text NOT NULL,
   "member_limit" int NOT NULL,
+  "include_rate" boolean NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "update_at" timestamptz NOT NULL DEFAULT (now()),
   "is_delete" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "rooms_accounts" (
-  "user_id" varchar NOT NULL,
+  "account_id" varchar NOT NULL,
   "room_id" uuid NOT NULL,
+  "role" int NOT NULL,
   "is_owner" boolean NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "roles" (
+  "role_id" int PRIMARY KEY,
+  "role" varchar NOT NULL
 );
 
 CREATE TABLE "frameworks" (
@@ -128,49 +147,34 @@ CREATE TABLE "past_work_frameworks" (
 );
 
 CREATE TABLE "account_frameworks" (
-  "user_id" varchar NOT NULL,
+  "account_id" varchar NOT NULL,
   "framework_id" int NOT NULL
 );
 
-ALTER TABLE "accounts" ADD FOREIGN KEY ("locate_id") REFERENCES "locates" ("locate_id");
+CREATE TABLE "accounts_achievments" (
+  "account_id" varchar NOT NULL,
+  "achievment_id" int NOT NULL,
+  "create_at" timestamptz NOT NULL DEFAULT (now())
+);
 
-ALTER TABLE "account_tags" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+CREATE TABLE "achievments" (
+  "achievment_id" int PRIMARY KEY,
+  "achievment" varchar NOT NULL,
+  "description" text NOT NULL,
+  "icon" text NOT NULL,
+  "conditions" text NOT NULL,
+  "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "is_delete" boolean NOT NULL DEFAULT false
+);
 
-ALTER TABLE "account_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
-
-ALTER TABLE "past_work_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
-
-ALTER TABLE "past_work_tags" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
-
-ALTER TABLE "account_past_works" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
-
-ALTER TABLE "account_past_works" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
-
-ALTER TABLE "rate_entries" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
-
-ALTER TABLE "follows" ADD FOREIGN KEY ("to_user_id") REFERENCES "accounts" ("user_id");
-
-ALTER TABLE "follows" ADD FOREIGN KEY ("from_user_id") REFERENCES "accounts" ("user_id");
-
-ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
-
-ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("award_id") REFERENCES "awards" ("award_id");
-
-ALTER TABLE "hackathons_data" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
-ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
-ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id");
-
-ALTER TABLE "bookmarks" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
-ALTER TABLE "bookmarks" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
-
-ALTER TABLE "rooms" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
-ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
-
-ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+CREATE TABLE "tutor" (
+  "tutor_id" varchar PRIMARY KEY,
+  "Title" varchar NOT NULL,
+  "description" text,
+  "create_at" timestamptz NOT NULL DEFAULT (now()),
+  "update_at" timestamptz NOT NULL DEFAULT (now()),
+  "is_delete" boolean NOT NULL DEFAULT false
+);
 
 ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
 
@@ -180,7 +184,56 @@ ALTER TABLE "past_work_frameworks" ADD FOREIGN KEY ("opus") REFERENCES "past_wor
 
 ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("framework_id") REFERENCES "frameworks" ("framework_id");
 
-ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("user_id") REFERENCES "accounts" ("user_id");
+ALTER TABLE "account_frameworks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("role") REFERENCES "roles" ("role_id");
+
+ALTER TABLE "accounts_achievments" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "accounts_achievments" ADD FOREIGN KEY ("achievment_id") REFERENCES "achievments" ("achievment_id");
+
+ALTER TABLE "follows" ADD FOREIGN KEY ("from_account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "rooms_accounts" ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("room_id");
+
+ALTER TABLE "rooms" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+
+ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
+
+ALTER TABLE "bookmarks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "bookmarks" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+
+ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+
+ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id");
+
+ALTER TABLE "award_data" ADD FOREIGN KEY ("award_data_id") REFERENCES "past_works" ("award_data_id");
+
+ALTER TABLE "award_data" ADD FOREIGN KEY ("award_id") REFERENCES "awards" ("award_id");
+
+ALTER TABLE "award_data" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+
+ALTER TABLE "follows" ADD FOREIGN KEY ("to_account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "rate_entries" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "account_past_works" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "account_past_works" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
+ALTER TABLE "past_work_tags" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
+ALTER TABLE "past_work_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
+
+ALTER TABLE "accounts" ADD FOREIGN KEY ("locate_id") REFERENCES "locates" ("locate_id");
+
+ALTER TABLE "account_tags" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "account_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
+
 
 INSERT INTO locates (name) VALUES 
 ('北海道'), 
