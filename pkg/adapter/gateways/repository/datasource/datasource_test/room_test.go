@@ -14,7 +14,7 @@ func createRoomsTest(t *testing.T) repository.Room {
 	hackathon := createHackathonTest(t)
 
 	arg := repository.CreateRoomsParams{
-		RoomID:      uuid.New(),
+		RoomID:      uuid.New().String(),
 		HackathonID: hackathon.HackathonID,
 		Title:       util.RandomString(8),
 		Description: util.RandomString(100),

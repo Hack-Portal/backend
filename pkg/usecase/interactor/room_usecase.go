@@ -68,7 +68,7 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRoomsRequ
 	return result, nil
 }
 
-func (ru *roomUsecase) GetRoom(ctx context.Context, id uuid.UUID) (result domain.GetRoomResponse, err error) {
+func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.GetRoomResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -114,9 +114,9 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	body.RoomID = uuid.New()
+	body.RoomID = uuid.New().String()
 	// チャットルームの初期化
-	_, err = ru.store.InitChatRoom(ctx, body.RoomID.String())
+	_, err = ru.store.InitChatRoom(ctx, body.RoomID)
 	if err != nil {
 		return
 	}
@@ -218,12 +218,12 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) e
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	data, err := ru.store.ReadDocsByRoomID(ctx, body.RoomID.String())
+	data, err := ru.store.ReadDocsByRoomID(ctx, body.RoomID)
 	if err != nil {
 		return err
 	}
 	_, err = ru.store.WriteFireStore(ctx, domain.WriteFireStoreParam{
-		RoomID:  body.RoomID.String(),
+		RoomID:  body.RoomID,
 		Index:   len(data) + 1,
 		UID:     body.AccountID,
 		Message: body.Message,
@@ -297,7 +297,7 @@ func margeFrameworkArray(roomFramework []domain.RoomFramework, framework reposit
 	return roomFramework
 }
 
-func margeRoomAccount(ctx context.Context, q *repository.Queries, id uuid.UUID) (result []domain.NowRoomAccounts, err error) {
+func margeRoomAccount(ctx context.Context, q *repository.Queries, id string) (result []domain.NowRoomAccounts, err error) {
 	nowMembers, err := q.GetRoomsAccountsByID(ctx, id)
 	if err != nil {
 		return
@@ -325,7 +325,7 @@ func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, ha
 	}
 }
 
-func getRoomMember(ctx context.Context, store transaction.Store, id uuid.UUID) (result []domain.NowRoomAccounts, err error) {
+func getRoomMember(ctx context.Context, store transaction.Store, id string) (result []domain.NowRoomAccounts, err error) {
 	accounts, err := store.GetRoomsAccountsByID(ctx, id)
 	if err != nil {
 		return

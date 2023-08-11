@@ -3,7 +3,6 @@ package domain
 import (
 	"time"
 
-	"github.com/google/uuid"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
 
@@ -69,7 +68,7 @@ type HackathonInfo struct {
 }
 
 type GetRoomResponse struct {
-	RoomID            uuid.UUID         `json:"room_id"`
+	RoomID            string            `json:"room_id"`
 	Title             string            `json:"title"`
 	Description       string            `json:"description"`
 	MemberLimit       int32             `json:"member_limit"`
