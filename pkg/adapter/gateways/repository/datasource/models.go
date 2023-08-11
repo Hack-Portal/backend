@@ -152,11 +152,11 @@ type Room struct {
 }
 
 type RoomsAccount struct {
-	AccountID string    `json:"account_id"`
-	RoomID    string    `json:"room_id"`
-	Role      int32     `json:"role"`
-	IsOwner   bool      `json:"is_owner"`
-	CreateAt  time.Time `json:"create_at"`
+	AccountID string        `json:"account_id"`
+	RoomID    string        `json:"room_id"`
+	Role      sql.NullInt32 `json:"role"`
+	IsOwner   bool          `json:"is_owner"`
+	CreateAt  time.Time     `json:"create_at"`
 }
 
 type StatusTag struct {

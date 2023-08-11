@@ -22,10 +22,10 @@ INSERT INTO rooms_accounts (
 `
 
 type CreateRoomsAccountsParams struct {
-	AccountID string `json:"account_id"`
-	RoomID    string `json:"room_id"`
-	IsOwner   bool   `json:"is_owner"`
-	Role      int32  `json:"role"`
+	AccountID string        `json:"account_id"`
+	RoomID    string        `json:"room_id"`
+	IsOwner   bool          `json:"is_owner"`
+	Role      sql.NullInt32 `json:"role"`
 }
 
 func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error) {
@@ -80,7 +80,7 @@ type GetRoomsAccountsByIDRow struct {
 	AccountID sql.NullString `json:"account_id"`
 	Icon      sql.NullString `json:"icon"`
 	IsOwner   bool           `json:"is_owner"`
-	Role      int32          `json:"role"`
+	Role      sql.NullInt32  `json:"role"`
 }
 
 func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error) {

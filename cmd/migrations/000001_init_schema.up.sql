@@ -125,7 +125,7 @@ CREATE TABLE "rooms" (
 CREATE TABLE "rooms_accounts" (
   "account_id" varchar NOT NULL,
   "room_id" varchar NOT NULL,
-  "role" int NOT NULL,
+  "role" int ,
   "is_owner" boolean NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
 );
