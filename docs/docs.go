@@ -28,6 +28,9 @@ const docTemplate = `{
         "/accounts": {
             "post": {
                 "description": "Create an account from the requested body",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],

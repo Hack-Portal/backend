@@ -48,6 +48,7 @@ type CreateAccountResponses struct {
 // @Summary			Create new account
 // @Description		Create an account from the requested body
 // @Tags			Accounts
+// @Accept			multipart/form-data
 // @Produce			json
 // @Param			CreateAccountRequestBody 	body 			CreateAccountRequestBody	true	"Create Account Request Body"
 // @Success			200							{object}		CreateAccountResponses		"create succsss response"

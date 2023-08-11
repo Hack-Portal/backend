@@ -545,6 +545,8 @@ info:
 paths:
   /accounts:
     post:
+      consumes:
+      - multipart/form-data
       description: Create an account from the requested body
       parameters:
       - description: Create Account Request Body
