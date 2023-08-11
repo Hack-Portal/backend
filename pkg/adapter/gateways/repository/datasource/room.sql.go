@@ -8,8 +8,6 @@ package repository
 import (
 	"context"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 const createRooms = `-- name: CreateRooms :one
@@ -26,12 +24,12 @@ RETURNING room_id, hackathon_id, title, description, member_limit, include_rate,
 `
 
 type CreateRoomsParams struct {
-	RoomID      uuid.UUID `json:"room_id"`
-	HackathonID int32     `json:"hackathon_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	MemberLimit int32     `json:"member_limit"`
-	IncludeRate bool      `json:"include_rate"`
+	RoomID      string `json:"room_id"`
+	HackathonID int32  `json:"hackathon_id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	MemberLimit int32  `json:"member_limit"`
+	IncludeRate bool   `json:"include_rate"`
 }
 
 func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error) {
@@ -65,7 +63,7 @@ WHERE room_id = $1
 RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
 `
 
-func (q *Queries) DeleteRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error) {
+func (q *Queries) DeleteRoomsByID(ctx context.Context, roomID string) (Room, error) {
 	row := q.db.QueryRowContext(ctx, deleteRoomsByID, roomID)
 	var i Room
 	err := row.Scan(
@@ -88,7 +86,7 @@ FROM rooms
 WHERE room_id = $1
 `
 
-func (q *Queries) GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error) {
+func (q *Queries) GetRoomsByID(ctx context.Context, roomID string) (Room, error) {
 	row := q.db.QueryRowContext(ctx, getRoomsByID, roomID)
 	var i Room
 	err := row.Scan(
@@ -172,7 +170,7 @@ type UpdateRoomsByIDParams struct {
 	Description string    `json:"description"`
 	MemberLimit int32     `json:"member_limit"`
 	UpdateAt    time.Time `json:"update_at"`
-	RoomID      uuid.UUID `json:"room_id"`
+	RoomID      string    `json:"room_id"`
 }
 
 func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams) (Room, error) {

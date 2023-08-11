@@ -7,8 +7,6 @@ package repository
 import (
 	"database/sql"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Account struct {
@@ -142,7 +140,7 @@ type Role struct {
 }
 
 type Room struct {
-	RoomID      uuid.UUID `json:"room_id"`
+	RoomID      string    `json:"room_id"`
 	HackathonID int32     `json:"hackathon_id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
@@ -154,11 +152,11 @@ type Room struct {
 }
 
 type RoomsAccount struct {
-	AccountID string        `json:"account_id"`
-	RoomID    uuid.UUID     `json:"room_id"`
-	Role      sql.NullInt32 `json:"role"`
-	IsOwner   bool          `json:"is_owner"`
-	CreateAt  time.Time     `json:"create_at"`
+	AccountID string    `json:"account_id"`
+	RoomID    string    `json:"room_id"`
+	Role      int32     `json:"role"`
+	IsOwner   bool      `json:"is_owner"`
+	CreateAt  time.Time `json:"create_at"`
 }
 
 type StatusTag struct {

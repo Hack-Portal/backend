@@ -8,8 +8,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-
-	"github.com/google/uuid"
 )
 
 const createRoomsAccounts = `-- name: CreateRoomsAccounts :one
@@ -24,10 +22,10 @@ INSERT INTO rooms_accounts (
 `
 
 type CreateRoomsAccountsParams struct {
-	AccountID string        `json:"account_id"`
-	RoomID    uuid.UUID     `json:"room_id"`
-	IsOwner   bool          `json:"is_owner"`
-	Role      sql.NullInt32 `json:"role"`
+	AccountID string `json:"account_id"`
+	RoomID    string `json:"room_id"`
+	IsOwner   bool   `json:"is_owner"`
+	Role      int32  `json:"role"`
 }
 
 func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error) {
@@ -53,8 +51,8 @@ DELETE FROM rooms_accounts WHERE room_id = $1 AND account_id = $2
 `
 
 type DeleteRoomsAccountsByIDParams struct {
-	RoomID    uuid.UUID `json:"room_id"`
-	AccountID string    `json:"account_id"`
+	RoomID    string `json:"room_id"`
+	AccountID string `json:"account_id"`
 }
 
 func (q *Queries) DeleteRoomsAccountsByID(ctx context.Context, arg DeleteRoomsAccountsByIDParams) error {
@@ -82,10 +80,10 @@ type GetRoomsAccountsByIDRow struct {
 	AccountID sql.NullString `json:"account_id"`
 	Icon      sql.NullString `json:"icon"`
 	IsOwner   bool           `json:"is_owner"`
-	Role      sql.NullInt32  `json:"role"`
+	Role      int32          `json:"role"`
 }
 
-func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByIDRow, error) {
+func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error) {
 	rows, err := q.db.QueryContext(ctx, getRoomsAccountsByID, roomID)
 	if err != nil {
 		return nil, err

@@ -7,8 +7,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-
-	"github.com/google/uuid"
 )
 
 type Querier interface {
@@ -41,7 +39,7 @@ type Querier interface {
 	DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error
 	DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
 	DeleteRoomsAccountsByID(ctx context.Context, arg DeleteRoomsAccountsByIDParams) error
-	DeleteRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error)
+	DeleteRoomsByID(ctx context.Context, roomID string) (Room, error)
 	DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error
 	DeleteTechTagsByID(ctx context.Context, techTagID int32) error
 	DeleteUsersByID(ctx context.Context, arg DeleteUsersByIDParams) error
@@ -52,8 +50,8 @@ type Querier interface {
 	GetLocatesByID(ctx context.Context, locateID int32) (Locate, error)
 	GetPastWorksByOpus(ctx context.Context, opus int32) (PastWork, error)
 	GetRolesByID(ctx context.Context, roleID int32) (Role, error)
-	GetRoomsAccountsByID(ctx context.Context, roomID uuid.UUID) ([]GetRoomsAccountsByIDRow, error)
-	GetRoomsByID(ctx context.Context, roomID uuid.UUID) (Room, error)
+	GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error)
+	GetRoomsByID(ctx context.Context, roomID string) (Room, error)
 	GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (StatusTag, error)
 	GetStatusTagsByTag(ctx context.Context, statusID int32) (StatusTag, error)
 	GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error)

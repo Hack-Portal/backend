@@ -11,7 +11,6 @@ import (
 
 	firestore "cloud.google.com/go/firestore"
 	gomock "github.com/golang/mock/gomock"
-	uuid "github.com/google/uuid"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	domain "github.com/hackhack-Geek-vol6/backend/pkg/domain"
 )
@@ -567,7 +566,7 @@ func (mr *MockStoreMockRecorder) DeleteRoomsAccountsByID(ctx, arg interface{}) *
 }
 
 // DeleteRoomsByID mocks base method.
-func (m *MockStore) DeleteRoomsByID(ctx context.Context, roomID uuid.UUID) (repository.Room, error) {
+func (m *MockStore) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteRoomsByID", ctx, roomID)
 	ret0, _ := ret[0].(repository.Room)
@@ -729,7 +728,7 @@ func (mr *MockStoreMockRecorder) GetRolesByID(ctx, roleID interface{}) *gomock.C
 }
 
 // GetRoomsAccountsByID mocks base method.
-func (m *MockStore) GetRoomsAccountsByID(ctx context.Context, roomID uuid.UUID) ([]repository.GetRoomsAccountsByIDRow, error) {
+func (m *MockStore) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRoomsAccountsByID", ctx, roomID)
 	ret0, _ := ret[0].([]repository.GetRoomsAccountsByIDRow)
@@ -744,7 +743,7 @@ func (mr *MockStoreMockRecorder) GetRoomsAccountsByID(ctx, roomID interface{}) *
 }
 
 // GetRoomsByID mocks base method.
-func (m *MockStore) GetRoomsByID(ctx context.Context, roomID uuid.UUID) (repository.Room, error) {
+func (m *MockStore) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRoomsByID", ctx, roomID)
 	ret0, _ := ret[0].(repository.Room)
@@ -759,10 +758,10 @@ func (mr *MockStoreMockRecorder) GetRoomsByID(ctx, roomID interface{}) *gomock.C
 }
 
 // GetStatusTagsByHackathonID mocks base method.
-func (m *MockStore) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) ([]repository.StatusTag, error) {
+func (m *MockStore) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (repository.StatusTag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStatusTagsByHackathonID", ctx, hackathonID)
-	ret0, _ := ret[0].([]repository.StatusTag)
+	ret0, _ := ret[0].(repository.StatusTag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -771,6 +770,21 @@ func (m *MockStore) GetStatusTagsByHackathonID(ctx context.Context, hackathonID 
 func (mr *MockStoreMockRecorder) GetStatusTagsByHackathonID(ctx, hackathonID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatusTagsByHackathonID", reflect.TypeOf((*MockStore)(nil).GetStatusTagsByHackathonID), ctx, hackathonID)
+}
+
+// GetStatusTagsByTag mocks base method.
+func (m *MockStore) GetStatusTagsByTag(ctx context.Context, statusID int32) (repository.StatusTag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStatusTagsByTag", ctx, statusID)
+	ret0, _ := ret[0].(repository.StatusTag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStatusTagsByTag indicates an expected call of GetStatusTagsByTag.
+func (mr *MockStoreMockRecorder) GetStatusTagsByTag(ctx, statusID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatusTagsByTag", reflect.TypeOf((*MockStore)(nil).GetStatusTagsByTag), ctx, statusID)
 }
 
 // GetTechTagsByID mocks base method.
