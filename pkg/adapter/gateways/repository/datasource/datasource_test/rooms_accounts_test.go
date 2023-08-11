@@ -48,7 +48,7 @@ func TestGetRoomsAccounts(t *testing.T) {
 // ToDo:時間のあるとき実装する
 // func TestRemoveAccountInRoom(t *testing.T) {
 // 	room := createRoomsTest(t)
-// 	account := CreateAccountTest(t)
+// 	account := createAccountTest(t)
 // 	roomAccount := createRoomsAccountsTest(t, room, account)
 // 	log.Println("1 :", roomAccount)
 

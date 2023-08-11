@@ -11,13 +11,10 @@ import (
 )
 
 func CreateAccountTest(t *testing.T) repository.Account {
-	user := CreateUserTest(t)
-
 	arg := repository.CreateAccountsParams{
-		AccountID:  util.RandomString(8),
+		UserID:     util.RandomString(8),
 		Username:   util.RandomString(8),
 		LocateID:   int32(util.Random(47)),
-		UserID:     user.UserID,
 		Rate:       0,
 		ShowRate:   true,
 		ShowLocate: true,
@@ -27,7 +24,6 @@ func CreateAccountTest(t *testing.T) repository.Account {
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
 
-	require.Equal(t, arg.AccountID, account.AccountID)
 	require.Equal(t, arg.UserID, account.UserID)
 	require.Equal(t, arg.Username, account.Username)
 	require.Equal(t, arg.LocateID, account.LocateID)
@@ -47,7 +43,7 @@ func TestCreateAccount(t *testing.T) {
 func TestGetAccountByID(t *testing.T) {
 	account := CreateAccountTest(t)
 
-	result, err := testQueries.GetAccountsByID(context.Background(), account.AccountID)
+	result, err := testQueries.GetAccountsByID(context.Background(), account.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 
@@ -88,12 +84,8 @@ func TestListAccount(t *testing.T) {
 
 func TestGetAccountByEmail(t *testing.T) {
 	account := CreateAccountTest(t)
-	user, err := testQueries.GetUsersByID(context.Background(), account.UserID)
-	require.NoError(t, err)
-	require.NotEmpty(t, user)
-
 	// TODO:userからemailを取得して代入する
-	result, err := testQueries.GetAccountsByEmail(context.Background(), user.Email)
+	result, err := testQueries.GetAccountsByEmail(context.Background(), sql.NullString{String: "test", Valid: true})
 	require.NoError(t, err)
 	require.NotEmpty(t, result)
 
@@ -111,11 +103,11 @@ func TestGetAccountByEmail(t *testing.T) {
 func TestSoftDeleteAccount(t *testing.T) {
 	account1 := CreateAccountTest(t)
 
-	deletedAccount, err := testQueries.DeleteAccounts(context.Background(), account1.AccountID)
+	deletedAccount, err := testQueries.DeleteAccounts(context.Background(), account1.UserID)
 	require.NoError(t, err)
 	require.NotEmpty(t, deletedAccount)
 
-	account2, err := testQueries.GetAccountsByID(context.Background(), account1.AccountID)
+	account2, err := testQueries.GetAccountsByID(context.Background(), account1.UserID)
 	require.Error(t, err)
 	require.Empty(t, account2)
 }
