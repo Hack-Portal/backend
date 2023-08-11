@@ -13,9 +13,6 @@ func TestGetAccountByID(t *testing.T) {
 		AccountID     string
 		buildStubs    func(store *mock_transaction.MockStore)
 		checkResponse func(t *testing.T)
-	}{
-		{
-			Name: "Success",
-		},
-	}
+	}{}
+
 }

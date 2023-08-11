@@ -20,10 +20,10 @@ installmigrate:
 	scoop install migrate
 
 migrateup:
-	migrate -path db/migration -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose up
+	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path db/migration -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose down
+	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose down
 
 sqlc:
 	sqlc generate
