@@ -50,8 +50,17 @@ type CreateAccountResponses struct {
 // @Tags			Accounts
 // @Accept			multipart/form-data
 // @Produce			json
-// @Param			CreateAccountRequestBody 	body 			CreateAccountRequestBody	true	"Create Account Request Body"
-// @Success			200							{object}		CreateAccountResponses		"create succsss response"
+// @Param			user_id 		body 		string 		true	"AccountsID"
+// @Param			username 		body 		string 		true	"username"
+// @Param			icon 			formData 		file 		false	"icon image"
+// @Param			explanatory_text 	body 		string 		false	"explanatory text"
+// @Param			locate_id 		body 		int32 		true	"locate id"
+// @Param			password 		body 		string 		true	"password"
+// @Param			show_locate 	body 		bool 		true	"show locate"
+// @Param			show_rate 		body 		bool 		true	"show rate"
+// @Param			tech_tags 		body 	[]int32 		false	"tech tags"
+// @Param			frameworks 		body	[]int32 		false	"frameworks"
+// @Success			200							{object}		CreateAccountResponses		"create success response"
 // @Failure 		400							{object}		ErrorResponse				"bad request response"
 // @Failure 		500							{object}		ErrorResponse				"server error response"
 // @Router       	/accounts 	[post]
