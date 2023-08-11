@@ -1,9 +1,10 @@
 -- name: CreateUsers :one
 INSERT INTO users (
+    user_id,
     email,
     hashed_password
 )VALUES(
-    $1,$2
+    $1,$2,$3
 )RETURNING *;
 
 -- name: GetUsersByID :one
