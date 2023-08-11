@@ -40,7 +40,7 @@ func TestGetAccountTag(t *testing.T) {
 		createAccountTagsTest(t, account)
 	}
 
-	tags, err := testQueries.ListAccountTagsByUserID(context.Background(), account.UserID)
+	tags, err := testQueries.ListAccountTagsByUserID(context.Background(), account.AccountID)
 	require.NoError(t, err)
 	require.NotEmpty(t, tags)
 	require.Len(t, tags, n)

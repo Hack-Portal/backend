@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"testing"
 
+	"github.com/google/uuid"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/password"
 	"github.com/stretchr/testify/require"
@@ -13,6 +14,7 @@ import (
 func CreateUserTest(t *testing.T) repository.User {
 
 	arg := repository.CreateUsersParams{
+		UserID:         uuid.New().String(),
 		Email:          sql.NullString{String: password.RandomEmail(), Valid: true},
 		HashedPassword: sql.NullString{String: password.RandomString(10), Valid: true},
 	}

@@ -14,7 +14,7 @@ func createAccountFrameworksTest(t *testing.T, account repository.Account) repos
 	randomId := util.Random(len(frameworks) - 1)
 
 	arg := repository.CreateAccountFrameworksParams{
-		AccountID:   account.UserID,
+		AccountID:   account.AccountID,
 		FrameworkID: frameworks[randomId].FrameworkID,
 	}
 
@@ -41,7 +41,7 @@ func TestListAccountFrameworks(t *testing.T) {
 		createAccountFrameworksTest(t, account)
 	}
 
-	listAccountsFramework, err := testQueries.ListAccountFrameworksByUserID(context.Background(), account.UserID)
+	listAccountsFramework, err := testQueries.ListAccountFrameworksByUserID(context.Background(), account.AccountID)
 	require.NoError(t, err)
 	require.NotEmpty(t, listAccountsFramework)
 	require.Len(t, listAccountsFramework, n)

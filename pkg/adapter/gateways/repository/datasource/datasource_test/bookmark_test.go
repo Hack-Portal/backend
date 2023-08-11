@@ -37,7 +37,7 @@ func TestListBookmark(t *testing.T) {
 		bookmark := createBookmarkTest(t, account)
 		bookmarks = append(bookmarks, bookmark)
 	}
-	results, err := testQueries.ListBookmarksByID(context.Background(), account.UserID)
+	results, err := testQueries.ListBookmarksByID(context.Background(), account.AccountID)
 	require.NoError(t, err)
 	require.NotEmpty(t, results)
 	require.Len(t, results, n)
@@ -63,7 +63,7 @@ func TestSoftRemoveBookmark(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	listBookmark, err := testQueries.ListBookmarksByID(context.Background(), account.UserID)
+	listBookmark, err := testQueries.ListBookmarksByID(context.Background(), account.AccountID)
 	require.NoError(t, err)
 	require.NotEmpty(t, listBookmark)
 

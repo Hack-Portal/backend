@@ -52,7 +52,7 @@ func TestRemoveFollow(t *testing.T) {
 
 	require.NoError(t, err)
 
-	listBookmarks, err := testQueries.ListFollowsByToUserID(context.Background(), toAccount.UserID)
+	listBookmarks, err := testQueries.ListFollowsByToUserID(context.Background(), toAccount.AccountID)
 	require.NoError(t, err)
 	require.NotEmpty(t, listBookmarks)
 	require.Len(t, listBookmarks, n-1)
