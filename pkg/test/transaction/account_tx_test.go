@@ -6,6 +6,7 @@ import (
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	tx "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
+	"github.com/hackhack-Geek-vol6/backend/pkg/test/repository"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/password"
 	"github.com/stretchr/testify/require"
 )
@@ -13,7 +14,7 @@ import (
 func TestCreateAccountTx(t *testing.T) {
 	store := NewStore(testDB, &fb.App{})
 
-	techTags := test.listTechTagTest(t)
+	techTags := ListTechTagTest(t)
 	frameworks := test.listFrameworkTest(t)
 	techTagIds := util.RandomSelection(len(techTags), 10)
 	frameworkIds := util.RandomSelection(len(frameworks), 10)
