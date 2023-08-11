@@ -40,18 +40,99 @@ const docTemplate = `{
                 "summary": "Create new account",
                 "parameters": [
                     {
-                        "description": "Create Account Request Body",
-                        "name": "CreateAccountRequestBody",
+                        "description": "AccountsID",
+                        "name": "user_id",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.CreateAccountRequestBody"
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "username",
+                        "name": "username",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "type": "file",
+                        "description": "icon image",
+                        "name": "icon",
+                        "in": "formData"
+                    },
+                    {
+                        "description": "explanatory text",
+                        "name": "explanatory_text",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "locate id",
+                        "name": "locate_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "password",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "show locate",
+                        "name": "show_locate",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "show rate",
+                        "name": "show_rate",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "tech tags",
+                        "name": "tech_tags",
+                        "in": "body",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    {
+                        "description": "frameworks",
+                        "name": "frameworks",
+                        "in": "body",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "create succsss response",
+                        "description": "create success response",
                         "schema": {
                             "$ref": "#/definitions/api.CreateAccountResponses"
                         }
@@ -1255,54 +1336,6 @@ const docTemplate = `{
                 },
                 "term": {
                     "type": "integer"
-                }
-            }
-        },
-        "api.CreateAccountRequestBody": {
-            "type": "object",
-            "required": [
-                "locate_id",
-                "show_locate",
-                "show_rate",
-                "user_id",
-                "username"
-            ],
-            "properties": {
-                "explanatory_text": {
-                    "type": "string"
-                },
-                "frameworks": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "locate_id": {
-                    "type": "integer"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "show_locate": {
-                    "type": "boolean"
-                },
-                "show_rate": {
-                    "type": "boolean"
-                },
-                "tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "user_id": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
                 }
             }
         },

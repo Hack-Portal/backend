@@ -26,39 +26,6 @@ definitions:
       term:
         type: integer
     type: object
-  api.CreateAccountRequestBody:
-    properties:
-      explanatory_text:
-        type: string
-      frameworks:
-        items:
-          type: integer
-        type: array
-      icon:
-        type: string
-      locate_id:
-        type: integer
-      password:
-        type: string
-      show_locate:
-        type: boolean
-      show_rate:
-        type: boolean
-      tech_tags:
-        items:
-          type: integer
-        type: array
-      user_id:
-        type: string
-      username:
-        type: string
-    required:
-    - locate_id
-    - show_locate
-    - show_rate
-    - user_id
-    - username
-    type: object
   api.CreateAccountResponses:
     properties:
       explanatory_text:
@@ -549,17 +516,70 @@ paths:
       - multipart/form-data
       description: Create an account from the requested body
       parameters:
-      - description: Create Account Request Body
+      - description: AccountsID
         in: body
-        name: CreateAccountRequestBody
+        name: user_id
         required: true
         schema:
-          $ref: '#/definitions/api.CreateAccountRequestBody'
+          type: string
+      - description: username
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: icon image
+        in: formData
+        name: icon
+        type: file
+      - description: explanatory text
+        in: body
+        name: explanatory_text
+        schema:
+          type: string
+      - description: locate id
+        in: body
+        name: locate_id
+        required: true
+        schema:
+          type: integer
+      - description: password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: show locate
+        in: body
+        name: show_locate
+        required: true
+        schema:
+          type: boolean
+      - description: show rate
+        in: body
+        name: show_rate
+        required: true
+        schema:
+          type: boolean
+      - description: tech tags
+        in: body
+        name: tech_tags
+        schema:
+          items:
+            type: integer
+          type: array
+      - description: frameworks
+        in: body
+        name: frameworks
+        schema:
+          items:
+            type: integer
+          type: array
       produces:
       - application/json
       responses:
         "200":
-          description: create succsss response
+          description: create success response
           schema:
             $ref: '#/definitions/api.CreateAccountResponses'
         "400":

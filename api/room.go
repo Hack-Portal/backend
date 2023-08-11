@@ -231,7 +231,7 @@ type hackathonInfo struct {
 	Expired     time.Time       `json:"expired"`
 	StartDate   time.Time       `json:"start_date"`
 	Term        int32           `json:"term"`
-	Tags        []db.StatusTags `json:"tags"`
+	StatusTags  []db.StatusTags `json:"tags"`
 }
 
 type GetRoomResponse struct {
@@ -355,7 +355,7 @@ func (server *Server) GetRoom(ctx *gin.Context) {
 			Expired:     hackathon.Expired,
 			StartDate:   hackathon.StartDate,
 			Term:        hackathon.Term,
-			Tags:        statusTags,
+			StatusTags:  statusTags,
 		},
 		NowMember:         nowMember,
 		MembersTechTags:   membersTechTags,
