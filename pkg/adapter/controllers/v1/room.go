@@ -4,8 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	uuid5 "github.com/gofrs/uuid/v5"
-	"github.com/google/uuid"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
@@ -62,13 +60,7 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 		return
 	}
 
-	roomID, err := uuid5.FromString(request.RoomID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	response, err := rc.RoomUsecase.GetRoom(ctx, uuid.UUID(roomID))
+	response, err := rc.RoomUsecase.GetRoom(ctx, request.RoomID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -135,22 +127,20 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 		return
 	}
 
-	roomID, err := uuid5.FromString(reqURI.RoomID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
 	response, err := rc.RoomUsecase.UpdateRoom(ctx, domain.UpdateRoomParam{
-		RoomID:      uuid.UUID(roomID),
+		RoomID:      reqURI.RoomID,
 		Title:       reqBody.Title,
 		Description: reqBody.Description,
 		HackathonID: reqBody.HackathonID,
 		MemberLimit: reqBody.MemberLimit,
 		OwnerEmail:  payload.Email,
 	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 	ctx.JSON(http.StatusOK, response)
 }
 
@@ -173,17 +163,11 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 		return
 	}
 
-	roomID, err := uuid5.FromString(reqURI.RoomID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
 	if err := rc.RoomUsecase.DeleteRoom(ctx, domain.DeleteRoomParam{
 		OwnerEmail: payload.Email,
-		RoomID:     uuid.UUID(roomID),
+		RoomID:     reqURI.RoomID,
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -217,15 +201,9 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 		return
 	}
 
-	roomID, err := uuid5.FromString(reqURI.RoomID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
 	if err := rc.RoomUsecase.AddAccountInRoom(ctx, domain.AddAccountInRoomParam{
 		AccountID: reqBody.AccountID,
-		RoomID:    uuid.UUID(roomID),
+		RoomID:    reqURI.RoomID,
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -254,17 +232,11 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 		return
 	}
 
-	roomID, err := uuid5.FromString(reqURI.RoomID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
 	if err := rc.RoomUsecase.DeleteRoom(ctx, domain.DeleteRoomParam{
 		OwnerEmail: payload.Email,
-		RoomID:     uuid.UUID(roomID),
+		RoomID:     reqURI.RoomID,
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -297,14 +269,8 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 		return
 	}
 
-	roomID, err := uuid5.FromString(reqtURI.RoomID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
 	if err := rc.RoomUsecase.AddChat(ctx, domain.AddChatParams{
-		RoomID:    uuid.UUID(roomID),
+		RoomID:    reqtURI.RoomID,
 		AccountID: reqBody.AccountID,
 		Message:   reqBody.Message,
 	}); err != nil {
