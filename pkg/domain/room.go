@@ -40,7 +40,7 @@ type NowRoomAccounts struct {
 }
 
 type ListRoomRoomInfo struct {
-	RoomID      uuid.UUID `json:"room_id"`
+	RoomID      string    `json:"room_id"`
 	Title       string    `json:"title"`
 	MemberLimit int32     `json:"member_limit"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -94,32 +94,32 @@ type UpdateRoomRequestBody struct {
 }
 
 type CreateRoomParam struct {
-	RoomID      uuid.UUID `json:"room_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	HackathonID int32     `json:"hackathon_id"`
-	MemberLimit int32     `json:"member_limit"`
-	OwnerID     string    `json:"owner_id"`
-	IncludeRate bool      `json:"include_rate"`
+	RoomID      string `json:"room_id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	HackathonID int32  `json:"hackathon_id"`
+	MemberLimit int32  `json:"member_limit"`
+	OwnerID     string `json:"owner_id"`
+	IncludeRate bool   `json:"include_rate"`
 }
 
 type UpdateRoomParam struct {
-	RoomID      uuid.UUID `json:"room_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	HackathonID int32     `json:"hackathon_id"`
-	MemberLimit int32     `json:"member_limit"`
-	OwnerEmail  string    `json:"owner_email"`
+	RoomID      string `json:"room_id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	HackathonID int32  `json:"hackathon_id"`
+	MemberLimit int32  `json:"member_limit"`
+	OwnerEmail  string `json:"owner_email"`
 }
 
 type DeleteRoomParam struct {
-	OwnerEmail string    `json:"owner_email"`
-	RoomID     uuid.UUID `json:"room_id"`
+	OwnerEmail string `json:"owner_email"`
+	RoomID     string `json:"room_id"`
 }
 
 type AddAccountInRoomParam struct {
-	AccountID string    `json:"account_id"`
-	RoomID    uuid.UUID `json:"room_id"`
+	AccountID string `json:"account_id"`
+	RoomID    string `json:"room_id"`
 }
 
 type AddAccountInRoomRequestBody struct {
@@ -127,9 +127,9 @@ type AddAccountInRoomRequestBody struct {
 }
 
 type AddChatParams struct {
-	RoomID    uuid.UUID `json:"room_id"`
-	AccountID string    `json:"account_id"`
-	Message   string    `json:"message"`
+	RoomID    string `json:"room_id"`
+	AccountID string `json:"account_id"`
+	Message   string `json:"message"`
 }
 
 type WriteFireStoreParam struct {
