@@ -11,21 +11,21 @@ import (
 
 const createBookmarks = `-- name: CreateBookmarks :one
 INSERT INTO
-    bookmarks(hackathon_id, account_id)
+    bookmarks(opus, account_id)
 VALUES
-    ($1, $2) RETURNING hackathon_id, account_id, create_at, is_delete
+    ($1, $2) RETURNING opus, account_id, create_at, is_delete
 `
 
 type CreateBookmarksParams struct {
-	HackathonID int32  `json:"hackathon_id"`
-	AccountID   string `json:"account_id"`
+	Opus      int32  `json:"opus"`
+	AccountID string `json:"account_id"`
 }
 
 func (q *Queries) CreateBookmarks(ctx context.Context, arg CreateBookmarksParams) (Bookmark, error) {
-	row := q.db.QueryRowContext(ctx, createBookmarks, arg.HackathonID, arg.AccountID)
+	row := q.db.QueryRowContext(ctx, createBookmarks, arg.Opus, arg.AccountID)
 	var i Bookmark
 	err := row.Scan(
-		&i.HackathonID,
+		&i.Opus,
 		&i.AccountID,
 		&i.CreateAt,
 		&i.IsDelete,
@@ -40,19 +40,19 @@ SET
     is_delete = true
 WHERE
     account_id = $1
-    AND hackathon_id = $2 RETURNING hackathon_id, account_id, create_at, is_delete
+    AND opus = $2 RETURNING opus, account_id, create_at, is_delete
 `
 
 type DeleteBookmarksByIDParams struct {
-	AccountID   string `json:"account_id"`
-	HackathonID int32  `json:"hackathon_id"`
+	AccountID string `json:"account_id"`
+	Opus      int32  `json:"opus"`
 }
 
 func (q *Queries) DeleteBookmarksByID(ctx context.Context, arg DeleteBookmarksByIDParams) (Bookmark, error) {
-	row := q.db.QueryRowContext(ctx, deleteBookmarksByID, arg.AccountID, arg.HackathonID)
+	row := q.db.QueryRowContext(ctx, deleteBookmarksByID, arg.AccountID, arg.Opus)
 	var i Bookmark
 	err := row.Scan(
-		&i.HackathonID,
+		&i.Opus,
 		&i.AccountID,
 		&i.CreateAt,
 		&i.IsDelete,
@@ -62,7 +62,7 @@ func (q *Queries) DeleteBookmarksByID(ctx context.Context, arg DeleteBookmarksBy
 
 const listBookmarksByID = `-- name: ListBookmarksByID :many
 SELECT
-    hackathon_id, account_id, create_at, is_delete
+    opus, account_id, create_at, is_delete
 FROM
     bookmarks
 WHERE
@@ -79,7 +79,7 @@ func (q *Queries) ListBookmarksByID(ctx context.Context, accountID string) ([]Bo
 	for rows.Next() {
 		var i Bookmark
 		if err := rows.Scan(
-			&i.HackathonID,
+			&i.Opus,
 			&i.AccountID,
 			&i.CreateAt,
 			&i.IsDelete,

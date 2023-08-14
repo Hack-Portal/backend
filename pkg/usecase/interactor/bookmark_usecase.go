@@ -25,12 +25,12 @@ func NewBookmarkUsercase(store transaction.Store, timeout time.Duration) inputpo
 func (bu *bookmarkUsecase) CreateBookmark(ctx context.Context, body repository.CreateBookmarksParams) (domain.BookmarkResponse, error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
-	bockmark, err := bu.store.CreateBookmarks(ctx, body)
+	bookmark, err := bu.store.CreateBookmarks(ctx, body)
 	if err != nil {
 		return domain.BookmarkResponse{}, err
 	}
 
-	result, err := bu.store.GetHackathonByID(ctx, bockmark.HackathonID)
+	result, err := bu.store.GetHackathonByID(ctx, bookmark.Opus)
 	if err != nil {
 		return domain.BookmarkResponse{}, err
 	}
@@ -56,7 +56,7 @@ func (bu *bookmarkUsecase) GetBookmarks(ctx context.Context, id string, query do
 		return
 	}
 	for _, bookmark := range bookmarks {
-		hackathon, err := bu.store.GetHackathonByID(ctx, bookmark.HackathonID)
+		hackathon, err := bu.store.GetHackathonByID(ctx, bookmark.Opus)
 		if err != nil {
 			return nil, err
 		}
@@ -74,10 +74,10 @@ func (bu *bookmarkUsecase) GetBookmarks(ctx context.Context, id string, query do
 	return
 }
 
-func (bu *bookmarkUsecase) RemoveBookmark(ctx context.Context, accountID string, hackathonID int32) error {
+func (bu *bookmarkUsecase) RemoveBookmark(ctx context.Context, accountID string, opus int32) error {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
 
-	_, err := bu.store.DeleteBookmarksByID(ctx, repository.DeleteBookmarksByIDParams{AccountID: accountID, HackathonID: hackathonID})
+	_, err := bu.store.DeleteBookmarksByID(ctx, repository.DeleteBookmarksByIDParams{AccountID: accountID, Opus: opus})
 	return err
 }

@@ -1,6 +1,6 @@
 -- name: CreateBookmarks :one
 INSERT INTO
-    bookmarks(hackathon_id, account_id)
+    bookmarks(opus, account_id)
 VALUES
     ($1, $2) RETURNING *;
 
@@ -19,4 +19,4 @@ SET
     is_delete = true
 WHERE
     account_id = $1
-    AND hackathon_id = $2 RETURNING *;
+    AND opus = $2 RETURNING *;

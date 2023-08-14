@@ -68,10 +68,10 @@ type AwardDatum struct {
 }
 
 type Bookmark struct {
-	HackathonID int32     `json:"hackathon_id"`
-	AccountID   string    `json:"account_id"`
-	CreateAt    time.Time `json:"create_at"`
-	IsDelete    bool      `json:"is_delete"`
+	Opus      int32     `json:"opus"`
+	AccountID string    `json:"account_id"`
+	CreateAt  time.Time `json:"create_at"`
+	IsDelete  bool      `json:"is_delete"`
 }
 
 type Follow struct {

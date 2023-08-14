@@ -33,7 +33,7 @@ func (bc *BookmarkController) CreateBookmark(ctx *gin.Context) {
 		return
 	}
 
-	response, err := bc.BookmarkUsecase.CreateBookmark(ctx, repository.CreateBookmarksParams{HackathonID: reqBody.HackathonID, AccountID: reqBody.AccountID})
+	response, err := bc.BookmarkUsecase.CreateBookmark(ctx, repository.CreateBookmarksParams{Opus: reqBody.Opus, AccountID: reqBody.AccountID})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -65,7 +65,7 @@ func (bc *BookmarkController) RemoveBookmark(ctx *gin.Context) {
 		return
 	}
 
-	if err := bc.BookmarkUsecase.RemoveBookmark(ctx, reqURI.AccountID, reqBody.HackathonID); err != nil {
+	if err := bc.BookmarkUsecase.RemoveBookmark(ctx, reqURI.AccountID, reqBody.Opus); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
