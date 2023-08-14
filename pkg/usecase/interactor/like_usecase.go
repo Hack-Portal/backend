@@ -10,22 +10,22 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 
-type bookmarkUsecase struct {
+type likeUsecase struct {
 	store          transaction.Store
 	contextTimeout time.Duration
 }
 
-func NewBookmarkUsercase(store transaction.Store, timeout time.Duration) inputport.BookmarkUsecase {
-	return &bookmarkUsecase{
+func NewLikeUsercase(store transaction.Store, timeout time.Duration) inputport.LikeUsecase {
+	return &likeUsecase{
 		store:          store,
 		contextTimeout: timeout,
 	}
 }
 
-func (bu *bookmarkUsecase) CreateBookmark(ctx context.Context, body repository.CreateBookmarksParams) (domain.BookmarkResponse, error) {
+func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (domain.BookmarkResponse, error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
-	bookmark, err := bu.store.CreateBookmarks(ctx, body)
+	bookmark, err := bu.store.CreateLikes(ctx, body)
 	if err != nil {
 		return domain.BookmarkResponse{}, err
 	}
@@ -47,11 +47,11 @@ func (bu *bookmarkUsecase) CreateBookmark(ctx context.Context, body repository.C
 	}, nil
 }
 
-func (bu *bookmarkUsecase) GetBookmarks(ctx context.Context, id string, query domain.ListBookmarkRequestQueries) (result []domain.BookmarkResponse, err error) {
+func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListBookmarkRequestQueries) (result []domain.BookmarkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
 
-	bookmarks, err := bu.store.ListBookmarksByID(ctx, id)
+	bookmarks, err := bu.store.ListLikesByID(ctx, id)
 	if err != nil {
 		return
 	}
@@ -74,10 +74,10 @@ func (bu *bookmarkUsecase) GetBookmarks(ctx context.Context, id string, query do
 	return
 }
 
-func (bu *bookmarkUsecase) RemoveBookmark(ctx context.Context, accountID string, opus int32) error {
+func (bu *likeUsecase) RemoveLike(ctx context.Context, accountID string, opus int32) error {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
 
-	_, err := bu.store.DeleteBookmarksByID(ctx, repository.DeleteBookmarksByIDParams{AccountID: accountID, Opus: opus})
+	_, err := bu.store.DeleteLikesByID(ctx, repository.DeleteLikesByIDParams{AccountID: accountID, Opus: opus})
 	return err
 }

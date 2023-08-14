@@ -11,9 +11,9 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 
-type BookmarkController struct {
-	BookmarkUsecase inputport.BookmarkUsecase
-	Env             *bootstrap.Env
+type LikeController struct {
+	LikeUsecase inputport.LikeUsecase
+	Env         *bootstrap.Env
 }
 
 // CreateBookmark	godoc
@@ -26,14 +26,14 @@ type BookmarkController struct {
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/bookmarks 					[post]
-func (bc *BookmarkController) CreateBookmark(ctx *gin.Context) {
+func (bc *LikeController) CreateBookmark(ctx *gin.Context) {
 	var reqBody domain.CreateBookmarkRequest
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	response, err := bc.BookmarkUsecase.CreateBookmark(ctx, repository.CreateBookmarksParams{Opus: reqBody.Opus, AccountID: reqBody.AccountID})
+	response, err := bc.LikeUsecase.CreateLike(ctx, repository.CreateLikesParams{Opus: reqBody.Opus, AccountID: reqBody.AccountID})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -51,7 +51,7 @@ func (bc *BookmarkController) CreateBookmark(ctx *gin.Context) {
 // @Failure 		400				{object}		ErrorResponse		"bad request response"
 // @Failure 		500				{object}		ErrorResponse		"server error response"
 // @Router       	/bookmarks/:user_id 		[delete]
-func (bc *BookmarkController) RemoveBookmark(ctx *gin.Context) {
+func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 	var (
 		reqURI  domain.BookmarkRequestWildCard
 		reqBody domain.RemoveBookmarkRequestQueries
@@ -65,7 +65,7 @@ func (bc *BookmarkController) RemoveBookmark(ctx *gin.Context) {
 		return
 	}
 
-	if err := bc.BookmarkUsecase.RemoveBookmark(ctx, reqURI.AccountID, reqBody.Opus); err != nil {
+	if err := bc.LikeUsecase.RemoveLike(ctx, reqURI.AccountID, reqBody.Opus); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -83,7 +83,7 @@ func (bc *BookmarkController) RemoveBookmark(ctx *gin.Context) {
 // @Failure 		400							{object}		ErrorResponse		"bad request response"
 // @Failure 		500							{object}		ErrorResponse		"server error response"
 // @Router       	/bookmarks/:user_id  		[get]
-func (bc *BookmarkController) ListBookmark(ctx *gin.Context) {
+func (bc *LikeController) ListBookmark(ctx *gin.Context) {
 	var (
 		reqURI  domain.BookmarkRequestWildCard
 		reqBody domain.ListBookmarkRequestQueries
@@ -97,7 +97,7 @@ func (bc *BookmarkController) ListBookmark(ctx *gin.Context) {
 		return
 	}
 
-	response, err := bc.BookmarkUsecase.GetBookmarks(ctx, reqURI.AccountID, reqBody)
+	response, err := bc.LikeUsecase.GetLike(ctx, reqURI.AccountID, reqBody)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
