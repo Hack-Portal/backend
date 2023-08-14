@@ -67,13 +67,6 @@ type AwardDatum struct {
 	HackathonID int32 `json:"hackathon_id"`
 }
 
-type Bookmark struct {
-	Opus      int32     `json:"opus"`
-	AccountID string    `json:"account_id"`
-	CreateAt  time.Time `json:"create_at"`
-	IsDelete  bool      `json:"is_delete"`
-}
-
 type Follow struct {
 	ToAccountID   string    `json:"to_account_id"`
 	FromAccountID string    `json:"from_account_id"`
@@ -100,6 +93,13 @@ type Hackathon struct {
 type HackathonStatusTag struct {
 	HackathonID int32 `json:"hackathon_id"`
 	StatusID    int32 `json:"status_id"`
+}
+
+type Like struct {
+	Opus      int32     `json:"opus"`
+	AccountID string    `json:"account_id"`
+	CreateAt  time.Time `json:"create_at"`
+	IsDelete  bool      `json:"is_delete"`
 }
 
 type Locate struct {

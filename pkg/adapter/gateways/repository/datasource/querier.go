@@ -14,11 +14,11 @@ type Querier interface {
 	CreateAccountPastWorks(ctx context.Context, arg CreateAccountPastWorksParams) (AccountPastWork, error)
 	CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTag, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
-	CreateBookmarks(ctx context.Context, arg CreateBookmarksParams) (Bookmark, error)
 	CreateFollows(ctx context.Context, arg CreateFollowsParams) (Follow, error)
 	CreateFrameworks(ctx context.Context, arg CreateFrameworksParams) (Framework, error)
 	CreateHackathonStatusTags(ctx context.Context, arg CreateHackathonStatusTagsParams) (HackathonStatusTag, error)
 	CreateHackathons(ctx context.Context, arg CreateHackathonsParams) (Hackathon, error)
+	CreateLikes(ctx context.Context, arg CreateLikesParams) (Like, error)
 	CreatePastWorkFrameworks(ctx context.Context, arg CreatePastWorkFrameworksParams) (PastWorkFramework, error)
 	CreatePastWorkTags(ctx context.Context, arg CreatePastWorkTagsParams) (PastWorkTag, error)
 	CreatePastWorks(ctx context.Context, arg CreatePastWorksParams) (PastWork, error)
@@ -31,13 +31,14 @@ type Querier interface {
 	DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
 	DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
 	DeleteAccounts(ctx context.Context, accountID string) (Account, error)
-	DeleteBookmarksByID(ctx context.Context, arg DeleteBookmarksByIDParams) (Bookmark, error)
 	DeleteFollows(ctx context.Context, arg DeleteFollowsParams) error
 	DeleteFrameworksByID(ctx context.Context, frameworkID int32) error
 	DeleteHackathonByID(ctx context.Context, hackathonID int32) error
 	DeleteHackathonStatusTagsByID(ctx context.Context, hackathonID int32) error
+	DeleteLikesByID(ctx context.Context, arg DeleteLikesByIDParams) (Like, error)
 	DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error
 	DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
+	DeletePastWorksByID(ctx context.Context, arg DeletePastWorksByIDParams) (PastWork, error)
 	DeleteRoomsAccountsByID(ctx context.Context, arg DeleteRoomsAccountsByIDParams) error
 	DeleteRoomsByID(ctx context.Context, roomID string) (Room, error)
 	DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error
@@ -61,12 +62,12 @@ type Querier interface {
 	ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]AccountPastWork, error)
 	ListAccountTagsByUserID(ctx context.Context, accountID string) ([]ListAccountTagsByUserIDRow, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error)
-	ListBookmarksByID(ctx context.Context, accountID string) ([]Bookmark, error)
 	ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]Follow, error)
 	ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]Follow, error)
 	ListFrameworks(ctx context.Context) ([]Framework, error)
 	ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]HackathonStatusTag, error)
 	ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathon, error)
+	ListLikesByID(ctx context.Context, accountID string) ([]Like, error)
 	ListLocates(ctx context.Context) ([]Locate, error)
 	ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFramework, error)
 	ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]PastWorkTag, error)

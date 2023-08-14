@@ -50,6 +50,34 @@ func (q *Queries) CreatePastWorks(ctx context.Context, arg CreatePastWorksParams
 	return i, err
 }
 
+const deletePastWorksByID = `-- name: DeletePastWorksByID :one
+UPDATE past_works
+SET is_delete = $1
+WHERE opus = $2
+RETURNING opus, name, thumbnail_image, explanatory_text, award_data_id, create_at, update_at, is_delete
+`
+
+type DeletePastWorksByIDParams struct {
+	IsDelete bool  `json:"is_delete"`
+	Opus     int32 `json:"opus"`
+}
+
+func (q *Queries) DeletePastWorksByID(ctx context.Context, arg DeletePastWorksByIDParams) (PastWork, error) {
+	row := q.db.QueryRowContext(ctx, deletePastWorksByID, arg.IsDelete, arg.Opus)
+	var i PastWork
+	err := row.Scan(
+		&i.Opus,
+		&i.Name,
+		&i.ThumbnailImage,
+		&i.ExplanatoryText,
+		&i.AwardDataID,
+		&i.CreateAt,
+		&i.UpdateAt,
+		&i.IsDelete,
+	)
+	return i, err
+}
+
 const getPastWorksByOpus = `-- name: GetPastWorksByOpus :one
 SELECT opus, name, thumbnail_image, explanatory_text, award_data_id, create_at, update_at, is_delete
 FROM past_works
