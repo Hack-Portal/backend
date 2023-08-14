@@ -947,10 +947,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/db.ListRoomTxResult"
-                                }
+                                "$ref": "#/definitions/db.ListRoomTxResult"
                             }
                         }
                     },

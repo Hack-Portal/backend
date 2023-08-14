@@ -204,7 +204,7 @@ type ListRoomsResponse struct {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id path 		string					true	"Rooms API wildcard"
-// @Success			200		{array}		[]db.ListRoomTxResult	"success response"
+// @Success			200		{array}		db.ListRoomTxResult	"success response"
 // @Failure 		400		{object}	ErrorResponse			"error response"
 // @Failure 		500		{object}	ErrorResponse			"error response"
 // @Router       	/rooms	[get]

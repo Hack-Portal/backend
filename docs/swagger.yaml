@@ -1117,9 +1117,7 @@ paths:
           description: success response
           schema:
             items:
-              items:
-                $ref: '#/definitions/db.ListRoomTxResult'
-              type: array
+              $ref: '#/definitions/db.ListRoomTxResult'
             type: array
         "400":
           description: error response
