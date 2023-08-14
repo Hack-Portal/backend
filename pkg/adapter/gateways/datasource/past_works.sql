@@ -29,3 +29,9 @@ SET name = $1,
     update_at = $5
 WHERE opus = $6
 RETURNING *;
+
+-- name: DeletePastWorksByID :one
+UPDATE past_works
+SET is_delete = $1
+WHERE opus = $2
+RETURNING *;

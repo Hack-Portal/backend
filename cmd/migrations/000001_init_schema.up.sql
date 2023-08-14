@@ -92,7 +92,7 @@ CREATE TABLE "status_tags" (
   "status" varchar NOT NULL
 );
 
-CREATE TABLE "bookmarks" (
+CREATE TABLE "likes" (
   "opus" int NOT NULL,
   "account_id" varchar NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now()),
@@ -202,8 +202,6 @@ ALTER TABLE "rooms" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("h
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
-ALTER TABLE "bookmarks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
-
 ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
 
 ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id");
@@ -232,7 +230,9 @@ ALTER TABLE "account_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags
 
 ALTER TABLE "rate_entities" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
 
-ALTER TABLE "bookmarks" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+ALTER TABLE "likes" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
+ALTER TABLE "likes" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
 
 INSERT INTO locates (name) VALUES 
 ('北海道'), 
