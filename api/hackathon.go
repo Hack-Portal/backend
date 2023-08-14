@@ -40,6 +40,7 @@ type HackathonResponses struct {
 // @Summary			Create Hackathon
 // @Description		Register a hackathon from given parameters
 // @Tags			Hackathon
+// @Accept			multipart/form-data
 // @Produce			json
 // @Param			CreateHackathonRequestBody 	body 		CreateHackathonRequestBody		true	"create hackathon Request Body"
 // @Success			200							{object}	HackathonResponses				"success response"
