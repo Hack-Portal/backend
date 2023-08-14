@@ -93,7 +93,7 @@ CREATE TABLE "status_tags" (
 );
 
 CREATE TABLE "bookmarks" (
-  "hackathon_id" int NOT NULL,
+  "opus" int NOT NULL,
   "account_id" varchar NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now()),
   "is_delete" boolean NOT NULL DEFAULT false
@@ -125,7 +125,7 @@ CREATE TABLE "rooms" (
 CREATE TABLE "rooms_accounts" (
   "account_id" varchar NOT NULL,
   "room_id" varchar NOT NULL,
-  "role" int ,
+  "role" int,
   "is_owner" boolean NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -204,8 +204,6 @@ ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id"
 
 ALTER TABLE "bookmarks" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
 
-ALTER TABLE "bookmarks" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
-
 ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
 
 ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id");
@@ -233,6 +231,9 @@ ALTER TABLE "account_tags" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" 
 ALTER TABLE "account_tags" ADD FOREIGN KEY ("tech_tag_id") REFERENCES "tech_tags" ("tech_tag_id");
 
 ALTER TABLE "rate_entities" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id");
+
+ALTER TABLE "bookmarks" ADD FOREIGN KEY ("opus") REFERENCES "past_works" ("opus");
+
 INSERT INTO locates (name) VALUES 
 ('北海道'), 
 ('青森県'), 
