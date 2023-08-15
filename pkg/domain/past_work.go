@@ -27,11 +27,6 @@ type CreatePastWorkResponse struct {
 	AccountPastWorks   []repository.AccountPastWork   `json:"account_past_works"`
 }
 
-type ListPastWorksRequestQuery struct {
-	PageSize int32 `form:"page_size"`
-	PageId   int32 `form:"page_id"`
-}
-
 type PastWorkMembers struct {
 	AccountID string `json:"account_id"`
 	Icon      string `json:"icon"`

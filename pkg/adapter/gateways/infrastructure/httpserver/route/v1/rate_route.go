@@ -15,6 +15,7 @@ func NewRateRouter(env *bootstrap.Env, timeout time.Duration, store transaction.
 		RateUsecase: usecase.NewRateUsercase(store, timeout),
 		Env:         env,
 	}
-	group.GET("/accounts/:account_id/rate", rateController.ListRate)
-	group.POST("/accounts/:account_id/rate", rateController.CreateRate)
+	group.GET("/rate", rateController.ListAccountRate)
+	group.GET("/rate/:account_id", rateController.ListRate)
+	group.POST("/rate/:account_id", rateController.CreateRate)
 }

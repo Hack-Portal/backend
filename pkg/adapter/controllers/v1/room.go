@@ -29,7 +29,7 @@ type RoomController struct {
 // @Router       	/rooms	[get]
 func (rc *RoomController) ListRooms(ctx *gin.Context) {
 	var (
-		reqURI domain.ListRoomsRequest
+		reqURI domain.ListRequest
 	)
 	if err := ctx.ShouldBindQuery(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

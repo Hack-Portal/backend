@@ -17,12 +17,6 @@ type CreateRoomRequestBody struct {
 	MemberLimit int32  `json:"member_limit" binding:"required"`
 	AccountID   string `json:"account_id" binding:"required"`
 }
-
-type ListRoomsRequest struct {
-	PageSize int32 `form:"page_size"`
-	PageID   int32 `form:"page_id"`
-}
-
 type RoomTechTags struct {
 	TechTag repository.TechTag `json:"tech_tag"`
 	Count   int32              `json:"count"`

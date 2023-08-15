@@ -34,9 +34,8 @@ type HackathonResponses struct {
 }
 
 type ListHackathonsParams struct {
-	PageSize int32 `form:"page_size"`
-	PageId   int32 `form:"page_id"`
-	Expired  bool  `form:"expired"`
+	ListRequest
+	Expired bool `form:"expired"`
 }
 
 type ListHackathonsResponses struct {

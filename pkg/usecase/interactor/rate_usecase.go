@@ -33,17 +33,32 @@ func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.Crea
 	return nil
 }
 
-func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domain.ListRateParams) ([]repository.RateEntity, error) {
+func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domain.ListRequest) ([]repository.RateEntity, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	rates, err := ru.store.ListRateEntities(ctx, repository.ListRateEntitiesParams{
 		AccountID: id,
 		Limit:     query.PageSize,
-		Offset:    (query.PageId - 1) * query.PageSize,
+		Offset:    (query.PageID - 1) * query.PageSize,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return rates, nil
+}
+
+func (au *rateUsecase) ListAccountRate(ctx context.Context, args domain.ListRequest) (result []domain.AccountRateResponse, err error) {
+	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	defer cancel()
+
+	accounts, err := au.store.ListAccounts(ctx, repository.ListAccountsParams{
+		Limit:  args.PageSize,
+		Offset: (args.PageID - 1) * args.PageSize,
+	})
+	if err != nil {
+		return
+	}
+
+	return parseAccountRateResponse(accounts), nil
 }

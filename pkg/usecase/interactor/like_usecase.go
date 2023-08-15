@@ -47,7 +47,7 @@ func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLik
 	}, nil
 }
 
-func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListBookmarkRequestQueries) (result []domain.BookmarkResponse, err error) {
+func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListRequest) (result []domain.BookmarkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
 

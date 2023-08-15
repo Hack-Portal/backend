@@ -86,7 +86,7 @@ func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 func (bc *LikeController) ListBookmark(ctx *gin.Context) {
 	var (
 		reqURI  domain.BookmarkRequestWildCard
-		reqBody domain.ListBookmarkRequestQueries
+		reqBody domain.ListRequest
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

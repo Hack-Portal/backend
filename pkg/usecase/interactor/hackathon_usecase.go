@@ -88,7 +88,7 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query domain.Lis
 	hackathons, err := hu.store.ListHackathons(ctx, repository.ListHackathonsParams{
 		Expired: expired,
 		Limit:   query.PageSize,
-		Offset:  (query.PageId - 1) * query.PageSize,
+		Offset:  (query.PageID - 1) * query.PageSize,
 	})
 	if err != nil {
 		return

@@ -24,7 +24,7 @@ func NewRoomUsercase(store transaction.Store, timeout time.Duration) inputport.R
 	}
 }
 
-func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRoomsRequest) ([]domain.ListRoomResponse, error) {
+func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRequest) ([]domain.ListRoomResponse, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 

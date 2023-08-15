@@ -26,7 +26,3 @@ type BookmarkRequestWildCard struct {
 type RemoveBookmarkRequestQueries struct {
 	Opus int32 `query:"opus" binding:"required"`
 }
-type ListBookmarkRequestQueries struct {
-	PageSize int32 `form:"page_size" binding:"required"`
-	PageID   int32 `form:"page_id" binding:"required"`
-}

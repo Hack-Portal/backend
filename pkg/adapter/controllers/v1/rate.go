@@ -64,7 +64,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 func (rc *RateController) ListRate(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard
-		reqQuery domain.ListRateParams
+		reqQuery domain.ListRequest
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -78,6 +78,22 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 	}
 
 	response, err := rc.RateUsecase.ListRateEntry(ctx, reqURI.AccountID, reqQuery)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (rc *RateController) ListAccountRate(ctx *gin.Context) {
+	var reqQuery domain.ListRequest
+	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	response, err := rc.RateUsecase.ListAccountRate(ctx, reqQuery)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

@@ -73,15 +73,6 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (domain
 	), nil
 }
 
-func (au *accountUsecase) ListAccountRate(ctx context.Context, id string) (domain.AccountRateResponse, error){
-	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
-	defer cancel()
-
-	accounts ,err := au.store.ListAccounts(ctx,repository.ListAccountsParams{
-		Username: ,
-	})
-}
-
 func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (domain.AccountResponses, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
@@ -242,6 +233,18 @@ func parseAccountResponse(account repository.Account, locate string, techTags []
 		TechTags:        techTags,
 		Frameworks:      frameworks,
 	}
+}
+
+func parseAccountRateResponse(accounts []repository.Account) (result []domain.AccountRateResponse) {
+	for _, account := range accounts {
+		result = append(result, domain.AccountRateResponse{
+			AccountID: account.AccountID,
+			Username:  account.Username,
+			Icon:      account.Icon.String,
+			Rate:      account.Rate,
+		})
+	}
+	return
 }
 
 func uploadImage(ctx context.Context, store transaction.Store, image []byte) (string, error) {
