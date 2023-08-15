@@ -51,6 +51,8 @@ FROM
     accounts
 WHERE
     username LIKE $1 AND is_delete = false
+ORDER BY
+    rate DESC
 LIMIT
     $2 OFFSET $3;
 
