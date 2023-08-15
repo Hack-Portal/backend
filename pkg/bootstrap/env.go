@@ -13,7 +13,7 @@ type Env struct {
 	DBSource string `mapstructure:"DB_SOURCE"`
 
 	ServerPort     string `mapstructure:"SERVER_PORT"`
-	ContextTimeout int    `mapstructure:"CONTEXT_TIMEOUT"`
+	ContextTimeout string `mapstructure:"CONTEXT_TIMEOUT"`
 	BasePath       string `mapstructure:"BASE_PATH"`
 }
 

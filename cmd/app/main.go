@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"strconv"
 	"time"
 
 	firebase "firebase.google.com/go"
@@ -48,8 +49,12 @@ func main() {
 	}
 
 	store := transaction.NewStore(db, app)
+	times, err := strconv.Atoi(env.ContextTimeout)
+	if err != nil {
+		log.Fatal("invalid timeout :", err, env.ContextTimeout)
+	}
 
-	timeout := time.Duration(env.ContextTimeout) * time.Second
+	timeout := time.Duration(times) * time.Second
 
 	gin := gin.Default()
 	v1.Setup(&env, timeout, store, gin)
