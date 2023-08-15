@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	_ "github.com/hackhack-Geek-vol6/backend/pkg/docs"
@@ -22,9 +23,8 @@ func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, g
 	NewEtcRouter(env, timeout, store, publicRouter)
 	NewHackathonRouter(env, timeout, store, publicRouter)
 
-	protectRouter := gin.Group("/v1")
+	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware())
 	//TODO:middlewareの追加
-	protectRouter.Use()
 	// All Protect APIs
 	NewAccountRouter(env, timeout, store, protectRouter)
 	NewLikeRouter(env, timeout, store, protectRouter)

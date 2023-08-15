@@ -10,7 +10,7 @@ import (
 	usecase "github.com/hackhack-Geek-vol6/backend/pkg/usecase/interactor"
 )
 
-func NewRoomRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group *gin.RouterGroup) {
+func NewRoomRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes) {
 	roomController := controller.RoomController{
 		RoomUsecase: usecase.NewRoomUsercase(store, timeout),
 		Env:         env,

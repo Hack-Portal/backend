@@ -11,7 +11,7 @@ import (
 )
 
 // ブックマークのルーティングを定義する
-func NewLikeRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group *gin.RouterGroup) {
+func NewLikeRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes) {
 	LikeController := controller.LikeController{
 		LikeUsecase: usecase.NewLikeUsercase(store, timeout),
 		Env:         env,

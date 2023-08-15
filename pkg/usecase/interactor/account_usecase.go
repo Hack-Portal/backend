@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/google/uuid"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
@@ -136,8 +137,9 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 
 	account, err := au.store.CreateAccountTx(ctx, domain.CreateAccountParams{
 		AccountInfo: repository.CreateAccountsParams{
-			UserID:   body.AccountID,
-			Username: body.Username,
+			AccountID: uuid.New().String(),
+			UserID:    body.UserID,
+			Username:  body.Username,
 			Icon: sql.NullString{
 				String: imageURL,
 				Valid:  true,

@@ -11,13 +11,13 @@ import (
 )
 
 // フォローのルーティングを定義する
-func NewFollowRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group *gin.RouterGroup) {
+func NewFollowRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes) {
 	followController := controller.FollowController{
 		FollowUsecase: usecase.NewFollowUsercase(store, timeout),
 		Env:           env,
 	}
 
-	group.GET("/accounts/:user_id/follow", followController.GetFollow)
-	group.POST("/accounts/:user_id/follow", followController.CreateFollow)
-	group.DELETE("/acccounts/:user_id/follow	", followController.RemoveFollow)
+	group.GET("/accounts/:account_id/follow", followController.GetFollow)
+	group.POST("/accounts/:account_id/follow", followController.CreateFollow)
+	group.DELETE("/acccounts/:account_id/follow	", followController.RemoveFollow)
 }

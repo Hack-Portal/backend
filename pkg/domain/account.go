@@ -13,12 +13,12 @@ type AccountRequestWildCard struct {
 
 // アカウント作成のリクエストパラメータ
 type CreateAccountRequest struct {
-	AccountID       string `json:"account_id" binding:"required"`
+	UserID          string `json:"user_id" binding:"required"`
 	Username        string `json:"username" binding:"required"`
 	ExplanatoryText string `json:"explanatory_text"`
 	LocateID        int32  `json:"locate_id" binding:"required"`
-	ShowLocate      bool   `json:"show_locate" binding:"required"`
-	ShowRate        bool   `json:"show_rate" binding:"required"`
+	ShowLocate      bool   `json:"show_locate"`
+	ShowRate        bool   `json:"show_rate" `
 
 	TechTags   []int32 `json:"tech_tags"`
 	Frameworks []int32 `json:"frameworks"`
@@ -44,6 +44,7 @@ type AccountResponses struct {
 
 // アカウント更新のリクエストパラメータ
 type UpdateAccountRequest struct {
+	UserID          string `json:"user_id"`
 	Username        string `json:"username"`
 	ExplanatoryText string `json:"explanatory_text"`
 	LocateID        int32  `json:"locate_id"`

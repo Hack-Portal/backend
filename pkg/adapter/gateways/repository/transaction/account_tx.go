@@ -6,6 +6,7 @@ import (
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 )
 
 func createAccountTags(ctx context.Context, q *repository.Queries, id string, techTags []int32) error {
@@ -37,27 +38,26 @@ func createAccountFrameworks(ctx context.Context, q *repository.Queries, id stri
 func compAccount(request repository.Account, latest repository.Account) (result repository.UpdateAccountsParams) {
 	result = repository.UpdateAccountsParams{
 		AccountID: latest.AccountID,
-		Icon:      latest.Icon,
 		Rate:      latest.Rate,
+
+		Username:        latest.Username,
+		ExplanatoryText: latest.ExplanatoryText,
+		Icon:            latest.Icon,
+		LocateID:        latest.LocateID,
+		ShowLocate:      latest.ShowLocate,
+		ShowRate:        latest.ShowRate,
 	}
 
 	if len(request.Username) != 0 {
 		if latest.Username != request.Username {
 			result.Username = request.Username
 		}
-	} else {
-		result.Username = latest.Username
 	}
 
 	if len(request.ExplanatoryText.String) != 0 {
 		if latest.ExplanatoryText.String != request.ExplanatoryText.String {
-			result.ExplanatoryText = sql.NullString{
-				String: request.ExplanatoryText.String,
-				Valid:  true,
-			}
+			result.ExplanatoryText = dbutil.ToSqlNullString(request.ExplanatoryText.String)
 		}
-	} else {
-		result.ExplanatoryText = latest.ExplanatoryText
 	}
 
 	if len(request.Icon.String) != 0 {
@@ -67,28 +67,20 @@ func compAccount(request repository.Account, latest repository.Account) (result 
 				Valid:  true,
 			}
 		}
-	} else {
-		result.Icon = latest.Icon
 	}
 
 	if request.LocateID != 0 {
 		if latest.LocateID != request.LocateID {
 			result.LocateID = request.LocateID
 		}
-	} else {
-		result.LocateID = latest.LocateID
 	}
 
 	if latest.ShowLocate != request.ShowLocate {
 		result.ShowLocate = request.ShowLocate
-	} else {
-		result.ShowLocate = latest.ShowLocate
 	}
 
 	if latest.ShowRate != request.ShowRate {
 		result.ShowRate = request.ShowRate
-	} else {
-		result.ShowRate = latest.ShowRate
 	}
 
 	return
@@ -103,11 +95,11 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, args domain.CreateAc
 			return err
 		}
 
-		if err := createAccountFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountTechTag); err != nil {
+		if err := createAccountTags(ctx, q, args.AccountInfo.AccountID, args.AccountTechTag); err != nil {
 			return err
 		}
 
-		if err := createAccountFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountFrameworkTag); err != nil {
+		if err := createAccountFrameworks(ctx, q, args.AccountInfo.AccountID, args.AccountFrameworkTag); err != nil {
 			return err
 		}
 
@@ -119,7 +111,7 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, args domain.CreateAc
 func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (repository.Account, error) {
 	var account repository.Account
 	err := store.execTx(ctx, func(q *repository.Queries) error {
-		latest, err := q.GetAccountsByID(ctx, args.AccountInfo.UserID)
+		latest, err := q.GetAccountsByID(ctx, args.AccountInfo.AccountID)
 		if err != nil {
 			return err
 		}
@@ -130,21 +122,21 @@ func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAc
 		}
 
 		// 以下タグ部分
-		err = q.DeleteAccountTagsByUserID(ctx, latest.UserID)
+		err = q.DeleteAccountTagsByUserID(ctx, latest.AccountID)
 		if err != nil {
 			return err
 		}
 
-		err = q.DeleteAccountFrameworkByUserID(ctx, latest.UserID)
+		err = q.DeleteAccountFrameworkByUserID(ctx, latest.AccountID)
 		if err != nil {
 			return err
 		}
 
-		if err := createAccountFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountTechTag); err != nil {
+		if err := createAccountFrameworks(ctx, q, args.AccountInfo.AccountID, args.AccountTechTag); err != nil {
 			return err
 		}
 
-		if err := createAccountFrameworks(ctx, q, args.AccountInfo.UserID, args.AccountFrameworkTag); err != nil {
+		if err := createAccountFrameworks(ctx, q, args.AccountInfo.AccountID, args.AccountFrameworkTag); err != nil {
 			return err
 		}
 

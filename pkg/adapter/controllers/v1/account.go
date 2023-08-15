@@ -36,7 +36,7 @@ type AccountController struct {
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	var (
 		reqBody domain.CreateAccountRequest
-		image   *bytes.Buffer
+		image   []byte
 	)
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -59,16 +59,19 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 			return
 		}
 	} else {
-		image = bytes.NewBuffer(nil)
-		if _, err := io.Copy(image, file); err != nil {
+		icon := bytes.NewBuffer(nil)
+		if _, err := io.Copy(icon, file); err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
+		image = icon.Bytes()
 	}
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+	// ここでエラーが起きてる
 
-	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image.Bytes(), payload.Email)
+	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image, payload.Email)
+
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
 		if pqErr, ok := err.(*pq.Error); ok {
@@ -125,7 +128,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	var (
 		reqBody domain.UpdateAccountRequest
 		reqURI  domain.AccountRequestWildCard
-		image   *bytes.Buffer
+		image   []byte
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -151,19 +154,21 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 			return
 		}
 	} else {
-		image = bytes.NewBuffer(nil)
-		if _, err := io.Copy(image, file); err != nil {
+		icon := bytes.NewBuffer(nil)
+		if _, err := io.Copy(icon, file); err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
+		image = icon.Bytes()
 	}
 
 	response, err := ac.AccountUsecase.UpdateAccount(
 		ctx,
 		domain.UpdateAccountParam{
 			AccountInfo: repository.Account{
-				UserID:   reqURI.AccountID,
-				Username: reqBody.Username,
+				AccountID: reqURI.AccountID,
+				UserID:    reqBody.UserID,
+				Username:  reqBody.Username,
 				ExplanatoryText: sql.NullString{
 					String: reqBody.ExplanatoryText,
 					Valid:  true,
@@ -175,7 +180,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 			AccountTechTag:      reqBody.TechTags,
 			AccountFrameworkTag: reqBody.Frameworks,
 		},
-		image.Bytes())
+		image)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
