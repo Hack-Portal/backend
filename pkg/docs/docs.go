@@ -28,6 +28,9 @@ const docTemplate = `{
         "/accounts": {
             "post": {
                 "description": "Create an account from the requested body",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -37,7 +40,7 @@ const docTemplate = `{
                 "summary": "Create new account",
                 "parameters": [
                     {
-                        "description": "Create Account Request Body",
+                        "description": "create account Request Body",
                         "name": "CreateAccountRequestBody",
                         "in": "body",
                         "required": true,
@@ -48,7 +51,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "create succsss response",
+                        "description": "create success response",
                         "schema": {
                             "$ref": "#/definitions/api.CreateAccountResponses"
                         }
@@ -68,7 +71,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:from_user_id/follow": {
+        "/accounts/{from_user_id}/follow": {
             "post": {
                 "description": "Follow!!!!!!!!",
                 "produces": [
@@ -146,7 +149,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
                         }
@@ -166,7 +169,95 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:user_id": {
+        "/accounts/{id}/rate": {
+            "get": {
+                "description": "List Rate for User",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rate"
+                ],
+                "summary": "List Rate",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.RateResponses"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Rate for User",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rate"
+                ],
+                "summary": "Create Rate",
+                "parameters": [
+                    {
+                        "description": "Create Rate Request Body",
+                        "name": "CreateRateRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateRateRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/api.RateResponses"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{user_id}": {
             "get": {
                 "description": "Return a user from the id specified in the path",
                 "produces": [
@@ -235,7 +326,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Update succsss response",
+                        "description": "Update success response",
                         "schema": {
                             "$ref": "#/definitions/api.UpdateAccountResponse"
                         }
@@ -274,7 +365,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "delete success response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
                         }
@@ -317,7 +408,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "create succsss response",
+                        "description": "create success response",
                         "schema": {
                             "$ref": "#/definitions/api.BookmarkResponse"
                         }
@@ -337,7 +428,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bookmarks/:hackathon_id": {
+        "/bookmarks/{hackathon_id}": {
             "get": {
                 "description": "Get my bookmarks",
                 "produces": [
@@ -358,7 +449,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "delete success response",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -400,7 +491,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "delete success response",
                         "schema": {
                             "$ref": "#/definitions/api.BookmarkResponse"
                         }
@@ -422,17 +513,17 @@ const docTemplate = `{
         },
         "/frameworks": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Framewroks"
+                    "Frameworks"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -461,24 +552,23 @@ const docTemplate = `{
                 "summary": "List Hackathon",
                 "parameters": [
                     {
-                        "type": "boolean",
-                        "name": "expired",
-                        "in": "formData"
-                    },
-                    {
                         "type": "integer",
-                        "name": "page_id",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
+                        "description": "page size",
                         "name": "page_size",
-                        "in": "formData"
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page id",
+                        "name": "page_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -502,6 +592,9 @@ const docTemplate = `{
             },
             "post": {
                 "description": "Register a hackathon from given parameters",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -522,7 +615,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.HackathonResponses"
                         }
@@ -542,7 +635,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/hackathons/:hackathon_id": {
+        "/hackathons/{hackathon_id}": {
             "get": {
                 "description": "Get Hackathon",
                 "produces": [
@@ -563,7 +656,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.HackathonResponses"
                         }
@@ -585,17 +678,17 @@ const docTemplate = `{
         },
         "/locates": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Locates"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -605,6 +698,145 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/past_works": {
+            "get": {
+                "description": "list pastWorks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "List pastWorks",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page_id",
+                        "name": "page_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.CreatePastWorkResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "create pastWork",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Create pastWork",
+                "parameters": [
+                    {
+                        "description": "past work",
+                        "name": "past_work",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreatePastWorkRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.CreatePastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/past_works/{opus}": {
+            "get": {
+                "description": "get pastWork",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Get pastWork",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "PastWorks API wildcard",
+                        "name": "opus",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.CreatePastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/api.ErrorResponse"
                         }
@@ -633,14 +865,11 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/db.ListRoomTxResult"
-                                }
+                                "$ref": "#/definitions/db.ListRoomTxResult"
                             }
                         }
                     },
@@ -680,7 +909,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/db.CreateRoomTxResult"
                         }
@@ -700,7 +929,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id": {
+        "/rooms/{room_id}": {
             "get": {
                 "description": "Get Room",
                 "produces": [
@@ -721,7 +950,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.GetRoomResponse"
                         }
@@ -769,7 +998,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.GetRoomResponse"
                         }
@@ -808,7 +1037,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
                         }
@@ -828,7 +1057,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id/addchat": {
+        "/rooms/{room_id}/addchat": {
             "post": {
                 "description": "Add Chat Room",
                 "produces": [
@@ -858,7 +1087,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.GetRoomResponse"
                         }
@@ -878,7 +1107,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id/members": {
+        "/rooms/{room_id}/members": {
             "post": {
                 "description": "Add Account In Rooms",
                 "produces": [
@@ -899,7 +1128,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/db.CreateRoomTxResult"
                         }
@@ -938,7 +1167,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/api.DeleteResponse"
                         }
@@ -960,17 +1189,17 @@ const docTemplate = `{
         },
         "/tech_tags": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "TechTags"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -1172,6 +1401,87 @@ const docTemplate = `{
                 }
             }
         },
+        "api.CreatePastWorkRequestBody": {
+            "type": "object",
+            "properties": {
+                "account_past_works": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "past_work_frameworks": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "past_work_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "thumbnail_image": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "api.CreatePastWorkResponse": {
+            "type": "object",
+            "properties": {
+                "account_past_works": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.AccountPastWorks"
+                    }
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "opus": {
+                    "type": "integer"
+                },
+                "past_work_frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.PastWorkFrameworks"
+                    }
+                },
+                "past_work_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.PastWorkTags"
+                    }
+                },
+                "thumbnail_image": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "api.CreateRateRequestBody": {
+            "type": "object",
+            "properties": {
+                "rate": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.CreateRoomRequestBody": {
             "type": "object",
             "required": [
@@ -1338,6 +1648,20 @@ const docTemplate = `{
                 }
             }
         },
+        "api.RateResponses": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "api.UpdateAccountRequestBody": {
             "type": "object",
             "properties": {
@@ -1447,6 +1771,17 @@ const docTemplate = `{
                 },
                 "term": {
                     "type": "integer"
+                }
+            }
+        },
+        "db.AccountPastWorks": {
+            "type": "object",
+            "properties": {
+                "opus": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             }
         },
@@ -1607,6 +1942,28 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "string"
+                }
+            }
+        },
+        "db.PastWorkFrameworks": {
+            "type": "object",
+            "properties": {
+                "framework_id": {
+                    "type": "integer"
+                },
+                "opus": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.PastWorkTags": {
+            "type": "object",
+            "properties": {
+                "opus": {
+                    "type": "integer"
+                },
+                "tech_tag_id": {
+                    "type": "integer"
                 }
             }
         },

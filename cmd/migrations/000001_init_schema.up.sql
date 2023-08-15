@@ -1,7 +1,13 @@
 CREATE TABLE "past_works" (
+<<<<<<< HEAD:cmd/migrations/000001_init_schema.up.sql
   "opus" SERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
   "thumbnail_image" text NOT NULL,
+=======
+  "opus" serial PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "thumbnail_image" bytea NOT NULL,
+>>>>>>> 694e1242be225e07440dd09ea4826e8980f510fd:db/migration/000001_init_schema.up.sql
   "explanatory_text" text NOT NULL,
   "award_data_id" int,
   "create_at" timestamptz NOT NULL DEFAULT (now()),

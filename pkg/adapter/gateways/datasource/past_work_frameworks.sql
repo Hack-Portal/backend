@@ -1,3 +1,4 @@
+
 -- name: CreatePastWorkFrameworks :one
 INSERT INTO past_work_frameworks (opus, framework_id)
 VALUES ($1, $2)

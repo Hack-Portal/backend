@@ -1,3 +1,4 @@
+
 -- name: CreatePastWorkTags :one
 INSERT INTO past_work_tags (opus, tech_tag_id)
 VALUES($1, $2)

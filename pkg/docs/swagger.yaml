@@ -121,6 +121,59 @@ definitions:
       term:
         type: integer
     type: object
+  api.CreatePastWorkRequestBody:
+    properties:
+      account_past_works:
+        items:
+          type: string
+        type: array
+      explanatory_text:
+        type: string
+      name:
+        type: string
+      past_work_frameworks:
+        items:
+          type: integer
+        type: array
+      past_work_tags:
+        items:
+          type: integer
+        type: array
+      thumbnail_image:
+        items:
+          type: integer
+        type: array
+    type: object
+  api.CreatePastWorkResponse:
+    properties:
+      account_past_works:
+        items:
+          $ref: '#/definitions/db.AccountPastWorks'
+        type: array
+      explanatory_text:
+        type: string
+      name:
+        type: string
+      opus:
+        type: integer
+      past_work_frameworks:
+        items:
+          $ref: '#/definitions/db.PastWorkFrameworks'
+        type: array
+      past_work_tags:
+        items:
+          $ref: '#/definitions/db.PastWorkTags'
+        type: array
+      thumbnail_image:
+        items:
+          type: integer
+        type: array
+    type: object
+  api.CreateRateRequestBody:
+    properties:
+      rate:
+        type: integer
+    type: object
   api.CreateRoomRequestBody:
     properties:
       description:
@@ -231,6 +284,15 @@ definitions:
       term:
         type: integer
     type: object
+  api.RateResponses:
+    properties:
+      create_at:
+        type: string
+      rate:
+        type: integer
+      user_id:
+        type: string
+    type: object
   api.UpdateAccountRequestBody:
     properties:
       explanatory_text:
@@ -304,6 +366,13 @@ definitions:
         type: array
       term:
         type: integer
+    type: object
+  db.AccountPastWorks:
+    properties:
+      opus:
+        type: integer
+      user_id:
+        type: string
     type: object
   db.CreateRoomTxResult:
     properties:
@@ -409,6 +478,20 @@ definitions:
       user_id:
         type: string
     type: object
+  db.PastWorkFrameworks:
+    properties:
+      framework_id:
+        type: integer
+      opus:
+        type: integer
+    type: object
+  db.PastWorkTags:
+    properties:
+      opus:
+        type: integer
+      tech_tag_id:
+        type: integer
+    type: object
   db.RoomFramework:
     properties:
       count:
@@ -462,9 +545,11 @@ info:
 paths:
   /accounts:
     post:
+      consumes:
+      - multipart/form-data
       description: Create an account from the requested body
       parameters:
-      - description: Create Account Request Body
+      - description: create account Request Body
         in: body
         name: CreateAccountRequestBody
         required: true
@@ -474,7 +559,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: create succsss response
+          description: create success response
           schema:
             $ref: '#/definitions/api.CreateAccountResponses'
         "400":
@@ -488,7 +573,7 @@ paths:
       summary: Create new account
       tags:
       - Accounts
-  /accounts/:from_user_id/follow:
+  /accounts/{from_user_id}/follow:
     delete:
       description: Unfollow
       parameters:
@@ -505,7 +590,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.DeleteResponse'
         "400":
@@ -553,7 +638,64 @@ paths:
       summary: Create Follow
       tags:
       - Accounts
-  /accounts/:user_id:
+  /accounts/{id}/rate:
+    get:
+      description: List Rate for User
+      parameters:
+      - in: query
+        name: page_id
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/api.RateResponses'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: List Rate
+      tags:
+      - Rate
+    post:
+      description: Create Rate for User
+      parameters:
+      - description: Create Rate Request Body
+        in: body
+        name: CreateRateRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateRateRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/api.RateResponses'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create Rate
+      tags:
+      - Rate
+  /accounts/{user_id}:
     delete:
       description: Only you can delete your account (logical delete)
       parameters:
@@ -566,7 +708,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: delete succsss response
+          description: delete success response
           schema:
             $ref: '#/definitions/api.DeleteResponse'
         "400":
@@ -624,7 +766,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Update succsss response
+          description: Update success response
           schema:
             $ref: '#/definitions/api.UpdateAccountResponse'
         "400":
@@ -652,7 +794,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: create succsss response
+          description: create success response
           schema:
             $ref: '#/definitions/api.BookmarkResponse'
         "400":
@@ -666,7 +808,7 @@ paths:
       summary: Create new bookmark
       tags:
       - Bookmark
-  /bookmarks/:hackathon_id:
+  /bookmarks/{hackathon_id}:
     delete:
       description: Delete the bookmark of the specified hackathon ID
       parameters:
@@ -679,7 +821,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: delete succsss response
+          description: delete success response
           schema:
             $ref: '#/definitions/api.BookmarkResponse'
         "400":
@@ -705,7 +847,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: delete succsss response
+          description: delete success response
           schema:
             items:
               $ref: '#/definitions/api.BookmarkResponse'
@@ -723,12 +865,12 @@ paths:
       - Bookmark
   /frameworks:
     get:
-      description: Get Framewroks
+      description: Get Frameworks
       produces:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
               $ref: '#/definitions/db.Frameworks'
@@ -737,27 +879,28 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Get Framewroks
+      summary: Get Frameworks
       tags:
-      - Framewroks
+      - Frameworks
   /hackathons:
     get:
       description: List Hackathon
       parameters:
-      - in: formData
-        name: expired
-        type: boolean
-      - in: formData
-        name: page_id
-        type: integer
-      - in: formData
+      - description: page size
+        in: path
         name: page_size
+        required: true
+        type: integer
+      - description: page id
+        in: path
+        name: page_id
+        required: true
         type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
               $ref: '#/definitions/api.HackathonResponses'
@@ -774,6 +917,8 @@ paths:
       tags:
       - Hackathon
     post:
+      consumes:
+      - multipart/form-data
       description: Register a hackathon from given parameters
       parameters:
       - description: create hackathon Request Body
@@ -786,7 +931,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.HackathonResponses'
         "400":
@@ -800,7 +945,7 @@ paths:
       summary: Create Hackathon
       tags:
       - Hackathon
-  /hackathons/:hackathon_id:
+  /hackathons/{hackathon_id}:
     get:
       description: Get Hackathon
       parameters:
@@ -813,7 +958,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.HackathonResponses'
         "400":
@@ -829,12 +974,12 @@ paths:
       - Hackathon
   /locates:
     get:
-      description: Get Framewroks
+      description: Get Frameworks
       produces:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
               $ref: '#/definitions/db.Locates'
@@ -843,9 +988,101 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Get Framewroks
+      summary: Get Frameworks
       tags:
       - Locates
+  /past_works:
+    get:
+      description: list pastWorks
+      parameters:
+      - description: page_size
+        in: path
+        name: page_size
+        required: true
+        type: integer
+      - description: page_id
+        in: path
+        name: page_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.CreatePastWorkResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: List pastWorks
+      tags:
+      - PastWorks
+    post:
+      consumes:
+      - application/json
+      description: create pastWork
+      parameters:
+      - description: past work
+        in: body
+        name: past_work
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreatePastWorkRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CreatePastWorkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create pastWork
+      tags:
+      - PastWorks
+  /past_works/{opus}:
+    get:
+      consumes:
+      - application/json
+      description: get pastWork
+      parameters:
+      - description: PastWorks API wildcard
+        in: path
+        name: opus
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CreatePastWorkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get pastWork
+      tags:
+      - PastWorks
   /rooms:
     get:
       description: List Account
@@ -859,12 +1096,10 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
-              items:
-                $ref: '#/definitions/db.ListRoomTxResult'
-              type: array
+              $ref: '#/definitions/db.ListRoomTxResult'
             type: array
         "400":
           description: error response
@@ -890,7 +1125,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/db.CreateRoomTxResult'
         "400":
@@ -904,7 +1139,7 @@ paths:
       summary: Create Rooms
       tags:
       - Rooms
-  /rooms/:room_id:
+  /rooms/{room_id}:
     delete:
       description: delete Room
       parameters:
@@ -917,7 +1152,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.DeleteResponse'
         "400":
@@ -943,7 +1178,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.GetRoomResponse'
         "400":
@@ -975,7 +1210,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.GetRoomResponse'
         "400":
@@ -989,7 +1224,7 @@ paths:
       summary: update Room
       tags:
       - Rooms
-  /rooms/:room_id/addchat:
+  /rooms/{room_id}/addchat:
     post:
       description: Add Chat Room
       parameters:
@@ -1008,7 +1243,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.GetRoomResponse'
         "400":
@@ -1022,7 +1257,7 @@ paths:
       summary: Add Chat Room
       tags:
       - Rooms
-  /rooms/:room_id/members:
+  /rooms/{room_id}/members:
     delete:
       description: Remove Account In Rooms
       parameters:
@@ -1035,7 +1270,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/api.DeleteResponse'
         "400":
@@ -1061,7 +1296,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             $ref: '#/definitions/db.CreateRoomTxResult'
         "400":
@@ -1077,12 +1312,12 @@ paths:
       - Rooms
   /tech_tags:
     get:
-      description: Get Framewroks
+      description: Get Frameworks
       produces:
       - application/json
       responses:
         "200":
-          description: succsss response
+          description: success response
           schema:
             items:
               $ref: '#/definitions/db.TechTags'
@@ -1091,7 +1326,7 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Get Framewroks
+      summary: Get Frameworks
       tags:
       - TechTags
 swagger: "2.0"
