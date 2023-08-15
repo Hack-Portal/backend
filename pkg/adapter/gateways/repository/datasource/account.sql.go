@@ -183,21 +183,20 @@ SELECT
 FROM
     accounts
 WHERE
-    username LIKE $1 AND is_delete = false
+    is_delete = false
 ORDER BY
     rate DESC
 LIMIT
-    $2 OFFSET $3
+    $1 OFFSET $2
 `
 
 type ListAccountsParams struct {
-	Username string `json:"username"`
-	Limit    int32  `json:"limit"`
-	Offset   int32  `json:"offset"`
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
 func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error) {
-	rows, err := q.db.QueryContext(ctx, listAccounts, arg.Username, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, listAccounts, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

@@ -54,7 +54,7 @@ WHERE
 ORDER BY
     rate DESC
 LIMIT
-    $2 OFFSET $3;
+    $1 OFFSET $2;
 
 -- name: DeleteAccounts :one
 UPDATE
