@@ -60,8 +60,7 @@ jobs:
 
         yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'deployment.yaml'
 
-        if (git diff --shortstat | grep '[0-9]'); then \
-          git add .; \
-          git commit -m "Updated by GitHub Actions"; \
-          git push origin master; \
-        fi
+        git add .
+        git commit -m "Updated by GitHub Actions"
+        git push origin master
+       
