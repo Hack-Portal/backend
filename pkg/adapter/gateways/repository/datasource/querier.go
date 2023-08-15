@@ -48,6 +48,8 @@ type Querier interface {
 	GetAccountsByID(ctx context.Context, accountID string) (Account, error)
 	GetFrameworksByID(ctx context.Context, frameworkID int32) (Framework, error)
 	GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathon, error)
+	GetLikeStatusByID(ctx context.Context, arg GetLikeStatusByIDParams) (Like, error)
+	GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
 	GetLocatesByID(ctx context.Context, locateID int32) (Locate, error)
 	GetPastWorksByOpus(ctx context.Context, opus int32) (PastWork, error)
 	GetRolesByID(ctx context.Context, roleID int32) (Role, error)

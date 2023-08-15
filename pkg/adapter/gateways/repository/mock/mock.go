@@ -127,21 +127,6 @@ func (mr *MockStoreMockRecorder) CreateAccounts(ctx, arg interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccounts", reflect.TypeOf((*MockStore)(nil).CreateAccounts), ctx, arg)
 }
 
-// CreateBookmarks mocks base method.
-func (m *MockStore) CreateBookmarks(ctx context.Context, arg repository.CreateBookmarksParams) (repository.Bookmark, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateBookmarks", ctx, arg)
-	ret0, _ := ret[0].(repository.Bookmark)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateBookmarks indicates an expected call of CreateBookmarks.
-func (mr *MockStoreMockRecorder) CreateBookmarks(ctx, arg interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBookmarks", reflect.TypeOf((*MockStore)(nil).CreateBookmarks), ctx, arg)
-}
-
 // CreateFollows mocks base method.
 func (m *MockStore) CreateFollows(ctx context.Context, arg repository.CreateFollowsParams) (repository.Follow, error) {
 	m.ctrl.T.Helper()
@@ -215,6 +200,21 @@ func (m *MockStore) CreateHackathons(ctx context.Context, arg repository.CreateH
 func (mr *MockStoreMockRecorder) CreateHackathons(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateHackathons", reflect.TypeOf((*MockStore)(nil).CreateHackathons), ctx, arg)
+}
+
+// CreateLikes mocks base method.
+func (m *MockStore) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateLikes", ctx, arg)
+	ret0, _ := ret[0].(repository.Like)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateLikes indicates an expected call of CreateLikes.
+func (mr *MockStoreMockRecorder) CreateLikes(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLikes", reflect.TypeOf((*MockStore)(nil).CreateLikes), ctx, arg)
 }
 
 // CreatePastWorkFrameworks mocks base method.
@@ -438,21 +438,6 @@ func (mr *MockStoreMockRecorder) DeleteAccounts(ctx, accountID interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccounts", reflect.TypeOf((*MockStore)(nil).DeleteAccounts), ctx, accountID)
 }
 
-// DeleteBookmarksByID mocks base method.
-func (m *MockStore) DeleteBookmarksByID(ctx context.Context, arg repository.DeleteBookmarksByIDParams) (repository.Bookmark, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteBookmarksByID", ctx, arg)
-	ret0, _ := ret[0].(repository.Bookmark)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// DeleteBookmarksByID indicates an expected call of DeleteBookmarksByID.
-func (mr *MockStoreMockRecorder) DeleteBookmarksByID(ctx, arg interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteBookmarksByID", reflect.TypeOf((*MockStore)(nil).DeleteBookmarksByID), ctx, arg)
-}
-
 // DeleteFollows mocks base method.
 func (m *MockStore) DeleteFollows(ctx context.Context, arg repository.DeleteFollowsParams) error {
 	m.ctrl.T.Helper()
@@ -509,6 +494,21 @@ func (mr *MockStoreMockRecorder) DeleteHackathonStatusTagsByID(ctx, hackathonID 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteHackathonStatusTagsByID", reflect.TypeOf((*MockStore)(nil).DeleteHackathonStatusTagsByID), ctx, hackathonID)
 }
 
+// DeleteLikesByID mocks base method.
+func (m *MockStore) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteLikesByID", ctx, arg)
+	ret0, _ := ret[0].(repository.Like)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteLikesByID indicates an expected call of DeleteLikesByID.
+func (mr *MockStoreMockRecorder) DeleteLikesByID(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteLikesByID", reflect.TypeOf((*MockStore)(nil).DeleteLikesByID), ctx, arg)
+}
+
 // DeletePastWorkFrameworksByOpus mocks base method.
 func (m *MockStore) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error {
 	m.ctrl.T.Helper()
@@ -535,6 +535,21 @@ func (m *MockStore) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) er
 func (mr *MockStoreMockRecorder) DeletePastWorkTagsByOpus(ctx, opus interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePastWorkTagsByOpus", reflect.TypeOf((*MockStore)(nil).DeletePastWorkTagsByOpus), ctx, opus)
+}
+
+// DeletePastWorksByID mocks base method.
+func (m *MockStore) DeletePastWorksByID(ctx context.Context, arg repository.DeletePastWorksByIDParams) (repository.PastWork, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeletePastWorksByID", ctx, arg)
+	ret0, _ := ret[0].(repository.PastWork)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeletePastWorksByID indicates an expected call of DeletePastWorksByID.
+func (mr *MockStoreMockRecorder) DeletePastWorksByID(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePastWorksByID", reflect.TypeOf((*MockStore)(nil).DeletePastWorksByID), ctx, arg)
 }
 
 // DeleteRoomTx mocks base method.
@@ -680,6 +695,36 @@ func (m *MockStore) GetHackathonByID(ctx context.Context, hackathonID int32) (re
 func (mr *MockStoreMockRecorder) GetHackathonByID(ctx, hackathonID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHackathonByID", reflect.TypeOf((*MockStore)(nil).GetHackathonByID), ctx, hackathonID)
+}
+
+// GetLikeStatusByID mocks base method.
+func (m *MockStore) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetLikeStatusByID", ctx, arg)
+	ret0, _ := ret[0].(repository.Like)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetLikeStatusByID indicates an expected call of GetLikeStatusByID.
+func (mr *MockStoreMockRecorder) GetLikeStatusByID(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLikeStatusByID", reflect.TypeOf((*MockStore)(nil).GetLikeStatusByID), ctx, arg)
+}
+
+// GetListCountByOpus mocks base method.
+func (m *MockStore) GetListCountByOpus(ctx context.Context, opus int32) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetListCountByOpus", ctx, opus)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetListCountByOpus indicates an expected call of GetListCountByOpus.
+func (mr *MockStoreMockRecorder) GetListCountByOpus(ctx, opus interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetListCountByOpus", reflect.TypeOf((*MockStore)(nil).GetListCountByOpus), ctx, opus)
 }
 
 // GetLocatesByID mocks base method.
@@ -907,21 +952,6 @@ func (mr *MockStoreMockRecorder) ListAccounts(ctx, arg interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccounts", reflect.TypeOf((*MockStore)(nil).ListAccounts), ctx, arg)
 }
 
-// ListBookmarksByID mocks base method.
-func (m *MockStore) ListBookmarksByID(ctx context.Context, accountID string) ([]repository.Bookmark, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListBookmarksByID", ctx, accountID)
-	ret0, _ := ret[0].([]repository.Bookmark)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListBookmarksByID indicates an expected call of ListBookmarksByID.
-func (mr *MockStoreMockRecorder) ListBookmarksByID(ctx, accountID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListBookmarksByID", reflect.TypeOf((*MockStore)(nil).ListBookmarksByID), ctx, accountID)
-}
-
 // ListFollowsByFromUserID mocks base method.
 func (m *MockStore) ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]repository.Follow, error) {
 	m.ctrl.T.Helper()
@@ -995,6 +1025,21 @@ func (m *MockStore) ListHackathons(ctx context.Context, arg repository.ListHacka
 func (mr *MockStoreMockRecorder) ListHackathons(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListHackathons", reflect.TypeOf((*MockStore)(nil).ListHackathons), ctx, arg)
+}
+
+// ListLikesByID mocks base method.
+func (m *MockStore) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListLikesByID", ctx, accountID)
+	ret0, _ := ret[0].([]repository.Like)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListLikesByID indicates an expected call of ListLikesByID.
+func (mr *MockStoreMockRecorder) ListLikesByID(ctx, accountID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLikesByID", reflect.TypeOf((*MockStore)(nil).ListLikesByID), ctx, accountID)
 }
 
 // ListLocates mocks base method.

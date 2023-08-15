@@ -83,7 +83,7 @@ func (q *Queries) DeleteRoomsByID(ctx context.Context, roomID string) (Room, err
 const getRoomsByID = `-- name: GetRoomsByID :one
 SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
 FROM rooms
-WHERE room_id = $1
+WHERE room_id = $1 AND is_delete = false
 `
 
 func (q *Queries) GetRoomsByID(ctx context.Context, roomID string) (Room, error) {

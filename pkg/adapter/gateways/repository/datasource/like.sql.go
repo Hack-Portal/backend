@@ -37,7 +37,7 @@ const deleteLikesByID = `-- name: DeleteLikesByID :one
 UPDATE
     likes
 SET
-    is_delete = true
+    is_delete = $3
 WHERE
     account_id = $1
     AND opus = $2 RETURNING opus, account_id, create_at, is_delete
@@ -46,10 +46,11 @@ WHERE
 type DeleteLikesByIDParams struct {
 	AccountID string `json:"account_id"`
 	Opus      int32  `json:"opus"`
+	IsDelete  bool   `json:"is_delete"`
 }
 
 func (q *Queries) DeleteLikesByID(ctx context.Context, arg DeleteLikesByIDParams) (Like, error) {
-	row := q.db.QueryRowContext(ctx, deleteLikesByID, arg.AccountID, arg.Opus)
+	row := q.db.QueryRowContext(ctx, deleteLikesByID, arg.AccountID, arg.Opus, arg.IsDelete)
 	var i Like
 	err := row.Scan(
 		&i.Opus,
@@ -58,6 +59,48 @@ func (q *Queries) DeleteLikesByID(ctx context.Context, arg DeleteLikesByIDParams
 		&i.IsDelete,
 	)
 	return i, err
+}
+
+const getLikeStatusByID = `-- name: GetLikeStatusByID :one
+SELECT
+    opus, account_id, create_at, is_delete
+FROM
+    likes
+WHERE
+    opus = $1 AND account_id = $2 AND is_delete = false
+`
+
+type GetLikeStatusByIDParams struct {
+	Opus      int32  `json:"opus"`
+	AccountID string `json:"account_id"`
+}
+
+func (q *Queries) GetLikeStatusByID(ctx context.Context, arg GetLikeStatusByIDParams) (Like, error) {
+	row := q.db.QueryRowContext(ctx, getLikeStatusByID, arg.Opus, arg.AccountID)
+	var i Like
+	err := row.Scan(
+		&i.Opus,
+		&i.AccountID,
+		&i.CreateAt,
+		&i.IsDelete,
+	)
+	return i, err
+}
+
+const getListCountByOpus = `-- name: GetListCountByOpus :one
+SELECT
+    count(*)
+FROM
+    likes
+WHERE
+    opus = $1 AND is_delete = false
+`
+
+func (q *Queries) GetListCountByOpus(ctx context.Context, opus int32) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getListCountByOpus, opus)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const listLikesByID = `-- name: ListLikesByID :many
