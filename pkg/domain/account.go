@@ -66,3 +66,10 @@ type UpdateAccountParam struct {
 	AccountTechTag      []int32
 	AccountFrameworkTag []int32
 }
+
+type AccountRateResponse struct {
+	AccountID string `json:"account_id"`
+	Username  string `json:"username"`
+	Icon      string `json:"icon"`
+	Rate      int32  `json:"rate"`
+}

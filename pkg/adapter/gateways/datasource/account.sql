@@ -50,7 +50,7 @@ SELECT
 FROM
     accounts
 WHERE
-    username LIKE $1 AND is_delete = false
+    is_delete = false
 ORDER BY
     rate DESC
 LIMIT
