@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
@@ -22,6 +23,7 @@ func NewEtcUsercase(store transaction.Store, timeout time.Duration) inputport.Et
 }
 
 func (eu *etcUsecase) GetFramework(ctx context.Context) ([]repository.Framework, error) {
+	fmt.Println(eu.contextTimeout)
 	ctx, cancel := context.WithTimeout(ctx, eu.contextTimeout)
 	defer cancel()
 
