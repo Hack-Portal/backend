@@ -46,14 +46,24 @@ func (fu *followUsecase) RemoveFollow(ctx context.Context, body repository.Delet
 	return fu.store.DeleteFollows(ctx, body)
 }
 
-func (fu *followUsecase) GetFollowByToID(ctx context.Context, ID string) (result []domain.FollowResponse, err error) {
+func (fu *followUsecase) GetFollowByID(ctx context.Context, ID string, mode bool) (result []domain.FollowResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 
-	follows, err := fu.store.ListFollowsByToUserID(ctx, ID)
-	if err != nil {
-		return
+	var follows []repository.Follow
+
+	if mode {
+		follows, err = fu.store.ListFollowsByToUserID(ctx, ID)
+		if err != nil {
+			return
+		}
+	} else {
+		follows, err = fu.store.ListFollowsByFromUserID(ctx, ID)
+		if err != nil {
+			return
+		}
 	}
+
 	for _, follow := range follows {
 		account, err := fu.store.GetAccountsByID(ctx, follow.FromAccountID)
 		if err != nil {

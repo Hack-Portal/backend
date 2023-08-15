@@ -16,8 +16,9 @@ func NewAccountRouter(env *bootstrap.Env, timeout time.Duration, store transacti
 		AccountUsecase: usecase.NewAccountUsercase(store, timeout),
 		Env:            env,
 	}
-
 	group.POST("/accounts", accountController.CreateAccount)
+	group.GET("/accounts")
+
 	group.GET("/accounts/:account_id", accountController.GetAccount)
 	group.PUT("/accounts/:account_id", accountController.UpdateAccount)
 	group.DELETE("/accounts/:account_id", accountController.DeleteAccount)

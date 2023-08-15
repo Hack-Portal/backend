@@ -20,7 +20,7 @@ type CreateRoomRequestBody struct {
 
 type ListRoomsRequest struct {
 	PageSize int32 `form:"page_size"`
-	PageID   int32 `from:"page_id"`
+	PageID   int32 `form:"page_id"`
 }
 
 type RoomTechTags struct {
@@ -142,4 +142,10 @@ type ChatRoomsWrite struct {
 	UID       string    `json:"uid"`
 	Message   string    `json:"message"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type DeleteRoomAccount struct {
+	RoomID    string `json:"room_id"`
+	Email     string `json:"email"`
+	AccountID string `json:"account_id"`
 }

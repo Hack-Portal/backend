@@ -19,5 +19,5 @@ func NewFollowRouter(env *bootstrap.Env, timeout time.Duration, store transactio
 
 	group.GET("/accounts/:account_id/follow", followController.GetFollow)
 	group.POST("/accounts/:account_id/follow", followController.CreateFollow)
-	group.DELETE("/acccounts/:account_id/follow	", followController.RemoveFollow)
+	group.DELETE("/accounts/:account_id/follow", followController.RemoveFollow)
 }

@@ -29,7 +29,7 @@ type HackathonController struct {
 func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 	var (
 		reqBody domain.CreateHackathonRequestBody
-		image   *bytes.Buffer
+		image   []byte
 	)
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -52,14 +52,15 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 			return
 		}
 	} else {
-		image = bytes.NewBuffer(nil)
-		if _, err := io.Copy(image, file); err != nil {
+		icon := bytes.NewBuffer(nil)
+		if _, err := io.Copy(icon, file); err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
+		image = icon.Bytes()
 	}
 
-	response, err := hc.HackathonUsecase.CreateHackathon(ctx, reqBody, image.Bytes())
+	response, err := hc.HackathonUsecase.CreateHackathon(ctx, reqBody, image)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

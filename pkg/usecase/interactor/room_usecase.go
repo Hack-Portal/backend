@@ -9,6 +9,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 )
 
 type roomUsecase struct {
@@ -87,16 +88,6 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 		return
 	}
 
-	result.Hackathon = domain.HackathonInfo{
-		HackathonID: hackathon.HackathonID,
-		Name:        hackathon.Name,
-		Icon:        hackathon.Icon.String,
-		Link:        hackathon.Link,
-		StartDate:   hackathon.StartDate,
-		Term:        hackathon.Term,
-		Tags:        statusTags,
-	}
-
 	result.MembersTechTags, result.MembersFrameworks, err = stackTagAndFrameworks(ctx, ru.store, room)
 	if err != nil {
 		return
@@ -107,6 +98,15 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 		return
 	}
 
+	result = parseRoomResponse(result, room, domain.HackathonInfo{
+		HackathonID: hackathon.HackathonID,
+		Name:        hackathon.Name,
+		Icon:        hackathon.Icon.String,
+		Link:        hackathon.Link,
+		StartDate:   hackathon.StartDate,
+		Term:        hackathon.Term,
+		Tags:        statusTags,
+	})
 	return
 }
 
@@ -136,16 +136,6 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		return
 	}
 
-	result.Hackathon = domain.HackathonInfo{
-		HackathonID: hackathon.HackathonID,
-		Name:        hackathon.Name,
-		Icon:        hackathon.Icon.String,
-		Link:        hackathon.Link,
-		StartDate:   hackathon.StartDate,
-		Term:        hackathon.Term,
-		Tags:        statusTags,
-	}
-
 	result.MembersTechTags, result.MembersFrameworks, err = stackTagAndFrameworks(ctx, ru.store, room)
 	if err != nil {
 		return
@@ -156,7 +146,17 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		return
 	}
 
-	return domain.GetRoomResponse{}, nil
+	result = parseRoomResponse(result, room, domain.HackathonInfo{
+		HackathonID: hackathon.HackathonID,
+		Name:        hackathon.Name,
+		Icon:        hackathon.Icon.String,
+		Link:        hackathon.Link,
+		StartDate:   hackathon.StartDate,
+		Term:        hackathon.Term,
+		Tags:        statusTags,
+	})
+
+	return
 }
 
 func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomParam) (result domain.GetRoomResponse, err error) {
@@ -177,16 +177,6 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomPar
 		return
 	}
 
-	result.Hackathon = domain.HackathonInfo{
-		HackathonID: hackathon.HackathonID,
-		Name:        hackathon.Name,
-		Icon:        hackathon.Icon.String,
-		Link:        hackathon.Link,
-		StartDate:   hackathon.StartDate,
-		Term:        hackathon.Term,
-		Tags:        statusTags,
-	}
-
 	result.MembersTechTags, result.MembersFrameworks, err = stackTagAndFrameworks(ctx, ru.store, room)
 	if err != nil {
 		return
@@ -197,7 +187,17 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomPar
 		return
 	}
 
-	return domain.GetRoomResponse{}, nil
+	result = parseRoomResponse(result, room, domain.HackathonInfo{
+		HackathonID: hackathon.HackathonID,
+		Name:        hackathon.Name,
+		Icon:        hackathon.Icon.String,
+		Link:        hackathon.Link,
+		StartDate:   hackathon.StartDate,
+		Term:        hackathon.Term,
+		Tags:        statusTags,
+	})
+
+	return
 }
 
 func (ru *roomUsecase) DeleteRoom(ctx context.Context, query domain.DeleteRoomParam) error {
@@ -230,6 +230,22 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) e
 	})
 
 	return err
+}
+
+func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.DeleteRoomAccount) (err error) {
+	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	defer cancel()
+
+	account, err := ru.store.GetAccountsByEmail(ctx, dbutil.ToSqlNullString(body.Email))
+	if err != nil {
+		return
+	}
+
+	err = ru.store.DeleteRoomsAccountsByID(ctx, repository.DeleteRoomsAccountsByIDParams{
+		RoomID:    body.RoomID,
+		AccountID: account.AccountID,
+	})
+	return
 }
 
 func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room repository.Room) ([]domain.RoomTechTags, []domain.RoomFramework, error) {
@@ -322,6 +338,10 @@ func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, ha
 		IsDelete:    room.IsDelete,
 		CreateAt:    room.CreateAt,
 		Hackathon:   hackathon,
+
+		NowMember:         response.NowMember,
+		MembersTechTags:   response.MembersTechTags,
+		MembersFrameworks: response.MembersFrameworks,
 	}
 }
 

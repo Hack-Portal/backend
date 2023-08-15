@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -73,11 +74,15 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := fc.FollowUsecase.RemoveFollow(ctx, repository.DeleteFollowsParams{ToAccountID: reqQuery.ToAccountID, FromAccountID: reqURI.AccountID}); err != nil {
+	
+	fmt.Println("query", reqQuery)
+
+	if err := fc.FollowUsecase.RemoveFollow(ctx, repository.DeleteFollowsParams{ToAccountID: reqQuery.AccountID, FromAccountID: reqURI.AccountID}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -96,20 +101,16 @@ func (fc *FollowController) GetFollow(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	// TODO:　ToFollowからの取得と FromFollowからの取得　両方作る
-	if reqQuery.Mode {
-		result, err = fc.FollowUsecase.GetFollowByToID(ctx, reqURI.AccountID)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
-	} else {
-		// Fromの取得
+	result, err = fc.FollowUsecase.GetFollowByID(ctx, reqURI.AccountID, reqQuery.Mode)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
 	}
 	ctx.JSON(http.StatusOK, result)
 }

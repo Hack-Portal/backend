@@ -10,5 +10,5 @@ import (
 type FollowUsecase interface {
 	CreateFollow(ctx context.Context, body repository.CreateFollowsParams) (result domain.FollowResponse, err error)
 	RemoveFollow(ctx context.Context, body repository.DeleteFollowsParams) error
-	GetFollowByToID(ctx context.Context, ID string) (result []domain.FollowResponse, err error)
+	GetFollowByID(ctx context.Context, ID string, mode bool) (result []domain.FollowResponse, err error)
 }

@@ -27,16 +27,20 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.Cre
 	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
 	defer cancel()
 
-	Icon, err := hu.store.UploadImage(ctx, image)
-	if err != nil {
-		return
+	var imageURL string
+	if image != nil {
+		var err error
+		imageURL, err = hu.store.UploadImage(ctx, image)
+		if err != nil {
+			return domain.HackathonResponses{}, err
+		}
 	}
 
 	hackathon, err := hu.store.CreateHackathonTx(ctx, domain.CreateHackathonParams{
 		Hackathon: repository.CreateHackathonsParams{
 			Name: body.Name,
 			Icon: sql.NullString{
-				String: Icon,
+				String: imageURL,
 				Valid:  true,
 			},
 			Description: body.Description,

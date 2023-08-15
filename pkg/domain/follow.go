@@ -5,7 +5,7 @@ type CreateFollowRequestBody struct {
 }
 
 type RemoveFollowRequestQueries struct {
-	ToAccountID string `from:"to_account_id" binding:"required"`
+	AccountID string `form:"account_id" binding:"required"`
 }
 
 type GetFollowRequestQueries struct {

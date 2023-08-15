@@ -13,7 +13,8 @@ RETURNING *;
 -- name: GetRoomsByID :one
 SELECT *
 FROM rooms
-WHERE room_id = $1;
+WHERE room_id = $1 AND is_delete = false;
+
 
 -- name: ListRooms :many
 SELECT *

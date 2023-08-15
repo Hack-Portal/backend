@@ -4,28 +4,32 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 )
 
 func compRoom(request domain.UpdateRoomParam, latest repository.Room, members int32) (result repository.UpdateRoomsByIDParams, err error) {
-	result.RoomID = latest.RoomID
+	result = repository.UpdateRoomsByIDParams{
+		HackathonID: latest.HackathonID,
+		Title:       latest.Title,
+		Description: latest.Description,
+		MemberLimit: latest.MemberLimit,
+		RoomID:      request.RoomID,
+	}
+	fmt.Println(request)
 
 	if len(request.Title) != 0 {
 		if latest.Title != request.Title {
 			result.Title = request.Title
 		}
-	} else {
-		result.Title = latest.Title
 	}
 
 	if len(request.Description) != 0 {
 		if latest.Description != request.Description {
 			result.Description = request.Description
 		}
-	} else {
-		result.Description = latest.Description
 	}
 
 	if request.MemberLimit != 0 {
@@ -35,16 +39,12 @@ func compRoom(request domain.UpdateRoomParam, latest repository.Room, members in
 			err = errors.New("現在の加入メンバーを下回る変更はできない")
 			return
 		}
-	} else {
-		result.MemberLimit = latest.MemberLimit
 	}
 
 	if request.HackathonID != 0 {
 		if latest.HackathonID != request.HackathonID {
 			result.HackathonID = request.HackathonID
 		}
-	} else {
-		result.HackathonID = latest.HackathonID
 	}
 
 	return
@@ -102,7 +102,6 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (repository.Room, error) {
 	var room repository.Room
 	err := store.execTx(ctx, func(q *repository.Queries) error {
-
 		latest, err := q.GetRoomsByID(ctx, body.RoomID)
 		if err != nil {
 			return err
@@ -117,8 +116,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 		if err != nil {
 			return err
 		}
-
-		if !checkOwner(members, owner.UserID) {
+		if checkOwner(members, owner.UserID) {
 			err := errors.New("あんたオーナーとちゃうやん")
 			return err
 		}
@@ -132,6 +130,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 		if err != nil {
 			return err
 		}
+
 		return nil
 	})
 	return room, err
@@ -150,7 +149,7 @@ func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomP
 			return err
 		}
 
-		if !checkOwner(members, owner.UserID) {
+		if checkOwner(members, owner.UserID) {
 			err := errors.New("あんたオーナーとちゃうやん")
 			return err
 		}

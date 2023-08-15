@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -122,12 +123,13 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 		return
 	}
 
-	if err := ctx.ShouldBindUri(&reqBody); err != nil {
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+	fmt.Println(reqBody)
 
 	response, err := rc.RoomUsecase.UpdateRoom(ctx, domain.UpdateRoomParam{
 		RoomID:      reqURI.RoomID,
@@ -234,15 +236,14 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
-	if err := rc.RoomUsecase.DeleteRoom(ctx, domain.DeleteRoomParam{
-		OwnerEmail: payload.Email,
-		RoomID:     reqURI.RoomID,
+	if err := rc.RoomUsecase.DeleteRoomAccount(ctx, domain.DeleteRoomAccount{
+		RoomID: reqURI.RoomID,
+		Email:  payload.Email,
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: "delete Successful"})
-
 }
 
 // AddChat	godoc
@@ -257,8 +258,11 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 // @Failure 		500					{object}	ErrorResponse		"error response"
 // @Router       	/rooms/:room_id/addchat			[post]
 func (rc *RoomController) AddChat(ctx *gin.Context) {
-	var reqtURI domain.RoomsRequestWildCard
-	var reqBody domain.AddChatRequestBody
+	var (
+		reqtURI domain.RoomsRequestWildCard
+		reqBody domain.AddChatRequestBody
+	)
+
 	if err := ctx.ShouldBindUri(&reqtURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
