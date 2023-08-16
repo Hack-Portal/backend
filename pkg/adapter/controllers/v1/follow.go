@@ -64,7 +64,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 // @Success			200							{object}	SuccessResponse				"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/:from_user_id/follow			[delete]
+// @Router       	/accounts/{from_user_id}/follow			[delete]
 func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard

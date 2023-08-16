@@ -78,7 +78,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 // @Success			200				{object}		domain.HackathonResponses		"success response"
 // @Failure 		400				{object}		ErrorResponse			"error response"
 // @Failure 		500				{object}		ErrorResponse			"error response"
-// @Router       	/hackathons/:hackathon_id 		[get]
+// @Router       	/hackathons/{hackathon_id} 		[get]
 func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 	var reqURI domain.HackathonRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {

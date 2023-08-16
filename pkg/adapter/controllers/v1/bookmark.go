@@ -50,7 +50,7 @@ func (bc *LikeController) CreateBookmark(ctx *gin.Context) {
 // @Success			200				{object}		domain.BookmarkResponse	"delete success response"
 // @Failure 		400				{object}		ErrorResponse		"bad request response"
 // @Failure 		500				{object}		ErrorResponse		"server error response"
-// @Router       	/bookmarks/:user_id 		[delete]
+// @Router       	/bookmarks/{user_id} 		[delete]
 func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 	var (
 		reqURI  domain.BookmarkRequestWildCard
@@ -82,7 +82,7 @@ func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 // @Success			200							{array}			domain.BookmarkResponse	"delete success response"
 // @Failure 		400							{object}		ErrorResponse		"bad request response"
 // @Failure 		500							{object}		ErrorResponse		"server error response"
-// @Router       	/bookmarks/:user_id  		[get]
+// @Router       	/bookmarks/{user_id}  		[get]
 func (bc *LikeController) ListBookmark(ctx *gin.Context) {
 	var (
 		reqURI  domain.BookmarkRequestWildCard

@@ -119,7 +119,98 @@ const docTemplate = `{
                         }
                     }
                 }
+            }
+        },
+        "/accounts/{account_id}": {
+            "get": {
+                "description": "Return a account from the id specified in the path",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "account_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get success response",
+                        "schema": {
+                            "$ref": "#/definitions/domain.AccountResponses"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
             },
+            "put": {
+                "description": "Update account info from requested body",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Update Account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "account_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Account Request Body",
+                        "name": "domain.UpdateAccountRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.UpdateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update success response",
+                        "schema": {
+                            "$ref": "#/definitions/domain.AccountResponses"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{from_user_id}/follow": {
             "delete": {
                 "description": "Remove follow account",
                 "produces": [
@@ -166,7 +257,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:id/rate": {
+        "/accounts/{id}/rate": {
             "get": {
                 "description": "List Rate for User",
                 "produces": [
@@ -261,94 +352,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:user_id": {
-            "get": {
-                "description": "Return a user from the id specified in the path",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Get account",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Accounts API wildcard",
-                        "name": "account_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get success response",
-                        "schema": {
-                            "$ref": "#/definitions/domain.AccountResponses"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "server error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update user info from requested body",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Update Account",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Accounts API wildcard",
-                        "name": "account_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Update Account Request Body",
-                        "name": "domain.UpdateAccountRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.UpdateAccountRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Update success response",
-                        "schema": {
-                            "$ref": "#/definitions/domain.AccountResponses"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "server error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
-            },
+        "/accounts/{user_id}": {
             "delete": {
                 "description": "Only you can delete your account (logical delete)",
                 "produces": [
@@ -432,7 +436,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bookmarks/:user_id": {
+        "/bookmarks/{user_id}": {
             "get": {
                 "description": "Get my bookmarks",
                 "produces": [
@@ -637,7 +641,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/hackathons/:hackathon_id": {
+        "/hackathons/{hackathon_id}": {
             "get": {
                 "description": "Get Hackathon",
                 "produces": [
@@ -798,7 +802,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id": {
+        "/rooms/{room_id}": {
             "get": {
                 "description": "Get Room",
                 "produces": [
@@ -926,7 +930,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id/addchat": {
+        "/rooms/{room_id}/addchat": {
             "post": {
                 "description": "Add Chat Room",
                 "produces": [
@@ -976,7 +980,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/:room_id/members": {
+        "/rooms/{room_id}/members": {
             "post": {
                 "description": "Add Account In Rooms",
                 "produces": [

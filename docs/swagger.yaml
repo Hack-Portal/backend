@@ -414,36 +414,6 @@ paths:
       tags:
       - Accounts
   /accounts/:from_user_id/follow:
-    delete:
-      description: Remove follow account
-      parameters:
-      - description: Accounts API wildcard
-        in: path
-        name: from_user_id
-        required: true
-        type: string
-      - in: formData
-        name: to_account_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success response
-          schema:
-            $ref: '#/definitions/controller.SuccessResponse'
-        "400":
-          description: error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Remove follow
-      tags:
-      - Accounts
     post:
       description: Follow!!!!!!!!
       parameters:
@@ -478,7 +448,97 @@ paths:
       summary: Create Follow
       tags:
       - Accounts
-  /accounts/:id/rate:
+  /accounts/{account_id}:
+    get:
+      description: Return a account from the id specified in the path
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get success response
+          schema:
+            $ref: '#/definitions/domain.AccountResponses'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get account
+      tags:
+      - Accounts
+    put:
+      description: Update account info from requested body
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: account_id
+        required: true
+        type: string
+      - description: Update Account Request Body
+        in: body
+        name: domain.UpdateAccountRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update success response
+          schema:
+            $ref: '#/definitions/domain.AccountResponses'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Update Account
+      tags:
+      - Accounts
+  /accounts/{from_user_id}/follow:
+    delete:
+      description: Remove follow account
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: from_user_id
+        required: true
+        type: string
+      - in: formData
+        name: to_account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Remove follow
+      tags:
+      - Accounts
+  /accounts/{id}/rate:
     get:
       description: List Rate for User
       parameters:
@@ -540,7 +600,7 @@ paths:
       summary: Create Rate
       tags:
       - Rate
-  /accounts/:user_id:
+  /accounts/{user_id}:
     delete:
       description: Only you can delete your account (logical delete)
       parameters:
@@ -565,64 +625,6 @@ paths:
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
       summary: Remove Account
-      tags:
-      - Accounts
-    get:
-      description: Return a user from the id specified in the path
-      parameters:
-      - description: Accounts API wildcard
-        in: path
-        name: account_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Get success response
-          schema:
-            $ref: '#/definitions/domain.AccountResponses'
-        "400":
-          description: bad request response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: server error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Get account
-      tags:
-      - Accounts
-    put:
-      description: Update user info from requested body
-      parameters:
-      - description: Accounts API wildcard
-        in: path
-        name: account_id
-        required: true
-        type: string
-      - description: Update Account Request Body
-        in: body
-        name: domain.UpdateAccountRequest
-        required: true
-        schema:
-          $ref: '#/definitions/domain.UpdateAccountRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Update success response
-          schema:
-            $ref: '#/definitions/domain.AccountResponses'
-        "400":
-          description: bad request response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: server error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Update Account
       tags:
       - Accounts
   /bookmarks:
@@ -653,7 +655,7 @@ paths:
       summary: Create new bookmark
       tags:
       - Bookmark
-  /bookmarks/:user_id:
+  /bookmarks/{user_id}:
     delete:
       description: Delete the bookmark of the specified hackathon ID
       parameters:
@@ -787,7 +789,7 @@ paths:
       summary: Create Hackathon
       tags:
       - Hackathon
-  /hackathons/:hackathon_id:
+  /hackathons/{hackathon_id}:
     get:
       description: Get Hackathon
       parameters:
@@ -892,7 +894,7 @@ paths:
       summary: Create Rooms
       tags:
       - Rooms
-  /rooms/:room_id:
+  /rooms/{room_id}:
     delete:
       description: delete Room
       parameters:
@@ -977,7 +979,7 @@ paths:
       summary: update Room
       tags:
       - Rooms
-  /rooms/:room_id/addchat:
+  /rooms/{room_id}/addchat:
     post:
       description: Add Chat Room
       parameters:
@@ -1010,7 +1012,7 @@ paths:
       summary: Add Chat Room
       tags:
       - Rooms
-  /rooms/:room_id/members:
+  /rooms/{room_id}/members:
     delete:
       description: Remove Account In Rooms
       parameters:

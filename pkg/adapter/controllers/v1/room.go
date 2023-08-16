@@ -53,7 +53,7 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 // @Success			200		{object}	domain.GetRoomResponse		"success response"
 // @Failure 		400		{object}	ErrorResponse		"error response"
 // @Failure 		500		{object}	ErrorResponse		"error response"
-// @Router       	/rooms/:room_id		[get]
+// @Router       	/rooms/{room_id}		[get]
 func (rc *RoomController) GetRoom(ctx *gin.Context) {
 	var request domain.RoomsRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -111,7 +111,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 // @Success			200						{object}	domain.GetRoomResponse			"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
-// @Router       	/rooms/:room_id			[put]
+// @Router       	/rooms/{room_id}			[put]
 func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 	var (
 		reqURI  domain.RoomsRequestWildCard
@@ -155,7 +155,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 // @Success			200		{object}	SuccessResponse	"success response"
 // @Failure 		400		{object}	ErrorResponse	"error response"
 // @Failure 		500		{object}	ErrorResponse	"error response"
-// @Router       	/rooms/:room_id		[delete]
+// @Router       	/rooms/{room_id}		[delete]
 func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 	var (
 		reqURI domain.RoomsRequestWildCard
@@ -186,7 +186,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 // @Success			200			{object}	SuccessResponse	"success response"
 // @Failure 		400			{object}	ErrorResponse			"error response"
 // @Failure 		500			{object}	ErrorResponse			"error response"
-// @Router       	/rooms/:room_id/members	[post]
+// @Router       	/rooms/{room_id}/members	[post]
 func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 	var (
 		reqURI  domain.RoomsRequestWildCard
@@ -223,7 +223,7 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 // @Success			200			{object}	SuccessResponse	"success response"
 // @Failure 		400			{object}	ErrorResponse	"error response"
 // @Failure 		500			{object}	ErrorResponse	"error response"
-// @Router       	/rooms/:room_id/members	[delete]
+// @Router       	/rooms/{room_id}/members	[delete]
 func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 	var (
 		reqURI domain.RoomsRequestWildCard
@@ -256,7 +256,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 // @Success			200					{object}	domain.GetRoomResponse		"success response"
 // @Failure 		400					{object}	ErrorResponse		"error response"
 // @Failure 		500					{object}	ErrorResponse		"error response"
-// @Router       	/rooms/:room_id/addchat			[post]
+// @Router       	/rooms/{room_id}/addchat			[post]
 func (rc *RoomController) AddChat(ctx *gin.Context) {
 	var (
 		reqtURI domain.RoomsRequestWildCard

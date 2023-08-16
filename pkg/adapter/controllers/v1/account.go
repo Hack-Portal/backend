@@ -89,14 +89,14 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 
 // GetAccount		godoc
 // @Summary			Get account
-// @Description		Return a user from the id specified in the path
+// @Description		Return a account from the id specified in the path
 // @Tags			Accounts
 // @Produce			json
 // @Param			account_id 	path			string				true	"Accounts API wildcard"
 // @Success			200			{object}		domain.AccountResponses	"Get success response"
 // @Failure 		400			{object}		ErrorResponse		"bad request response"
 // @Failure 		500			{object}		ErrorResponse		"server error response"
-// @Router       	/accounts/:user_id 			[get]
+// @Router       	/accounts/{account_id} 			[get]
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	var reqUri domain.AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&reqUri); err != nil {
@@ -115,7 +115,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 
 // UpdateAccount	godoc
 // @Summary			Update Account
-// @Description		Update user info from requested body
+// @Description		Update account info from requested body
 // @Tags			Accounts
 // @Produce			json
 // @Param			account_id 					path		string						true	"Accounts API wildcard"
@@ -123,7 +123,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 // @Success			200							{object}	domain.AccountResponses		"Update success response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
-// @Router       	/accounts/:user_id 			[put]
+// @Router       	/accounts/{account_id} 			[put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	var (
 		reqBody domain.UpdateAccountRequest
@@ -198,7 +198,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 // @Success			200			{object}		SuccessResponse	"delete success response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
-// @Router       	/accounts/:user_id 		[delete]
+// @Router       	/accounts/{user_id} 		[delete]
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	var reqURI domain.AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
