@@ -3,6 +3,7 @@ name: Deploy to Staging
 on:
   push:
     branches: [ develop ]
+
 permissions:
   actions: write
   checks: write
@@ -45,23 +46,28 @@ jobs:
       run: |
         docker build ./ -t ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}
         docker push ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}
-    - name: Install yq
-      run: |
-        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-        sudo chmod a+x /usr/local/bin/yq
 
-    - name: Push to Repo
-      run: |
-        git config --global user.email ${{ secrets.EMAIL_GITHUB }}
-        git config --global user.name ${{ secrets.USERNAME_GITHUB }}
-        git remote set-url origin ${{secrets.CONFIG_REPOSITORY}}
-        git pull
-        
-        cd config/manifest/stage
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
 
-        yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'deployment.yaml'
-
-        git add .
-        git commit -m "Updated by GitHub Actions"
-        git push origin master
-       
+      - name: Checkout another repo
+        uses: actions/checkout@v3
+        with:
+          repository: Hack-Hack-geek-Vol6/k8s-config
+          path: configs
+    
+      - name: Change manifest
+        run: |
+          cd configs/config/manifest/stage
+          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'deployment.yaml'
+      
+      - name: Create release pr
+        run: gh pr create -B "master" -t "Develop" -b ""
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
