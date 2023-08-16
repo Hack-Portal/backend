@@ -1,0 +1,1085 @@
+basePath: /api/v1
+definitions:
+  controller.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  controller.SuccessResponse:
+    properties:
+      result:
+        type: string
+    type: object
+  domain.AccountRateResponse:
+    properties:
+      account_id:
+        type: string
+      icon:
+        type: string
+      rate:
+        type: integer
+      username:
+        type: string
+    type: object
+  domain.AccountResponses:
+    properties:
+      account_id:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      explanatory_text:
+        type: string
+      frameworks:
+        items:
+          $ref: '#/definitions/repository.Framework'
+        type: array
+      icon:
+        type: string
+      locate:
+        type: string
+      rate:
+        type: integer
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      tech_tags:
+        items:
+          $ref: '#/definitions/repository.TechTag'
+        type: array
+      username:
+        type: string
+    type: object
+  domain.AddChatRequestBody:
+    properties:
+      account_id:
+        type: string
+      message:
+        type: string
+    required:
+    - account_id
+    - message
+    type: object
+  domain.BookmarkResponse:
+    properties:
+      description:
+        type: string
+      expired:
+        type: string
+      hackathon_id:
+        type: integer
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      term:
+        type: integer
+    type: object
+  domain.CreateAccountRequest:
+    properties:
+      explanatory_text:
+        type: string
+      frameworks:
+        items:
+          type: integer
+        type: array
+      locate_id:
+        type: integer
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      tech_tags:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: string
+      username:
+        type: string
+    required:
+    - locate_id
+    - user_id
+    - username
+    type: object
+  domain.CreateBookmarkRequest:
+    properties:
+      account_id:
+        type: string
+      opus:
+        type: integer
+    type: object
+  domain.CreateFollowRequestBody:
+    properties:
+      to_account_id:
+        type: string
+    required:
+    - to_account_id
+    type: object
+  domain.CreateHackathonRequestBody:
+    properties:
+      description:
+        type: string
+      expired:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      status_tags:
+        items:
+          type: integer
+        type: array
+      term:
+        type: integer
+    type: object
+  domain.CreateRateRequestBody:
+    properties:
+      rate:
+        type: integer
+    type: object
+  domain.CreateRoomRequestBody:
+    properties:
+      account_id:
+        type: string
+      description:
+        type: string
+      hackathon_id:
+        type: integer
+      member_limit:
+        type: integer
+      title:
+        type: string
+    required:
+    - account_id
+    - description
+    - hackathon_id
+    - member_limit
+    - title
+    type: object
+  domain.GetRoomResponse:
+    properties:
+      create_at:
+        type: string
+      description:
+        type: string
+      hackathon:
+        $ref: '#/definitions/domain.HackathonInfo'
+      is_status:
+        type: boolean
+      member_limit:
+        type: integer
+      members_frameworks:
+        items:
+          $ref: '#/definitions/domain.RoomFramework'
+        type: array
+      members_tech_tags:
+        items:
+          $ref: '#/definitions/domain.RoomTechTags'
+        type: array
+      now_member:
+        items:
+          $ref: '#/definitions/domain.NowRoomAccounts'
+        type: array
+      room_id:
+        type: string
+      title:
+        type: string
+    type: object
+  domain.HackathonInfo:
+    properties:
+      hackathon_id:
+        type: integer
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/repository.StatusTag'
+        type: array
+      term:
+        type: integer
+    type: object
+  domain.HackathonResponses:
+    properties:
+      description:
+        type: string
+      expired:
+        type: string
+      hackathon_id:
+        type: integer
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      status_tags:
+        items:
+          $ref: '#/definitions/repository.StatusTag'
+        type: array
+      term:
+        type: integer
+    type: object
+  domain.ListRoomHackathonInfo:
+    properties:
+      hackathon_id:
+        type: integer
+      hackathon_name:
+        type: string
+      icon:
+        type: string
+    type: object
+  domain.ListRoomResponse:
+    properties:
+      hackathon:
+        $ref: '#/definitions/domain.ListRoomHackathonInfo'
+      members_frameworks:
+        items:
+          $ref: '#/definitions/domain.RoomFramework'
+        type: array
+      members_tech_tags:
+        items:
+          $ref: '#/definitions/domain.RoomTechTags'
+        type: array
+      now_member:
+        items:
+          $ref: '#/definitions/domain.NowRoomAccounts'
+        type: array
+      rooms:
+        $ref: '#/definitions/domain.ListRoomRoomInfo'
+    type: object
+  domain.ListRoomRoomInfo:
+    properties:
+      created_at:
+        type: string
+      member_limit:
+        type: integer
+      room_id:
+        type: string
+      title:
+        type: string
+    type: object
+  domain.NowRoomAccounts:
+    properties:
+      account_id:
+        type: string
+      icon:
+        type: string
+      is_owner:
+        type: boolean
+    type: object
+  domain.RoomFramework:
+    properties:
+      count:
+        type: integer
+      framework:
+        $ref: '#/definitions/repository.Framework'
+    type: object
+  domain.RoomTechTags:
+    properties:
+      count:
+        type: integer
+      tech_tag:
+        $ref: '#/definitions/repository.TechTag'
+    type: object
+  domain.UpdateAccountRequest:
+    properties:
+      explanatory_text:
+        type: string
+      frameworks:
+        items:
+          type: integer
+        type: array
+      locate_id:
+        type: integer
+      show_locate:
+        type: boolean
+      show_rate:
+        type: boolean
+      tech_tags:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  domain.UpdateRoomRequestBody:
+    properties:
+      description:
+        type: string
+      hackathonID:
+        type: integer
+      member_limit:
+        type: integer
+      title:
+        type: string
+    type: object
+  repository.Follow:
+    properties:
+      create_at:
+        type: string
+      from_account_id:
+        type: string
+      to_account_id:
+        type: string
+    type: object
+  repository.Framework:
+    properties:
+      framework:
+        type: string
+      framework_id:
+        type: integer
+      tech_tag_id:
+        type: integer
+    type: object
+  repository.Locate:
+    properties:
+      locate_id:
+        type: integer
+      name:
+        type: string
+    type: object
+  repository.StatusTag:
+    properties:
+      status:
+        type: string
+      status_id:
+        type: integer
+    type: object
+  repository.TechTag:
+    properties:
+      language:
+        type: string
+      tech_tag_id:
+        type: integer
+    type: object
+host: https://seaffood.com
+info:
+  contact:
+    email: oogiriminister@gmail.com
+    name: murasame
+    url: https://twitter.com/fresh_salmon256
+  description: HackPortal Backend API serice
+  license:
+    name: No-license
+    url: No-license
+  termsOfService: https://seaffood.com/api
+  title: Hack Hack Backend API
+  version: "1.0"
+paths:
+  /accounts:
+    post:
+      description: Create an account from the requested body
+      parameters:
+      - description: Create Account Request
+        in: body
+        name: domain.CreateAccountRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create success response
+          schema:
+            $ref: '#/definitions/domain.AccountResponses'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create new account
+      tags:
+      - Accounts
+  /accounts/:from_user_id/follow:
+    delete:
+      description: Remove follow account
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: from_user_id
+        required: true
+        type: string
+      - in: formData
+        name: to_account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Remove follow
+      tags:
+      - Accounts
+    post:
+      description: Follow!!!!!!!!
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: from_user_id
+        required: true
+        type: string
+      - description: create Follow Request Body
+        in: body
+        name: domain.CreateFollowRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateFollowRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/repository.Follow'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create Follow
+      tags:
+      - Accounts
+  /accounts/:id/rate:
+    get:
+      description: List Rate for User
+      parameters:
+      - description: Account ID
+        in: path
+        name: account_id
+        required: true
+        type: string
+      - in: query
+        name: page_id
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/domain.AccountRateResponse'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: List Rate
+      tags:
+      - Rate
+    post:
+      description: Create Rate for User
+      parameters:
+      - description: Create Rate Request Body
+        in: body
+        name: domain.CreateRateRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateRateRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create Rate
+      tags:
+      - Rate
+  /accounts/:user_id:
+    delete:
+      description: Only you can delete your account (logical delete)
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Remove Account
+      tags:
+      - Accounts
+    get:
+      description: Return a user from the id specified in the path
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get success response
+          schema:
+            $ref: '#/definitions/domain.AccountResponses'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get account
+      tags:
+      - Accounts
+    put:
+      description: Update user info from requested body
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: account_id
+        required: true
+        type: string
+      - description: Update Account Request Body
+        in: body
+        name: domain.UpdateAccountRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update success response
+          schema:
+            $ref: '#/definitions/domain.AccountResponses'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Update Account
+      tags:
+      - Accounts
+  /bookmarks:
+    post:
+      description: Create a bookmark from the specified hackathon ID
+      parameters:
+      - description: Create Bookmark Request Body
+        in: body
+        name: domain.CreateBookmarkRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateBookmarkRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create success response
+          schema:
+            $ref: '#/definitions/domain.BookmarkResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create new bookmark
+      tags:
+      - Bookmark
+  /bookmarks/:user_id:
+    delete:
+      description: Delete the bookmark of the specified hackathon ID
+      parameters:
+      - description: Delete Bookmark Request Body
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete success response
+          schema:
+            $ref: '#/definitions/domain.BookmarkResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Delete bookmark
+      tags:
+      - Bookmark
+    get:
+      description: Get my bookmarks
+      parameters:
+      - description: Delete Bookmark Request Body
+        in: formData
+        name: domain.ListRequest
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete success response
+          schema:
+            items:
+              $ref: '#/definitions/domain.BookmarkResponse'
+            type: array
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get bookmarks
+      tags:
+      - Bookmark
+  /frameworks:
+    get:
+      description: Get Frameworks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/repository.Framework'
+            type: array
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get Frameworks
+      tags:
+      - Frameworks
+  /hackathons:
+    get:
+      description: List Hackathon
+      parameters:
+      - in: formData
+        name: expired
+        type: boolean
+      - in: formData
+        name: page_id
+        type: integer
+      - in: formData
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/domain.HackathonResponses'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: List Hackathon
+      tags:
+      - Hackathon
+    post:
+      description: Register a hackathon from given parameters
+      parameters:
+      - description: create hackathon Request Body
+        in: body
+        name: domain.CreateHackathonRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateHackathonRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/domain.HackathonResponses'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create Hackathon
+      tags:
+      - Hackathon
+  /hackathons/:hackathon_id:
+    get:
+      description: Get Hackathon
+      parameters:
+      - description: Hackathons API wildcard
+        in: path
+        name: hackathon_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/domain.HackathonResponses'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get Hackathon
+      tags:
+      - Hackathon
+  /locates:
+    get:
+      description: Get Frameworks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/repository.Locate'
+            type: array
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get Frameworks
+      tags:
+      - Locates
+  /rooms:
+    get:
+      description: List Account
+      parameters:
+      - in: query
+        name: page_id
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/domain.ListRoomResponse'
+              type: array
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: List Account
+      tags:
+      - Rooms
+    post:
+      description: Create Rooms
+      parameters:
+      - description: create Room Request Body
+        in: body
+        name: domain.CreateRoomRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateRoomRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/domain.GetRoomResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create Rooms
+      tags:
+      - Rooms
+  /rooms/:room_id:
+    delete:
+      description: delete Room
+      parameters:
+      - description: Rooms API wildcard
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: delete Room
+      tags:
+      - Rooms
+    get:
+      description: Get Room
+      parameters:
+      - description: Rooms API wildcard
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/domain.GetRoomResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get Room
+      tags:
+      - Rooms
+    put:
+      description: update Room
+      parameters:
+      - description: Rooms API wildcard
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: update Room Request body
+        in: body
+        name: domain.UpdateRoomRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateRoomRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/domain.GetRoomResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: update Room
+      tags:
+      - Rooms
+  /rooms/:room_id/addchat:
+    post:
+      description: Add Chat Room
+      parameters:
+      - description: Rooms API wildcard
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: add chat Room Request body
+        in: body
+        name: domain.AddChatRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.AddChatRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/domain.GetRoomResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Add Chat Room
+      tags:
+      - Rooms
+  /rooms/:room_id/members:
+    delete:
+      description: Remove Account In Rooms
+      parameters:
+      - description: Rooms API wildcard
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Remove Account In Rooms
+      tags:
+      - Rooms
+    post:
+      description: Add Account In Rooms
+      parameters:
+      - description: Rooms API wildcard
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Add Account In Rooms
+      tags:
+      - Rooms
+  /tech_tags:
+    get:
+      description: Get Frameworks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/repository.TechTag'
+            type: array
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get Frameworks
+      tags:
+      - TechTags
+swagger: "2.0"

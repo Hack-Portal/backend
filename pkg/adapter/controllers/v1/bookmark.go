@@ -21,8 +21,8 @@ type LikeController struct {
 // @Description		Create a bookmark from the specified hackathon ID
 // @Tags			Bookmark
 // @Produce			json
-// @Param			CreateBookmarkRequestBody 	body 		CreateBookmarkRequestBody	true	"Create Bookmark Request Body"
-// @Success			200							{object}	BookmarkResponse			"create success response"
+// @Param			domain.CreateBookmarkRequest 	body 		domain.CreateBookmarkRequest	true	"Create Bookmark Request Body"
+// @Success			200							{object}	domain.BookmarkResponse			"create success response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/bookmarks 					[post]
@@ -46,8 +46,8 @@ func (bc *LikeController) CreateBookmark(ctx *gin.Context) {
 // @Description		Delete the bookmark of the specified hackathon ID
 // @Tags			Bookmark
 // @Produce			json
-// @Param			user_id		 	path 			string				true	"Delete Bookmark Request Body"
-// @Success			200				{object}		BookmarkResponse	"delete success response"
+// @Param			account_id		 	path 			string				true	"Delete Bookmark Request Body"
+// @Success			200				{object}		domain.BookmarkResponse	"delete success response"
 // @Failure 		400				{object}		ErrorResponse		"bad request response"
 // @Failure 		500				{object}		ErrorResponse		"server error response"
 // @Router       	/bookmarks/:user_id 		[delete]
@@ -78,8 +78,8 @@ func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 // @Description		Get my bookmarks
 // @Tags			Bookmark
 // @Produce			json
-// @Param			ListBookmarkRequestQueries 	formData 		string				true	"Delete Bookmark Request Body"
-// @Success			200							{array}			BookmarkResponse	"delete success response"
+// @Param			domain.ListRequest 	formData 		string				true	"Delete Bookmark Request Body"
+// @Success			200							{array}			domain.BookmarkResponse	"delete success response"
 // @Failure 		400							{object}		ErrorResponse		"bad request response"
 // @Failure 		500							{object}		ErrorResponse		"server error response"
 // @Router       	/bookmarks/:user_id  		[get]

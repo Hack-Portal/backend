@@ -18,7 +18,7 @@ type EtcController struct {
 // @Description		Get Frameworks
 // @Tags			Frameworks
 // @Produce			json
-// @Success			200			{array}		db.Frameworks	"success response"
+// @Success			200			{array}		repository.Framework	"success response"
 // @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/frameworks	[get]
 func (ec *EtcController) ListFrameworks(ctx *gin.Context) {
@@ -35,7 +35,7 @@ func (ec *EtcController) ListFrameworks(ctx *gin.Context) {
 // @Description		Get Frameworks
 // @Tags			Locates
 // @Produce			json
-// @Success			200			{array}		db.Locates		"success response"
+// @Success			200			{array}		repository.Locate		"success response"
 // @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/locates	[get]
 func (ec *EtcController) ListLocation(ctx *gin.Context) {
@@ -52,7 +52,7 @@ func (ec *EtcController) ListLocation(ctx *gin.Context) {
 // @Description		Get Frameworks
 // @Tags			TechTags
 // @Produce			json
-// @Success			200		{array}		db.TechTags		"success response"
+// @Success			200		{array}		repository.TechTag		"success response"
 // @Failure 		500		{object}	ErrorResponse	"error response"
 // @Router       	/tech_tags			[get]
 func (ec *EtcController) ListTechTags(ctx *gin.Context) {

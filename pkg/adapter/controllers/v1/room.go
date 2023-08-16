@@ -22,8 +22,8 @@ type RoomController struct {
 // @Description		List Account
 // @Tags			Rooms
 // @Produce			json
-// @Param			ListRoomsRequest 	query 		ListRoomsRequest	true	"List Rooms Request"
-// @Success			200		{array}		[]db.ListRoomTxResult	"success response"
+// @Param			domain.ListRequest 	query 		domain.ListRequest	true	"List Rooms Request"
+// @Success			200		{array}		[]domain.ListRoomResponse	"success response"
 // @Failure 		400		{object}	ErrorResponse			"error response"
 // @Failure 		500		{object}	ErrorResponse			"error response"
 // @Router       	/rooms	[get]
@@ -50,7 +50,7 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id path 		string				true	"Rooms API wildcard"
-// @Success			200		{object}	GetRoomResponse		"success response"
+// @Success			200		{object}	domain.GetRoomResponse		"success response"
 // @Failure 		400		{object}	ErrorResponse		"error response"
 // @Failure 		500		{object}	ErrorResponse		"error response"
 // @Router       	/rooms/:room_id		[get]
@@ -74,8 +74,8 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 // @Description		Create Rooms
 // @Tags			Rooms
 // @Produce			json
-// @Param			CreateRoomRequestBody 	body 		CreateRoomRequestBody	true	"create Room Request Body"
-// @Success			200						{object}	db.CreateRoomTxResult	"success response"
+// @Param			domain.CreateRoomRequestBody 	body 		domain.CreateRoomRequestBody	true	"create Room Request Body"
+// @Success			200						{object}	domain.GetRoomResponse	"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
 // @Router       	/rooms					[post]
@@ -107,8 +107,8 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 				path 		string					true	"Rooms API wildcard"
-// @Param			UpdateRoomRequestBody 	body 		UpdateRoomRequestBody	true	"update Room Request body"
-// @Success			200						{object}	GetRoomResponse			"success response"
+// @Param			domain.UpdateRoomRequestBody 	body 		domain.UpdateRoomRequestBody	true	"update Room Request body"
+// @Success			200						{object}	domain.GetRoomResponse			"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
 // @Router       	/rooms/:room_id			[put]
@@ -152,7 +152,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id path 		string			true	"Rooms API wildcard"
-// @Success			200		{object}	DeleteResponse	"success response"
+// @Success			200		{object}	SuccessResponse	"success response"
 // @Failure 		400		{object}	ErrorResponse	"error response"
 // @Failure 		500		{object}	ErrorResponse	"error response"
 // @Router       	/rooms/:room_id		[delete]
@@ -183,7 +183,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 	path 		string					true	"Rooms API wildcard"
-// @Success			200			{object}	db.CreateRoomTxResult	"success response"
+// @Success			200			{object}	SuccessResponse	"success response"
 // @Failure 		400			{object}	ErrorResponse			"error response"
 // @Failure 		500			{object}	ErrorResponse			"error response"
 // @Router       	/rooms/:room_id/members	[post]
@@ -220,7 +220,7 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 	path 		string			true	"Rooms API wildcard"
-// @Success			200			{object}	DeleteResponse	"success response"
+// @Success			200			{object}	SuccessResponse	"success response"
 // @Failure 		400			{object}	ErrorResponse	"error response"
 // @Failure 		500			{object}	ErrorResponse	"error response"
 // @Router       	/rooms/:room_id/members	[delete]
@@ -252,8 +252,8 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 			path 		string				true	"Rooms API wildcard"
-// @Param			AddChatRequestBody 	body 		AddChatRequestBody	true	"add chat Room Request body"
-// @Success			200					{object}	GetRoomResponse		"success response"
+// @Param			domain.AddChatRequestBody 	body 		domain.AddChatRequestBody	true	"add chat Room Request body"
+// @Success			200					{object}	domain.GetRoomResponse		"success response"
 // @Failure 		400					{object}	ErrorResponse		"error response"
 // @Failure 		500					{object}	ErrorResponse		"error response"
 // @Router       	/rooms/:room_id/addchat			[post]

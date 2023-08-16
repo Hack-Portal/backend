@@ -23,8 +23,8 @@ type FollowController struct {
 // @Tags			Accounts
 // @Produce			json
 // @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
-// @Param			CreateFollowRequestBody 	body 		CreateFollowRequestBody		true	"create Follow Request Body"
-// @Success			200							{array}		db.Follows					"succsss response"
+// @Param			domain.CreateFollowRequestBody 	body 		domain.CreateFollowRequestBody		true	"create Follow Request Body"
+// @Success			200							{array}		repository.Follow					"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
 // @Router       	/accounts/:from_user_id/follow			[post]
@@ -56,12 +56,12 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 // TODO:レスポンス修正
 // RemoveFollow	godoc
 // @Summary			Remove follow
-// @Description		Unfollow
+// @Description		Remove follow account
 // @Tags			Accounts
 // @Produce			json
 // @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
-// @Param			RemoveFollowRequestQueries 	formData 	CreateFollowRequestBody		true	"Remove Follow Request Body"
-// @Success			200							{object}	DeleteResponse				"succsss response"
+// @Param			domain.RemoveFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Remove Follow Request Body"
+// @Success			200							{object}	SuccessResponse				"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
 // @Router       	/accounts/:from_user_id/follow			[delete]
@@ -79,7 +79,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	fmt.Println("query", reqQuery)
 
 	if err := fc.FollowUsecase.RemoveFollow(ctx, repository.DeleteFollowsParams{ToAccountID: reqQuery.AccountID, FromAccountID: reqURI.AccountID}); err != nil {

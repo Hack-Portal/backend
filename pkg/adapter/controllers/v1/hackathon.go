@@ -21,8 +21,8 @@ type HackathonController struct {
 // @Description		Register a hackathon from given parameters
 // @Tags			Hackathon
 // @Produce			json
-// @Param			CreateHackathonRequestBody 	body 		CreateHackathonRequestBody		true	"create hackathon Request Body"
-// @Success			200							{object}	HackathonResponses				"success response"
+// @Param			domain.CreateHackathonRequestBody 	body 		domain.CreateHackathonRequestBody		true	"create hackathon Request Body"
+// @Success			200							{object}	domain.HackathonResponses				"success response"
 // @Failure 		400							{object}	ErrorResponse					"error response"
 // @Failure 		500							{object}	ErrorResponse					"error response"
 // @Router       	/hackathons					[post]
@@ -75,7 +75,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 // @Tags			Hackathon
 // @Produce			json
 // @Param			hackathon_id	path 	 		string					true	"Hackathons API wildcard"
-// @Success			200				{object}		HackathonResponses		"success response"
+// @Success			200				{object}		domain.HackathonResponses		"success response"
 // @Failure 		400				{object}		ErrorResponse			"error response"
 // @Failure 		500				{object}		ErrorResponse			"error response"
 // @Router       	/hackathons/:hackathon_id 		[get]
@@ -103,8 +103,8 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 // @Description		List Hackathon
 // @Tags			Hackathon
 // @Produce			json
-// @Param			ListHackathonsParams	formData 	ListHackathonsParams	true	"List hackathon Request queries"
-// @Success			200						{array}		HackathonResponses		"success response"
+// @Param			domain.ListHackathonsParams	formData 	domain.ListHackathonsParams	true	"List hackathon Request queries"
+// @Success			200						{array}		domain.HackathonResponses		"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
 // @Router       	/hackathons 			[get]

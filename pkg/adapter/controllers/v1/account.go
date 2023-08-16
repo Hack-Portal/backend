@@ -28,8 +28,8 @@ type AccountController struct {
 // @Description		Create an account from the requested body
 // @Tags			Accounts
 // @Produce			json
-// @Param			CreateAccountRequestBody 	body 			CreateAccountRequestBody	true	"Create Account Request Body"
-// @Success			200							{object}		CreateAccountResponses		"create succsss response"
+// @Param			domain.CreateAccountRequest 	body 			domain.CreateAccountRequest	true	"Create Account Request"
+// @Success			200							{object}		domain.AccountResponses		"create success response"
 // @Failure 		400							{object}		ErrorResponse				"bad request response"
 // @Failure 		500							{object}		ErrorResponse				"server error response"
 // @Router       	/accounts 	[post]
@@ -92,8 +92,8 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 // @Description		Return a user from the id specified in the path
 // @Tags			Accounts
 // @Produce			json
-// @Param			user_id 	path			string				true	"Accounts API wildcard"
-// @Success			200			{object}		GetAccountResponses	"Get success response"
+// @Param			account_id 	path			string				true	"Accounts API wildcard"
+// @Success			200			{object}		domain.AccountResponses	"Get success response"
 // @Failure 		400			{object}		ErrorResponse		"bad request response"
 // @Failure 		500			{object}		ErrorResponse		"server error response"
 // @Router       	/accounts/:user_id 			[get]
@@ -118,9 +118,9 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 // @Description		Update user info from requested body
 // @Tags			Accounts
 // @Produce			json
-// @Param			user_id 					path		string						true	"Accounts API wildcard"
-// @Param			UpdateAccountRequestBody 	body		UpdateAccountRequestBody	true	"Update Account Request Body"
-// @Success			200							{object}	UpdateAccountResponse		"Update success response"
+// @Param			account_id 					path		string						true	"Accounts API wildcard"
+// @Param			domain.UpdateAccountRequest 	body		domain.UpdateAccountRequest	true	"Update Account Request Body"
+// @Success			200							{object}	domain.AccountResponses		"Update success response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
 // @Router       	/accounts/:user_id 			[put]
@@ -194,8 +194,8 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 // @Description		Only you can delete your account (logical delete)
 // @Tags			Accounts
 // @Produce			json
-// @Param			user_id 	path			string			true	"Accounts API wildcard"
-// @Success			200			{object}		DeleteResponse	"delete success response"
+// @Param			account_id 	path			string			true	"Accounts API wildcard"
+// @Success			200			{object}		SuccessResponse	"delete success response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
 // @Router       	/accounts/:user_id 		[delete]
