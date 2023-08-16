@@ -43,7 +43,7 @@ type CreatePastWorkParams struct {
 }
 
 type PastWorkResponse struct {
-	Pastwork   repository.PastWork    `json:"past_work"`
+	PastWork   repository.PastWork    `json:"past_work"`
 	TechTags   []repository.TechTag   `json:"tech_tags"`
 	Frameworks []repository.Framework `json:"frameworks"`
 	Members    []PastWorkMembers      `json:"members"`

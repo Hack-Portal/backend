@@ -46,7 +46,7 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.Create
 	}
 
 	result = domain.PastWorkResponse{
-		Pastwork:   pastWork,
+		PastWork:   pastWork,
 		TechTags:   techTags,
 		Frameworks: frameworks,
 		Members:    members,
@@ -79,7 +79,7 @@ func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result 
 	}
 
 	result = domain.PastWorkResponse{
-		Pastwork:   pastWork,
+		PastWork:   pastWork,
 		TechTags:   techTags,
 		Frameworks: frameworks,
 		Members:    members,
