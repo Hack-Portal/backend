@@ -83,7 +83,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 		return
 	}
 
-	statusTags, err := getHackathonTag(ctx, ru.store, hackathon.HackathonID)
+	statusTag, err := getHackathonTag(ctx, ru.store, hackathon.HackathonID)
 	if err != nil {
 		return
 	}
@@ -105,7 +105,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 		Link:        hackathon.Link,
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
-		Tags:        statusTags,
+		StatusTag:   statusTag,
 	})
 	return
 }
@@ -131,7 +131,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		return
 	}
 
-	statusTags, err := getHackathonTag(ctx, ru.store, hackathon.HackathonID)
+	statusTag, err := getHackathonTag(ctx, ru.store, hackathon.HackathonID)
 	if err != nil {
 		return
 	}
@@ -153,7 +153,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		Link:        hackathon.Link,
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
-		Tags:        statusTags,
+		StatusTag:   statusTag,
 	})
 
 	return
@@ -172,7 +172,7 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomPar
 		return
 	}
 
-	statusTags, err := getHackathonTag(ctx, ru.store, hackathon.HackathonID)
+	statusTag, err := getHackathonTag(ctx, ru.store, hackathon.HackathonID)
 	if err != nil {
 		return
 	}
@@ -194,7 +194,7 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomPar
 		Link:        hackathon.Link,
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
-		Tags:        statusTags,
+		StatusTag:   statusTag,
 	})
 
 	return

@@ -206,7 +206,7 @@ definitions:
         type: string
       start_date:
         type: string
-      tags:
+      status_tag:
         items:
           $ref: '#/definitions/repository.StatusTag'
         type: array
@@ -851,9 +851,7 @@ paths:
           description: success response
           schema:
             items:
-              items:
-                $ref: '#/definitions/domain.ListRoomResponse'
-              type: array
+              $ref: '#/definitions/domain.ListRoomResponse'
             type: array
         "400":
           description: error response

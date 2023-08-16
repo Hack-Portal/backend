@@ -58,7 +58,7 @@ type HackathonInfo struct {
 	Link        string                 `json:"link"`
 	StartDate   time.Time              `json:"start_date"`
 	Term        int32                  `json:"term"`
-	Tags        []repository.StatusTag `json:"tags"`
+	StatusTag   []repository.StatusTag `json:"status_tag"`
 }
 
 type GetRoomResponse struct {

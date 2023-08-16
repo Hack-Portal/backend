@@ -23,7 +23,7 @@ type RoomController struct {
 // @Tags			Rooms
 // @Produce			json
 // @Param			domain.ListRequest 	query 		domain.ListRequest	true	"List Rooms Request"
-// @Success			200		{array}		[]domain.ListRoomResponse	"success response"
+// @Success			200		{array}		domain.ListRoomResponse	"success response"
 // @Failure 		400		{object}	ErrorResponse			"error response"
 // @Failure 		500		{object}	ErrorResponse			"error response"
 // @Router       	/rooms	[get]

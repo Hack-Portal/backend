@@ -737,10 +737,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/domain.ListRoomResponse"
-                                }
+                                "$ref": "#/definitions/domain.ListRoomResponse"
                             }
                         }
                     },
@@ -1401,7 +1398,7 @@ const docTemplate = `{
                 "start_date": {
                     "type": "string"
                 },
-                "tags": {
+                "status_tag": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/repository.StatusTag"
