@@ -38,7 +38,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Create Account Request",
-                        "name": "domain.CreateAccountRequest",
+                        "name": "CreateAccountRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -127,7 +127,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "Update Account Request Body",
-                        "name": "domain.UpdateAccountRequest",
+                        "name": "UpdateAccountRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -261,7 +261,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Create Rate Request Body",
-                        "name": "domain.CreateRateRequestBody",
+                        "name": "CreateRateRequestBody",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -311,7 +311,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "create Follow Request Body",
-                        "name": "domain.CreateFollowRequestBody",
+                        "name": "CreateFollowRequestBody",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -402,7 +402,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Create Bookmark Request Body",
-                        "name": "domain.CreateBookmarkRequest",
+                        "name": "CreateBookmarkRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -617,7 +617,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "create hackathon Request Body",
-                        "name": "domain.CreateHackathonRequestBody",
+                        "name": "CreateHackathonRequestBody",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -775,7 +775,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "create Room Request Body",
-                        "name": "domain.CreateRoomRequestBody",
+                        "name": "CreateRoomRequestBody",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -864,7 +864,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "update Room Request body",
-                        "name": "domain.UpdateRoomRequestBody",
+                        "name": "UpdateRoomRequestBody",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -953,7 +953,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "add chat Room Request body",
-                        "name": "domain.AddChatRequestBody",
+                        "name": "AddChatRequestBody",
                         "in": "body",
                         "required": true,
                         "schema": {

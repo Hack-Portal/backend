@@ -21,7 +21,7 @@ type HackathonController struct {
 // @Description		Register a hackathon from given parameters
 // @Tags			Hackathon
 // @Produce			json
-// @Param			domain.CreateHackathonRequestBody 	body 		domain.CreateHackathonRequestBody		true	"create hackathon Request Body"
+// @Param			CreateHackathonRequestBody 	body 		domain.CreateHackathonRequestBody		true	"create hackathon Request Body"
 // @Success			200							{object}	domain.HackathonResponses				"success response"
 // @Failure 		400							{object}	ErrorResponse					"error response"
 // @Failure 		500							{object}	ErrorResponse					"error response"
@@ -103,7 +103,7 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 // @Description		List Hackathon
 // @Tags			Hackathon
 // @Produce			json
-// @Param			domain.ListHackathonsParams	formData 	domain.ListHackathonsParams	true	"List hackathon Request queries"
+// @Param			ListHackathonsParams	formData 	domain.ListHackathonsParams	true	"List hackathon Request queries"
 // @Success			200						{array}		domain.HackathonResponses		"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"

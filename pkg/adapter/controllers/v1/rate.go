@@ -20,7 +20,7 @@ type RateController struct {
 // @Description		Create Rate for User
 // @Tags			Rate
 // @Produce			json
-// @Param  domain.CreateRateRequestBody body domain.CreateRateRequestBody true "Create Rate Request Body"
+// @Param  CreateRateRequestBody body domain.CreateRateRequestBody true "Create Rate Request Body"
 // @Success			200				{object}		SuccessResponse		"success response"
 // @Failure 		400				{object}		ErrorResponse		"error response"
 // @Failure 		500				{object}		ErrorResponse		"error response"
@@ -56,7 +56,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 // @Tags			Rate
 // @Produce			json
 // @Param  account_id		path	string		true	"Account ID"
-// @Param  domain.ListRequest query domain.ListRequest true "List Rate Params"
+// @Param  ListRequest query domain.ListRequest true "List Rate Params"
 // @Success			200				{array}			domain.AccountRateResponse	"success response"
 // @Failure 		400				{object}		ErrorResponse		"error response"
 // @Failure 		500				{object}		ErrorResponse		"error response"

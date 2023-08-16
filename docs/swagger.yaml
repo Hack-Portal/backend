@@ -391,7 +391,7 @@ paths:
       parameters:
       - description: Create Account Request
         in: body
-        name: domain.CreateAccountRequest
+        name: CreateAccountRequest
         required: true
         schema:
           $ref: '#/definitions/domain.CreateAccountRequest'
@@ -476,7 +476,7 @@ paths:
         type: string
       - description: Update Account Request Body
         in: body
-        name: domain.UpdateAccountRequest
+        name: UpdateAccountRequest
         required: true
         schema:
           $ref: '#/definitions/domain.UpdateAccountRequest'
@@ -538,7 +538,7 @@ paths:
       parameters:
       - description: Create Rate Request Body
         in: body
-        name: domain.CreateRateRequestBody
+        name: CreateRateRequestBody
         required: true
         schema:
           $ref: '#/definitions/domain.CreateRateRequestBody'
@@ -601,7 +601,7 @@ paths:
         type: string
       - description: create Follow Request Body
         in: body
-        name: domain.CreateFollowRequestBody
+        name: CreateFollowRequestBody
         required: true
         schema:
           $ref: '#/definitions/domain.CreateFollowRequestBody'
@@ -631,7 +631,7 @@ paths:
       parameters:
       - description: Create Bookmark Request Body
         in: body
-        name: domain.CreateBookmarkRequest
+        name: CreateBookmarkRequest
         required: true
         schema:
           $ref: '#/definitions/domain.CreateBookmarkRequest'
@@ -771,7 +771,7 @@ paths:
       parameters:
       - description: create hackathon Request Body
         in: body
-        name: domain.CreateHackathonRequestBody
+        name: CreateHackathonRequestBody
         required: true
         schema:
           $ref: '#/definitions/domain.CreateHackathonRequestBody'
@@ -874,7 +874,7 @@ paths:
       parameters:
       - description: create Room Request Body
         in: body
-        name: domain.CreateRoomRequestBody
+        name: CreateRoomRequestBody
         required: true
         schema:
           $ref: '#/definitions/domain.CreateRoomRequestBody'
@@ -959,7 +959,7 @@ paths:
         type: string
       - description: update Room Request body
         in: body
-        name: domain.UpdateRoomRequestBody
+        name: UpdateRoomRequestBody
         required: true
         schema:
           $ref: '#/definitions/domain.UpdateRoomRequestBody'
@@ -992,7 +992,7 @@ paths:
         type: string
       - description: add chat Room Request body
         in: body
-        name: domain.AddChatRequestBody
+        name: AddChatRequestBody
         required: true
         schema:
           $ref: '#/definitions/domain.AddChatRequestBody'

@@ -21,7 +21,7 @@ type LikeController struct {
 // @Description		Create a bookmark from the specified hackathon ID
 // @Tags			Bookmark
 // @Produce			json
-// @Param			domain.CreateBookmarkRequest 	body 		domain.CreateBookmarkRequest	true	"Create Bookmark Request Body"
+// @Param			CreateBookmarkRequest 	body 		domain.CreateBookmarkRequest	true	"Create Bookmark Request Body"
 // @Success			200							{object}	domain.BookmarkResponse			"create success response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"
@@ -79,7 +79,7 @@ func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 // @Tags			Bookmark
 // @Produce			json
 // @Param			account_id		 	path 			string				true	"account_id"
-// @Param			domain.ListRequest 	formData 		domain.ListRequest				true	"Bookmark Request Body"
+// @Param			ListRequest 	formData 		domain.ListRequest				true	"Bookmark Request Body"
 // @Success			200							{array}			domain.BookmarkResponse	"success response"
 // @Failure 		400							{object}		ErrorResponse		"bad request response"
 // @Failure 		500							{object}		ErrorResponse		"server error response"

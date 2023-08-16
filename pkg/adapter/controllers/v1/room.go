@@ -22,7 +22,7 @@ type RoomController struct {
 // @Description		List Account
 // @Tags			Rooms
 // @Produce			json
-// @Param			domain.ListRequest 	query 		domain.ListRequest	true	"List Rooms Request"
+// @Param			ListRequest 	query 		domain.ListRequest	true	"List Rooms Request"
 // @Success			200		{array}		domain.ListRoomResponse	"success response"
 // @Failure 		400		{object}	ErrorResponse			"error response"
 // @Failure 		500		{object}	ErrorResponse			"error response"
@@ -74,7 +74,7 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 // @Description		Create Rooms
 // @Tags			Rooms
 // @Produce			json
-// @Param			domain.CreateRoomRequestBody 	body 		domain.CreateRoomRequestBody	true	"create Room Request Body"
+// @Param			CreateRoomRequestBody 	body 		domain.CreateRoomRequestBody	true	"create Room Request Body"
 // @Success			200						{object}	domain.GetRoomResponse	"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
@@ -107,7 +107,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 				path 		string					true	"Rooms API wildcard"
-// @Param			domain.UpdateRoomRequestBody 	body 		domain.UpdateRoomRequestBody	true	"update Room Request body"
+// @Param			UpdateRoomRequestBody 	body 		domain.UpdateRoomRequestBody	true	"update Room Request body"
 // @Success			200						{object}	domain.GetRoomResponse			"success response"
 // @Failure 		400						{object}	ErrorResponse			"error response"
 // @Failure 		500						{object}	ErrorResponse			"error response"
@@ -252,7 +252,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 // @Tags			Rooms
 // @Produce			json
 // @Param			room_id 			path 		string				true	"Rooms API wildcard"
-// @Param			domain.AddChatRequestBody 	body 		domain.AddChatRequestBody	true	"add chat Room Request body"
+// @Param			AddChatRequestBody 	body 		domain.AddChatRequestBody	true	"add chat Room Request body"
 // @Success			200					{object}	domain.GetRoomResponse		"success response"
 // @Failure 		400					{object}	ErrorResponse		"error response"
 // @Failure 		500					{object}	ErrorResponse		"error response"

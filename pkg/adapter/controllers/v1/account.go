@@ -28,7 +28,7 @@ type AccountController struct {
 // @Description		Create an account from the requested body
 // @Tags			Accounts
 // @Produce			json
-// @Param			domain.CreateAccountRequest 	body 			domain.CreateAccountRequest	true	"Create Account Request"
+// @Param			CreateAccountRequest 	body 			domain.CreateAccountRequest	true	"Create Account Request"
 // @Success			200							{object}		domain.AccountResponses		"create success response"
 // @Failure 		400							{object}		ErrorResponse				"bad request response"
 // @Failure 		500							{object}		ErrorResponse				"server error response"
@@ -119,7 +119,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 // @Tags			Accounts
 // @Produce			json
 // @Param			account_id 					path		string						true	"Accounts API wildcard"
-// @Param			domain.UpdateAccountRequest 	body		domain.UpdateAccountRequest	true	"Update Account Request Body"
+// @Param			UpdateAccountRequest 	body		domain.UpdateAccountRequest	true	"Update Account Request Body"
 // @Success			200							{object}	domain.AccountResponses		"Update success response"
 // @Failure 		400							{object}	ErrorResponse				"bad request response"
 // @Failure 		500							{object}	ErrorResponse				"server error response"

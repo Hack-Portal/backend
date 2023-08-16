@@ -23,7 +23,7 @@ type FollowController struct {
 // @Tags			Accounts
 // @Produce			json
 // @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
-// @Param			domain.CreateFollowRequestBody 	body 		domain.CreateFollowRequestBody		true	"create Follow Request Body"
+// @Param			CreateFollowRequestBody 	body 		domain.CreateFollowRequestBody		true	"create Follow Request Body"
 // @Success			200							{array}		repository.Follow					"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
@@ -60,7 +60,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 // @Tags			Accounts
 // @Produce			json
 // @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
-// @Param			domain.RemoveFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Remove Follow Request Body"
+// @Param			RemoveFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Remove Follow Request Body"
 // @Success			200							{object}	SuccessResponse				"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
