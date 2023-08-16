@@ -12,7 +12,10 @@ import (
 )
 
 func setupCors(router *gin.Engine) {
-	router.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowHeaders = append(config.AllowHeaders, "dbauthorization")
+	router.Use(cors.New(config))
 }
 
 func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
