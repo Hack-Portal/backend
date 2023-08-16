@@ -73,6 +73,6 @@ jobs:
       - name: Create release pr
         run: |
           cd configs/config/manifest/stage
-          gh pr create -B "master" -t "Develop" -b ""
+          gh pr create -B "actions" -t "Develop" -b ""
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
