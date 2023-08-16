@@ -75,4 +75,4 @@ jobs:
           cd configs/config/manifest/stage
           gh pr create -B "master" -t "Develop" -b ""
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
