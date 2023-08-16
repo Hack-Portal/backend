@@ -27,7 +27,7 @@ type FollowController struct {
 // @Success			200							{array}		repository.Follow					"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/:from_user_id/follow			[post]
+// @Router       	/accounts/{from_user_id}/follow			[post]
 func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 	var (
 		reqURI  domain.AccountRequestWildCard

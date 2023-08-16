@@ -68,59 +68,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:from_user_id/follow": {
-            "post": {
-                "description": "Follow!!!!!!!!",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Create Follow",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Accounts API wildcard",
-                        "name": "from_user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "create Follow Request Body",
-                        "name": "domain.CreateFollowRequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateFollowRequestBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/repository.Follow"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/accounts/{account_id}": {
             "get": {
                 "description": "Return a account from the id specified in the path",
@@ -211,6 +158,57 @@ const docTemplate = `{
             }
         },
         "/accounts/{from_user_id}/follow": {
+            "post": {
+                "description": "Follow!!!!!!!!",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create Follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "from_user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "create Follow Request Body",
+                        "name": "domain.CreateFollowRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateFollowRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.Follow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Remove follow account",
                 "produces": [

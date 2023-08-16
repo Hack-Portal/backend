@@ -413,41 +413,6 @@ paths:
       summary: Create new account
       tags:
       - Accounts
-  /accounts/:from_user_id/follow:
-    post:
-      description: Follow!!!!!!!!
-      parameters:
-      - description: Accounts API wildcard
-        in: path
-        name: from_user_id
-        required: true
-        type: string
-      - description: create Follow Request Body
-        in: body
-        name: domain.CreateFollowRequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/domain.CreateFollowRequestBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success response
-          schema:
-            items:
-              $ref: '#/definitions/repository.Follow'
-            type: array
-        "400":
-          description: error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Create Follow
-      tags:
-      - Accounts
   /accounts/{account_id}:
     get:
       description: Return a account from the id specified in the path
@@ -536,6 +501,40 @@ paths:
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
       summary: Remove follow
+      tags:
+      - Accounts
+    post:
+      description: Follow!!!!!!!!
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: from_user_id
+        required: true
+        type: string
+      - description: create Follow Request Body
+        in: body
+        name: domain.CreateFollowRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateFollowRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/repository.Follow'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create Follow
       tags:
       - Accounts
   /accounts/{id}/rate:
