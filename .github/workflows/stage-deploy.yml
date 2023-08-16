@@ -73,6 +73,8 @@ jobs:
       - name: push repository
         run: |
           cd configs
+          git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
+          git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
 
           if (git diff --shortstat | grep '[0-9]'); then \
             git add .; \
