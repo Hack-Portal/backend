@@ -172,7 +172,7 @@ definitions:
       description:
         type: string
       hackathon:
-        $ref: '#/definitions/domain.HackathonInfo'
+        $ref: '#/definitions/domain.RoomHackathonInfo'
       is_status:
         type: boolean
       member_limit:
@@ -193,25 +193,6 @@ definitions:
         type: string
       title:
         type: string
-    type: object
-  domain.HackathonInfo:
-    properties:
-      hackathon_id:
-        type: integer
-      icon:
-        type: string
-      link:
-        type: string
-      name:
-        type: string
-      start_date:
-        type: string
-      status_tag:
-        items:
-          $ref: '#/definitions/repository.StatusTag'
-        type: array
-      term:
-        type: integer
     type: object
   domain.HackathonResponses:
     properties:
@@ -290,6 +271,25 @@ definitions:
         type: integer
       framework:
         $ref: '#/definitions/repository.Framework'
+    type: object
+  domain.RoomHackathonInfo:
+    properties:
+      hackathon_id:
+        type: integer
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      status_tag:
+        items:
+          $ref: '#/definitions/repository.StatusTag'
+        type: array
+      term:
+        type: integer
     type: object
   domain.RoomTechTags:
     properties:
