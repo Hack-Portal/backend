@@ -155,99 +155,40 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/accounts/{from_user_id}/follow": {
-            "post": {
-                "description": "Follow!!!!!!!!",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Create Follow",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Accounts API wildcard",
-                        "name": "from_user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "create Follow Request Body",
-                        "name": "domain.CreateFollowRequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateFollowRequestBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/repository.Follow"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
             },
             "delete": {
-                "description": "Remove follow account",
+                "description": "Only you can delete your account (logical delete)",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Accounts"
                 ],
-                "summary": "Remove follow",
+                "summary": "Remove Account",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Accounts API wildcard",
-                        "name": "from_user_id",
+                        "name": "account_id",
                         "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "name": "to_account_id",
-                        "in": "formData",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "success response",
+                        "description": "delete success response",
                         "schema": {
                             "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
-                        "description": "error response",
+                        "description": "bad request response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "error response",
+                        "description": "server error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
@@ -255,7 +196,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{id}/rate": {
+        "/accounts/{account_id}/rate": {
             "get": {
                 "description": "List Rate for User",
                 "produces": [
@@ -350,40 +291,97 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{user_id}": {
-            "delete": {
-                "description": "Only you can delete your account (logical delete)",
+        "/accounts/{from_account_id}/follow": {
+            "post": {
+                "description": "Follow!!!!!!!!",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Accounts"
                 ],
-                "summary": "Remove Account",
+                "summary": "Create Follow",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Accounts API wildcard",
-                        "name": "account_id",
+                        "name": "from_account_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "create Follow Request Body",
+                        "name": "domain.CreateFollowRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateFollowRequestBody"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete success response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/controller.SuccessResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.Follow"
+                            }
                         }
                     },
                     "400": {
-                        "description": "bad request response",
+                        "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "server error response",
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove follow account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Remove follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "from_account_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "to_account_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
@@ -434,7 +432,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bookmarks/{user_id}": {
+        "/bookmarks/{account_id}": {
             "get": {
                 "description": "Get my bookmarks",
                 "produces": [
@@ -447,15 +445,25 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Delete Bookmark Request Body",
-                        "name": "domain.ListRequest",
-                        "in": "formData",
+                        "description": "account_id",
+                        "name": "account_id",
+                        "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete success response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {

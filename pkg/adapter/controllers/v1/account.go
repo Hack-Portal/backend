@@ -198,7 +198,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 // @Success			200			{object}		SuccessResponse	"delete success response"
 // @Failure 		400			{object}		ErrorResponse	"bad request response"
 // @Failure 		500			{object}		ErrorResponse	"server error response"
-// @Router       	/accounts/{user_id} 		[delete]
+// @Router       	/accounts/{account_id} 		[delete]
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	var reqURI domain.AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {

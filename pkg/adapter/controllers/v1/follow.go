@@ -22,12 +22,12 @@ type FollowController struct {
 // @Description		Follow!!!!!!!!
 // @Tags			Accounts
 // @Produce			json
-// @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
+// @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
 // @Param			domain.CreateFollowRequestBody 	body 		domain.CreateFollowRequestBody		true	"create Follow Request Body"
 // @Success			200							{array}		repository.Follow					"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/{from_user_id}/follow			[post]
+// @Router       	/accounts/{from_account_id}/follow			[post]
 func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 	var (
 		reqURI  domain.AccountRequestWildCard
@@ -59,12 +59,12 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 // @Description		Remove follow account
 // @Tags			Accounts
 // @Produce			json
-// @Param			from_user_id 				path 		string						true	"Accounts API wildcard"
+// @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
 // @Param			domain.RemoveFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Remove Follow Request Body"
 // @Success			200							{object}	SuccessResponse				"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/{from_user_id}/follow			[delete]
+// @Router       	/accounts/{from_account_id}/follow			[delete]
 func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard

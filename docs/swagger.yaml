@@ -414,6 +414,32 @@ paths:
       tags:
       - Accounts
   /accounts/{account_id}:
+    delete:
+      description: Only you can delete your account (logical delete)
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Remove Account
+      tags:
+      - Accounts
     get:
       description: Return a account from the id specified in the path
       parameters:
@@ -472,72 +498,7 @@ paths:
       summary: Update Account
       tags:
       - Accounts
-  /accounts/{from_user_id}/follow:
-    delete:
-      description: Remove follow account
-      parameters:
-      - description: Accounts API wildcard
-        in: path
-        name: from_user_id
-        required: true
-        type: string
-      - in: formData
-        name: to_account_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success response
-          schema:
-            $ref: '#/definitions/controller.SuccessResponse'
-        "400":
-          description: error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Remove follow
-      tags:
-      - Accounts
-    post:
-      description: Follow!!!!!!!!
-      parameters:
-      - description: Accounts API wildcard
-        in: path
-        name: from_user_id
-        required: true
-        type: string
-      - description: create Follow Request Body
-        in: body
-        name: domain.CreateFollowRequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/domain.CreateFollowRequestBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success response
-          schema:
-            items:
-              $ref: '#/definitions/repository.Follow'
-            type: array
-        "400":
-          description: error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Create Follow
-      tags:
-      - Accounts
-  /accounts/{id}/rate:
+  /accounts/{account_id}/rate:
     get:
       description: List Rate for User
       parameters:
@@ -599,31 +560,69 @@ paths:
       summary: Create Rate
       tags:
       - Rate
-  /accounts/{user_id}:
+  /accounts/{from_account_id}/follow:
     delete:
-      description: Only you can delete your account (logical delete)
+      description: Remove follow account
       parameters:
       - description: Accounts API wildcard
         in: path
-        name: account_id
+        name: from_account_id
+        required: true
+        type: string
+      - in: formData
+        name: to_account_id
         required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: delete success response
+          description: success response
           schema:
             $ref: '#/definitions/controller.SuccessResponse'
         "400":
-          description: bad request response
+          description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
         "500":
-          description: server error response
+          description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
-      summary: Remove Account
+      summary: Remove follow
+      tags:
+      - Accounts
+    post:
+      description: Follow!!!!!!!!
+      parameters:
+      - description: Accounts API wildcard
+        in: path
+        name: from_account_id
+        required: true
+        type: string
+      - description: create Follow Request Body
+        in: body
+        name: domain.CreateFollowRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateFollowRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/repository.Follow'
+            type: array
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create Follow
       tags:
       - Accounts
   /bookmarks:
@@ -654,7 +653,7 @@ paths:
       summary: Create new bookmark
       tags:
       - Bookmark
-  /bookmarks/{user_id}:
+  /bookmarks/{account_id}:
     delete:
       description: Delete the bookmark of the specified hackathon ID
       parameters:
@@ -684,16 +683,22 @@ paths:
     get:
       description: Get my bookmarks
       parameters:
-      - description: Delete Bookmark Request Body
-        in: formData
-        name: domain.ListRequest
+      - description: account_id
+        in: path
+        name: account_id
         required: true
         type: string
+      - in: formData
+        name: page_id
+        type: integer
+      - in: formData
+        name: page_size
+        type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: delete success response
+          description: success response
           schema:
             items:
               $ref: '#/definitions/domain.BookmarkResponse'
