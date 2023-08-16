@@ -71,6 +71,8 @@ jobs:
           yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'deployment.yaml'
       
       - name: Create release pr
-        run: gh pr create -B "master" -t "Develop" -b ""
+        run: |
+          cd configs/config/manifest/stage
+          gh pr create -B "master" -t "Develop" -b ""
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
