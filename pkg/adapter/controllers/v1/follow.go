@@ -90,6 +90,17 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: "Delete Successful"})
 }
 
+// GetFollow	godoc
+// @Summary			Get follow
+// @Description		Get follow account
+// @Tags			Accounts
+// @Produce			json
+// @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
+// @Param			GetFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Get Follow Request Body"
+// @Success			200							{object}	SuccessResponse				"success response"
+// @Failure 		400							{object}	ErrorResponse				"error response"
+// @Failure 		500							{object}	ErrorResponse				"error response"
+// @Router       	/accounts/{from_account_id}/follow			[get]
 func (fc *FollowController) GetFollow(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard

@@ -292,6 +292,51 @@ const docTemplate = `{
             }
         },
         "/accounts/{from_account_id}/follow": {
+            "get": {
+                "description": "Get follow account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "from_account_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "to_account_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Follow!!!!!!!!",
                 "produces": [
@@ -717,6 +762,96 @@ const docTemplate = `{
                 }
             }
         },
+        "/login": {
+            "post": {
+                "description": "Login User",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login User",
+                "parameters": [
+                    {
+                        "description": "List Rooms Request",
+                        "name": "CreateUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rate": {
+            "get": {
+                "description": "List Account Rate",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rate"
+                ],
+                "summary": "List Account Rate",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.AccountRateResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/rooms": {
             "get": {
                 "description": "List Account",
@@ -1063,6 +1198,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/status_tags": {
+            "get": {
+                "description": "Get Frameworks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TechTags"
+                ],
+                "summary": "Get Frameworks",
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.StatusTag"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/tech_tags": {
             "get": {
                 "description": "Get Frameworks",
@@ -1081,6 +1245,49 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/repository.TechTag"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "post": {
+                "description": "Create User",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create User",
+                "parameters": [
+                    {
+                        "description": "Create User Request",
+                        "name": "CreateUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
@@ -1340,6 +1547,32 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }

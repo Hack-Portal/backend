@@ -86,6 +86,16 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// ListAccountRate	godoc
+// @Summary			List Account Rate
+// @Description		List Account Rate
+// @Tags			Rate
+// @Produce			json
+// @Param  ListRequest query domain.ListRequest true "List Rate Params"
+// @Success			200				{array}			domain.AccountRateResponse	"success response"
+// @Failure 		400				{object}		ErrorResponse		"error response"
+// @Failure 		500				{object}		ErrorResponse		"error response"
+// @Router       	/rate 		[get]
 func (rc *RateController) ListAccountRate(ctx *gin.Context) {
 	var reqQuery domain.ListRequest
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
