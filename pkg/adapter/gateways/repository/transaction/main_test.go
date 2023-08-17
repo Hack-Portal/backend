@@ -13,11 +13,7 @@ import (
 
 var TestStore Store
 
-func setupMockData() {
-
-}
-
-func TestMain(m *testing.M) {
+func NewTestServer(t *testing.T) {
 	env := bootstrap.LoadEnvConfig("../../../../../")
 	db, err := sql.Open(env.DBDriver, env.DBSource)
 	if err != nil {
