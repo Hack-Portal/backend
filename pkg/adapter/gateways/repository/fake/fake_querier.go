@@ -97,7 +97,18 @@ func (fq fakeQuerier) ListTechTags(ctx context.Context) ([]repository.TechTag, e
 
 	return techTags, nil
 }
-func (fq fakeQuerier) UpdateTechTagsByID(ctx context.Context, language string) (repository.TechTag, error)
+func (fq fakeQuerier) UpdateTechTagsByID(ctx context.Context, arg repository.UpdateTechTagsByIDParams) (repository.TechTag, error) {
+	if _, ok := fq.techTag[arg.TechTagID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
+		return repository.TechTag{}, err
+	}
+	techTag := repository.TechTag{
+		TechTagID: arg.TechTagID,
+		Language:  arg.Language,
+	}
+	fq.techTag[arg.TechTagID] = techTag
+	return techTag, nil
+}
 func (fq fakeQuerier) DeleteTechTagsByID(ctx context.Context, techTagID int32) error {
 	if _, ok := fq.techTag[techTagID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, techTagID))
