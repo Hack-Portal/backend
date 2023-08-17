@@ -1131,18 +1131,68 @@ func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int
 	return nil
 }
 
-func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
-func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error)
-func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error)
-func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error)
-func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
+func (fq fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg repository.CreatePastWorkFrameworksParams) (repository.PastWorkFramework, error) {
+	if _, ok := fq.pastWorkFramework[arg.Opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
+		return repository.PastWorkFramework{}, err
+	}
+	if _, ok := fq.framework[arg.FrameworkID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.FrameworkID))
+		return repository.PastWorkFramework{}, err
+	}
 
-func (fq fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg repository.CreatePastWorkFrameworksParams) (repository.PastWorkFramework, error)
-func (fq fakeQuerier) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error
+	pastWorkFramework := repository.PastWorkFramework{
+		Opus:        arg.Opus,
+		FrameworkID: arg.FrameworkID,
+	}
+
+	fq.pastWorkFramework[int32(len(fq.pastWorkFramework))+1] = pastWorkFramework
+	return fq.pastWorkFramework[int32(len(fq.pastWorkFramework))+1], nil
+}
+
+func (fq fakeQuerier) ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]repository.PastWorkFramework, error) {
+	if _, ok := fq.pastWork[opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
+		return nil, err
+	}
+
+	pastWorkFrameworks := []repository.PastWorkFramework{}
+
+	for _, pastWorkFramework := range fq.pastWorkFramework {
+		if pastWorkFramework.Opus == opus {
+
+			pastWorkFrameworks = append(pastWorkFrameworks, repository.PastWorkFramework{
+				Opus:        pastWorkFramework.Opus,
+				FrameworkID: pastWorkFramework.FrameworkID,
+			})
+		}
+	}
+	return pastWorkFrameworks, nil
+}
+
+func (fq fakeQuerier) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error {
+	if _, ok := fq.pastWork[opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
+		return err
+	}
+
+	for i, pastWorkFramework := range fq.pastWorkFramework {
+		if pastWorkFramework.Opus == opus {
+			delete(fq.pastWorkFramework, i)
+		}
+	}
+	return nil
+}
 
 func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.CreatePastWorkTagsParams) (repository.PastWorkTag, error)
 func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
 func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error)
+
+func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
+func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error)
+func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
+func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error)
+func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error)
 
 func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error)
 func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error)
