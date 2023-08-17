@@ -7,17 +7,23 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
+	tokens "github.com/hackhack-Geek-vol6/backend/pkg/util/token"
 )
 
 const (
-	AuthorizationHeaderKey  = "dbauthorization"
-	AuthorizationTypeBearer = "bearer"
-	AuthorizationClaimsKey  = "authorization_claim"
+	AuthorizationHeaderKey = "dbauthorization"
+	AuthorizationType      = "dbauthorization_type"
+	AuthorizationClaimsKey = "authorization_claim"
+
+	GoogleLogin = "google"
+	EmailLogin  = "email"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		jwtType := ctx.GetHeader(AuthorizationType)
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
+
 		if len(authorizationHeader) == 0 {
 			err := errors.New("authorization header is not provided")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -31,20 +37,48 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		accessToken := fields[0]
-		hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
+		switch jwtType {
+
+		case GoogleLogin: //Emailでのログインtoken
+			payload, err := googleLogin(fields)
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+				return
+			}
+			ctx.Set(AuthorizationClaimsKey, payload)
+
+		case EmailLogin: //Emailでのログインtoken
+			payload, err := emailLogin(tokenMaker, fields)
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+				return
+			}
+			ctx.Set(AuthorizationClaimsKey, payload)
 		}
 
-		payload, err := jwt.JwtDecode.DecodeClaimFB(hCS[1])
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
-
-		ctx.Set(AuthorizationClaimsKey, payload)
 		ctx.Next()
 	}
+}
+
+func googleLogin(fields []string) (*jwt.FireBaseCustomToken, error) {
+	accessToken := fields[0]
+	hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	payload, err := jwt.JwtDecode.DecodeClaimFB(hCS[1])
+	if err != nil {
+		return nil, err
+	}
+	return payload, nil
+}
+
+func emailLogin(tokenMaker tokens.Maker, fields []string) (*tokens.Payload, error) {
+	accessToken := fields[0]
+	payload, err := tokenMaker.VerifyToken(accessToken)
+	if err != nil {
+		return nil, err
+	}
+	return payload, nil
 }

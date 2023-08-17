@@ -28,7 +28,7 @@ func Setup(env *bootstrap.Env, tokenMaker tokens.Maker, timeout time.Duration, s
 	NewHackathonRouter(env, timeout, store, publicRouter)
 	NewUserRouter(env, tokenMaker, timeout, store, publicRouter)
 
-	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware())
+	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware(tokenMaker))
 	//TODO:middlewareの追加
 	// All Protect APIs
 	NewAccountRouter(env, timeout, store, protectRouter)
