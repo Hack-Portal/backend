@@ -28,7 +28,7 @@ type fakeQuerier struct {
 	room               map[string]repository.Room
 	roomsAccount       map[string]repository.RoomsAccount
 	statusTag          map[string]repository.StatusTag
-	techTag            map[string]repository.TechTag
+	techTag            map[int32]repository.TechTag
 	user               map[string]repository.User
 }
 
@@ -65,7 +65,48 @@ func (fq fakeQuerier) ListLocates(ctx context.Context) ([]repository.Locate, err
 	return locates, nil
 }
 
-func (fq fakeQuerier) CreateTechTags(ctx context.Context, language string) (repository.TechTag, error)
+func (fq fakeQuerier) CreateTechTags(ctx context.Context, language string) (repository.TechTag, error) {
+	techTag := repository.TechTag{
+		TechTagID: int32(len(fq.techTag)) + 1,
+		Language:  language,
+	}
+	if len(techTag.Language) == 0 {
+		err := errors.New(`null value in column "name" violates not-null constraint`)
+		return repository.TechTag{}, err
+	}
+
+	fq.techTag[int32(len(fq.techTag))+1] = techTag
+	return fq.techTag[int32(len(fq.techTag))+1], nil
+}
+
+func (fq fakeQuerier) GetTechTagsByID(ctx context.Context, techTagID int32) (repository.TechTag, error) {
+	techTag, ok := fq.techTag[techTagID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, techTagID))
+		return repository.TechTag{}, err
+	}
+	return techTag, nil
+}
+
+func (fq fakeQuerier) ListTechTags(ctx context.Context) ([]repository.TechTag, error) {
+	techTags := []repository.TechTag{}
+
+	for _, techTag := range fq.techTag {
+		techTags = append(techTags, techTag)
+	}
+
+	return techTags, nil
+}
+func (fq fakeQuerier) UpdateTechTagsByID(ctx context.Context, language string) (repository.TechTag, error)
+func (fq fakeQuerier) DeleteTechTagsByID(ctx context.Context, techTagID int32) error {
+	if _, ok := fq.techTag[techTagID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, techTagID))
+		return err
+	}
+	delete(fq.techTag, techTagID)
+
+	return nil
+}
 
 func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error)
 func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error)
@@ -102,7 +143,7 @@ func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.De
 func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repository.DeleteRoomsAccountsByIDParams) error
 func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
 func (fq fakeQuerier) DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error
-func (fq fakeQuerier) DeleteTechTagsByID(ctx context.Context, techTagID int32) error
+
 func (fq fakeQuerier) DeleteUsersByID(ctx context.Context, arg repository.DeleteUsersByIDParams) error
 func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email sql.NullString) (repository.Account, error)
 func (fq fakeQuerier) GetAccountsByID(ctx context.Context, accountID string) (repository.Account, error)
@@ -117,7 +158,6 @@ func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) (
 func (fq fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
 func (fq fakeQuerier) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (repository.StatusTag, error)
 func (fq fakeQuerier) GetStatusTagsByTag(ctx context.Context, statusID int32) (repository.StatusTag, error)
-func (fq fakeQuerier) GetTechTagsByID(ctx context.Context, techTagID int32) (repository.TechTag, error)
 func (fq fakeQuerier) GetUsersByEmail(ctx context.Context, email sql.NullString) (repository.User, error)
 func (fq fakeQuerier) GetUsersByID(ctx context.Context, userID string) (repository.User, error)
 func (fq fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]repository.ListAccountFrameworksByUserIDRow, error)
@@ -138,11 +178,9 @@ func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListR
 func (fq fakeQuerier) ListRoles(ctx context.Context) ([]repository.Role, error)
 func (fq fakeQuerier) ListRooms(ctx context.Context, arg repository.ListRoomsParams) ([]repository.Room, error)
 func (fq fakeQuerier) ListStatusTags(ctx context.Context) ([]repository.StatusTag, error)
-func (fq fakeQuerier) ListTechTags(ctx context.Context) ([]repository.TechTag, error)
 func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateAccountsParams) (repository.Account, error)
 func (fq fakeQuerier) UpdateFrameworksByID(ctx context.Context, arg repository.UpdateFrameworksByIDParams) (repository.Framework, error)
 func (fq fakeQuerier) UpdatePastWorksByID(ctx context.Context, arg repository.UpdatePastWorksByIDParams) (repository.PastWork, error)
 func (fq fakeQuerier) UpdateRateByID(ctx context.Context, arg repository.UpdateRateByIDParams) (repository.Account, error)
 func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.UpdateRoomsByIDParams) (repository.Room, error)
-func (fq fakeQuerier) UpdateTechTagsByID(ctx context.Context, language string) (repository.TechTag, error)
 func (fq fakeQuerier) UpdateUsersByID(ctx context.Context, arg repository.UpdateUsersByIDParams) (repository.User, error)
