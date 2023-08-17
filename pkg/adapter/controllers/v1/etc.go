@@ -64,6 +64,23 @@ func (ec *EtcController) ListTechTags(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// ListStatusTags	godoc
+// @Summary			Get Frameworks
+// @Description		Get Frameworks
+// @Tags			TechTags
+// @Produce			json
+// @Success			200		{array}		repository.StatusTag	"success response"
+// @Failure 		500		{object}	ErrorResponse			"error response"
+// @Router       	/status_tags			[get]
+func (ec *EtcController) ListStatusTags(ctx *gin.Context) {
+	response, err := ec.EtcUsecase.GetStatusTag(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+}
+
 func (ec *EtcController) Ping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 }

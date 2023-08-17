@@ -36,9 +36,17 @@ func (eu *etcUsecase) GetLocat(ctx context.Context) ([]repository.Locate, error)
 
 	return eu.store.ListLocates(ctx)
 }
+
 func (eu *etcUsecase) GetTechTag(ctx context.Context) ([]repository.TechTag, error) {
 	ctx, cancel := context.WithTimeout(ctx, eu.contextTimeout)
 	defer cancel()
 
 	return eu.store.ListTechTags(ctx)
+}
+
+func (eu *etcUsecase) GetStatusTag(ctx context.Context) ([]repository.StatusTag, error) {
+	ctx, cancel := context.WithTimeout(ctx, eu.contextTimeout)
+	defer cancel()
+
+	return eu.store.ListStatusTags(ctx)
 }

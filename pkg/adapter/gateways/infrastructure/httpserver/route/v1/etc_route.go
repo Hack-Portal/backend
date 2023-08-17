@@ -22,6 +22,7 @@ func NewEtcRouter(env *bootstrap.Env, timeout time.Duration, store transaction.S
 	group.GET("/locates", etcController.ListLocation)
 	group.GET("/tech_tags", etcController.ListTechTags)
 	group.GET("/frameworks", etcController.ListFrameworks)
+	group.GET("/status_tags", etcController.ListStatusTags)
 }
 
 func setupSwagger(group *gin.RouterGroup) {
