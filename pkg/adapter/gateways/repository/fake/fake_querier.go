@@ -8,6 +8,7 @@ import (
 	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
+	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 )
 
 type fakeQuerier struct {
@@ -26,9 +27,9 @@ type fakeQuerier struct {
 	rateEntity         map[int32]repository.RateEntity
 	follow             map[int32]repository.Follow
 	pastWork           map[int32]repository.PastWork
-	accountTag         map[string]repository.AccountTag
-	accountFramework   map[string]repository.AccountFramework
-	hackathonStatusTag map[string]repository.HackathonStatusTag
+	accountTag         map[int32]repository.AccountTag
+	accountFramework   map[int32]repository.AccountFramework
+	hackathonStatusTag map[int32]repository.HackathonStatusTag
 	// 4
 	accountPastWork   map[string]repository.AccountPastWork
 	like              map[string]repository.Like
@@ -916,13 +917,114 @@ func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.De
 	return fq.pastWork[arg.Opus], nil
 }
 
-func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error)
-func (fq fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
-func (fq fakeQuerier) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]repository.ListAccountTagsByUserIDRow, error)
+func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error) {
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.AccountTag{}, err
+	}
+	if _, ok := fq.techTag[arg.TechTagID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
+		return repository.AccountTag{}, err
+	}
 
-func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error)
-func (fq fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
-func (fq fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]repository.ListAccountFrameworksByUserIDRow, error)
+	accountTag := repository.AccountTag{
+		AccountID: arg.AccountID,
+		TechTagID: arg.TechTagID,
+	}
+
+	fq.accountTag[int32(len(fq.accountTag))+1] = accountTag
+	return fq.accountTag[int32(len(fq.accountTag))+1], nil
+}
+
+func (fq fakeQuerier) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]repository.ListAccountTagsByUserIDRow, error) {
+	if _, ok := fq.account[accountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
+		return nil, err
+	}
+	accountTags := []repository.ListAccountTagsByUserIDRow{}
+
+	for _, accountTag := range fq.accountTag {
+		if accountTag.AccountID == accountID {
+			tag := fq.techTag[accountTag.TechTagID]
+			accountTags = append(accountTags, repository.ListAccountTagsByUserIDRow{
+				TechTagID: dbutil.ToSqlNullInt32(tag.TechTagID),
+				Language:  dbutil.ToSqlNullString(tag.Language),
+			})
+		}
+	}
+
+	return accountTags, nil
+}
+
+func (fq fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error {
+	if _, ok := fq.account[accountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
+		return err
+	}
+
+	for i, accountTag := range fq.accountTag {
+		if accountTag.AccountID == accountID {
+			delete(fq.accountTag, i)
+		}
+	}
+
+	return nil
+}
+
+func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error) {
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.AccountFramework{}, err
+	}
+	if _, ok := fq.framework[arg.FrameworkID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.FrameworkID))
+		return repository.AccountFramework{}, err
+	}
+
+	accountFramework := repository.AccountFramework{
+		AccountID:   arg.AccountID,
+		FrameworkID: arg.FrameworkID,
+	}
+
+	fq.accountFramework[int32(len(fq.accountFramework))+1] = accountFramework
+	return fq.accountFramework[int32(len(fq.accountFramework))+1], nil
+}
+
+func (fq fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]repository.ListAccountFrameworksByUserIDRow, error) {
+	if _, ok := fq.account[accountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
+		return nil, err
+	}
+	accountFramework := []repository.ListAccountFrameworksByUserIDRow{}
+
+	for _, accountTag := range fq.accountFramework {
+		if accountTag.AccountID == accountID {
+			tag := fq.framework[accountTag.FrameworkID]
+			accountFramework = append(accountFramework, repository.ListAccountFrameworksByUserIDRow{
+				TechTagID:   dbutil.ToSqlNullInt32(tag.TechTagID),
+				FrameworkID: dbutil.ToSqlNullInt32(tag.FrameworkID),
+				Framework:   dbutil.ToSqlNullString(tag.Framework),
+			})
+		}
+	}
+
+	return accountFramework, nil
+}
+
+func (fq fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error {
+	if _, ok := fq.account[accountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
+		return err
+	}
+
+	for i, accountFramework := range fq.accountFramework {
+		if accountFramework.AccountID == accountID {
+			delete(fq.accountTag, i)
+		}
+	}
+
+	return nil
+}
 
 func (fq fakeQuerier) CreateHackathonStatusTags(ctx context.Context, arg repository.CreateHackathonStatusTagsParams) (repository.HackathonStatusTag, error)
 func (fq fakeQuerier) DeleteHackathonStatusTagsByID(ctx context.Context, hackathonID int32) error
