@@ -781,7 +781,7 @@ func (fq fakeQuerier) DeleteFollows(ctx context.Context, arg repository.DeleteFo
 		return err
 	}
 	for i, follow := range fq.follow {
-		if follow.FromAccountID == arg.FromAccountID || follow.ToAccountID == arg.ToAccountID {
+		if follow.FromAccountID == arg.FromAccountID && follow.ToAccountID == arg.ToAccountID {
 			delete(fq.follow, i)
 			return nil
 		}
@@ -1222,6 +1222,7 @@ func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([
 	}
 	return pastWorkTags, nil
 }
+
 func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error {
 	if _, ok := fq.pastWork[opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
@@ -1236,12 +1237,71 @@ func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) 
 	return nil
 }
 
+func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error) {
+	if _, ok := fq.room[arg.RoomID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.RoomID))
+		return repository.RoomsAccount{}, err
+	}
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.RoomsAccount{}, err
+	}
+
+	roomsAccount := repository.RoomsAccount{
+		AccountID: arg.AccountID,
+		RoomID:    arg.RoomID,
+		Role:      arg.Role,
+		IsOwner:   arg.IsOwner,
+		CreateAt:  time.Now(),
+	}
+
+	fq.roomsAccount[int32(len(fq.roomsAccount))+1] = roomsAccount
+	return fq.roomsAccount[int32(len(fq.roomsAccount))+1], nil
+}
+
+func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error) {
+	if _, ok := fq.room[roomID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, roomID))
+		return nil, err
+	}
+
+	roomsAccounts := []repository.GetRoomsAccountsByIDRow{}
+
+	for _, roomsAccount := range fq.roomsAccount {
+		if roomsAccount.RoomID == roomID {
+			account := fq.account[roomsAccount.AccountID]
+
+			roomsAccounts = append(roomsAccounts, repository.GetRoomsAccountsByIDRow{
+				AccountID: dbutil.ToSqlNullString(roomsAccount.AccountID),
+				IsOwner:   roomsAccount.IsOwner,
+				Icon:      account.Icon,
+				Role:      roomsAccount.Role,
+			})
+		}
+	}
+	return roomsAccounts, nil
+}
+
+func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repository.DeleteRoomsAccountsByIDParams) error {
+	if _, ok := fq.room[arg.RoomID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.RoomID))
+		return err
+	}
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return err
+	}
+
+	for i, roomsAccount := range fq.roomsAccount {
+		if roomsAccount.RoomID == arg.RoomID && roomsAccount.AccountID == arg.AccountID {
+			delete(fq.pastWorkTag, i)
+		}
+	}
+	return nil
+}
+
 func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
 func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error)
 func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
 func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error)
 func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error)
-
-func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error)
-func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error)
-func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repository.DeleteRoomsAccountsByIDParams) error
