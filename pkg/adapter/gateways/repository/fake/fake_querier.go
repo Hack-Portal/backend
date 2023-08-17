@@ -24,7 +24,7 @@ type fakeQuerier struct {
 	pastWorkTag        map[string]repository.PastWorkTag
 	pastWork           map[string]repository.PastWork
 	rateEntity         map[string]repository.RateEntity
-	role               map[string]repository.Role
+	role               map[int32]repository.Role
 	room               map[string]repository.Room
 	roomsAccount       map[string]repository.RoomsAccount
 	statusTag          map[string]repository.StatusTag
@@ -71,7 +71,7 @@ func (fq fakeQuerier) CreateTechTags(ctx context.Context, language string) (repo
 		Language:  language,
 	}
 	if len(techTag.Language) == 0 {
-		err := errors.New(`null value in column "name" violates not-null constraint`)
+		err := errors.New(`null value in column "language" violates not-null constraint`)
 		return repository.TechTag{}, err
 	}
 
@@ -107,7 +107,7 @@ func (fq fakeQuerier) UpdateTechTagsByID(ctx context.Context, arg repository.Upd
 		Language:  arg.Language,
 	}
 	fq.techTag[arg.TechTagID] = techTag
-	return techTag, nil
+	return fq.techTag[arg.TechTagID], nil
 }
 func (fq fakeQuerier) DeleteTechTagsByID(ctx context.Context, techTagID int32) error {
 	if _, ok := fq.techTag[techTagID]; !ok {
@@ -117,6 +117,38 @@ func (fq fakeQuerier) DeleteTechTagsByID(ctx context.Context, techTagID int32) e
 	delete(fq.techTag, techTagID)
 
 	return nil
+}
+
+func (fq fakeQuerier) CreateRoles(ctx context.Context, role string) (repository.Role, error) {
+	r := repository.Role{
+		RoleID: int32(len(fq.role)) + 1,
+		Role:   role,
+	}
+	if len(r.Role) == 0 {
+		err := errors.New(`null value in column "role" violates not-null constraint`)
+		return repository.Role{}, err
+	}
+	fq.role[int32(len(fq.role))+1] = r
+	return fq.role[int32(len(fq.role))+1], nil
+}
+
+func (fq fakeQuerier) GetRolesByID(ctx context.Context, roleID int32) (repository.Role, error) {
+	role, ok := fq.role[roleID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, roleID))
+		return repository.Role{}, err
+	}
+	return role, nil
+}
+
+func (fq fakeQuerier) ListRoles(ctx context.Context) ([]repository.Role, error) {
+	roles := []repository.Role{}
+
+	for _, role := range fq.role {
+		roles = append(roles, role)
+	}
+
+	return roles, nil
 }
 
 func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error)
@@ -133,7 +165,6 @@ func (fq fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg reposito
 func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.CreatePastWorkTagsParams) (repository.PastWorkTag, error)
 func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error)
 func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.CreateRateEntitiesParams) (repository.RateEntity, error)
-func (fq fakeQuerier) CreateRoles(ctx context.Context, role string) (repository.Role, error)
 func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error)
 func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error)
 func (fq fakeQuerier) CreateStatusTags(ctx context.Context, status string) (repository.StatusTag, error)
@@ -164,7 +195,6 @@ func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetL
 func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
 
 func (fq fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (repository.PastWork, error)
-func (fq fakeQuerier) GetRolesByID(ctx context.Context, roleID int32) (repository.Role, error)
 func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error)
 func (fq fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
 func (fq fakeQuerier) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (repository.StatusTag, error)
@@ -186,7 +216,6 @@ func (fq fakeQuerier) ListPastWorkFrameworksByOpus(ctx context.Context, opus int
 func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error)
 func (fq fakeQuerier) ListPastWorks(ctx context.Context, arg repository.ListPastWorksParams) ([]repository.ListPastWorksRow, error)
 func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error)
-func (fq fakeQuerier) ListRoles(ctx context.Context) ([]repository.Role, error)
 func (fq fakeQuerier) ListRooms(ctx context.Context, arg repository.ListRoomsParams) ([]repository.Room, error)
 func (fq fakeQuerier) ListStatusTags(ctx context.Context) ([]repository.StatusTag, error)
 func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateAccountsParams) (repository.Account, error)
