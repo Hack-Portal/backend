@@ -18,9 +18,9 @@ type fakeQuerier struct {
 	role      map[int32]repository.Role
 	user      map[string]repository.User
 	// 2
-	framework map[string]repository.Framework
+	framework map[int32]repository.Framework
+	hackathon map[int32]repository.Hackathon
 	account   map[string]repository.Account
-	hackathon map[string]repository.Hackathon
 	// 3
 	room               map[string]repository.Room
 	rateEntity         map[string]repository.RateEntity
@@ -76,7 +76,7 @@ func (fq fakeQuerier) CreateTechTags(ctx context.Context, language string) (repo
 		Language:  language,
 	}
 	if len(techTag.Language) == 0 {
-		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "language"))
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "language"))
 		return repository.TechTag{}, err
 	}
 
@@ -132,7 +132,7 @@ func (fq fakeQuerier) CreateRoles(ctx context.Context, role string) (repository.
 		Role:   role,
 	}
 	if len(r.Role) == 0 {
-		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "role"))
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "role"))
 		return repository.Role{}, err
 	}
 	fq.role[int32(len(fq.role))+1] = r
@@ -164,7 +164,7 @@ func (fq fakeQuerier) CreateStatusTags(ctx context.Context, status string) (repo
 		Status:   status,
 	}
 	if len(statusTag.Status) == 0 {
-		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "status"))
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "status"))
 		return repository.StatusTag{}, err
 	}
 
@@ -221,7 +221,7 @@ func (fq fakeQuerier) CreateUsers(ctx context.Context, arg repository.CreateUser
 		IsDelete:       false,
 	}
 	if len(user.UserID) == 0 {
-		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "user_id"))
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
 		return repository.User{}, err
 	}
 
@@ -251,7 +251,7 @@ func (fq fakeQuerier) GetUsersByEmail(ctx context.Context, email sql.NullString)
 
 func (fq fakeQuerier) UpdateUsersByID(ctx context.Context, arg repository.UpdateUsersByIDParams) (repository.User, error) {
 	if len(arg.UserID) == 0 {
-		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "user_id"))
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
 		return repository.User{}, err
 	}
 
@@ -286,7 +286,7 @@ func (fq fakeQuerier) UpdateUsersByID(ctx context.Context, arg repository.Update
 
 func (fq fakeQuerier) DeleteUsersByID(ctx context.Context, arg repository.DeleteUsersByIDParams) error {
 	if len(arg.UserID) == 0 {
-		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "user_id"))
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
 		return err
 	}
 	user := fq.user[arg.UserID]
@@ -295,68 +295,133 @@ func (fq fakeQuerier) DeleteUsersByID(ctx context.Context, arg repository.Delete
 	return nil
 }
 
-func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error)
-func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error)
-func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error)
-func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateAccountsParams) (repository.Account, error)
-func (fq fakeQuerier) CreateFollows(ctx context.Context, arg repository.CreateFollowsParams) (repository.Follow, error)
-func (fq fakeQuerier) CreateFrameworks(ctx context.Context, arg repository.CreateFrameworksParams) (repository.Framework, error)
-func (fq fakeQuerier) CreateHackathonStatusTags(ctx context.Context, arg repository.CreateHackathonStatusTagsParams) (repository.HackathonStatusTag, error)
+func (fq fakeQuerier) CreateFrameworks(ctx context.Context, arg repository.CreateFrameworksParams) (repository.Framework, error) {
+	if _, ok := fq.techTag[arg.TechTagID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.TechTagID))
+		return repository.Framework{}, err
+	}
+	if len(arg.Framework) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "framework"))
+		return repository.Framework{}, err
+	}
+	framework := repository.Framework{
+		FrameworkID: int32(len(fq.framework)) + 1,
+		TechTagID:   arg.TechTagID,
+		Framework:   arg.Framework,
+	}
+	fq.framework[int32(len(fq.framework))+1] = framework
+	return fq.framework[int32(len(fq.framework))+1], nil
+}
+
+func (fq fakeQuerier) GetFrameworksByID(ctx context.Context, frameworkID int32) (repository.Framework, error) {
+	framework, ok := fq.framework[frameworkID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, frameworkID))
+		return repository.Framework{}, err
+	}
+	return framework, nil
+}
+
+func (fq fakeQuerier) ListFrameworks(ctx context.Context) ([]repository.Framework, error) {
+	frameworks := []repository.Framework{}
+
+	for _, framework := range fq.framework {
+		frameworks = append(frameworks, framework)
+	}
+
+	return frameworks, nil
+}
+
+func (fq fakeQuerier) UpdateFrameworksByID(ctx context.Context, arg repository.UpdateFrameworksByIDParams) (repository.Framework, error) {
+	if _, ok := fq.framework[arg.FrameworkID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.FrameworkID))
+		return repository.Framework{}, err
+	}
+	if _, ok := fq.techTag[arg.TechTagID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
+		return repository.Framework{}, err
+	}
+
+	fq.framework[arg.FrameworkID] = repository.Framework{
+		FrameworkID: arg.FrameworkID,
+		TechTagID:   arg.TechTagID,
+		Framework:   arg.Framework,
+	}
+
+	return fq.framework[arg.FrameworkID], nil
+}
+func (fq fakeQuerier) DeleteFrameworksByID(ctx context.Context, frameworkID int32) error {
+	if _, ok := fq.framework[frameworkID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, frameworkID))
+		return err
+	}
+	delete(fq.framework, frameworkID)
+	return nil
+}
+
 func (fq fakeQuerier) CreateHackathons(ctx context.Context, arg repository.CreateHackathonsParams) (repository.Hackathon, error)
-func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
-func (fq fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg repository.CreatePastWorkFrameworksParams) (repository.PastWorkFramework, error)
-func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.CreatePastWorkTagsParams) (repository.PastWorkTag, error)
-func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error)
-func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.CreateRateEntitiesParams) (repository.RateEntity, error)
-func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error)
-func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error)
-func (fq fakeQuerier) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (repository.StatusTag, error)
-
-func (fq fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
-func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
-func (fq fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
-func (fq fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (repository.Account, error)
-func (fq fakeQuerier) DeleteFollows(ctx context.Context, arg repository.DeleteFollowsParams) error
-func (fq fakeQuerier) DeleteFrameworksByID(ctx context.Context, frameworkID int32) error
 func (fq fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32) error
-func (fq fakeQuerier) DeleteHackathonStatusTagsByID(ctx context.Context, hackathonID int32) error
-func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error)
-func (fq fakeQuerier) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error
-func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
-func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.DeletePastWorksByIDParams) (repository.PastWork, error)
-func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repository.DeleteRoomsAccountsByIDParams) error
-func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
-
-func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email sql.NullString) (repository.Account, error)
-func (fq fakeQuerier) GetAccountsByID(ctx context.Context, accountID string) (repository.Account, error)
-func (fq fakeQuerier) GetFrameworksByID(ctx context.Context, frameworkID int32) (repository.Framework, error)
 func (fq fakeQuerier) GetHackathonByID(ctx context.Context, hackathonID int32) (repository.Hackathon, error)
-func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error)
-func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
+func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHackathonsParams) ([]repository.Hackathon, error)
 
-func (fq fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (repository.PastWork, error)
-func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error)
-func (fq fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
-
-func (fq fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]repository.ListAccountFrameworksByUserIDRow, error)
-func (fq fakeQuerier) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]repository.AccountPastWork, error)
-func (fq fakeQuerier) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]repository.ListAccountTagsByUserIDRow, error)
+func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateAccountsParams) (repository.Account, error)
+func (fq fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (repository.Account, error)
+func (fq fakeQuerier) GetAccountsByID(ctx context.Context, accountID string) (repository.Account, error)
 func (fq fakeQuerier) ListAccounts(ctx context.Context, arg repository.ListAccountsParams) ([]repository.Account, error)
+func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateAccountsParams) (repository.Account, error)
+func (fq fakeQuerier) UpdateRateByID(ctx context.Context, arg repository.UpdateRateByIDParams) (repository.Account, error)
+func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email sql.NullString) (repository.Account, error)
+
+func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error)
+func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
+func (fq fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
+func (fq fakeQuerier) ListRooms(ctx context.Context, arg repository.ListRoomsParams) ([]repository.Room, error)
+func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.UpdateRoomsByIDParams) (repository.Room, error)
+
+func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.CreateRateEntitiesParams) (repository.RateEntity, error)
+func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error)
+
+func (fq fakeQuerier) CreateFollows(ctx context.Context, arg repository.CreateFollowsParams) (repository.Follow, error)
+func (fq fakeQuerier) DeleteFollows(ctx context.Context, arg repository.DeleteFollowsParams) error
 func (fq fakeQuerier) ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]repository.Follow, error)
 func (fq fakeQuerier) ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]repository.Follow, error)
-func (fq fakeQuerier) ListFrameworks(ctx context.Context) ([]repository.Framework, error)
-func (fq fakeQuerier) ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]repository.HackathonStatusTag, error)
-func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHackathonsParams) ([]repository.Hackathon, error)
-func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error)
 
-func (fq fakeQuerier) ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]repository.PastWorkFramework, error)
-func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error)
+func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error)
+func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.DeletePastWorksByIDParams) (repository.PastWork, error)
+func (fq fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (repository.PastWork, error)
 func (fq fakeQuerier) ListPastWorks(ctx context.Context, arg repository.ListPastWorksParams) ([]repository.ListPastWorksRow, error)
-func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error)
-func (fq fakeQuerier) ListRooms(ctx context.Context, arg repository.ListRoomsParams) ([]repository.Room, error)
-
-func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateAccountsParams) (repository.Account, error)
-func (fq fakeQuerier) UpdateFrameworksByID(ctx context.Context, arg repository.UpdateFrameworksByIDParams) (repository.Framework, error)
 func (fq fakeQuerier) UpdatePastWorksByID(ctx context.Context, arg repository.UpdatePastWorksByIDParams) (repository.PastWork, error)
-func (fq fakeQuerier) UpdateRateByID(ctx context.Context, arg repository.UpdateRateByIDParams) (repository.Account, error)
-func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.UpdateRoomsByIDParams) (repository.Room, error)
+
+func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error)
+func (fq fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
+func (fq fakeQuerier) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]repository.ListAccountTagsByUserIDRow, error)
+
+func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error)
+func (fq fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
+func (fq fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]repository.ListAccountFrameworksByUserIDRow, error)
+
+func (fq fakeQuerier) CreateHackathonStatusTags(ctx context.Context, arg repository.CreateHackathonStatusTagsParams) (repository.HackathonStatusTag, error)
+func (fq fakeQuerier) DeleteHackathonStatusTagsByID(ctx context.Context, hackathonID int32) error
+func (fq fakeQuerier) ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]repository.HackathonStatusTag, error)
+func (fq fakeQuerier) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (repository.StatusTag, error)
+
+func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error)
+func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
+func (fq fakeQuerier) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]repository.AccountPastWork, error)
+
+func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
+func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error)
+func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error)
+func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error)
+func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
+
+func (fq fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg repository.CreatePastWorkFrameworksParams) (repository.PastWorkFramework, error)
+func (fq fakeQuerier) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error
+
+func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.CreatePastWorkTagsParams) (repository.PastWorkTag, error)
+func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
+func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error)
+
+func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error)
+func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error)
+func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repository.DeleteRoomsAccountsByIDParams) error
