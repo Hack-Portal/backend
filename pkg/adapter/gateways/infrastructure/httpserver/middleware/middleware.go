@@ -21,7 +21,6 @@ const (
 
 func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		fmt.Println(ctx.Request.Header)
 		jwtType := ctx.GetHeader(AuthorizationType)
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 
