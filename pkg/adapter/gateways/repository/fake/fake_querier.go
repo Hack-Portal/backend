@@ -23,8 +23,8 @@ type fakeQuerier struct {
 	account   map[string]repository.Account
 	// 3
 	room               map[string]repository.Room
-	rateEntity         map[string]repository.RateEntity
-	follow             map[string]repository.Follow
+	rateEntity         map[int32]repository.RateEntity
+	follow             map[int32]repository.Follow
 	pastWork           map[string]repository.PastWork
 	accountTag         map[string]repository.AccountTag
 	accountFramework   map[string]repository.AccountFramework
@@ -720,8 +720,8 @@ func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.Cre
 		Rate:      arg.Rate,
 		CreateAt:  time.Now(),
 	}
-	fq.rateEntity[arg.AccountID] = rate
-	return fq.rateEntity[arg.AccountID], nil
+	fq.rateEntity[int32(len(fq.rateEntity))+1] = rate
+	return fq.rateEntity[int32(len(fq.rateEntity))+1], nil
 }
 
 func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error) {
@@ -748,10 +748,66 @@ func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListR
 	return rates, nil
 }
 
-func (fq fakeQuerier) CreateFollows(ctx context.Context, arg repository.CreateFollowsParams) (repository.Follow, error)
-func (fq fakeQuerier) DeleteFollows(ctx context.Context, arg repository.DeleteFollowsParams) error
-func (fq fakeQuerier) ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]repository.Follow, error)
-func (fq fakeQuerier) ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]repository.Follow, error)
+func (fq fakeQuerier) CreateFollows(ctx context.Context, arg repository.CreateFollowsParams) (repository.Follow, error) {
+	if _, ok := fq.account[arg.ToAccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.ToAccountID))
+		return repository.Follow{}, err
+	}
+
+	if _, ok := fq.account[arg.FromAccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.FromAccountID))
+		return repository.Follow{}, err
+	}
+
+	follow := repository.Follow{
+		ToAccountID:   arg.ToAccountID,
+		FromAccountID: arg.FromAccountID,
+		CreateAt:      time.Now(),
+	}
+
+	fq.follow[int32(len(fq.follow))+1] = follow
+	return fq.follow[int32(len(fq.follow))+1], nil
+}
+
+func (fq fakeQuerier) DeleteFollows(ctx context.Context, arg repository.DeleteFollowsParams) error {
+	if _, ok := fq.account[arg.ToAccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.ToAccountID))
+		return err
+	}
+
+	if _, ok := fq.account[arg.FromAccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.FromAccountID))
+		return err
+	}
+	for i, follow := range fq.follow {
+		if follow.FromAccountID == arg.FromAccountID || follow.ToAccountID == arg.ToAccountID {
+			delete(fq.follow, i)
+			return nil
+		}
+	}
+
+	return errors.New(fmt.Sprintf(`ERROR: no rows in result set `))
+}
+
+func (fq fakeQuerier) ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]repository.Follow, error) {
+	follows := []repository.Follow{}
+	for i, follow := range fq.follow {
+		if follow.FromAccountID == fromAccountID {
+			follows = append(follows, fq.follow[i])
+		}
+	}
+	return follows, nil
+}
+
+func (fq fakeQuerier) ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]repository.Follow, error) {
+	follows := []repository.Follow{}
+	for i, follow := range fq.follow {
+		if follow.ToAccountID == toAccountID {
+			follows = append(follows, fq.follow[i])
+		}
+	}
+	return follows, nil
+}
 
 func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error)
 func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.DeletePastWorksByIDParams) (repository.PastWork, error)
