@@ -911,7 +911,7 @@ func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.De
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
 		return repository.PastWork{}, err
 	}
-	pastWork.IsDelete = false
+	pastWork.IsDelete = true
 
 	fq.pastWork[arg.Opus] = pastWork
 	return fq.pastWork[arg.Opus], nil
@@ -1300,8 +1300,93 @@ func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repositor
 	return nil
 }
 
-func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
-func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error)
-func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
-func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error)
-func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error)
+func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error) {
+	if _, ok := fq.pastWork[arg.Opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
+		return repository.Like{}, err
+	}
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.Like{}, err
+	}
+
+	like := repository.Like{
+		Opus:      arg.Opus,
+		AccountID: arg.AccountID,
+		CreateAt:  time.Now(),
+		IsDelete:  false,
+	}
+	fq.like[int32(len(fq.like))+1] = like
+	return fq.like[int32(len(fq.like))+1], nil
+}
+
+func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error) {
+	if _, ok := fq.pastWork[arg.Opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
+		return repository.Like{}, err
+	}
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.Like{}, err
+	}
+
+	for i, like := range fq.like {
+		if like.Opus == arg.Opus && like.AccountID == arg.AccountID {
+			return fq.like[i], nil
+		}
+	}
+
+	return repository.Like{}, errors.New(fmt.Sprintf(`ERROR: no rows in result set `))
+}
+
+func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error) {
+	var count int64
+	if _, ok := fq.pastWork[opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
+		return 0, err
+	}
+
+	for _, like := range fq.like {
+		if like.Opus == opus {
+			count++
+		}
+	}
+	return count, nil
+}
+
+func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error) {
+	if _, ok := fq.account[accountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
+		return nil, err
+	}
+
+	likes := []repository.Like{}
+
+	for i, like := range fq.like {
+		if like.AccountID == accountID {
+			likes = append(likes, fq.like[i])
+		}
+	}
+	return likes, nil
+}
+
+func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error) {
+	if _, ok := fq.pastWork[arg.Opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
+		return repository.Like{}, err
+	}
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.Like{}, err
+	}
+
+	for i, like := range fq.like {
+		if like.Opus == arg.Opus && like.AccountID == arg.AccountID {
+			like := fq.like[i]
+			like.IsDelete = true
+			fq.like[i] = like
+			return fq.like[i], nil
+		}
+	}
+	return repository.Like{}, errors.New(fmt.Sprintf(`ERROR: no rows in result set `))
+}
