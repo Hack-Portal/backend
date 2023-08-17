@@ -297,7 +297,7 @@ func (fq fakeQuerier) DeleteUsersByID(ctx context.Context, arg repository.Delete
 
 func (fq fakeQuerier) CreateFrameworks(ctx context.Context, arg repository.CreateFrameworksParams) (repository.Framework, error) {
 	if _, ok := fq.techTag[arg.TechTagID]; !ok {
-		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.TechTagID))
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
 		return repository.Framework{}, err
 	}
 	if len(arg.Framework) == 0 {
@@ -359,10 +359,56 @@ func (fq fakeQuerier) DeleteFrameworksByID(ctx context.Context, frameworkID int3
 	return nil
 }
 
-func (fq fakeQuerier) CreateHackathons(ctx context.Context, arg repository.CreateHackathonsParams) (repository.Hackathon, error)
-func (fq fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32) error
-func (fq fakeQuerier) GetHackathonByID(ctx context.Context, hackathonID int32) (repository.Hackathon, error)
-func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHackathonsParams) ([]repository.Hackathon, error)
+func (fq fakeQuerier) CreateHackathons(ctx context.Context, arg repository.CreateHackathonsParams) (repository.Hackathon, error) {
+	if len(arg.Name) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "name"))
+		return repository.Hackathon{}, err
+	}
+	if len(arg.Link) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "link"))
+		return repository.Hackathon{}, err
+	}
+	hackathon := repository.Hackathon{
+		HackathonID: int32(len(fq.hackathon)) + 1,
+		Name:        arg.Name,
+		Icon:        arg.Icon,
+		Description: arg.Description,
+		Link:        arg.Link,
+		Expired:     arg.Expired,
+		StartDate:   arg.StartDate,
+		Term:        arg.Term,
+	}
+	fq.hackathon[int32(len(fq.hackathon))+1] = hackathon
+	return fq.hackathon[int32(len(fq.hackathon))+1], nil
+}
+
+func (fq fakeQuerier) GetHackathonByID(ctx context.Context, hackathonID int32) (repository.Hackathon, error) {
+	hackathon, ok := fq.hackathon[hackathonID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
+		return repository.Hackathon{}, err
+	}
+	return hackathon, nil
+}
+
+func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHackathonsParams) ([]repository.Hackathon, error) {
+	hackathons := []repository.Hackathon{}
+
+	for _, hackathon := range fq.hackathon {
+		hackathons = append(hackathons, hackathon)
+	}
+
+	return hackathons, nil
+}
+
+func (fq fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32) error {
+	if _, ok := fq.hackathon[hackathonID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
+		return err
+	}
+	delete(fq.hackathon, hackathonID)
+	return nil
+}
 
 func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateAccountsParams) (repository.Account, error)
 func (fq fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (repository.Account, error)
