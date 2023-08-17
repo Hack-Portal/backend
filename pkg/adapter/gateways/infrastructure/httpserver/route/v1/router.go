@@ -17,10 +17,8 @@ import (
 func setupCors(router *gin.Engine) {
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
-	config.AllowHeaders = []string{
-		"dbauthorization",
-		"dbauthorization_type",
-	}
+	config.AllowHeaders = append(config.AllowHeaders, "dbauthorization")
+	config.AllowHeaders = append(config.AllowHeaders, "dbauthorization_type")
 	router.Use(cors.New(config))
 }
 
