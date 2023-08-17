@@ -202,6 +202,10 @@ func (fq fakeQuerier) DeleteStatusTagsByStatusID(ctx context.Context, statusID i
 }
 
 func (fq fakeQuerier) CreateUsers(ctx context.Context, arg repository.CreateUsersParams) (repository.User, error) {
+	if len(arg.UserID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
+		return repository.User{}, err
+	}
 	// Emailが空白でない時　重複がないかを確認する
 	if arg.Email.Valid {
 		for _, user := range fq.user {
@@ -212,6 +216,13 @@ func (fq fakeQuerier) CreateUsers(ctx context.Context, arg repository.CreateUser
 		}
 	}
 
+	for _, user := range fq.user {
+		if user.UserID == arg.UserID {
+			err := errors.New(fmt.Sprintf(`ERROR: duplicate key value violates unique constraint "%s" `, arg.UserID))
+			return repository.User{}, err
+		}
+	}
+
 	user := repository.User{
 		UserID:         arg.UserID,
 		Email:          arg.Email,
@@ -219,10 +230,6 @@ func (fq fakeQuerier) CreateUsers(ctx context.Context, arg repository.CreateUser
 		CreateAt:       time.Now(),
 		UpdateAt:       time.Now(),
 		IsDelete:       false,
-	}
-	if len(user.UserID) == 0 {
-		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
-		return repository.User{}, err
 	}
 
 	fq.user[arg.UserID] = user
@@ -410,13 +417,150 @@ func (fq fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32
 	return nil
 }
 
-func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateAccountsParams) (repository.Account, error)
-func (fq fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (repository.Account, error)
-func (fq fakeQuerier) GetAccountsByID(ctx context.Context, accountID string) (repository.Account, error)
-func (fq fakeQuerier) ListAccounts(ctx context.Context, arg repository.ListAccountsParams) ([]repository.Account, error)
-func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateAccountsParams) (repository.Account, error)
-func (fq fakeQuerier) UpdateRateByID(ctx context.Context, arg repository.UpdateRateByIDParams) (repository.Account, error)
-func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email sql.NullString) (repository.Account, error)
+func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateAccountsParams) (repository.Account, error) {
+	if len(arg.AccountID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
+		return repository.Account{}, err
+	}
+	if len(arg.UserID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
+		return repository.Account{}, err
+	}
+	if len(arg.Username) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "username"))
+		return repository.Account{}, err
+	}
+	if arg.LocateID == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "locate_id"))
+		return repository.Account{}, err
+	}
+
+	for _, account := range fq.account {
+		if account.UserID == arg.UserID {
+			err := errors.New(fmt.Sprintf(`ERROR: duplicate key value violates unique constraint "%s" `, arg.UserID))
+			return repository.Account{}, err
+		}
+	}
+
+	account := repository.Account{
+		AccountID:       arg.AccountID,
+		UserID:          arg.UserID,
+		Username:        arg.Username,
+		Icon:            arg.Icon,
+		ExplanatoryText: arg.ExplanatoryText,
+		LocateID:        arg.LocateID,
+		Rate:            arg.Rate,
+		ShowLocate:      arg.ShowLocate,
+		ShowRate:        arg.ShowRate,
+		CreateAt:        time.Now(),
+		UpdateAt:        time.Now(),
+		IsDelete:        false,
+	}
+
+	fq.account[arg.AccountID] = account
+	return fq.account[arg.AccountID], nil
+}
+
+func (fq fakeQuerier) GetAccountsByID(ctx context.Context, accountID string) (repository.Account, error) {
+	account, ok := fq.account[accountID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
+		return repository.Account{}, err
+	}
+	return account, nil
+}
+
+func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email sql.NullString) (repository.Account, error) {
+	user, err := fq.GetUsersByEmail(ctx, email)
+	if err != nil {
+		return repository.Account{}, err
+	}
+
+	for _, account := range fq.account {
+		if user.UserID == account.UserID {
+			return account, nil
+		}
+	}
+
+	err = errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, email.String))
+	return repository.Account{}, err
+}
+
+func (fq fakeQuerier) ListAccounts(ctx context.Context, arg repository.ListAccountsParams) ([]repository.Account, error) {
+	accounts := []repository.Account{}
+
+	for _, account := range fq.account {
+		accounts = append(accounts, account)
+	}
+
+	return accounts, nil
+}
+
+func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateAccountsParams) (repository.Account, error) {
+	account, ok := fq.account[arg.AccountID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.Account{}, err
+	}
+
+	newAccount := repository.Account{
+		AccountID:       account.AccountID,
+		UserID:          account.UserID,
+		Username:        arg.Username,
+		Icon:            arg.Icon,
+		ExplanatoryText: arg.ExplanatoryText,
+		LocateID:        arg.LocateID,
+		Rate:            arg.Rate,
+		Character:       arg.Character,
+		ShowLocate:      arg.ShowLocate,
+		ShowRate:        arg.ShowRate,
+		CreateAt:        account.CreateAt,
+		UpdateAt:        time.Now(),
+		IsDelete:        false,
+	}
+
+	fq.account[arg.AccountID] = newAccount
+
+	return fq.account[arg.AccountID], nil
+}
+
+func (fq fakeQuerier) UpdateRateByID(ctx context.Context, arg repository.UpdateRateByIDParams) (repository.Account, error) {
+	account, ok := fq.account[arg.AccountID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.Account{}, err
+	}
+
+	newAccount := repository.Account{
+		AccountID:       account.AccountID,
+		UserID:          account.UserID,
+		Username:        account.Username,
+		Icon:            account.Icon,
+		ExplanatoryText: account.ExplanatoryText,
+		LocateID:        account.LocateID,
+		Rate:            arg.Rate,
+		Character:       account.Character,
+		ShowLocate:      account.ShowLocate,
+		ShowRate:        account.ShowRate,
+		CreateAt:        account.CreateAt,
+		UpdateAt:        time.Now(),
+		IsDelete:        false,
+	}
+	fq.account[arg.AccountID] = newAccount
+
+	return fq.account[arg.AccountID], nil
+}
+
+func (fq fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (repository.Account, error) {
+	if len(accountID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
+		return repository.Account{}, err
+	}
+	account := fq.account[accountID]
+	account.IsDelete = true
+	fq.account[accountID] = account
+	return fq.account[accountID], nil
+}
 
 func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error)
 func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
