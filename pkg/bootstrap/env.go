@@ -15,6 +15,9 @@ type Env struct {
 	ServerPort     string `mapstructure:"SERVER_PORT"`
 	ContextTimeout string `mapstructure:"CONTEXT_TIMEOUT"`
 	BasePath       string `mapstructure:"BASE_PATH"`
+
+	TokenDuration     string `mapstructure:"TOKEN_DURATION"`
+	TokenSymmetricKey string `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 }
 
 // app.envファイルを読み込む

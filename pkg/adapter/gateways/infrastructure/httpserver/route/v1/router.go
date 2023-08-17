@@ -9,6 +9,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	_ "github.com/hackhack-Geek-vol6/backend/pkg/docs"
+	tokens "github.com/hackhack-Geek-vol6/backend/pkg/util/token"
 )
 
 func setupCors(router *gin.Engine) {
@@ -18,13 +19,14 @@ func setupCors(router *gin.Engine) {
 	router.Use(cors.New(config))
 }
 
-func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
+func Setup(env *bootstrap.Env, tokenMaker tokens.Maker, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
 	setupCors(gin)
 
 	publicRouter := gin.Group("/v1")
 	// All Public APIs
 	NewEtcRouter(env, timeout, store, publicRouter)
 	NewHackathonRouter(env, timeout, store, publicRouter)
+	NewUserRouter(env, tokenMaker, timeout, store, publicRouter)
 
 	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware())
 	//TODO:middlewareの追加
