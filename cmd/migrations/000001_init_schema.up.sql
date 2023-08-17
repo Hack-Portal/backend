@@ -1,7 +1,7 @@
 CREATE TABLE "past_works" (
   "opus" serial PRIMARY KEY,
   "name" varchar NOT NULL,
-  "thumbnail_image" bytea NOT NULL,
+  "thumbnail_image" text NOT NULL,
   "explanatory_text" text NOT NULL,
   "award_data_id" int,
   "create_at" timestamptz NOT NULL DEFAULT (now()),
