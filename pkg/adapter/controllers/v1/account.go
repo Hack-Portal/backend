@@ -14,7 +14,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
-	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
+	tokens "github.com/hackhack-Geek-vol6/backend/pkg/util/token"
 	"github.com/lib/pq"
 )
 
@@ -67,7 +67,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 
-	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*tokens.Payload)
 	// ここでエラーが起きてる
 
 	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image, payload.Email)

@@ -18,6 +18,9 @@ type Env struct {
 
 	TokenDuration     string `mapstructure:"TOKEN_DURATION"`
 	TokenSymmetricKey string `mapstructure:"TOKEN_SYMMETRIC_KEY"`
+
+	NewRelicAppName string `mapstructure:"NEW_RELIC_APP_NAME"`
+	NewRelicLicense string `mapstructure:"NEW_RELIC_LICENSE"`
 }
 
 // app.envファイルを読み込む

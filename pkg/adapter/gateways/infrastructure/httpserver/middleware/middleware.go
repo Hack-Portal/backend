@@ -24,6 +24,12 @@ func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 		jwtType := ctx.GetHeader(AuthorizationType)
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 
+		if len(jwtType) == 0 {
+			err := errors.New("authorization header is not provided")
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
 		if len(authorizationHeader) == 0 {
 			err := errors.New("authorization header is not provided")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -55,12 +61,11 @@ func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 			}
 			ctx.Set(AuthorizationClaimsKey, payload)
 		}
-
 		ctx.Next()
 	}
 }
 
-func googleLogin(fields []string) (*jwt.FireBaseCustomToken, error) {
+func googleLogin(fields []string) (*tokens.Payload, error) {
 	accessToken := fields[0]
 	hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
 	if err != nil {
@@ -71,7 +76,10 @@ func googleLogin(fields []string) (*jwt.FireBaseCustomToken, error) {
 	if err != nil {
 		return nil, err
 	}
-	return payload, nil
+	return &tokens.Payload{
+		UserID: payload.UID,
+		Email:  payload.Email,
+	}, nil
 }
 
 func emailLogin(tokenMaker tokens.Maker, fields []string) (*tokens.Payload, error) {
