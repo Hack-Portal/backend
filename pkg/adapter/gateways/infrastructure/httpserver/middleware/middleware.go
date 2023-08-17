@@ -26,13 +26,13 @@ func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 
 		if len(jwtType) == 0 {
-			err := errors.New("authorization header is not provided :",AuthorizationType)
+			err := errors.New("authorization header is not provided :AuthorizationType")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
 
 		if len(authorizationHeader) == 0 {
-			err := errors.New("authorization header is not provided  :",AuthorizationHeaderKey)
+			err := errors.New("authorization header is not provided  :AuthorizationHeaderKey")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
