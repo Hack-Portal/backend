@@ -3,6 +3,8 @@ package fake
 import (
 	"context"
 	"database/sql"
+	"errors"
+	"fmt"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
@@ -17,7 +19,7 @@ type fakeQuerier struct {
 	hackathonStatusTag map[string]repository.HackathonStatusTag
 	hackathon          map[string]repository.Hackathon
 	like               map[string]repository.Like
-	locate             map[string]repository.Locate
+	locate             map[int32]repository.Locate
 	pastWorkFramework  map[string]repository.PastWorkFramework
 	pastWorkTag        map[string]repository.PastWorkTag
 	pastWork           map[string]repository.PastWork
@@ -30,6 +32,41 @@ type fakeQuerier struct {
 	user               map[string]repository.User
 }
 
+func (fq fakeQuerier) CreateLocates(ctx context.Context, name string) (repository.Locate, error) {
+	locate := repository.Locate{
+		LocateID: int32(len(fq.locate) + 1),
+		Name:     name,
+	}
+
+	if len(locate.Name) == 0 {
+		err := errors.New(`null value in column "name" violates not-null constraint`)
+		return repository.Locate{}, err
+	}
+
+	fq.locate[int32(len(fq.locate)+1)] = locate
+
+	return fq.locate[int32(len(fq.locate)+1)], nil
+}
+
+func (fq fakeQuerier) GetLocatesByID(ctx context.Context, locateID int32) (repository.Locate, error) {
+	locate, ok := fq.locate[locateID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, locateID))
+		return repository.Locate{}, err
+	}
+	return locate, nil
+}
+
+func (fq fakeQuerier) ListLocates(ctx context.Context) ([]repository.Locate, error) {
+	locates := []repository.Locate{}
+	for _, locate := range fq.locate {
+		locates = append(locates, locate)
+	}
+	return locates, nil
+}
+
+func (fq fakeQuerier) CreateTechTags(ctx context.Context, language string) (repository.TechTag, error)
+
 func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error)
 func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error)
 func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error)
@@ -39,7 +76,7 @@ func (fq fakeQuerier) CreateFrameworks(ctx context.Context, arg repository.Creat
 func (fq fakeQuerier) CreateHackathonStatusTags(ctx context.Context, arg repository.CreateHackathonStatusTagsParams) (repository.HackathonStatusTag, error)
 func (fq fakeQuerier) CreateHackathons(ctx context.Context, arg repository.CreateHackathonsParams) (repository.Hackathon, error)
 func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
-func (fq fakeQuerier) CreateLocates(ctx context.Context, name string) (repository.Locate, error)
+
 func (fq fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg repository.CreatePastWorkFrameworksParams) (repository.PastWorkFramework, error)
 func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.CreatePastWorkTagsParams) (repository.PastWorkTag, error)
 func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error)
@@ -48,7 +85,7 @@ func (fq fakeQuerier) CreateRoles(ctx context.Context, role string) (repository.
 func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error)
 func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error)
 func (fq fakeQuerier) CreateStatusTags(ctx context.Context, status string) (repository.StatusTag, error)
-func (fq fakeQuerier) CreateTechTags(ctx context.Context, language string) (repository.TechTag, error)
+
 func (fq fakeQuerier) CreateUsers(ctx context.Context, arg repository.CreateUsersParams) (repository.User, error)
 func (fq fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
 func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
@@ -73,7 +110,7 @@ func (fq fakeQuerier) GetFrameworksByID(ctx context.Context, frameworkID int32) 
 func (fq fakeQuerier) GetHackathonByID(ctx context.Context, hackathonID int32) (repository.Hackathon, error)
 func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error)
 func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error)
-func (fq fakeQuerier) GetLocatesByID(ctx context.Context, locateID int32) (repository.Locate, error)
+
 func (fq fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (repository.PastWork, error)
 func (fq fakeQuerier) GetRolesByID(ctx context.Context, roleID int32) (repository.Role, error)
 func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error)
@@ -93,7 +130,7 @@ func (fq fakeQuerier) ListFrameworks(ctx context.Context) ([]repository.Framewor
 func (fq fakeQuerier) ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]repository.HackathonStatusTag, error)
 func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHackathonsParams) ([]repository.Hackathon, error)
 func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error)
-func (fq fakeQuerier) ListLocates(ctx context.Context) ([]repository.Locate, error)
+
 func (fq fakeQuerier) ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]repository.PastWorkFramework, error)
 func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error)
 func (fq fakeQuerier) ListPastWorks(ctx context.Context, arg repository.ListPastWorksParams) ([]repository.ListPastWorksRow, error)
