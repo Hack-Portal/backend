@@ -1184,9 +1184,57 @@ func (fq fakeQuerier) DeletePastWorkFrameworksByOpus(ctx context.Context, opus i
 	return nil
 }
 
-func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.CreatePastWorkTagsParams) (repository.PastWorkTag, error)
-func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
-func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error)
+func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.CreatePastWorkTagsParams) (repository.PastWorkTag, error) {
+	if _, ok := fq.pastWorkFramework[arg.Opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
+		return repository.PastWorkTag{}, err
+	}
+	if _, ok := fq.techTag[arg.TechTagID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
+		return repository.PastWorkTag{}, err
+	}
+
+	pastWorkTag := repository.PastWorkTag{
+		Opus:      arg.Opus,
+		TechTagID: arg.TechTagID,
+	}
+
+	fq.pastWorkTag[int32(len(fq.pastWorkTag))+1] = pastWorkTag
+	return fq.pastWorkTag[int32(len(fq.pastWorkTag))+1], nil
+}
+
+func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error) {
+	if _, ok := fq.pastWork[opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
+		return nil, err
+	}
+
+	pastWorkTags := []repository.PastWorkTag{}
+
+	for _, pastWorkTag := range fq.pastWorkTag {
+		if pastWorkTag.Opus == opus {
+
+			pastWorkTags = append(pastWorkTags, repository.PastWorkTag{
+				Opus:      pastWorkTag.Opus,
+				TechTagID: pastWorkTag.TechTagID,
+			})
+		}
+	}
+	return pastWorkTags, nil
+}
+func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error {
+	if _, ok := fq.pastWork[opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
+		return err
+	}
+
+	for i, pastWorkTag := range fq.pastWorkTag {
+		if pastWorkTag.Opus == opus {
+			delete(fq.pastWorkTag, i)
+		}
+	}
+	return nil
+}
 
 func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
 func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error)
