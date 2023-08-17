@@ -16,6 +16,16 @@ type UserController struct {
 	Env         *bootstrap.Env
 }
 
+// ListRooms	godoc
+// @Summary			Create User
+// @Description		Create User
+// @Tags			Users
+// @Produce			json
+// @Param			CreateUserRequest 	body 	domain.CreateUserRequest	true				"Create User Request"
+// @Success			200		{object}	domain.CreateUserResponse								"success response"
+// @Failure 		400		{object}	ErrorResponse											"error response"
+// @Failure 		500		{object}	ErrorResponse											"error response"
+// @Router       	/users	[post]
 func (uc *UserController) CreateUser(ctx *gin.Context) {
 	var (
 		reqBody domain.CreateUserRequest
@@ -40,6 +50,16 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// ListRooms		godoc
+// @Summary			Login User
+// @Description		Login User
+// @Tags			Users
+// @Produce			json
+// @Param			CreateUserRequest 	body 		domain.CreateUserRequest	true	"List Rooms Request"
+// @Success			200		{object}		domain.CreateUserResponse	"success response"
+// @Failure 		400		{object}	ErrorResponse			"error response"
+// @Failure 		500		{object}	ErrorResponse			"error response"
+// @Router       	/login	[post]
 func (uc *UserController) LoginUser(ctx *gin.Context) {
 	var (
 		reqBody domain.CreateUserRequest
