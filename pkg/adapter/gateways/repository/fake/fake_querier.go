@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
@@ -200,6 +201,100 @@ func (fq fakeQuerier) DeleteStatusTagsByStatusID(ctx context.Context, statusID i
 	return nil
 }
 
+func (fq fakeQuerier) CreateUsers(ctx context.Context, arg repository.CreateUsersParams) (repository.User, error) {
+	// Emailが空白でない時　重複がないかを確認する
+	if arg.Email.Valid {
+		for _, user := range fq.user {
+			if user.Email.String == arg.Email.String {
+				err := errors.New(fmt.Sprintf(`ERROR: duplicate key value violates unique constraint "%s" `, arg.Email.String))
+				return repository.User{}, err
+			}
+		}
+	}
+
+	user := repository.User{
+		UserID:         arg.UserID,
+		Email:          arg.Email,
+		HashedPassword: arg.HashedPassword,
+		CreateAt:       time.Now(),
+		UpdateAt:       time.Now(),
+		IsDelete:       false,
+	}
+	if len(user.UserID) == 0 {
+		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "user_id"))
+		return repository.User{}, err
+	}
+
+	fq.user[arg.UserID] = user
+	return fq.user[arg.UserID], nil
+}
+
+func (fq fakeQuerier) GetUsersByID(ctx context.Context, userID string) (repository.User, error) {
+	user, ok := fq.user[userID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, userID))
+		return repository.User{}, err
+	}
+	return user, nil
+}
+
+func (fq fakeQuerier) GetUsersByEmail(ctx context.Context, email sql.NullString) (repository.User, error) {
+	for _, user := range fq.user {
+		if user.Email.String == email.String {
+			return user, nil
+		}
+	}
+
+	err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, email.String))
+	return repository.User{}, err
+}
+
+func (fq fakeQuerier) UpdateUsersByID(ctx context.Context, arg repository.UpdateUsersByIDParams) (repository.User, error) {
+	if len(arg.UserID) == 0 {
+		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "user_id"))
+		return repository.User{}, err
+	}
+
+	user, ok := fq.user[arg.UserID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.UserID))
+		return repository.User{}, err
+	}
+
+	if arg.Email.Valid {
+		for _, user := range fq.user {
+			if user.Email.String == arg.Email.String {
+				err := errors.New(fmt.Sprintf(`ERROR: duplicate key value violates unique constraint "%s" `, arg.Email.String))
+				return repository.User{}, err
+			}
+		}
+	}
+
+	newUser := repository.User{
+		UserID:         arg.UserID,
+		Email:          arg.Email,
+		HashedPassword: arg.HashedPassword,
+		CreateAt:       user.CreateAt,
+		UpdateAt:       time.Now(),
+		IsDelete:       false,
+	}
+
+	fq.user[arg.UserID] = newUser
+
+	return fq.user[arg.UserID], nil
+}
+
+func (fq fakeQuerier) DeleteUsersByID(ctx context.Context, arg repository.DeleteUsersByIDParams) error {
+	if len(arg.UserID) == 0 {
+		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "user_id"))
+		return err
+	}
+	user := fq.user[arg.UserID]
+	user.IsDelete = true
+	fq.user[arg.UserID] = user
+	return nil
+}
+
 func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error)
 func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error)
 func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error)
@@ -216,7 +311,7 @@ func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.Cre
 func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error)
 func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error)
 func (fq fakeQuerier) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (repository.StatusTag, error)
-func (fq fakeQuerier) CreateUsers(ctx context.Context, arg repository.CreateUsersParams) (repository.User, error)
+
 func (fq fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
 func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
 func (fq fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
@@ -232,7 +327,6 @@ func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.De
 func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repository.DeleteRoomsAccountsByIDParams) error
 func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
 
-func (fq fakeQuerier) DeleteUsersByID(ctx context.Context, arg repository.DeleteUsersByIDParams) error
 func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email sql.NullString) (repository.Account, error)
 func (fq fakeQuerier) GetAccountsByID(ctx context.Context, accountID string) (repository.Account, error)
 func (fq fakeQuerier) GetFrameworksByID(ctx context.Context, frameworkID int32) (repository.Framework, error)
@@ -244,8 +338,6 @@ func (fq fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (repos
 func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error)
 func (fq fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
 
-func (fq fakeQuerier) GetUsersByEmail(ctx context.Context, email sql.NullString) (repository.User, error)
-func (fq fakeQuerier) GetUsersByID(ctx context.Context, userID string) (repository.User, error)
 func (fq fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]repository.ListAccountFrameworksByUserIDRow, error)
 func (fq fakeQuerier) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]repository.AccountPastWork, error)
 func (fq fakeQuerier) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]repository.ListAccountTagsByUserIDRow, error)
@@ -268,4 +360,3 @@ func (fq fakeQuerier) UpdateFrameworksByID(ctx context.Context, arg repository.U
 func (fq fakeQuerier) UpdatePastWorksByID(ctx context.Context, arg repository.UpdatePastWorksByIDParams) (repository.PastWork, error)
 func (fq fakeQuerier) UpdateRateByID(ctx context.Context, arg repository.UpdateRateByIDParams) (repository.Account, error)
 func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.UpdateRoomsByIDParams) (repository.Room, error)
-func (fq fakeQuerier) UpdateUsersByID(ctx context.Context, arg repository.UpdateUsersByIDParams) (repository.User, error)
