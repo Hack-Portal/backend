@@ -21,17 +21,18 @@ const (
 
 func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		fmt.Println(ctx.Request.Header)
 		jwtType := ctx.GetHeader(AuthorizationType)
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 
 		if len(jwtType) == 0 {
-			err := errors.New("authorization header is not provided")
+			err := errors.New("authorization header is not provided :",AuthorizationType)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
 
 		if len(authorizationHeader) == 0 {
-			err := errors.New("authorization header is not provided")
+			err := errors.New("authorization header is not provided  :",AuthorizationHeaderKey)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
