@@ -1,3 +1,6 @@
+-- name: CreateTechTags :one
+INSERT INTO tech_tags (language) VALUES ($1) RETURNING * ;
+
 -- name: GetTechTagsByID :one
 SELECT *
 FROM tech_tags
