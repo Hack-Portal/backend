@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"errors"
 	"net/http"
 	"strings"
