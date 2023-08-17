@@ -110,7 +110,7 @@ type Locate struct {
 type PastWork struct {
 	Opus            int32         `json:"opus"`
 	Name            string        `json:"name"`
-	ThumbnailImage  []byte        `json:"thumbnail_image"`
+	ThumbnailImage  string        `json:"thumbnail_image"`
 	ExplanatoryText string        `json:"explanatory_text"`
 	AwardDataID     sql.NullInt32 `json:"award_data_id"`
 	CreateAt        time.Time     `json:"create_at"`

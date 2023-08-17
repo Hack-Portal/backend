@@ -24,7 +24,7 @@ RETURNING opus, name, thumbnail_image, explanatory_text, award_data_id, create_a
 
 type CreatePastWorksParams struct {
 	Name            string        `json:"name"`
-	ThumbnailImage  []byte        `json:"thumbnail_image"`
+	ThumbnailImage  string        `json:"thumbnail_image"`
 	ExplanatoryText string        `json:"explanatory_text"`
 	AwardDataID     sql.NullInt32 `json:"award_data_id"`
 }
@@ -155,7 +155,7 @@ RETURNING opus, name, thumbnail_image, explanatory_text, award_data_id, create_a
 
 type UpdatePastWorksByIDParams struct {
 	Name            string        `json:"name"`
-	ThumbnailImage  []byte        `json:"thumbnail_image"`
+	ThumbnailImage  string        `json:"thumbnail_image"`
 	ExplanatoryText string        `json:"explanatory_text"`
 	AwardDataID     sql.NullInt32 `json:"award_data_id"`
 	UpdateAt        time.Time     `json:"update_at"`
