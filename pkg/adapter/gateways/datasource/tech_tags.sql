@@ -16,6 +16,6 @@ WHERE tech_tag_id = $1;
 
 -- name: UpdateTechTagsByID :one
 UPDATE tech_tags
-SET language = $1
+SET language = $2
 WHERE tech_tag_id = $1
 RETURNING *;
