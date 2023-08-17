@@ -19,6 +19,7 @@ type Querier interface {
 	CreateHackathonStatusTags(ctx context.Context, arg CreateHackathonStatusTagsParams) (HackathonStatusTag, error)
 	CreateHackathons(ctx context.Context, arg CreateHackathonsParams) (Hackathon, error)
 	CreateLikes(ctx context.Context, arg CreateLikesParams) (Like, error)
+	CreateLocates(ctx context.Context, name string) (Locate, error)
 	CreatePastWorkFrameworks(ctx context.Context, arg CreatePastWorkFrameworksParams) (PastWorkFramework, error)
 	CreatePastWorkTags(ctx context.Context, arg CreatePastWorkTagsParams) (PastWorkTag, error)
 	CreatePastWorks(ctx context.Context, arg CreatePastWorksParams) (PastWork, error)
@@ -26,6 +27,8 @@ type Querier interface {
 	CreateRoles(ctx context.Context, role string) (Role, error)
 	CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error)
+	CreateStatusTags(ctx context.Context, status string) (StatusTag, error)
+	CreateTechTags(ctx context.Context, language string) (TechTag, error)
 	CreateUsers(ctx context.Context, arg CreateUsersParams) (User, error)
 	DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
 	DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error

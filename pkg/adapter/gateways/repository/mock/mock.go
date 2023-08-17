@@ -217,6 +217,21 @@ func (mr *MockStoreMockRecorder) CreateLikes(ctx, arg interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLikes", reflect.TypeOf((*MockStore)(nil).CreateLikes), ctx, arg)
 }
 
+// CreateLocates mocks base method.
+func (m *MockStore) CreateLocates(ctx context.Context, name string) (repository.Locate, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateLocates", ctx, name)
+	ret0, _ := ret[0].(repository.Locate)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateLocates indicates an expected call of CreateLocates.
+func (mr *MockStoreMockRecorder) CreateLocates(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLocates", reflect.TypeOf((*MockStore)(nil).CreateLocates), ctx, name)
+}
+
 // CreatePastWorkFrameworks mocks base method.
 func (m *MockStore) CreatePastWorkFrameworks(ctx context.Context, arg repository.CreatePastWorkFrameworksParams) (repository.PastWorkFramework, error) {
 	m.ctrl.T.Helper()
@@ -364,6 +379,36 @@ func (m *MockStore) CreateRoomsAccounts(ctx context.Context, arg repository.Crea
 func (mr *MockStoreMockRecorder) CreateRoomsAccounts(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRoomsAccounts", reflect.TypeOf((*MockStore)(nil).CreateRoomsAccounts), ctx, arg)
+}
+
+// CreateStatusTags mocks base method.
+func (m *MockStore) CreateStatusTags(ctx context.Context, status string) (repository.StatusTag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateStatusTags", ctx, status)
+	ret0, _ := ret[0].(repository.StatusTag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateStatusTags indicates an expected call of CreateStatusTags.
+func (mr *MockStoreMockRecorder) CreateStatusTags(ctx, status interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateStatusTags", reflect.TypeOf((*MockStore)(nil).CreateStatusTags), ctx, status)
+}
+
+// CreateTechTags mocks base method.
+func (m *MockStore) CreateTechTags(ctx context.Context, language string) (repository.TechTag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateTechTags", ctx, language)
+	ret0, _ := ret[0].(repository.TechTag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTechTags indicates an expected call of CreateTechTags.
+func (mr *MockStoreMockRecorder) CreateTechTags(ctx, language interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTechTags", reflect.TypeOf((*MockStore)(nil).CreateTechTags), ctx, language)
 }
 
 // CreateUsers mocks base method.

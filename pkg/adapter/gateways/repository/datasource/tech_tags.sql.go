@@ -9,6 +9,17 @@ import (
 	"context"
 )
 
+const createTechTags = `-- name: CreateTechTags :one
+INSERT INTO tech_tags (language) VALUES ($1) RETURNING tech_tag_id, language
+`
+
+func (q *Queries) CreateTechTags(ctx context.Context, language string) (TechTag, error) {
+	row := q.db.QueryRowContext(ctx, createTechTags, language)
+	var i TechTag
+	err := row.Scan(&i.TechTagID, &i.Language)
+	return i, err
+}
+
 const deleteTechTagsByID = `-- name: DeleteTechTagsByID :exec
 DELETE FROM tech_tags
 WHERE tech_tag_id = $1
