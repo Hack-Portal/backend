@@ -694,9 +694,10 @@ func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.Update
 	fq.room[arg.RoomID] = newRoom
 	return fq.room[arg.RoomID], nil
 }
+
 func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error) {
 	if len(roomID) == 0 {
-		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "room_id"))
 		return repository.Room{}, err
 	}
 	room := fq.room[roomID]
@@ -705,8 +706,47 @@ func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repos
 	return fq.room[roomID], nil
 }
 
-func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.CreateRateEntitiesParams) (repository.RateEntity, error)
-func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error)
+func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.CreateRateEntitiesParams) (repository.RateEntity, error) {
+	if len(arg.AccountID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
+		return repository.RateEntity{}, err
+	}
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.RateEntity{}, err
+	}
+	rate := repository.RateEntity{
+		AccountID: arg.AccountID,
+		Rate:      arg.Rate,
+		CreateAt:  time.Now(),
+	}
+	fq.rateEntity[arg.AccountID] = rate
+	return fq.rateEntity[arg.AccountID], nil
+}
+
+func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error) {
+	if len(arg.AccountID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
+		return nil, err
+	}
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return nil, err
+	}
+
+	var count int32
+	rates := []repository.RateEntity{}
+	for _, rate := range fq.rateEntity {
+		if arg.Offset*arg.Limit-arg.Limit > count {
+			rates = append(rates, rate)
+		}
+		count++
+		if count >= arg.Limit {
+			break
+		}
+	}
+	return rates, nil
+}
 
 func (fq fakeQuerier) CreateFollows(ctx context.Context, arg repository.CreateFollowsParams) (repository.Follow, error)
 func (fq fakeQuerier) DeleteFollows(ctx context.Context, arg repository.DeleteFollowsParams) error
