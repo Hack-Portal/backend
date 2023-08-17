@@ -25,7 +25,7 @@ type fakeQuerier struct {
 	room               map[string]repository.Room
 	rateEntity         map[int32]repository.RateEntity
 	follow             map[int32]repository.Follow
-	pastWork           map[string]repository.PastWork
+	pastWork           map[int32]repository.PastWork
 	accountTag         map[string]repository.AccountTag
 	accountFramework   map[string]repository.AccountFramework
 	hackathonStatusTag map[string]repository.HackathonStatusTag
@@ -809,11 +809,112 @@ func (fq fakeQuerier) ListFollowsByToUserID(ctx context.Context, toAccountID str
 	return follows, nil
 }
 
-func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error)
-func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.DeletePastWorksByIDParams) (repository.PastWork, error)
-func (fq fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (repository.PastWork, error)
-func (fq fakeQuerier) ListPastWorks(ctx context.Context, arg repository.ListPastWorksParams) ([]repository.ListPastWorksRow, error)
-func (fq fakeQuerier) UpdatePastWorksByID(ctx context.Context, arg repository.UpdatePastWorksByIDParams) (repository.PastWork, error)
+func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error) {
+	if len(arg.Name) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
+		return repository.PastWork{}, err
+	}
+
+	if len(arg.ThumbnailImage) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
+		return repository.PastWork{}, err
+	}
+
+	if len(arg.ExplanatoryText) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
+		return repository.PastWork{}, err
+	}
+
+	pastWork := repository.PastWork{
+		Opus:            int32(len(fq.pastWork)) + 1,
+		Name:            arg.Name,
+		ThumbnailImage:  arg.ThumbnailImage,
+		ExplanatoryText: arg.ExplanatoryText,
+		AwardDataID:     arg.AwardDataID,
+		CreateAt:        time.Now(),
+		UpdateAt:        time.Now(),
+		IsDelete:        false,
+	}
+	fq.pastWork[int32(len(fq.pastWork))+1] = pastWork
+	return fq.pastWork[int32(len(fq.pastWork))+1], nil
+}
+
+func (fq fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (repository.PastWork, error) {
+	pastwork, ok := fq.pastWork[opus]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
+		return repository.PastWork{}, err
+	}
+
+	return pastwork, nil
+}
+
+func (fq fakeQuerier) ListPastWorks(ctx context.Context, arg repository.ListPastWorksParams) ([]repository.ListPastWorksRow, error) {
+	pastWorks := []repository.ListPastWorksRow{}
+
+	var count int32
+	for _, pastWork := range fq.pastWork {
+		if arg.Offset*arg.Limit-arg.Limit > count {
+			pastWorks = append(pastWorks, repository.ListPastWorksRow{
+				Opus:            pastWork.Opus,
+				Name:            pastWork.Name,
+				ExplanatoryText: pastWork.ExplanatoryText,
+			})
+		}
+		count++
+		if count >= arg.Limit {
+			break
+		}
+	}
+	return pastWorks, nil
+}
+
+func (fq fakeQuerier) UpdatePastWorksByID(ctx context.Context, arg repository.UpdatePastWorksByIDParams) (repository.PastWork, error) {
+	if len(arg.Name) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "room_id"))
+		return repository.PastWork{}, err
+	}
+	if len(arg.ThumbnailImage) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "title"))
+		return repository.PastWork{}, err
+	}
+	if len(arg.ExplanatoryText) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "description"))
+		return repository.PastWork{}, err
+	}
+
+	pastWork, ok := fq.pastWork[arg.Opus]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
+		return repository.PastWork{}, err
+	}
+
+	newPastWork := repository.PastWork{
+		Opus:            arg.Opus,
+		Name:            arg.Name,
+		ThumbnailImage:  arg.ThumbnailImage,
+		ExplanatoryText: arg.ExplanatoryText,
+		AwardDataID:     arg.AwardDataID,
+		CreateAt:        pastWork.CreateAt,
+		UpdateAt:        time.Now(),
+		IsDelete:        false,
+	}
+
+	fq.pastWork[arg.Opus] = newPastWork
+	return fq.pastWork[arg.Opus], nil
+}
+
+func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.DeletePastWorksByIDParams) (repository.PastWork, error) {
+	pastWork, ok := fq.pastWork[arg.Opus]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
+		return repository.PastWork{}, err
+	}
+	pastWork.IsDelete = false
+
+	fq.pastWork[arg.Opus] = pastWork
+	return fq.pastWork[arg.Opus], nil
+}
 
 func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error)
 func (fq fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
