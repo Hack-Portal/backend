@@ -31,11 +31,11 @@ type fakeQuerier struct {
 	accountFramework   map[int32]repository.AccountFramework
 	hackathonStatusTag map[int32]repository.HackathonStatusTag
 	// 4
-	accountPastWork   map[string]repository.AccountPastWork
-	like              map[string]repository.Like
-	pastWorkFramework map[string]repository.PastWorkFramework
-	pastWorkTag       map[string]repository.PastWorkTag
-	roomsAccount      map[string]repository.RoomsAccount
+	accountPastWork   map[int32]repository.AccountPastWork
+	like              map[int32]repository.Like
+	pastWorkFramework map[int32]repository.PastWorkFramework
+	pastWorkTag       map[int32]repository.PastWorkTag
+	roomsAccount      map[int32]repository.RoomsAccount
 }
 
 func (fq fakeQuerier) CreateLocates(ctx context.Context, name string) (repository.Locate, error) {
@@ -1079,9 +1079,57 @@ func (fq fakeQuerier) DeleteHackathonStatusTagsByID(ctx context.Context, hackath
 	return nil
 }
 
-func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error)
-func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
-func (fq fakeQuerier) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]repository.AccountPastWork, error)
+func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error) {
+	if _, ok := fq.pastWork[arg.Opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
+		return repository.AccountPastWork{}, err
+	}
+	if _, ok := fq.account[arg.AccountID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.AccountPastWork{}, err
+	}
+
+	accountPastWork := repository.AccountPastWork{
+		Opus:      arg.Opus,
+		AccountID: arg.AccountID,
+	}
+
+	fq.accountPastWork[int32(len(fq.accountPastWork))+1] = accountPastWork
+	return fq.accountPastWork[int32(len(fq.accountPastWork))+1], nil
+}
+
+func (fq fakeQuerier) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]repository.AccountPastWork, error) {
+	if _, ok := fq.pastWork[opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
+		return nil, err
+	}
+
+	accountPastWorks := []repository.AccountPastWork{}
+
+	for _, accountPastWork := range fq.accountPastWork {
+		if accountPastWork.Opus == opus {
+			accountPastWorks = append(accountPastWorks, repository.AccountPastWork{
+				Opus:      accountPastWork.Opus,
+				AccountID: accountPastWork.AccountID,
+			})
+		}
+	}
+	return accountPastWorks, nil
+}
+
+func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error {
+	if _, ok := fq.pastWork[opus]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
+		return err
+	}
+
+	for i, accountPastWork := range fq.accountPastWork {
+		if accountPastWork.Opus == opus {
+			delete(fq.accountPastWork, i)
+		}
+	}
+	return nil
+}
 
 func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error)
 func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error)
