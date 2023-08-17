@@ -19,4 +19,5 @@ func NewUserRouter(env *bootstrap.Env, tokenMaker tokens.Maker, timeout time.Dur
 	}
 
 	group.POST("/users", userController.CreateUser)
+	group.POST("/login", userController.LoginUser)
 }

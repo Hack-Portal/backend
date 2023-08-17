@@ -39,3 +39,27 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, response)
 }
+
+func (uc *UserController) LoginUser(ctx *gin.Context) {
+	var (
+		reqBody domain.CreateUserRequest
+	)
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	duration, err := strconv.Atoi(uc.Env.TokenDuration)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	response, err := uc.UserUsecase.LoginUser(ctx, reqBody, time.Duration(duration)*time.Hour*24)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}

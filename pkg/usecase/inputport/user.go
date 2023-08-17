@@ -9,4 +9,5 @@ import (
 
 type UserUsecase interface {
 	CreateUser(ctx context.Context, arg domain.CreateUserRequest, duration time.Duration) (result domain.CreateUserResponse, err error)
+	LoginUser(ctx context.Context, arg domain.CreateUserRequest, duration time.Duration) (result domain.CreateUserResponse, err error)
 }

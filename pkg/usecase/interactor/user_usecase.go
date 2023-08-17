@@ -49,10 +49,34 @@ func (uu *userUsecase) CreateUser(ctx context.Context, arg domain.CreateUserRequ
 	}
 
 	result = domain.CreateUserResponse{
-		UserID:    user.UserID,
-		Token:     token,
-		CreatedAt: user.CreateAt,
+		UserID: user.UserID,
+		Token:  token,
 	}
 
+	return
+}
+
+func (uu *userUsecase) LoginUser(ctx context.Context, arg domain.CreateUserRequest, duration time.Duration) (result domain.CreateUserResponse, err error) {
+	ctx, cancel := context.WithTimeout(ctx, uu.contextTimeout)
+	defer cancel()
+
+	user, err := uu.store.GetUsersByEmail(ctx, dbutil.ToSqlNullString(arg.Email))
+	if err != nil {
+		return
+	}
+
+	if err = password.CheckPassword(arg.Password, user.HashedPassword.String); err != nil {
+		return
+	}
+
+	token, err := uu.tokenMaker.CreateToken(arg.Email, duration)
+	if err != nil {
+		return
+	}
+
+	result = domain.CreateUserResponse{
+		UserID: user.UserID,
+		Token:  token,
+	}
 	return
 }
