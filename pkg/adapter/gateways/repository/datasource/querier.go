@@ -87,7 +87,7 @@ type Querier interface {
 	UpdatePastWorksByID(ctx context.Context, arg UpdatePastWorksByIDParams) (PastWork, error)
 	UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) (Account, error)
 	UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams) (Room, error)
-	UpdateTechTagsByID(ctx context.Context, language string) (TechTag, error)
+	UpdateTechTagsByID(ctx context.Context, arg UpdateTechTagsByIDParams) (TechTag, error)
 	UpdateUsersByID(ctx context.Context, arg UpdateUsersByIDParams) (User, error)
 }
 

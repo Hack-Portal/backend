@@ -73,13 +73,18 @@ func (q *Queries) ListTechTags(ctx context.Context) ([]TechTag, error) {
 
 const updateTechTagsByID = `-- name: UpdateTechTagsByID :one
 UPDATE tech_tags
-SET language = $1
+SET language = $2
 WHERE tech_tag_id = $1
 RETURNING tech_tag_id, language
 `
 
-func (q *Queries) UpdateTechTagsByID(ctx context.Context, language string) (TechTag, error) {
-	row := q.db.QueryRowContext(ctx, updateTechTagsByID, language)
+type UpdateTechTagsByIDParams struct {
+	TechTagID int32  `json:"tech_tag_id"`
+	Language  string `json:"language"`
+}
+
+func (q *Queries) UpdateTechTagsByID(ctx context.Context, arg UpdateTechTagsByIDParams) (TechTag, error) {
+	row := q.db.QueryRowContext(ctx, updateTechTagsByID, arg.TechTagID, arg.Language)
 	var i TechTag
 	err := row.Scan(&i.TechTagID, &i.Language)
 	return i, err
