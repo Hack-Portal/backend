@@ -1,8 +1,6 @@
-package middleware
-
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -22,17 +20,11 @@ const (
 
 func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		jwtType := ctx.GetHeader(AuthorizationType)
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 		fmt.Println(ctx.Request.Header)
-		if len(jwtType) == 0 {
-			err := errors.New("authorization header is not provided :AuthorizationType")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
 
 		if len(authorizationHeader) == 0 {
-			err := errors.New("authorization header is not provided  :AuthorizationHeaderKey")
+			err := errors.New("authorization header is not provided")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
@@ -44,7 +36,7 @@ func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 			return
 		}
 
-		switch jwtType {
+		switch fields[0] {
 
 		case GoogleLogin: //Emailでのログインtoken
 			payload, err := googleLogin(fields)
@@ -67,7 +59,7 @@ func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
 }
 
 func googleLogin(fields []string) (*tokens.Payload, error) {
-	accessToken := fields[0]
+	accessToken := fields[1]
 	hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
 	if err != nil {
 		return nil, err
@@ -84,7 +76,7 @@ func googleLogin(fields []string) (*tokens.Payload, error) {
 }
 
 func emailLogin(tokenMaker tokens.Maker, fields []string) (*tokens.Payload, error) {
-	accessToken := fields[0]
+	accessToken := fields[1]
 	payload, err := tokenMaker.VerifyToken(accessToken)
 	if err != nil {
 		return nil, err
