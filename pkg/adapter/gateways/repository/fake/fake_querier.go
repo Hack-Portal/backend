@@ -17,9 +17,9 @@ type fakeQuerier struct {
 	techTag   map[int32]repository.TechTag
 	role      map[int32]repository.Role
 	user      map[string]repository.User
+	hackathon map[int32]repository.Hackathon
 	// 2
 	framework map[int32]repository.Framework
-	hackathon map[int32]repository.Hackathon
 	account   map[string]repository.Account
 	// 3
 	room               map[string]repository.Room
@@ -302,6 +302,67 @@ func (fq fakeQuerier) DeleteUsersByID(ctx context.Context, arg repository.Delete
 	return nil
 }
 
+func (fq fakeQuerier) CreateHackathons(ctx context.Context, arg repository.CreateHackathonsParams) (repository.Hackathon, error) {
+	if len(arg.Name) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "name"))
+		return repository.Hackathon{}, err
+	}
+	if len(arg.Link) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "link"))
+		return repository.Hackathon{}, err
+	}
+	hackathon := repository.Hackathon{
+		HackathonID: int32(len(fq.hackathon)) + 1,
+		Name:        arg.Name,
+		Icon:        arg.Icon,
+		Description: arg.Description,
+		Link:        arg.Link,
+		Expired:     arg.Expired,
+		StartDate:   arg.StartDate,
+		Term:        arg.Term,
+	}
+	fq.hackathon[int32(len(fq.hackathon))+1] = hackathon
+	return fq.hackathon[int32(len(fq.hackathon))+1], nil
+}
+
+func (fq fakeQuerier) GetHackathonByID(ctx context.Context, hackathonID int32) (repository.Hackathon, error) {
+	hackathon, ok := fq.hackathon[hackathonID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
+		return repository.Hackathon{}, err
+	}
+	return hackathon, nil
+}
+
+func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHackathonsParams) ([]repository.Hackathon, error) {
+	var count int32
+	hackathons := []repository.Hackathon{}
+
+	for _, hackathon := range fq.hackathon {
+		if arg.Offset*arg.Limit-arg.Limit > count {
+			if hackathon.Expired.Sub(arg.Expired) > 0 {
+				hackathons = append(hackathons, hackathon)
+			}
+		}
+
+		count++
+		if count >= arg.Limit {
+			break
+		}
+	}
+
+	return hackathons, nil
+}
+
+func (fq fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32) error {
+	if _, ok := fq.hackathon[hackathonID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
+		return err
+	}
+	delete(fq.hackathon, hackathonID)
+	return nil
+}
+
 func (fq fakeQuerier) CreateFrameworks(ctx context.Context, arg repository.CreateFrameworksParams) (repository.Framework, error) {
 	if _, ok := fq.techTag[arg.TechTagID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
@@ -366,57 +427,6 @@ func (fq fakeQuerier) DeleteFrameworksByID(ctx context.Context, frameworkID int3
 	return nil
 }
 
-func (fq fakeQuerier) CreateHackathons(ctx context.Context, arg repository.CreateHackathonsParams) (repository.Hackathon, error) {
-	if len(arg.Name) == 0 {
-		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "name"))
-		return repository.Hackathon{}, err
-	}
-	if len(arg.Link) == 0 {
-		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "link"))
-		return repository.Hackathon{}, err
-	}
-	hackathon := repository.Hackathon{
-		HackathonID: int32(len(fq.hackathon)) + 1,
-		Name:        arg.Name,
-		Icon:        arg.Icon,
-		Description: arg.Description,
-		Link:        arg.Link,
-		Expired:     arg.Expired,
-		StartDate:   arg.StartDate,
-		Term:        arg.Term,
-	}
-	fq.hackathon[int32(len(fq.hackathon))+1] = hackathon
-	return fq.hackathon[int32(len(fq.hackathon))+1], nil
-}
-
-func (fq fakeQuerier) GetHackathonByID(ctx context.Context, hackathonID int32) (repository.Hackathon, error) {
-	hackathon, ok := fq.hackathon[hackathonID]
-	if !ok {
-		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
-		return repository.Hackathon{}, err
-	}
-	return hackathon, nil
-}
-
-func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHackathonsParams) ([]repository.Hackathon, error) {
-	hackathons := []repository.Hackathon{}
-
-	for _, hackathon := range fq.hackathon {
-		hackathons = append(hackathons, hackathon)
-	}
-
-	return hackathons, nil
-}
-
-func (fq fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32) error {
-	if _, ok := fq.hackathon[hackathonID]; !ok {
-		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
-		return err
-	}
-	delete(fq.hackathon, hackathonID)
-	return nil
-}
-
 func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateAccountsParams) (repository.Account, error) {
 	if len(arg.AccountID) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
@@ -440,6 +450,16 @@ func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateA
 			err := errors.New(fmt.Sprintf(`ERROR: duplicate key value violates unique constraint "%s" `, arg.UserID))
 			return repository.Account{}, err
 		}
+	}
+
+	if _, ok := fq.locate[arg.LocateID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.LocateID))
+		return repository.Account{}, err
+	}
+
+	if _, ok := fq.user[arg.UserID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.UserID))
+		return repository.Account{}, err
 	}
 
 	account := repository.Account{
@@ -487,10 +507,17 @@ func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email sql.NullStri
 }
 
 func (fq fakeQuerier) ListAccounts(ctx context.Context, arg repository.ListAccountsParams) ([]repository.Account, error) {
+	var count int32
 	accounts := []repository.Account{}
 
 	for _, account := range fq.account {
-		accounts = append(accounts, account)
+		if arg.Offset*arg.Limit-arg.Limit > count {
+			accounts = append(accounts, account)
+		}
+		count++
+		if count >= arg.Limit {
+			break
+		}
 	}
 
 	return accounts, nil
@@ -500,6 +527,11 @@ func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateA
 	account, ok := fq.account[arg.AccountID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
+		return repository.Account{}, err
+	}
+
+	if _, ok := fq.locate[arg.LocateID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.LocateID))
 		return repository.Account{}, err
 	}
 
@@ -562,11 +594,116 @@ func (fq fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (rep
 	return fq.account[accountID], nil
 }
 
-func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error)
-func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
-func (fq fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error)
-func (fq fakeQuerier) ListRooms(ctx context.Context, arg repository.ListRoomsParams) ([]repository.Room, error)
-func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.UpdateRoomsByIDParams) (repository.Room, error)
+func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error) {
+	if len(arg.RoomID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "room_id"))
+		return repository.Room{}, err
+	}
+	if len(arg.Title) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "title"))
+		return repository.Room{}, err
+	}
+	if len(arg.Description) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "description"))
+		return repository.Room{}, err
+	}
+
+	if _, ok := fq.hackathon[arg.HackathonID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.HackathonID))
+		return repository.Room{}, err
+	}
+
+	room := repository.Room{
+		RoomID:      arg.RoomID,
+		HackathonID: arg.HackathonID,
+		Title:       arg.Title,
+		Description: arg.Description,
+		MemberLimit: arg.MemberLimit,
+		IncludeRate: arg.IncludeRate,
+		CreateAt:    time.Now(),
+		UpdateAt:    time.Now(),
+		IsDelete:    false,
+	}
+	fq.room[arg.RoomID] = room
+	return fq.room[arg.RoomID], nil
+}
+
+func (fq fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error) {
+	room, ok := fq.room[roomID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, roomID))
+		return repository.Room{}, err
+	}
+	return room, nil
+}
+
+func (fq fakeQuerier) ListRooms(ctx context.Context, arg repository.ListRoomsParams) ([]repository.Room, error) {
+	var count int32
+	rooms := []repository.Room{}
+
+	for _, room := range fq.room {
+		if arg.Offset*arg.Limit-arg.Limit > count {
+			rooms = append(rooms, room)
+		}
+		count++
+		if count >= arg.Limit {
+			break
+		}
+	}
+
+	return rooms, nil
+}
+
+func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.UpdateRoomsByIDParams) (repository.Room, error) {
+	if len(arg.RoomID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "room_id"))
+		return repository.Room{}, err
+	}
+	if len(arg.Title) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "title"))
+		return repository.Room{}, err
+	}
+	if len(arg.Description) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "description"))
+		return repository.Room{}, err
+	}
+
+	room, ok := fq.room[arg.RoomID]
+	if !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.HackathonID))
+		return repository.Room{}, err
+	}
+
+	if _, ok := fq.hackathon[arg.HackathonID]; !ok {
+		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.HackathonID))
+		return repository.Room{}, err
+	}
+
+	newRoom := repository.Room{
+		RoomID:      arg.RoomID,
+		HackathonID: arg.HackathonID,
+		Title:       arg.Title,
+		Description: arg.Description,
+		MemberLimit: arg.MemberLimit,
+		IncludeRate: room.IncludeRate,
+		CreateAt:    room.CreateAt,
+		UpdateAt:    time.Now(),
+		IsDelete:    false,
+	}
+
+	fq.room[arg.RoomID] = newRoom
+	return fq.room[arg.RoomID], nil
+}
+func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error) {
+	if len(roomID) == 0 {
+		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
+		return repository.Room{}, err
+	}
+	room := fq.room[roomID]
+	room.IsDelete = true
+	fq.room[roomID] = room
+	return fq.room[roomID], nil
+}
 
 func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.CreateRateEntitiesParams) (repository.RateEntity, error)
 func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error)
