@@ -10,13 +10,13 @@ import (
 )
 
 const createTechTags = `-- name: CreateTechTags :one
-INSERT INTO tech_tags (language) VALUES ($1) RETURNING tech_tag_id, language
+INSERT INTO tech_tags (language) VALUES ($1) RETURNING tech_tag_id, language, icon
 `
 
 func (q *Queries) CreateTechTags(ctx context.Context, language string) (TechTag, error) {
 	row := q.db.QueryRowContext(ctx, createTechTags, language)
 	var i TechTag
-	err := row.Scan(&i.TechTagID, &i.Language)
+	err := row.Scan(&i.TechTagID, &i.Language, &i.Icon)
 	return i, err
 }
 
@@ -31,7 +31,7 @@ func (q *Queries) DeleteTechTagsByID(ctx context.Context, techTagID int32) error
 }
 
 const getTechTagsByID = `-- name: GetTechTagsByID :one
-SELECT tech_tag_id, language
+SELECT tech_tag_id, language, icon
 FROM tech_tags
 WHERE tech_tag_id = $1
 `
@@ -39,12 +39,12 @@ WHERE tech_tag_id = $1
 func (q *Queries) GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error) {
 	row := q.db.QueryRowContext(ctx, getTechTagsByID, techTagID)
 	var i TechTag
-	err := row.Scan(&i.TechTagID, &i.Language)
+	err := row.Scan(&i.TechTagID, &i.Language, &i.Icon)
 	return i, err
 }
 
 const listTechTags = `-- name: ListTechTags :many
-SELECT tech_tag_id, language
+SELECT tech_tag_id, language, icon
 FROM tech_tags
 `
 
@@ -57,7 +57,7 @@ func (q *Queries) ListTechTags(ctx context.Context) ([]TechTag, error) {
 	items := []TechTag{}
 	for rows.Next() {
 		var i TechTag
-		if err := rows.Scan(&i.TechTagID, &i.Language); err != nil {
+		if err := rows.Scan(&i.TechTagID, &i.Language, &i.Icon); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -75,7 +75,7 @@ const updateTechTagsByID = `-- name: UpdateTechTagsByID :one
 UPDATE tech_tags
 SET language = $2
 WHERE tech_tag_id = $1
-RETURNING tech_tag_id, language
+RETURNING tech_tag_id, language, icon
 `
 
 type UpdateTechTagsByIDParams struct {
@@ -86,6 +86,6 @@ type UpdateTechTagsByIDParams struct {
 func (q *Queries) UpdateTechTagsByID(ctx context.Context, arg UpdateTechTagsByIDParams) (TechTag, error) {
 	row := q.db.QueryRowContext(ctx, updateTechTagsByID, arg.TechTagID, arg.Language)
 	var i TechTag
-	err := row.Scan(&i.TechTagID, &i.Language)
+	err := row.Scan(&i.TechTagID, &i.Language, &i.Icon)
 	return i, err
 }
