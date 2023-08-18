@@ -15,7 +15,7 @@ const createAccounts = `-- name: CreateAccounts :one
 INSERT INTO
     accounts (
         account_id,
-        user_id,
+        email,
         username,
         icon,
         explanatory_text,
@@ -37,12 +37,12 @@ VALUES
         $8,
         $9,
         $10
-    ) RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
+    ) RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
 `
 
 type CreateAccountsParams struct {
 	AccountID       string         `json:"account_id"`
-	UserID          string         `json:"user_id"`
+	Email           string         `json:"email"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
@@ -56,7 +56,7 @@ type CreateAccountsParams struct {
 func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error) {
 	row := q.db.QueryRowContext(ctx, createAccounts,
 		arg.AccountID,
-		arg.UserID,
+		arg.Email,
 		arg.Username,
 		arg.Icon,
 		arg.ExplanatoryText,
@@ -69,7 +69,6 @@ func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) 
 	var i Account
 	err := row.Scan(
 		&i.AccountID,
-		&i.UserID,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
@@ -81,6 +80,7 @@ func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) 
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.Email,
 	)
 	return i, err
 }
@@ -91,7 +91,7 @@ UPDATE
 SET
     is_delete = true
 WHERE
-    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
+    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
 `
 
 func (q *Queries) DeleteAccounts(ctx context.Context, accountID string) (Account, error) {
@@ -99,7 +99,6 @@ func (q *Queries) DeleteAccounts(ctx context.Context, accountID string) (Account
 	var i Account
 	err := row.Scan(
 		&i.AccountID,
-		&i.UserID,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
@@ -111,27 +110,25 @@ func (q *Queries) DeleteAccounts(ctx context.Context, accountID string) (Account
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.Email,
 	)
 	return i, err
 }
 
 const getAccountsByEmail = `-- name: GetAccountsByEmail :one
 SELECT
-    account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
+    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
 FROM
     accounts
 WHERE
-    user_id = (
-        SELECT user_id FROM users WHERE email = $1
-    ) AND is_delete = false
+    email = $1 AND is_delete = false
 `
 
-func (q *Queries) GetAccountsByEmail(ctx context.Context, email sql.NullString) (Account, error) {
+func (q *Queries) GetAccountsByEmail(ctx context.Context, email string) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getAccountsByEmail, email)
 	var i Account
 	err := row.Scan(
 		&i.AccountID,
-		&i.UserID,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
@@ -143,13 +140,14 @@ func (q *Queries) GetAccountsByEmail(ctx context.Context, email sql.NullString) 
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.Email,
 	)
 	return i, err
 }
 
 const getAccountsByID = `-- name: GetAccountsByID :one
 SELECT
-    account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
+    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
 FROM
     accounts
 WHERE
@@ -161,7 +159,6 @@ func (q *Queries) GetAccountsByID(ctx context.Context, accountID string) (Accoun
 	var i Account
 	err := row.Scan(
 		&i.AccountID,
-		&i.UserID,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
@@ -173,13 +170,14 @@ func (q *Queries) GetAccountsByID(ctx context.Context, accountID string) (Accoun
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.Email,
 	)
 	return i, err
 }
 
 const listAccounts = `-- name: ListAccounts :many
 SELECT
-    account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
+    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
 FROM
     accounts
 WHERE
@@ -206,7 +204,6 @@ func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]A
 		var i Account
 		if err := rows.Scan(
 			&i.AccountID,
-			&i.UserID,
 			&i.Username,
 			&i.Icon,
 			&i.ExplanatoryText,
@@ -218,6 +215,7 @@ func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]A
 			&i.CreateAt,
 			&i.UpdateAt,
 			&i.IsDelete,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}
@@ -246,7 +244,7 @@ SET
     show_rate = $9,
     update_at = $10
 WHERE
-    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
+    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
 `
 
 type UpdateAccountsParams struct {
@@ -278,7 +276,6 @@ func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) 
 	var i Account
 	err := row.Scan(
 		&i.AccountID,
-		&i.UserID,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
@@ -290,6 +287,7 @@ func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) 
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.Email,
 	)
 	return i, err
 }
@@ -301,7 +299,7 @@ SET
     rate = $2,
     update_at = $3
 WHERE
-    account_id = $1 RETURNING account_id, user_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete
+    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
 `
 
 type UpdateRateByIDParams struct {
@@ -315,7 +313,6 @@ func (q *Queries) UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) 
 	var i Account
 	err := row.Scan(
 		&i.AccountID,
-		&i.UserID,
 		&i.Username,
 		&i.Icon,
 		&i.ExplanatoryText,
@@ -327,6 +324,7 @@ func (q *Queries) UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) 
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.Email,
 	)
 	return i, err
 }

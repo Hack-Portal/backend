@@ -2,7 +2,7 @@
 INSERT INTO
     accounts (
         account_id,
-        user_id,
+        email,
         username,
         icon,
         explanatory_text,
@@ -40,9 +40,7 @@ SELECT
 FROM
     accounts
 WHERE
-    user_id = (
-        SELECT user_id FROM users WHERE email = $1
-    ) AND is_delete = false;
+    email = $1 AND is_delete = false;
 
 -- name: ListAccounts :many
 SELECT

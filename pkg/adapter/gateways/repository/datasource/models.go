@@ -11,7 +11,6 @@ import (
 
 type Account struct {
 	AccountID       string         `json:"account_id"`
-	UserID          string         `json:"user_id"`
 	Username        string         `json:"username"`
 	Icon            sql.NullString `json:"icon"`
 	ExplanatoryText sql.NullString `json:"explanatory_text"`
@@ -23,6 +22,7 @@ type Account struct {
 	CreateAt        time.Time      `json:"create_at"`
 	UpdateAt        time.Time      `json:"update_at"`
 	IsDelete        bool           `json:"is_delete"`
+	Email           string         `json:"email"`
 }
 
 type AccountFramework struct {
@@ -59,6 +59,7 @@ type Achievment struct {
 type Award struct {
 	AwardID int32  `json:"award_id"`
 	Name    string `json:"name"`
+	Icon    string `json:"icon"`
 }
 
 type AwardDatum struct {
@@ -167,6 +168,7 @@ type StatusTag struct {
 type TechTag struct {
 	TechTagID int32  `json:"tech_tag_id"`
 	Language  string `json:"language"`
+	Icon      string `json:"icon"`
 }
 
 type Tutor struct {
@@ -176,13 +178,4 @@ type Tutor struct {
 	CreateAt    time.Time      `json:"create_at"`
 	UpdateAt    time.Time      `json:"update_at"`
 	IsDelete    bool           `json:"is_delete"`
-}
-
-type User struct {
-	UserID         string         `json:"user_id"`
-	Email          sql.NullString `json:"email"`
-	HashedPassword sql.NullString `json:"hashed_password"`
-	CreateAt       time.Time      `json:"create_at"`
-	UpdateAt       time.Time      `json:"update_at"`
-	IsDelete       bool           `json:"is_delete"`
 }
