@@ -9,7 +9,6 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
-	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 )
 
 type roomUsecase struct {
@@ -236,7 +235,7 @@ func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.Delete
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	account, err := ru.store.GetAccountsByEmail(ctx, dbutil.ToSqlNullString(body.Email))
+	account, err := ru.store.GetAccountsByEmail(ctx, body.Email)
 	if err != nil {
 		return
 	}

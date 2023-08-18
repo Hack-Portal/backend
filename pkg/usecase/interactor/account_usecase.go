@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/google/uuid"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
@@ -59,7 +58,7 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (domain
 	}
 
 	return parseAccountResponse(repository.Account{
-		UserID:          account.UserID,
+		AccountID:       account.AccountID,
 		Username:        account.Username,
 		Icon:            account.Icon,
 		ExplanatoryText: account.ExplanatoryText,
@@ -77,7 +76,7 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
-	account, err := au.store.GetAccountsByEmail(ctx, sql.NullString{String: email, Valid: true})
+	account, err := au.store.GetAccountsByEmail(ctx, email)
 	if err != nil {
 		return domain.AccountResponses{}, err
 	}
@@ -87,12 +86,12 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 		return domain.AccountResponses{}, err
 	}
 
-	tags, err := au.store.ListAccountTagsByUserID(ctx, account.UserID)
+	tags, err := au.store.ListAccountTagsByUserID(ctx, account.AccountID)
 	if err != nil {
 		return domain.AccountResponses{}, err
 	}
 
-	fws, err := au.store.ListAccountFrameworksByUserID(ctx, account.UserID)
+	fws, err := au.store.ListAccountFrameworksByUserID(ctx, account.AccountID)
 	if err != nil {
 		return domain.AccountResponses{}, err
 	}
@@ -108,7 +107,7 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	}
 
 	return parseAccountResponse(repository.Account{
-		UserID:          account.UserID,
+		AccountID:       account.AccountID,
 		Username:        account.Username,
 		Icon:            account.Icon,
 		ExplanatoryText: account.ExplanatoryText,
@@ -137,8 +136,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 
 	account, err := au.store.CreateAccountTx(ctx, domain.CreateAccountParams{
 		AccountInfo: repository.CreateAccountsParams{
-			AccountID: uuid.New().String(),
-			UserID:    body.UserID,
+			AccountID: body.AccountID,
 			Username:  body.Username,
 			Icon: sql.NullString{
 				String: imageURL,

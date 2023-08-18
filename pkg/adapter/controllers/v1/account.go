@@ -167,7 +167,6 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		domain.UpdateAccountParam{
 			AccountInfo: repository.Account{
 				AccountID: reqURI.AccountID,
-				UserID:    reqBody.UserID,
 				Username:  reqBody.Username,
 				ExplanatoryText: sql.NullString{
 					String: reqBody.ExplanatoryText,
