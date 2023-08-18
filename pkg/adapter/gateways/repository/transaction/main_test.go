@@ -3,6 +3,7 @@ package transaction
 import (
 	"context"
 	"log"
+	"os"
 	"testing"
 
 	firebase "firebase.google.com/go"
@@ -11,7 +12,7 @@ import (
 
 var TestStore Store
 
-func NewTestServer(t *testing.T) {
+func TestMain(m *testing.M) {
 
 	firebaseconfig := &firebase.Config{
 		StorageBucket: "hackthon-geek-v6.appspot.com",
@@ -22,5 +23,6 @@ func NewTestServer(t *testing.T) {
 	if err != nil {
 		log.Fatal("cerviceAccount Load error :", err)
 	}
-	TestStore = NewFakeStore(app)
+
+	os.Exit(m.Run())
 }
