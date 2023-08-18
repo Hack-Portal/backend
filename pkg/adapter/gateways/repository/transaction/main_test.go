@@ -11,7 +11,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-var TestStore Store
+var TestStore fake.fakeQuerier
 
 func NewTestServer(t *testing.T) {
 	env := bootstrap.LoadEnvConfig("../../../../../")

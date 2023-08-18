@@ -1,4 +1,4 @@
-package fake
+package repository
 
 import (
 	"context"
@@ -6,45 +6,48 @@ import (
 	"fmt"
 	"time"
 
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 )
 
 type fakeQuerier struct {
 	// 1
-	statusTag map[int32]repository.StatusTag
-	locate    map[int32]repository.Locate
-	techTag   map[int32]repository.TechTag
-	role      map[int32]repository.Role
-	hackathon map[int32]repository.Hackathon
+	statusTag map[int32]StatusTag
+	locate    map[int32]Locate
+	techTag   map[int32]TechTag
+	role      map[int32]Role
+	hackathon map[int32]Hackathon
 	// 2
-	framework map[int32]repository.Framework
-	account   map[string]repository.Account
+	framework map[int32]Framework
+	account   map[string]Account
 	// 3
-	room               map[string]repository.Room
-	rateEntity         map[int32]repository.RateEntity
-	follow             map[int32]repository.Follow
-	pastWork           map[int32]repository.PastWork
-	accountTag         map[int32]repository.AccountTag
-	accountFramework   map[int32]repository.AccountFramework
-	hackathonStatusTag map[int32]repository.HackathonStatusTag
+	room               map[string]Room
+	rateEntity         map[int32]RateEntity
+	follow             map[int32]Follow
+	pastWork           map[int32]PastWork
+	accountTag         map[int32]AccountTag
+	accountFramework   map[int32]AccountFramework
+	hackathonStatusTag map[int32]HackathonStatusTag
 	// 4
-	accountPastWork   map[int32]repository.AccountPastWork
-	like              map[int32]repository.Like
-	pastWorkFramework map[int32]repository.PastWorkFramework
-	pastWorkTag       map[int32]repository.PastWorkTag
-	roomsAccount      map[int32]repository.RoomsAccount
+	accountPastWork   map[int32]AccountPastWork
+	like              map[int32]Like
+	pastWorkFramework map[int32]PastWorkFramework
+	pastWorkTag       map[int32]PastWorkTag
+	roomsAccount      map[int32]RoomsAccount
 }
 
-func (fq fakeQuerier) CreateLocates(ctx context.Context, name string) (repository.Locate, error) {
-	locate := repository.Locate{
+func NewFakeDB() Querier {
+	return &fakeQuerier{}
+}
+
+func (fq *fakeQuerier) CreateLocates(ctx context.Context, name string) (Locate, error) {
+	locate := Locate{
 		LocateID: int32(len(fq.locate) + 1),
 		Name:     name,
 	}
 
 	if len(locate.Name) == 0 {
 		err := errors.New(fmt.Sprintf(`null value in column "%s" violates not-null constraint`, "name"))
-		return repository.Locate{}, err
+		return Locate{}, err
 	}
 
 	fq.locate[int32(len(fq.locate)+1)] = locate
@@ -52,48 +55,48 @@ func (fq fakeQuerier) CreateLocates(ctx context.Context, name string) (repositor
 	return fq.locate[int32(len(fq.locate)+1)], nil
 }
 
-func (fq fakeQuerier) GetLocatesByID(ctx context.Context, locateID int32) (repository.Locate, error) {
+func (fq *fakeQuerier) GetLocatesByID(ctx context.Context, locateID int32) (Locate, error) {
 	locate, ok := fq.locate[locateID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, locateID))
-		return repository.Locate{}, err
+		return Locate{}, err
 	}
 	return locate, nil
 }
 
-func (fq fakeQuerier) ListLocates(ctx context.Context) ([]repository.Locate, error) {
-	locates := []repository.Locate{}
+func (fq *fakeQuerier) ListLocates(ctx context.Context) ([]Locate, error) {
+	locates := []Locate{}
 	for _, locate := range fq.locate {
 		locates = append(locates, locate)
 	}
 	return locates, nil
 }
 
-func (fq fakeQuerier) CreateTechTags(ctx context.Context, language string) (repository.TechTag, error) {
-	techTag := repository.TechTag{
+func (fq *fakeQuerier) CreateTechTags(ctx context.Context, language string) (TechTag, error) {
+	techTag := TechTag{
 		TechTagID: int32(len(fq.techTag)) + 1,
 		Language:  language,
 	}
 	if len(techTag.Language) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "language"))
-		return repository.TechTag{}, err
+		return TechTag{}, err
 	}
 
 	fq.techTag[int32(len(fq.techTag))+1] = techTag
 	return fq.techTag[int32(len(fq.techTag))+1], nil
 }
 
-func (fq fakeQuerier) GetTechTagsByID(ctx context.Context, techTagID int32) (repository.TechTag, error) {
+func (fq *fakeQuerier) GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error) {
 	techTag, ok := fq.techTag[techTagID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, techTagID))
-		return repository.TechTag{}, err
+		return TechTag{}, err
 	}
 	return techTag, nil
 }
 
-func (fq fakeQuerier) ListTechTags(ctx context.Context) ([]repository.TechTag, error) {
-	techTags := []repository.TechTag{}
+func (fq *fakeQuerier) ListTechTags(ctx context.Context) ([]TechTag, error) {
+	techTags := []TechTag{}
 
 	for _, techTag := range fq.techTag {
 		techTags = append(techTags, techTag)
@@ -102,12 +105,12 @@ func (fq fakeQuerier) ListTechTags(ctx context.Context) ([]repository.TechTag, e
 	return techTags, nil
 }
 
-func (fq fakeQuerier) UpdateTechTagsByID(ctx context.Context, arg repository.UpdateTechTagsByIDParams) (repository.TechTag, error) {
+func (fq *fakeQuerier) UpdateTechTagsByID(ctx context.Context, arg UpdateTechTagsByIDParams) (TechTag, error) {
 	if _, ok := fq.techTag[arg.TechTagID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
-		return repository.TechTag{}, err
+		return TechTag{}, err
 	}
-	techTag := repository.TechTag{
+	techTag := TechTag{
 		TechTagID: arg.TechTagID,
 		Language:  arg.Language,
 	}
@@ -115,7 +118,7 @@ func (fq fakeQuerier) UpdateTechTagsByID(ctx context.Context, arg repository.Upd
 	return fq.techTag[arg.TechTagID], nil
 }
 
-func (fq fakeQuerier) DeleteTechTagsByID(ctx context.Context, techTagID int32) error {
+func (fq *fakeQuerier) DeleteTechTagsByID(ctx context.Context, techTagID int32) error {
 	if _, ok := fq.techTag[techTagID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, techTagID))
 		return err
@@ -125,30 +128,30 @@ func (fq fakeQuerier) DeleteTechTagsByID(ctx context.Context, techTagID int32) e
 	return nil
 }
 
-func (fq fakeQuerier) CreateRoles(ctx context.Context, role string) (repository.Role, error) {
-	r := repository.Role{
+func (fq *fakeQuerier) CreateRoles(ctx context.Context, role string) (Role, error) {
+	r := Role{
 		RoleID: int32(len(fq.role)) + 1,
 		Role:   role,
 	}
 	if len(r.Role) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "role"))
-		return repository.Role{}, err
+		return Role{}, err
 	}
 	fq.role[int32(len(fq.role))+1] = r
 	return fq.role[int32(len(fq.role))+1], nil
 }
 
-func (fq fakeQuerier) GetRolesByID(ctx context.Context, roleID int32) (repository.Role, error) {
+func (fq *fakeQuerier) GetRolesByID(ctx context.Context, roleID int32) (Role, error) {
 	role, ok := fq.role[roleID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, roleID))
-		return repository.Role{}, err
+		return Role{}, err
 	}
 	return role, nil
 }
 
-func (fq fakeQuerier) ListRoles(ctx context.Context) ([]repository.Role, error) {
-	roles := []repository.Role{}
+func (fq *fakeQuerier) ListRoles(ctx context.Context) ([]Role, error) {
+	roles := []Role{}
 
 	for _, role := range fq.role {
 		roles = append(roles, role)
@@ -157,31 +160,31 @@ func (fq fakeQuerier) ListRoles(ctx context.Context) ([]repository.Role, error) 
 	return roles, nil
 }
 
-func (fq fakeQuerier) CreateStatusTags(ctx context.Context, status string) (repository.StatusTag, error) {
-	statusTag := repository.StatusTag{
+func (fq *fakeQuerier) CreateStatusTags(ctx context.Context, status string) (StatusTag, error) {
+	statusTag := StatusTag{
 		StatusID: int32(len(fq.statusTag)) + 1,
 		Status:   status,
 	}
 	if len(statusTag.Status) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "status"))
-		return repository.StatusTag{}, err
+		return StatusTag{}, err
 	}
 
 	fq.statusTag[int32(len(fq.statusTag))+1] = statusTag
 	return fq.statusTag[int32(len(fq.statusTag))+1], nil
 }
 
-func (fq fakeQuerier) GetStatusTagsByTag(ctx context.Context, statusID int32) (repository.StatusTag, error) {
+func (fq *fakeQuerier) GetStatusTagsByTag(ctx context.Context, statusID int32) (StatusTag, error) {
 	statuTag, ok := fq.statusTag[statusID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, statusID))
-		return repository.StatusTag{}, err
+		return StatusTag{}, err
 	}
 	return statuTag, nil
 }
 
-func (fq fakeQuerier) ListStatusTags(ctx context.Context) ([]repository.StatusTag, error) {
-	statusTags := []repository.StatusTag{}
+func (fq *fakeQuerier) ListStatusTags(ctx context.Context) ([]StatusTag, error) {
+	statusTags := []StatusTag{}
 
 	for _, statusTag := range fq.statusTag {
 		statusTags = append(statusTags, statusTag)
@@ -190,7 +193,7 @@ func (fq fakeQuerier) ListStatusTags(ctx context.Context) ([]repository.StatusTa
 	return statusTags, nil
 }
 
-func (fq fakeQuerier) DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error {
+func (fq *fakeQuerier) DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error {
 	if _, ok := fq.statusTag[statusID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, statusID))
 		return err
@@ -200,16 +203,16 @@ func (fq fakeQuerier) DeleteStatusTagsByStatusID(ctx context.Context, statusID i
 	return nil
 }
 
-func (fq fakeQuerier) CreateHackathons(ctx context.Context, arg repository.CreateHackathonsParams) (repository.Hackathon, error) {
+func (fq *fakeQuerier) CreateHackathons(ctx context.Context, arg CreateHackathonsParams) (Hackathon, error) {
 	if len(arg.Name) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "name"))
-		return repository.Hackathon{}, err
+		return Hackathon{}, err
 	}
 	if len(arg.Link) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "link"))
-		return repository.Hackathon{}, err
+		return Hackathon{}, err
 	}
-	hackathon := repository.Hackathon{
+	hackathon := Hackathon{
 		HackathonID: int32(len(fq.hackathon)) + 1,
 		Name:        arg.Name,
 		Icon:        arg.Icon,
@@ -223,18 +226,18 @@ func (fq fakeQuerier) CreateHackathons(ctx context.Context, arg repository.Creat
 	return fq.hackathon[int32(len(fq.hackathon))+1], nil
 }
 
-func (fq fakeQuerier) GetHackathonByID(ctx context.Context, hackathonID int32) (repository.Hackathon, error) {
+func (fq *fakeQuerier) GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathon, error) {
 	hackathon, ok := fq.hackathon[hackathonID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
-		return repository.Hackathon{}, err
+		return Hackathon{}, err
 	}
 	return hackathon, nil
 }
 
-func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHackathonsParams) ([]repository.Hackathon, error) {
+func (fq *fakeQuerier) ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathon, error) {
 	var count int32
-	hackathons := []repository.Hackathon{}
+	hackathons := []Hackathon{}
 
 	for _, hackathon := range fq.hackathon {
 		if arg.Offset*arg.Limit-arg.Limit > count {
@@ -252,7 +255,7 @@ func (fq fakeQuerier) ListHackathons(ctx context.Context, arg repository.ListHac
 	return hackathons, nil
 }
 
-func (fq fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32) error {
+func (fq *fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32) error {
 	if _, ok := fq.hackathon[hackathonID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
 		return err
@@ -261,16 +264,16 @@ func (fq fakeQuerier) DeleteHackathonByID(ctx context.Context, hackathonID int32
 	return nil
 }
 
-func (fq fakeQuerier) CreateFrameworks(ctx context.Context, arg repository.CreateFrameworksParams) (repository.Framework, error) {
+func (fq *fakeQuerier) CreateFrameworks(ctx context.Context, arg CreateFrameworksParams) (Framework, error) {
 	if _, ok := fq.techTag[arg.TechTagID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
-		return repository.Framework{}, err
+		return Framework{}, err
 	}
 	if len(arg.Framework) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "framework"))
-		return repository.Framework{}, err
+		return Framework{}, err
 	}
-	framework := repository.Framework{
+	framework := Framework{
 		FrameworkID: int32(len(fq.framework)) + 1,
 		TechTagID:   arg.TechTagID,
 		Framework:   arg.Framework,
@@ -279,17 +282,17 @@ func (fq fakeQuerier) CreateFrameworks(ctx context.Context, arg repository.Creat
 	return fq.framework[int32(len(fq.framework))+1], nil
 }
 
-func (fq fakeQuerier) GetFrameworksByID(ctx context.Context, frameworkID int32) (repository.Framework, error) {
+func (fq *fakeQuerier) GetFrameworksByID(ctx context.Context, frameworkID int32) (Framework, error) {
 	framework, ok := fq.framework[frameworkID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, frameworkID))
-		return repository.Framework{}, err
+		return Framework{}, err
 	}
 	return framework, nil
 }
 
-func (fq fakeQuerier) ListFrameworks(ctx context.Context) ([]repository.Framework, error) {
-	frameworks := []repository.Framework{}
+func (fq *fakeQuerier) ListFrameworks(ctx context.Context) ([]Framework, error) {
+	frameworks := []Framework{}
 
 	for _, framework := range fq.framework {
 		frameworks = append(frameworks, framework)
@@ -298,17 +301,17 @@ func (fq fakeQuerier) ListFrameworks(ctx context.Context) ([]repository.Framewor
 	return frameworks, nil
 }
 
-func (fq fakeQuerier) UpdateFrameworksByID(ctx context.Context, arg repository.UpdateFrameworksByIDParams) (repository.Framework, error) {
+func (fq *fakeQuerier) UpdateFrameworksByID(ctx context.Context, arg UpdateFrameworksByIDParams) (Framework, error) {
 	if _, ok := fq.framework[arg.FrameworkID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.FrameworkID))
-		return repository.Framework{}, err
+		return Framework{}, err
 	}
 	if _, ok := fq.techTag[arg.TechTagID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
-		return repository.Framework{}, err
+		return Framework{}, err
 	}
 
-	fq.framework[arg.FrameworkID] = repository.Framework{
+	fq.framework[arg.FrameworkID] = Framework{
 		FrameworkID: arg.FrameworkID,
 		TechTagID:   arg.TechTagID,
 		Framework:   arg.Framework,
@@ -316,7 +319,7 @@ func (fq fakeQuerier) UpdateFrameworksByID(ctx context.Context, arg repository.U
 
 	return fq.framework[arg.FrameworkID], nil
 }
-func (fq fakeQuerier) DeleteFrameworksByID(ctx context.Context, frameworkID int32) error {
+func (fq *fakeQuerier) DeleteFrameworksByID(ctx context.Context, frameworkID int32) error {
 	if _, ok := fq.framework[frameworkID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, frameworkID))
 		return err
@@ -325,44 +328,44 @@ func (fq fakeQuerier) DeleteFrameworksByID(ctx context.Context, frameworkID int3
 	return nil
 }
 
-func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateAccountsParams) (repository.Account, error) {
+func (fq *fakeQuerier) CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error) {
 	if len(arg.AccountID) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 	if len(arg.Email) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "user_id"))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 	if len(arg.Username) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "username"))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 	if arg.LocateID == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "locate_id"))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 
 	for _, account := range fq.account {
 		if account.AccountID == arg.AccountID {
 			err := errors.New(fmt.Sprintf(`ERROR: duplicate key value violates unique constraint "%s" `, arg.AccountID))
-			return repository.Account{}, err
+			return Account{}, err
 		}
 	}
 
 	for _, account := range fq.account {
 		if account.Email == arg.Email {
 			err := errors.New(fmt.Sprintf(`ERROR: duplicate key value violates unique constraint "%s" `, arg.Email))
-			return repository.Account{}, err
+			return Account{}, err
 		}
 	}
 
 	if _, ok := fq.locate[arg.LocateID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.LocateID))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 
-	account := repository.Account{
+	account := Account{
 		AccountID:       arg.AccountID,
 		Email:           arg.Email,
 		Username:        arg.Username,
@@ -382,16 +385,16 @@ func (fq fakeQuerier) CreateAccounts(ctx context.Context, arg repository.CreateA
 	return fq.account[arg.AccountID], nil
 }
 
-func (fq fakeQuerier) GetAccountsByID(ctx context.Context, accountID string) (repository.Account, error) {
+func (fq *fakeQuerier) GetAccountsByID(ctx context.Context, accountID string) (Account, error) {
 	account, ok := fq.account[accountID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 	return account, nil
 }
 
-func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email string) (repository.Account, error) {
+func (fq *fakeQuerier) GetAccountsByEmail(ctx context.Context, email string) (Account, error) {
 	for _, account := range fq.account {
 		if account.Email == account.Email {
 			return account, nil
@@ -399,12 +402,12 @@ func (fq fakeQuerier) GetAccountsByEmail(ctx context.Context, email string) (rep
 	}
 
 	err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, email))
-	return repository.Account{}, err
+	return Account{}, err
 }
 
-func (fq fakeQuerier) ListAccounts(ctx context.Context, arg repository.ListAccountsParams) ([]repository.Account, error) {
+func (fq *fakeQuerier) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error) {
 	var count int32
-	accounts := []repository.Account{}
+	accounts := []Account{}
 
 	for _, account := range fq.account {
 		if arg.Offset*arg.Limit-arg.Limit > count {
@@ -419,19 +422,19 @@ func (fq fakeQuerier) ListAccounts(ctx context.Context, arg repository.ListAccou
 	return accounts, nil
 }
 
-func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateAccountsParams) (repository.Account, error) {
+func (fq *fakeQuerier) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) (Account, error) {
 	account, ok := fq.account[arg.AccountID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 
 	if _, ok := fq.locate[arg.LocateID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.LocateID))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 
-	newAccount := repository.Account{
+	newAccount := Account{
 		AccountID:       account.AccountID,
 		Email:           account.Email,
 		Username:        arg.Username,
@@ -452,14 +455,14 @@ func (fq fakeQuerier) UpdateAccounts(ctx context.Context, arg repository.UpdateA
 	return fq.account[arg.AccountID], nil
 }
 
-func (fq fakeQuerier) UpdateRateByID(ctx context.Context, arg repository.UpdateRateByIDParams) (repository.Account, error) {
+func (fq *fakeQuerier) UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) (Account, error) {
 	account, ok := fq.account[arg.AccountID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 
-	newAccount := repository.Account{
+	newAccount := Account{
 		AccountID:       account.AccountID,
 		Email:           account.Email,
 		Username:        account.Username,
@@ -479,10 +482,10 @@ func (fq fakeQuerier) UpdateRateByID(ctx context.Context, arg repository.UpdateR
 	return fq.account[arg.AccountID], nil
 }
 
-func (fq fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (repository.Account, error) {
+func (fq *fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (Account, error) {
 	if len(accountID) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
-		return repository.Account{}, err
+		return Account{}, err
 	}
 	account := fq.account[accountID]
 	account.IsDelete = true
@@ -490,26 +493,26 @@ func (fq fakeQuerier) DeleteAccounts(ctx context.Context, accountID string) (rep
 	return fq.account[accountID], nil
 }
 
-func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoomsParams) (repository.Room, error) {
+func (fq *fakeQuerier) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error) {
 	if len(arg.RoomID) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "room_id"))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 	if len(arg.Title) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "title"))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 	if len(arg.Description) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "description"))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 
 	if _, ok := fq.hackathon[arg.HackathonID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.HackathonID))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 
-	room := repository.Room{
+	room := Room{
 		RoomID:      arg.RoomID,
 		HackathonID: arg.HackathonID,
 		Title:       arg.Title,
@@ -524,18 +527,18 @@ func (fq fakeQuerier) CreateRooms(ctx context.Context, arg repository.CreateRoom
 	return fq.room[arg.RoomID], nil
 }
 
-func (fq fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (repository.Room, error) {
+func (fq *fakeQuerier) GetRoomsByID(ctx context.Context, roomID string) (Room, error) {
 	room, ok := fq.room[roomID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, roomID))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 	return room, nil
 }
 
-func (fq fakeQuerier) ListRooms(ctx context.Context, arg repository.ListRoomsParams) ([]repository.Room, error) {
+func (fq *fakeQuerier) ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, error) {
 	var count int32
-	rooms := []repository.Room{}
+	rooms := []Room{}
 
 	for _, room := range fq.room {
 		if arg.Offset*arg.Limit-arg.Limit > count {
@@ -550,32 +553,32 @@ func (fq fakeQuerier) ListRooms(ctx context.Context, arg repository.ListRoomsPar
 	return rooms, nil
 }
 
-func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.UpdateRoomsByIDParams) (repository.Room, error) {
+func (fq *fakeQuerier) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams) (Room, error) {
 	if len(arg.RoomID) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "room_id"))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 	if len(arg.Title) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "title"))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 	if len(arg.Description) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "description"))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 
 	room, ok := fq.room[arg.RoomID]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.HackathonID))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 
 	if _, ok := fq.hackathon[arg.HackathonID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.HackathonID))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 
-	newRoom := repository.Room{
+	newRoom := Room{
 		RoomID:      arg.RoomID,
 		HackathonID: arg.HackathonID,
 		Title:       arg.Title,
@@ -591,10 +594,10 @@ func (fq fakeQuerier) UpdateRoomsByID(ctx context.Context, arg repository.Update
 	return fq.room[arg.RoomID], nil
 }
 
-func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repository.Room, error) {
+func (fq *fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (Room, error) {
 	if len(roomID) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "room_id"))
-		return repository.Room{}, err
+		return Room{}, err
 	}
 	room := fq.room[roomID]
 	room.IsDelete = true
@@ -602,16 +605,16 @@ func (fq fakeQuerier) DeleteRoomsByID(ctx context.Context, roomID string) (repos
 	return fq.room[roomID], nil
 }
 
-func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.CreateRateEntitiesParams) (repository.RateEntity, error) {
+func (fq *fakeQuerier) CreateRateEntities(ctx context.Context, arg CreateRateEntitiesParams) (RateEntity, error) {
 	if len(arg.AccountID) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
-		return repository.RateEntity{}, err
+		return RateEntity{}, err
 	}
 	if _, ok := fq.account[arg.AccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.RateEntity{}, err
+		return RateEntity{}, err
 	}
-	rate := repository.RateEntity{
+	rate := RateEntity{
 		AccountID: arg.AccountID,
 		Rate:      arg.Rate,
 		CreateAt:  time.Now(),
@@ -620,7 +623,7 @@ func (fq fakeQuerier) CreateRateEntities(ctx context.Context, arg repository.Cre
 	return fq.rateEntity[int32(len(fq.rateEntity))+1], nil
 }
 
-func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListRateEntitiesParams) ([]repository.RateEntity, error) {
+func (fq *fakeQuerier) ListRateEntities(ctx context.Context, arg ListRateEntitiesParams) ([]RateEntity, error) {
 	if len(arg.AccountID) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
 		return nil, err
@@ -631,7 +634,7 @@ func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListR
 	}
 
 	var count int32
-	rates := []repository.RateEntity{}
+	rates := []RateEntity{}
 	for _, rate := range fq.rateEntity {
 		if arg.Offset*arg.Limit-arg.Limit > count {
 			rates = append(rates, rate)
@@ -644,18 +647,18 @@ func (fq fakeQuerier) ListRateEntities(ctx context.Context, arg repository.ListR
 	return rates, nil
 }
 
-func (fq fakeQuerier) CreateFollows(ctx context.Context, arg repository.CreateFollowsParams) (repository.Follow, error) {
+func (fq *fakeQuerier) CreateFollows(ctx context.Context, arg CreateFollowsParams) (Follow, error) {
 	if _, ok := fq.account[arg.ToAccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.ToAccountID))
-		return repository.Follow{}, err
+		return Follow{}, err
 	}
 
 	if _, ok := fq.account[arg.FromAccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.FromAccountID))
-		return repository.Follow{}, err
+		return Follow{}, err
 	}
 
-	follow := repository.Follow{
+	follow := Follow{
 		ToAccountID:   arg.ToAccountID,
 		FromAccountID: arg.FromAccountID,
 		CreateAt:      time.Now(),
@@ -665,7 +668,7 @@ func (fq fakeQuerier) CreateFollows(ctx context.Context, arg repository.CreateFo
 	return fq.follow[int32(len(fq.follow))+1], nil
 }
 
-func (fq fakeQuerier) DeleteFollows(ctx context.Context, arg repository.DeleteFollowsParams) error {
+func (fq *fakeQuerier) DeleteFollows(ctx context.Context, arg DeleteFollowsParams) error {
 	if _, ok := fq.account[arg.ToAccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.ToAccountID))
 		return err
@@ -685,8 +688,8 @@ func (fq fakeQuerier) DeleteFollows(ctx context.Context, arg repository.DeleteFo
 	return errors.New(fmt.Sprintf(`ERROR: no rows in result set `))
 }
 
-func (fq fakeQuerier) ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]repository.Follow, error) {
-	follows := []repository.Follow{}
+func (fq *fakeQuerier) ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]Follow, error) {
+	follows := []Follow{}
 	for i, follow := range fq.follow {
 		if follow.FromAccountID == fromAccountID {
 			follows = append(follows, fq.follow[i])
@@ -695,8 +698,8 @@ func (fq fakeQuerier) ListFollowsByFromUserID(ctx context.Context, fromAccountID
 	return follows, nil
 }
 
-func (fq fakeQuerier) ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]repository.Follow, error) {
-	follows := []repository.Follow{}
+func (fq *fakeQuerier) ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]Follow, error) {
+	follows := []Follow{}
 	for i, follow := range fq.follow {
 		if follow.ToAccountID == toAccountID {
 			follows = append(follows, fq.follow[i])
@@ -705,23 +708,23 @@ func (fq fakeQuerier) ListFollowsByToUserID(ctx context.Context, toAccountID str
 	return follows, nil
 }
 
-func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.CreatePastWorksParams) (repository.PastWork, error) {
+func (fq *fakeQuerier) CreatePastWorks(ctx context.Context, arg CreatePastWorksParams) (PastWork, error) {
 	if len(arg.Name) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 
 	if len(arg.ThumbnailImage) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 
 	if len(arg.ExplanatoryText) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "account_id"))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 
-	pastWork := repository.PastWork{
+	pastWork := PastWork{
 		Opus:            int32(len(fq.pastWork)) + 1,
 		Name:            arg.Name,
 		ThumbnailImage:  arg.ThumbnailImage,
@@ -735,23 +738,23 @@ func (fq fakeQuerier) CreatePastWorks(ctx context.Context, arg repository.Create
 	return fq.pastWork[int32(len(fq.pastWork))+1], nil
 }
 
-func (fq fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (repository.PastWork, error) {
+func (fq *fakeQuerier) GetPastWorksByOpus(ctx context.Context, opus int32) (PastWork, error) {
 	pastwork, ok := fq.pastWork[opus]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 
 	return pastwork, nil
 }
 
-func (fq fakeQuerier) ListPastWorks(ctx context.Context, arg repository.ListPastWorksParams) ([]repository.ListPastWorksRow, error) {
-	pastWorks := []repository.ListPastWorksRow{}
+func (fq *fakeQuerier) ListPastWorks(ctx context.Context, arg ListPastWorksParams) ([]ListPastWorksRow, error) {
+	pastWorks := []ListPastWorksRow{}
 
 	var count int32
 	for _, pastWork := range fq.pastWork {
 		if arg.Offset*arg.Limit-arg.Limit > count {
-			pastWorks = append(pastWorks, repository.ListPastWorksRow{
+			pastWorks = append(pastWorks, ListPastWorksRow{
 				Opus:            pastWork.Opus,
 				Name:            pastWork.Name,
 				ExplanatoryText: pastWork.ExplanatoryText,
@@ -765,27 +768,27 @@ func (fq fakeQuerier) ListPastWorks(ctx context.Context, arg repository.ListPast
 	return pastWorks, nil
 }
 
-func (fq fakeQuerier) UpdatePastWorksByID(ctx context.Context, arg repository.UpdatePastWorksByIDParams) (repository.PastWork, error) {
+func (fq *fakeQuerier) UpdatePastWorksByID(ctx context.Context, arg UpdatePastWorksByIDParams) (PastWork, error) {
 	if len(arg.Name) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "room_id"))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 	if len(arg.ThumbnailImage) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "title"))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 	if len(arg.ExplanatoryText) == 0 {
 		err := errors.New(fmt.Sprintf(`ERROR: null value in column "%s" violates not-null constraint`, "description"))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 
 	pastWork, ok := fq.pastWork[arg.Opus]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 
-	newPastWork := repository.PastWork{
+	newPastWork := PastWork{
 		Opus:            arg.Opus,
 		Name:            arg.Name,
 		ThumbnailImage:  arg.ThumbnailImage,
@@ -800,11 +803,11 @@ func (fq fakeQuerier) UpdatePastWorksByID(ctx context.Context, arg repository.Up
 	return fq.pastWork[arg.Opus], nil
 }
 
-func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.DeletePastWorksByIDParams) (repository.PastWork, error) {
+func (fq *fakeQuerier) DeletePastWorksByID(ctx context.Context, arg DeletePastWorksByIDParams) (PastWork, error) {
 	pastWork, ok := fq.pastWork[arg.Opus]
 	if !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
-		return repository.PastWork{}, err
+		return PastWork{}, err
 	}
 	pastWork.IsDelete = true
 
@@ -812,17 +815,17 @@ func (fq fakeQuerier) DeletePastWorksByID(ctx context.Context, arg repository.De
 	return fq.pastWork[arg.Opus], nil
 }
 
-func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.CreateAccountTagsParams) (repository.AccountTag, error) {
+func (fq *fakeQuerier) CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTag, error) {
 	if _, ok := fq.account[arg.AccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.AccountTag{}, err
+		return AccountTag{}, err
 	}
 	if _, ok := fq.techTag[arg.TechTagID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
-		return repository.AccountTag{}, err
+		return AccountTag{}, err
 	}
 
-	accountTag := repository.AccountTag{
+	accountTag := AccountTag{
 		AccountID: arg.AccountID,
 		TechTagID: arg.TechTagID,
 	}
@@ -831,17 +834,17 @@ func (fq fakeQuerier) CreateAccountTags(ctx context.Context, arg repository.Crea
 	return fq.accountTag[int32(len(fq.accountTag))+1], nil
 }
 
-func (fq fakeQuerier) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]repository.ListAccountTagsByUserIDRow, error) {
+func (fq *fakeQuerier) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]ListAccountTagsByUserIDRow, error) {
 	if _, ok := fq.account[accountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
 		return nil, err
 	}
-	accountTags := []repository.ListAccountTagsByUserIDRow{}
+	accountTags := []ListAccountTagsByUserIDRow{}
 
 	for _, accountTag := range fq.accountTag {
 		if accountTag.AccountID == accountID {
 			tag := fq.techTag[accountTag.TechTagID]
-			accountTags = append(accountTags, repository.ListAccountTagsByUserIDRow{
+			accountTags = append(accountTags, ListAccountTagsByUserIDRow{
 				TechTagID: dbutil.ToSqlNullInt32(tag.TechTagID),
 				Language:  dbutil.ToSqlNullString(tag.Language),
 			})
@@ -851,7 +854,7 @@ func (fq fakeQuerier) ListAccountTagsByUserID(ctx context.Context, accountID str
 	return accountTags, nil
 }
 
-func (fq fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error {
+func (fq *fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID string) error {
 	if _, ok := fq.account[accountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
 		return err
@@ -866,17 +869,17 @@ func (fq fakeQuerier) DeleteAccountTagsByUserID(ctx context.Context, accountID s
 	return nil
 }
 
-func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repository.CreateAccountFrameworksParams) (repository.AccountFramework, error) {
+func (fq *fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg CreateAccountFrameworksParams) (AccountFramework, error) {
 	if _, ok := fq.account[arg.AccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.AccountFramework{}, err
+		return AccountFramework{}, err
 	}
 	if _, ok := fq.framework[arg.FrameworkID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.FrameworkID))
-		return repository.AccountFramework{}, err
+		return AccountFramework{}, err
 	}
 
-	accountFramework := repository.AccountFramework{
+	accountFramework := AccountFramework{
 		AccountID:   arg.AccountID,
 		FrameworkID: arg.FrameworkID,
 	}
@@ -885,17 +888,17 @@ func (fq fakeQuerier) CreateAccountFrameworks(ctx context.Context, arg repositor
 	return fq.accountFramework[int32(len(fq.accountFramework))+1], nil
 }
 
-func (fq fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]repository.ListAccountFrameworksByUserIDRow, error) {
+func (fq *fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error) {
 	if _, ok := fq.account[accountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
 		return nil, err
 	}
-	accountFramework := []repository.ListAccountFrameworksByUserIDRow{}
+	accountFramework := []ListAccountFrameworksByUserIDRow{}
 
 	for _, accountTag := range fq.accountFramework {
 		if accountTag.AccountID == accountID {
 			tag := fq.framework[accountTag.FrameworkID]
-			accountFramework = append(accountFramework, repository.ListAccountFrameworksByUserIDRow{
+			accountFramework = append(accountFramework, ListAccountFrameworksByUserIDRow{
 				TechTagID:   dbutil.ToSqlNullInt32(tag.TechTagID),
 				FrameworkID: dbutil.ToSqlNullInt32(tag.FrameworkID),
 				Framework:   dbutil.ToSqlNullString(tag.Framework),
@@ -906,7 +909,7 @@ func (fq fakeQuerier) ListAccountFrameworksByUserID(ctx context.Context, account
 	return accountFramework, nil
 }
 
-func (fq fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error {
+func (fq *fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error {
 	if _, ok := fq.account[accountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
 		return err
@@ -921,17 +924,17 @@ func (fq fakeQuerier) DeleteAccountFrameworkByUserID(ctx context.Context, accoun
 	return nil
 }
 
-func (fq fakeQuerier) CreateHackathonStatusTags(ctx context.Context, arg repository.CreateHackathonStatusTagsParams) (repository.HackathonStatusTag, error) {
+func (fq *fakeQuerier) CreateHackathonStatusTags(ctx context.Context, arg CreateHackathonStatusTagsParams) (HackathonStatusTag, error) {
 	if _, ok := fq.hackathon[arg.HackathonID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.HackathonID))
-		return repository.HackathonStatusTag{}, err
+		return HackathonStatusTag{}, err
 	}
 	if _, ok := fq.statusTag[arg.StatusID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.StatusID))
-		return repository.HackathonStatusTag{}, err
+		return HackathonStatusTag{}, err
 	}
 
-	hackathonStatusTag := repository.HackathonStatusTag{
+	hackathonStatusTag := HackathonStatusTag{
 		HackathonID: arg.HackathonID,
 		StatusID:    arg.StatusID,
 	}
@@ -940,17 +943,17 @@ func (fq fakeQuerier) CreateHackathonStatusTags(ctx context.Context, arg reposit
 	return fq.hackathonStatusTag[int32(len(fq.hackathonStatusTag))+1], nil
 }
 
-func (fq fakeQuerier) ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]repository.HackathonStatusTag, error) {
+func (fq *fakeQuerier) ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]HackathonStatusTag, error) {
 	if _, ok := fq.hackathon[hackathonID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
 		return nil, err
 	}
 
-	hackathonTags := []repository.HackathonStatusTag{}
+	hackathonTags := []HackathonStatusTag{}
 
 	for _, hackathonTag := range fq.hackathonStatusTag {
 		if hackathonTag.HackathonID == hackathonID {
-			hackathonTags = append(hackathonTags, repository.HackathonStatusTag{
+			hackathonTags = append(hackathonTags, HackathonStatusTag{
 				HackathonID: hackathonTag.HackathonID,
 				StatusID:    hackathonTag.StatusID,
 			})
@@ -959,7 +962,7 @@ func (fq fakeQuerier) ListHackathonStatusTagsByID(ctx context.Context, hackathon
 	return hackathonTags, nil
 }
 
-func (fq fakeQuerier) DeleteHackathonStatusTagsByID(ctx context.Context, hackathonID int32) error {
+func (fq *fakeQuerier) DeleteHackathonStatusTagsByID(ctx context.Context, hackathonID int32) error {
 	if _, ok := fq.hackathon[hackathonID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, hackathonID))
 		return err
@@ -974,17 +977,17 @@ func (fq fakeQuerier) DeleteHackathonStatusTagsByID(ctx context.Context, hackath
 	return nil
 }
 
-func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository.CreateAccountPastWorksParams) (repository.AccountPastWork, error) {
+func (fq *fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg CreateAccountPastWorksParams) (AccountPastWork, error) {
 	if _, ok := fq.pastWork[arg.Opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
-		return repository.AccountPastWork{}, err
+		return AccountPastWork{}, err
 	}
 	if _, ok := fq.account[arg.AccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.AccountPastWork{}, err
+		return AccountPastWork{}, err
 	}
 
-	accountPastWork := repository.AccountPastWork{
+	accountPastWork := AccountPastWork{
 		Opus:      arg.Opus,
 		AccountID: arg.AccountID,
 	}
@@ -993,17 +996,17 @@ func (fq fakeQuerier) CreateAccountPastWorks(ctx context.Context, arg repository
 	return fq.accountPastWork[int32(len(fq.accountPastWork))+1], nil
 }
 
-func (fq fakeQuerier) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]repository.AccountPastWork, error) {
+func (fq *fakeQuerier) ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]AccountPastWork, error) {
 	if _, ok := fq.pastWork[opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
 		return nil, err
 	}
 
-	accountPastWorks := []repository.AccountPastWork{}
+	accountPastWorks := []AccountPastWork{}
 
 	for _, accountPastWork := range fq.accountPastWork {
 		if accountPastWork.Opus == opus {
-			accountPastWorks = append(accountPastWorks, repository.AccountPastWork{
+			accountPastWorks = append(accountPastWorks, AccountPastWork{
 				Opus:      accountPastWork.Opus,
 				AccountID: accountPastWork.AccountID,
 			})
@@ -1012,7 +1015,7 @@ func (fq fakeQuerier) ListAccountPastWorksByOpus(ctx context.Context, opus int32
 	return accountPastWorks, nil
 }
 
-func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error {
+func (fq *fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error {
 	if _, ok := fq.pastWork[opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
 		return err
@@ -1026,17 +1029,17 @@ func (fq fakeQuerier) DeleteAccountPastWorksByOpus(ctx context.Context, opus int
 	return nil
 }
 
-func (fq fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg repository.CreatePastWorkFrameworksParams) (repository.PastWorkFramework, error) {
+func (fq *fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg CreatePastWorkFrameworksParams) (PastWorkFramework, error) {
 	if _, ok := fq.pastWorkFramework[arg.Opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
-		return repository.PastWorkFramework{}, err
+		return PastWorkFramework{}, err
 	}
 	if _, ok := fq.framework[arg.FrameworkID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.FrameworkID))
-		return repository.PastWorkFramework{}, err
+		return PastWorkFramework{}, err
 	}
 
-	pastWorkFramework := repository.PastWorkFramework{
+	pastWorkFramework := PastWorkFramework{
 		Opus:        arg.Opus,
 		FrameworkID: arg.FrameworkID,
 	}
@@ -1045,18 +1048,18 @@ func (fq fakeQuerier) CreatePastWorkFrameworks(ctx context.Context, arg reposito
 	return fq.pastWorkFramework[int32(len(fq.pastWorkFramework))+1], nil
 }
 
-func (fq fakeQuerier) ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]repository.PastWorkFramework, error) {
+func (fq *fakeQuerier) ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFramework, error) {
 	if _, ok := fq.pastWork[opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
 		return nil, err
 	}
 
-	pastWorkFrameworks := []repository.PastWorkFramework{}
+	pastWorkFrameworks := []PastWorkFramework{}
 
 	for _, pastWorkFramework := range fq.pastWorkFramework {
 		if pastWorkFramework.Opus == opus {
 
-			pastWorkFrameworks = append(pastWorkFrameworks, repository.PastWorkFramework{
+			pastWorkFrameworks = append(pastWorkFrameworks, PastWorkFramework{
 				Opus:        pastWorkFramework.Opus,
 				FrameworkID: pastWorkFramework.FrameworkID,
 			})
@@ -1065,7 +1068,7 @@ func (fq fakeQuerier) ListPastWorkFrameworksByOpus(ctx context.Context, opus int
 	return pastWorkFrameworks, nil
 }
 
-func (fq fakeQuerier) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error {
+func (fq *fakeQuerier) DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error {
 	if _, ok := fq.pastWork[opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
 		return err
@@ -1079,17 +1082,17 @@ func (fq fakeQuerier) DeletePastWorkFrameworksByOpus(ctx context.Context, opus i
 	return nil
 }
 
-func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.CreatePastWorkTagsParams) (repository.PastWorkTag, error) {
+func (fq *fakeQuerier) CreatePastWorkTags(ctx context.Context, arg CreatePastWorkTagsParams) (PastWorkTag, error) {
 	if _, ok := fq.pastWorkFramework[arg.Opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
-		return repository.PastWorkTag{}, err
+		return PastWorkTag{}, err
 	}
 	if _, ok := fq.techTag[arg.TechTagID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.TechTagID))
-		return repository.PastWorkTag{}, err
+		return PastWorkTag{}, err
 	}
 
-	pastWorkTag := repository.PastWorkTag{
+	pastWorkTag := PastWorkTag{
 		Opus:      arg.Opus,
 		TechTagID: arg.TechTagID,
 	}
@@ -1098,18 +1101,18 @@ func (fq fakeQuerier) CreatePastWorkTags(ctx context.Context, arg repository.Cre
 	return fq.pastWorkTag[int32(len(fq.pastWorkTag))+1], nil
 }
 
-func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]repository.PastWorkTag, error) {
+func (fq *fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([]PastWorkTag, error) {
 	if _, ok := fq.pastWork[opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
 		return nil, err
 	}
 
-	pastWorkTags := []repository.PastWorkTag{}
+	pastWorkTags := []PastWorkTag{}
 
 	for _, pastWorkTag := range fq.pastWorkTag {
 		if pastWorkTag.Opus == opus {
 
-			pastWorkTags = append(pastWorkTags, repository.PastWorkTag{
+			pastWorkTags = append(pastWorkTags, PastWorkTag{
 				Opus:      pastWorkTag.Opus,
 				TechTagID: pastWorkTag.TechTagID,
 			})
@@ -1118,7 +1121,7 @@ func (fq fakeQuerier) ListPastWorkTagsByOpus(ctx context.Context, opus int32) ([
 	return pastWorkTags, nil
 }
 
-func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error {
+func (fq *fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error {
 	if _, ok := fq.pastWork[opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
 		return err
@@ -1132,17 +1135,17 @@ func (fq fakeQuerier) DeletePastWorkTagsByOpus(ctx context.Context, opus int32) 
 	return nil
 }
 
-func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.CreateRoomsAccountsParams) (repository.RoomsAccount, error) {
+func (fq *fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error) {
 	if _, ok := fq.room[arg.RoomID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.RoomID))
-		return repository.RoomsAccount{}, err
+		return RoomsAccount{}, err
 	}
 	if _, ok := fq.account[arg.AccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.RoomsAccount{}, err
+		return RoomsAccount{}, err
 	}
 
-	roomsAccount := repository.RoomsAccount{
+	roomsAccount := RoomsAccount{
 		AccountID: arg.AccountID,
 		RoomID:    arg.RoomID,
 		Role:      arg.Role,
@@ -1154,19 +1157,19 @@ func (fq fakeQuerier) CreateRoomsAccounts(ctx context.Context, arg repository.Cr
 	return fq.roomsAccount[int32(len(fq.roomsAccount))+1], nil
 }
 
-func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]repository.GetRoomsAccountsByIDRow, error) {
+func (fq *fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error) {
 	if _, ok := fq.room[roomID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, roomID))
 		return nil, err
 	}
 
-	roomsAccounts := []repository.GetRoomsAccountsByIDRow{}
+	roomsAccounts := []GetRoomsAccountsByIDRow{}
 
 	for _, roomsAccount := range fq.roomsAccount {
 		if roomsAccount.RoomID == roomID {
 			account := fq.account[roomsAccount.AccountID]
 
-			roomsAccounts = append(roomsAccounts, repository.GetRoomsAccountsByIDRow{
+			roomsAccounts = append(roomsAccounts, GetRoomsAccountsByIDRow{
 				AccountID: dbutil.ToSqlNullString(roomsAccount.AccountID),
 				IsOwner:   roomsAccount.IsOwner,
 				Icon:      account.Icon,
@@ -1177,7 +1180,7 @@ func (fq fakeQuerier) GetRoomsAccountsByID(ctx context.Context, roomID string) (
 	return roomsAccounts, nil
 }
 
-func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repository.DeleteRoomsAccountsByIDParams) error {
+func (fq *fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg DeleteRoomsAccountsByIDParams) error {
 	if _, ok := fq.room[arg.RoomID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.RoomID))
 		return err
@@ -1195,17 +1198,17 @@ func (fq fakeQuerier) DeleteRoomsAccountsByID(ctx context.Context, arg repositor
 	return nil
 }
 
-func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLikesParams) (repository.Like, error) {
+func (fq *fakeQuerier) CreateLikes(ctx context.Context, arg CreateLikesParams) (Like, error) {
 	if _, ok := fq.pastWork[arg.Opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
-		return repository.Like{}, err
+		return Like{}, err
 	}
 	if _, ok := fq.account[arg.AccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.Like{}, err
+		return Like{}, err
 	}
 
-	like := repository.Like{
+	like := Like{
 		Opus:      arg.Opus,
 		AccountID: arg.AccountID,
 		CreateAt:  time.Now(),
@@ -1215,14 +1218,14 @@ func (fq fakeQuerier) CreateLikes(ctx context.Context, arg repository.CreateLike
 	return fq.like[int32(len(fq.like))+1], nil
 }
 
-func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetLikeStatusByIDParams) (repository.Like, error) {
+func (fq *fakeQuerier) GetLikeStatusByID(ctx context.Context, arg GetLikeStatusByIDParams) (Like, error) {
 	if _, ok := fq.pastWork[arg.Opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
-		return repository.Like{}, err
+		return Like{}, err
 	}
 	if _, ok := fq.account[arg.AccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.Like{}, err
+		return Like{}, err
 	}
 
 	for i, like := range fq.like {
@@ -1231,10 +1234,10 @@ func (fq fakeQuerier) GetLikeStatusByID(ctx context.Context, arg repository.GetL
 		}
 	}
 
-	return repository.Like{}, errors.New(fmt.Sprintf(`ERROR: no rows in result set `))
+	return Like{}, errors.New(fmt.Sprintf(`ERROR: no rows in result set `))
 }
 
-func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error) {
+func (fq *fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64, error) {
 	var count int64
 	if _, ok := fq.pastWork[opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, opus))
@@ -1249,13 +1252,13 @@ func (fq fakeQuerier) GetListCountByOpus(ctx context.Context, opus int32) (int64
 	return count, nil
 }
 
-func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]repository.Like, error) {
+func (fq *fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]Like, error) {
 	if _, ok := fq.account[accountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, accountID))
 		return nil, err
 	}
 
-	likes := []repository.Like{}
+	likes := []Like{}
 
 	for i, like := range fq.like {
 		if like.AccountID == accountID {
@@ -1265,14 +1268,14 @@ func (fq fakeQuerier) ListLikesByID(ctx context.Context, accountID string) ([]re
 	return likes, nil
 }
 
-func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error) {
+func (fq *fakeQuerier) DeleteLikesByID(ctx context.Context, arg DeleteLikesByIDParams) (Like, error) {
 	if _, ok := fq.pastWork[arg.Opus]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%d" does not exist`, arg.Opus))
-		return repository.Like{}, err
+		return Like{}, err
 	}
 	if _, ok := fq.account[arg.AccountID]; !ok {
 		err := errors.New(fmt.Sprintf(`ERROR: column "%s" does not exist`, arg.AccountID))
-		return repository.Like{}, err
+		return Like{}, err
 	}
 
 	for i, like := range fq.like {
@@ -1283,5 +1286,5 @@ func (fq fakeQuerier) DeleteLikesByID(ctx context.Context, arg repository.Delete
 			return fq.like[i], nil
 		}
 	}
-	return repository.Like{}, errors.New(fmt.Sprintf(`ERROR: no rows in result set `))
+	return Like{}, errors.New(fmt.Sprintf(`ERROR: no rows in result set `))
 }
