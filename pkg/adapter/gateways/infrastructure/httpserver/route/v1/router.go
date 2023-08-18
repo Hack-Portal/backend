@@ -30,7 +30,6 @@ func Setup(env *bootstrap.Env, tokenMaker tokens.Maker, timeout time.Duration, s
 	// All Public APIs
 	NewEtcRouter(env, timeout, store, publicRouter)
 	NewHackathonRouter(env, timeout, store, publicRouter)
-	NewUserRouter(env, tokenMaker, timeout, store, publicRouter)
 
 	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware(tokenMaker))
 	//TODO:middlewareの追加

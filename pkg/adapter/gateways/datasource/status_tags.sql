@@ -1,3 +1,6 @@
+-- name: CreateStatusTags :one
+INSERT INTO status_tags (status) VALUES ($1) RETURNING *;
+
 -- name: GetStatusTagsByTag :one
 SELECT status_id ,status
 FROM status_tags

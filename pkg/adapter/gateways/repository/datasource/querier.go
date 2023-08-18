@@ -6,7 +6,6 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 )
 
 type Querier interface {
@@ -19,6 +18,7 @@ type Querier interface {
 	CreateHackathonStatusTags(ctx context.Context, arg CreateHackathonStatusTagsParams) (HackathonStatusTag, error)
 	CreateHackathons(ctx context.Context, arg CreateHackathonsParams) (Hackathon, error)
 	CreateLikes(ctx context.Context, arg CreateLikesParams) (Like, error)
+	CreateLocates(ctx context.Context, name string) (Locate, error)
 	CreatePastWorkFrameworks(ctx context.Context, arg CreatePastWorkFrameworksParams) (PastWorkFramework, error)
 	CreatePastWorkTags(ctx context.Context, arg CreatePastWorkTagsParams) (PastWorkTag, error)
 	CreatePastWorks(ctx context.Context, arg CreatePastWorksParams) (PastWork, error)
@@ -26,7 +26,8 @@ type Querier interface {
 	CreateRoles(ctx context.Context, role string) (Role, error)
 	CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error)
-	CreateUsers(ctx context.Context, arg CreateUsersParams) (User, error)
+	CreateStatusTags(ctx context.Context, status string) (StatusTag, error)
+	CreateTechTags(ctx context.Context, language string) (TechTag, error)
 	DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
 	DeleteAccountPastWorksByOpus(ctx context.Context, opus int32) error
 	DeleteAccountTagsByUserID(ctx context.Context, accountID string) error
@@ -43,8 +44,7 @@ type Querier interface {
 	DeleteRoomsByID(ctx context.Context, roomID string) (Room, error)
 	DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error
 	DeleteTechTagsByID(ctx context.Context, techTagID int32) error
-	DeleteUsersByID(ctx context.Context, arg DeleteUsersByIDParams) error
-	GetAccountsByEmail(ctx context.Context, email sql.NullString) (Account, error)
+	GetAccountsByEmail(ctx context.Context, email string) (Account, error)
 	GetAccountsByID(ctx context.Context, accountID string) (Account, error)
 	GetFrameworksByID(ctx context.Context, frameworkID int32) (Framework, error)
 	GetHackathonByID(ctx context.Context, hackathonID int32) (Hackathon, error)
@@ -58,8 +58,6 @@ type Querier interface {
 	GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (StatusTag, error)
 	GetStatusTagsByTag(ctx context.Context, statusID int32) (StatusTag, error)
 	GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error)
-	GetUsersByEmail(ctx context.Context, email sql.NullString) (User, error)
-	GetUsersByID(ctx context.Context, userID string) (User, error)
 	ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error)
 	ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]AccountPastWork, error)
 	ListAccountTagsByUserID(ctx context.Context, accountID string) ([]ListAccountTagsByUserIDRow, error)
@@ -84,8 +82,7 @@ type Querier interface {
 	UpdatePastWorksByID(ctx context.Context, arg UpdatePastWorksByIDParams) (PastWork, error)
 	UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) (Account, error)
 	UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams) (Room, error)
-	UpdateTechTagsByID(ctx context.Context, language string) (TechTag, error)
-	UpdateUsersByID(ctx context.Context, arg UpdateUsersByIDParams) (User, error)
+	UpdateTechTagsByID(ctx context.Context, arg UpdateTechTagsByIDParams) (TechTag, error)
 }
 
 var _ Querier = (*Queries)(nil)

@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 
@@ -112,11 +111,11 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 			return err
 		}
 
-		owner, err := q.GetAccountsByEmail(ctx, sql.NullString{String: body.OwnerEmail, Valid: true})
+		owner, err := q.GetAccountsByEmail(ctx, body.OwnerEmail)
 		if err != nil {
 			return err
 		}
-		if checkOwner(members, owner.UserID) {
+		if checkOwner(members, owner.AccountID) {
 			err := errors.New("あんたオーナーとちゃうやん")
 			return err
 		}
@@ -139,7 +138,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomParam) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
-		owner, err := q.GetAccountsByEmail(ctx, sql.NullString{String: args.OwnerEmail, Valid: true})
+		owner, err := q.GetAccountsByEmail(ctx, args.OwnerEmail)
 		if err != nil {
 			return err
 		}
@@ -149,7 +148,7 @@ func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomP
 			return err
 		}
 
-		if checkOwner(members, owner.UserID) {
+		if checkOwner(members, owner.AccountID) {
 			err := errors.New("あんたオーナーとちゃうやん")
 			return err
 		}

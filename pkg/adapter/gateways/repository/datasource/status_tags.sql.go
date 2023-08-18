@@ -9,6 +9,17 @@ import (
 	"context"
 )
 
+const createStatusTags = `-- name: CreateStatusTags :one
+INSERT INTO status_tags (status) VALUES ($1) RETURNING status_id, status
+`
+
+func (q *Queries) CreateStatusTags(ctx context.Context, status string) (StatusTag, error) {
+	row := q.db.QueryRowContext(ctx, createStatusTags, status)
+	var i StatusTag
+	err := row.Scan(&i.StatusID, &i.Status)
+	return i, err
+}
+
 const deleteStatusTagsByStatusID = `-- name: DeleteStatusTagsByStatusID :exec
 DELETE FROM
     status_tags

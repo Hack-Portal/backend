@@ -9,6 +9,17 @@ import (
 	"context"
 )
 
+const createLocates = `-- name: CreateLocates :one
+INSERT INTO locates (name) VALUES ($1) RETURNING locate_id, name
+`
+
+func (q *Queries) CreateLocates(ctx context.Context, name string) (Locate, error) {
+	row := q.db.QueryRowContext(ctx, createLocates, name)
+	var i Locate
+	err := row.Scan(&i.LocateID, &i.Name)
+	return i, err
+}
+
 const getLocatesByID = `-- name: GetLocatesByID :one
 SELECT locate_id, name FROM locates WHERE locate_id = $1
 `

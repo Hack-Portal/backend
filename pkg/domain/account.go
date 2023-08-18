@@ -13,7 +13,7 @@ type AccountRequestWildCard struct {
 
 // アカウント作成のリクエストパラメータ
 type CreateAccountRequest struct {
-	UserID          string `json:"user_id" binding:"required"`
+	AccountID       string `json:"account_id" binding:"required"`
 	Username        string `json:"username" binding:"required"`
 	ExplanatoryText string `json:"explanatory_text"`
 	LocateID        int32  `json:"locate_id" binding:"required"`
@@ -44,7 +44,7 @@ type AccountResponses struct {
 
 // アカウント更新のリクエストパラメータ
 type UpdateAccountRequest struct {
-	UserID          string `json:"user_id"`
+	AccountID       string `json:"account_id" binding:"required"`
 	Username        string `json:"username"`
 	ExplanatoryText string `json:"explanatory_text"`
 	LocateID        int32  `json:"locate_id"`

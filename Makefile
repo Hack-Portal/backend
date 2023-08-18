@@ -1,29 +1,28 @@
 postgresRun:
 	docker run --name hackhack-postgres -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=hackhack -d postgres:12-alpine
-
 postgresStart:
 	docker start hackhack-postgres
 
 postgresStop:
 	docker stop hackhack-postgres
 
-connectdb:
-	docker exec -it hackhack-postgres psql hackhack
-
-createdb:
-	docker exec -it hackhack-postgres createdb --username=root --owner=root hackhack
-
-dropdb:
+resetdb:
+	docker stop hackhack-postgres
+	docker start hackhack-postgres
 	docker exec -it hackhack-postgres dropdb hackhack
-
-installmigrate:
-	scoop install migrate
+	docker exec -it hackhack-postgres createdb --username=root --owner=root hackhack
 
 migrateup:
 	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose up
 
+migrateup1:
+	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose up 1
+
 migratedown:
 	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose down
+
+migratedown1:
+	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose down 1
 
 sqlc:
 	sqlc generate
@@ -34,4 +33,4 @@ serverRun:
 test:
 	go test -coverpkg=./...  ./...
 	
-.PHONY: postgresRun postgresStart postgresStop connectDB createdb dropdb installmigrate migrateup migratedown sqlc test 
+.PHONY: postgresRun postgresStart postgresStop resetDB installmigrate migrateup migrateup1 migratedown migratedown1 sqlc serverRun test
