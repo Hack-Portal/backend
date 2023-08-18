@@ -9,6 +9,10 @@ import (
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 )
 
+func NewFake() *Queries {
+	return &Queries{}
+}
+
 type fakeQuerier struct {
 	// 1
 	statusTag map[int32]StatusTag
