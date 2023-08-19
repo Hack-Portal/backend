@@ -18,7 +18,8 @@ func createPastWorkTags(ctx context.Context, q *repository.Queries, opus int32, 
 }
 
 func createPastWorkFrameworks(ctx context.Context, q *repository.Queries, opus int32, frameworks []int32) error {
-	for _, framework := range frameworks {
+	for i, framework := range frameworks {
+		print(i)
 		_, err := q.CreatePastWorkFrameworks(ctx, repository.CreatePastWorkFrameworksParams{Opus: opus, FrameworkID: framework})
 		if err != nil {
 			return err
@@ -54,7 +55,7 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg domain.CreatePa
 			return err
 		}
 
-		if err := createPastWorkFrameworks(ctx, q, pastwork.Opus, arg.PastWorkTags); err != nil {
+		if err := createPastWorkFrameworks(ctx, q, pastwork.Opus, arg.PastWorkFrameworks); err != nil {
 			return err
 		}
 

@@ -38,10 +38,17 @@ jobs:
       with:
         go-version: ^1.20
       id: go
-
+    
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-      
+
+    - name: Translate secrets of base64 into json
+      env:
+        JSON_DECODE: ${{ secrets.CREDENTIALS_JSON }}
+
+      run: |
+        echo -n $JSON_DECODE | base64 --decode > ./serviceAccount.json
+        
     - name: Install golang-migrate
       run: |
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz 

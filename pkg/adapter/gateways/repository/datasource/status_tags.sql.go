@@ -31,21 +31,6 @@ func (q *Queries) DeleteStatusTagsByStatusID(ctx context.Context, statusID int32
 	return err
 }
 
-const getStatusTagsByHackathonID = `-- name: GetStatusTagsByHackathonID :one
-SELECT status_tags.status_id ,status_tags.status
-FROM status_tags
-LEFT OUTER JOIN hackathon_status_tags
-ON status_tags.status_id = hackathon_status_tags.status_id
-where hackathon_id = $1
-`
-
-func (q *Queries) GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (StatusTag, error) {
-	row := q.db.QueryRowContext(ctx, getStatusTagsByHackathonID, hackathonID)
-	var i StatusTag
-	err := row.Scan(&i.StatusID, &i.Status)
-	return i, err
-}
-
 const getStatusTagsByTag = `-- name: GetStatusTagsByTag :one
 SELECT status_id ,status
 FROM status_tags

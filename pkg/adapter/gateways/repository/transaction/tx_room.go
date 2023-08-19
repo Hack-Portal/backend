@@ -3,7 +3,7 @@ package transaction
 import (
 	"context"
 	"errors"
-	"fmt"
+	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
@@ -16,8 +16,8 @@ func compRoom(request domain.UpdateRoomParam, latest repository.Room, members in
 		Description: latest.Description,
 		MemberLimit: latest.MemberLimit,
 		RoomID:      request.RoomID,
+		UpdateAt:    time.Now(),
 	}
-	fmt.Println(request)
 
 	if len(request.Title) != 0 {
 		if latest.Title != request.Title {
@@ -115,9 +115,8 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 		if err != nil {
 			return err
 		}
-		if checkOwner(members, owner.AccountID) {
-			err := errors.New("あんたオーナーとちゃうやん")
-			return err
+		if !checkOwner(members, owner.AccountID) {
+			return errors.New("あんたオーナーとちゃうやん")
 		}
 
 		args, err := compRoom(body, latest, int32(len(members)))
@@ -148,9 +147,8 @@ func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomP
 			return err
 		}
 
-		if checkOwner(members, owner.AccountID) {
-			err := errors.New("あんたオーナーとちゃうやん")
-			return err
+		if !checkOwner(members, owner.AccountID) {
+			return errors.New("あんたオーナーとちゃうやん")
 		}
 
 		_, err = q.DeleteRoomsByID(ctx, args.RoomID)
@@ -171,9 +169,8 @@ func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAcco
 			return err
 		}
 
-		if !checkDuplication(members, args.AccountID) {
-			err := errors.New("あんたすでにルームおるやん")
-			return err
+		if checkDuplication(members, args.AccountID) {
+			return errors.New("あんたすでにルームおるやん")
 		}
 
 		_, err = q.CreateRoomsAccounts(ctx, repository.CreateRoomsAccountsParams{
