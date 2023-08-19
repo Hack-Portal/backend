@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func randomAccount(t *testing.T, store *SQLStore) (domain.CreateAccountParams, repository.Account) {
+func randomAccount(t *testing.T) (domain.CreateAccountParams, repository.Account) {
 	arg := domain.CreateAccountParams{
 		AccountInfo: repository.CreateAccountsParams{
 			AccountID:       util.RandomString(10),
@@ -35,9 +35,7 @@ func randomAccount(t *testing.T, store *SQLStore) (domain.CreateAccountParams, r
 	return arg, account
 }
 func TestCreateAccountTx(t *testing.T) {
-	store := NewStore(testDB, App)
-
-	arg, account := randomAccount(t, store)
+	arg, account := randomAccount(t)
 
 	tags, err := store.ListAccountTagsByUserID(context.Background(), account.AccountID)
 	require.NoError(t, err)
@@ -64,8 +62,7 @@ func TestCreateAccountTx(t *testing.T) {
 }
 
 func TestUpdateAccountTx(t *testing.T) {
-	store := NewStore(testDB, App)
-	_, account := randomAccount(t, store)
+	_, account := randomAccount(t)
 
 	arg := domain.UpdateAccountParam{
 		AccountInfo: repository.Account{

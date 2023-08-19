@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func randomHachathon(t *testing.T, store *SQLStore) (domain.CreateHackathonParams, repository.Hackathon) {
+func randomHachathon(t *testing.T) (domain.CreateHackathonParams, repository.Hackathon) {
 	arg := domain.CreateHackathonParams{
 		Hackathon: repository.CreateHackathonsParams{
 			Name:        util.RandomString(10),
@@ -34,9 +34,7 @@ func randomHachathon(t *testing.T, store *SQLStore) (domain.CreateHackathonParam
 }
 
 func TestCreateHackathonTx(t *testing.T) {
-	store := NewStore(testDB, App)
-
-	arg, hackathon := randomHachathon(t, store)
+	arg, hackathon := randomHachathon(t)
 
 	tags, err := store.ListHackathonStatusTagsByID(context.Background(), hackathon.HackathonID)
 	require.NoError(t, err)

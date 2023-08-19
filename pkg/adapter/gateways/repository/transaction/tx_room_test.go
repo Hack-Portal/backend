@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func randomRoom(t *testing.T, store *SQLStore) (domain.CreateRoomParam, repository.Account, repository.Room) {
-	_, hackathon := randomHachathon(t, store)
-	_, account := randomAccount(t, store)
+func randomRoom(t *testing.T) (domain.CreateRoomParam, repository.Account, repository.Room) {
+	_, hackathon := randomHachathon(t)
+	_, account := randomAccount(t)
 	arg := domain.CreateRoomParam{
 		RoomID:      util.RandomString(10),
 		Title:       util.RandomString(10),
@@ -29,9 +29,7 @@ func randomRoom(t *testing.T, store *SQLStore) (domain.CreateRoomParam, reposito
 }
 
 func TestCreateRoomTx(t *testing.T) {
-	store := NewStore(testDB, App)
-
-	arg, owner, room := randomRoom(t, store)
+	arg, owner, room := randomRoom(t)
 
 	roomAccounts, err := store.GetRoomsAccountsByID(context.Background(), room.RoomID)
 	require.NoError(t, err)
@@ -53,10 +51,9 @@ func TestCreateRoomTx(t *testing.T) {
 }
 
 func TestUpdateRoomTx(t *testing.T) {
-	store := NewStore(testDB, App)
-	_, hackathon := randomHachathon(t, store)
-	_, owner, room := randomRoom(t, store)
-	_, account := randomAccount(t, store)
+	_, hackathon := randomHachathon(t)
+	_, owner, room := randomRoom(t)
+	_, account := randomAccount(t)
 
 	testCases := []struct {
 		name        string
@@ -108,8 +105,7 @@ func TestUpdateRoomTx(t *testing.T) {
 }
 
 func TestDeleteRoomTx(t *testing.T) {
-	store := NewStore(testDB, App)
-	_, owner, room := randomRoom(t, store)
+	_, owner, room := randomRoom(t)
 
 	arg := domain.DeleteRoomParam{
 		OwnerEmail: owner.Email,
@@ -120,9 +116,8 @@ func TestDeleteRoomTx(t *testing.T) {
 }
 
 func TestAddAccountInRoom(t *testing.T) {
-	store := NewStore(testDB, App)
-	_, owner, room := randomRoom(t, store)
-	_, account := randomAccount(t, store)
+	_, owner, room := randomRoom(t)
+	_, account := randomAccount(t)
 
 	testCases := []struct {
 		name        string

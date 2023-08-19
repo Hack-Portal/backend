@@ -11,10 +11,9 @@ import (
 )
 
 func TestCreatePastWorkTx(t *testing.T) {
-	store := NewStore(testDB, App)
 	var accountID []string
 	for i := 0; i < 3; i++ {
-		_, account := randomAccount(t, store)
+		_, account := randomAccount(t)
 		accountID = append(accountID, account.AccountID)
 	}
 

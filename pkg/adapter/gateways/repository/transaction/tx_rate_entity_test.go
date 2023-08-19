@@ -9,9 +9,7 @@ import (
 )
 
 func TestCreateRateEntityTx(t *testing.T) {
-	store := NewStore(testDB, App)
-
-	_, account1 := randomAccount(t, store)
+	_, account1 := randomAccount(t)
 
 	arg := repository.CreateRateEntitiesParams{
 		AccountID: account1.AccountID,
