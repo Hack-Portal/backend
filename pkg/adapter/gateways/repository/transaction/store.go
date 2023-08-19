@@ -39,7 +39,7 @@ type Store interface {
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
 	WriteFireStore(ctx context.Context, arg domain.WriteFireStoreParam) (*firestore.WriteResult, error)
 	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]domain.ChatRoomsWrite, error)
-	UploadImage(ctx context.Context, file []byte) (string, error)
+	UploadImage(ctx context.Context, file []byte) (string, string, error)
 	DeleteImage(ctx context.Context, file string) error
 }
 type SQLStore struct {
