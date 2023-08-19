@@ -48,3 +48,14 @@ type PastWorkResponse struct {
 	Frameworks []repository.Framework `json:"frameworks"`
 	Members    []PastWorkMembers      `json:"members"`
 }
+
+type ListPastWorkResponse struct {
+	Opus            int32                  `json:"opus"`
+	Name            string                 `json:"name"`
+	ExplanatoryText string                 `json:"explanatory_text"`
+	TechTags        []repository.TechTag   `json:"tech_tags"`
+	Frameworks      []repository.Framework `json:"frameworks"`
+	Members         []PastWorkMembers      `json:"members"`
+}
+
+
