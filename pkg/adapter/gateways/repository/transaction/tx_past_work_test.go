@@ -24,8 +24,8 @@ func TestCreatePastWorkTx(t *testing.T) {
 		ExplanatoryText: util.RandomString(10),
 		//TODO:AwardData追加APIが追加されたら変更する
 		AwardDataID:        sql.NullInt32{Valid: false},
-		PastWorkTags:       util.RandomSelection(14, 5),
-		PastWorkFrameworks: util.RandomSelection(51, 5),
+		PastWorkTags:       util.RandomSelection(14, 3),
+		PastWorkFrameworks: util.RandomSelection(51, 3),
 		AccountPastWorks:   accountID,
 	}
 
