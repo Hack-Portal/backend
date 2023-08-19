@@ -56,28 +56,55 @@ func TestUpdateRoomTx(t *testing.T) {
 	store := NewStore(testDB, App)
 	_, hackathon := randomHachathon(t, store)
 	_, owner, room := randomRoom(t, store)
+	_, account := randomAccount(t, store)
 
-	arg := domain.UpdateRoomParam{
-		RoomID:      room.RoomID,
-		Title:       util.RandomString(10),
-		Description: util.RandomString(10),
-		HackathonID: hackathon.HackathonID,
-		MemberLimit: int32(util.Random(5)) + 1,
-		OwnerEmail:  owner.Email,
+	testCases := []struct {
+		name        string
+		arg         domain.UpdateRoomParam
+		checkResult func(t *testing.T, arg domain.UpdateRoomParam, room repository.Room, err error)
+	}{
+		{
+			name: "success",
+			arg: domain.UpdateRoomParam{
+				RoomID:      room.RoomID,
+				Title:       util.RandomString(10),
+				Description: util.RandomString(10),
+				HackathonID: hackathon.HackathonID,
+				MemberLimit: int32(util.Random(5)) + 1,
+				OwnerEmail:  owner.Email,
+			},
+			checkResult: func(t *testing.T, arg domain.UpdateRoomParam, room repository.Room, err error) {
+				require.NoError(t, err)
+				require.NotEmpty(t, room)
+
+				require.Equal(t, arg.RoomID, room.RoomID)
+				require.Equal(t, arg.Title, room.Title)
+				require.Equal(t, arg.Description, room.Description)
+				require.Equal(t, arg.HackathonID, room.HackathonID)
+				require.Equal(t, arg.MemberLimit, room.MemberLimit)
+				require.Equal(t, false, room.IsDelete)
+				require.NotZero(t, room.CreateAt)
+				require.NotZero(t, room.UpdateAt)
+			},
+		}, {
+			name: "fail not owner",
+			arg: domain.UpdateRoomParam{
+				RoomID:      room.RoomID,
+				Title:       util.RandomString(10),
+				Description: util.RandomString(10),
+				HackathonID: hackathon.HackathonID,
+				MemberLimit: int32(util.Random(5)) + 1,
+				OwnerEmail:  account.Email,
+			},
+			checkResult: func(t *testing.T, arg domain.UpdateRoomParam, room repository.Room, err error) {
+				require.Error(t, err)
+			},
+		},
 	}
-
-	newRoom, err := store.UpdateRoomTx(context.Background(), arg)
-	require.NoError(t, err)
-	require.NotEmpty(t, newRoom)
-
-	require.Equal(t, arg.RoomID, newRoom.RoomID)
-	require.Equal(t, arg.Title, newRoom.Title)
-	require.Equal(t, arg.Description, newRoom.Description)
-	require.Equal(t, arg.HackathonID, newRoom.HackathonID)
-	require.Equal(t, arg.MemberLimit, newRoom.MemberLimit)
-	require.Equal(t, false, newRoom.IsDelete)
-	require.NotZero(t, newRoom.CreateAt)
-	require.NotZero(t, newRoom.UpdateAt)
+	for _, tc := range testCases {
+		newRoom, err := store.UpdateRoomTx(context.Background(), tc.arg)
+		tc.checkResult(t, tc.arg, newRoom, err)
+	}
 }
 
 func TestDeleteRoomTx(t *testing.T) {
