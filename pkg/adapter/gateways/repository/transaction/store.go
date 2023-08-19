@@ -40,6 +40,7 @@ type Store interface {
 	WriteFireStore(ctx context.Context, arg domain.WriteFireStoreParam) (*firestore.WriteResult, error)
 	ReadDocsByRoomID(ctx context.Context, RoomID string) (map[string]domain.ChatRoomsWrite, error)
 	UploadImage(ctx context.Context, file []byte) (string, error)
+	DeleteImage(ctx context.Context, file string) error
 }
 type SQLStore struct {
 	*repository.Queries
