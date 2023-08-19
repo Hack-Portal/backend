@@ -51,7 +51,7 @@ type ListRoomResponse struct {
 	MembersFrameworks []RoomFramework       `json:"members_frameworks"`
 }
 
-type HackathonInfo struct {
+type RoomHackathonInfo struct {
 	HackathonID int32                  `json:"hackathon_id"`
 	Name        string                 `json:"name"`
 	Icon        string                 `json:"icon"`
@@ -68,7 +68,7 @@ type GetRoomResponse struct {
 	MemberLimit       int32             `json:"member_limit"`
 	IsDelete          bool              `json:"is_status"`
 	CreateAt          time.Time         `json:"create_at"`
-	Hackathon         HackathonInfo     `json:"hackathon"`
+	Hackathon         RoomHackathonInfo `json:"hackathon"`
 	NowMember         []NowRoomAccounts `json:"now_member"`
 	MembersTechTags   []RoomTechTags    `json:"members_tech_tags"`
 	MembersFrameworks []RoomFramework   `json:"members_frameworks"`

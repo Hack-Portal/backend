@@ -97,7 +97,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 		return
 	}
 
-	result = parseRoomResponse(result, room, domain.HackathonInfo{
+	result = parseRoomResponse(result, room, domain.RoomHackathonInfo{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon.String,
@@ -145,7 +145,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		return
 	}
 
-	result = parseRoomResponse(result, room, domain.HackathonInfo{
+	result = parseRoomResponse(result, room, domain.RoomHackathonInfo{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon.String,
@@ -186,7 +186,7 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomPar
 		return
 	}
 
-	result = parseRoomResponse(result, room, domain.HackathonInfo{
+	result = parseRoomResponse(result, room, domain.RoomHackathonInfo{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon.String,
@@ -328,7 +328,7 @@ func margeRoomAccount(ctx context.Context, q *repository.Queries, id string) (re
 	return
 }
 
-func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, hackathon domain.HackathonInfo) domain.GetRoomResponse {
+func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, hackathon domain.RoomHackathonInfo) domain.GetRoomResponse {
 	return domain.GetRoomResponse{
 		RoomID:      room.RoomID,
 		Title:       room.Title,

@@ -1587,7 +1587,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "hackathon": {
-                    "$ref": "#/definitions/domain.HackathonInfo"
+                    "$ref": "#/definitions/domain.RoomHackathonInfo"
                 },
                 "is_status": {
                     "type": "boolean"
@@ -1618,35 +1618,6 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
-                }
-            }
-        },
-        "domain.HackathonInfo": {
-            "type": "object",
-            "properties": {
-                "hackathon_id": {
-                    "type": "integer"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "link": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "status_tag": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/repository.StatusTag"
-                    }
-                },
-                "term": {
-                    "type": "integer"
                 }
             }
         },
@@ -1767,6 +1738,35 @@ const docTemplate = `{
                 },
                 "framework": {
                     "$ref": "#/definitions/repository.Framework"
+                }
+            }
+        },
+        "domain.RoomHackathonInfo": {
+            "type": "object",
+            "properties": {
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tag": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.StatusTag"
+                    }
+                },
+                "term": {
+                    "type": "integer"
                 }
             }
         },
