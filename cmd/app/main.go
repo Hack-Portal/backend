@@ -12,7 +12,6 @@ import (
 	v1 "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/route/v1"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	tokens "github.com/hackhack-Geek-vol6/backend/pkg/util/token"
 	_ "github.com/lib/pq"
 	"google.golang.org/api/option"
 )
@@ -57,13 +56,8 @@ func main() {
 
 	timeout := time.Duration(times) * time.Second
 
-	tokenMaker, err := tokens.NewPasetoMaker(env.TokenSymmetricKey)
-	if err != nil {
-		log.Fatal("token maker err :", err)
-	}
-
 	gin := gin.Default()
-	v1.Setup(&env, tokenMaker, timeout, store, gin)
+	v1.Setup(&env, timeout, store, gin)
 
 	gin.Run(env.ServerPort)
 }
