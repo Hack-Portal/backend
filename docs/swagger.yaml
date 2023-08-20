@@ -165,6 +165,15 @@ definitions:
     - member_limit
     - title
     type: object
+  domain.FollowResponse:
+    properties:
+      account_id:
+        type: string
+      icon:
+        type: string
+      username:
+        type: string
+    type: object
   domain.GetRoomResponse:
     properties:
       create_at:
@@ -574,7 +583,7 @@ paths:
         required: true
         type: string
       - in: formData
-        name: to_account_id
+        name: account_id
         required: true
         type: string
       produces:
@@ -604,8 +613,13 @@ paths:
         required: true
         type: string
       - in: formData
-        name: to_account_id
-        required: true
+        name: mode
+        type: boolean
+      - in: formData
+        name: page_id
+        type: string
+      - in: formData
+        name: page_size
         type: string
       produces:
       - application/json
@@ -613,7 +627,9 @@ paths:
         "200":
           description: success response
           schema:
-            $ref: '#/definitions/controller.SuccessResponse'
+            items:
+              $ref: '#/definitions/domain.FollowResponse'
+            type: array
         "400":
           description: error response
           schema:

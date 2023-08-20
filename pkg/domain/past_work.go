@@ -59,3 +59,12 @@ type ListPastWorkResponse struct {
 	Frameworks      []repository.Framework `json:"frameworks"`
 	Members         []PastWorkMembers      `json:"members"`
 }
+
+type UpdatePastWorkRequestBody struct {
+	Opus               int32    `json:"opus"`
+	Name               string   `json:"name"`
+	ExplanatoryText    string   `json:"explanatory_text"`
+	PastWorkTags       []int32  `json:"past_work_tags"`
+	PastWorkFrameworks []int32  `json:"past_work_frameworks"`
+	AccountPastWorks   []string `json:"account_past_works"`
+}

@@ -310,17 +310,29 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "boolean",
+                        "name": "mode",
+                        "in": "formData"
+                    },
+                    {
                         "type": "string",
-                        "name": "to_account_id",
-                        "in": "formData",
-                        "required": true
+                        "name": "page_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "page_size",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/controller.SuccessResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.FollowResponse"
+                            }
                         }
                     },
                     "400": {
@@ -407,7 +419,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "name": "to_account_id",
+                        "name": "account_id",
                         "in": "formData",
                         "required": true
                     }
@@ -1461,6 +1473,20 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.FollowResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

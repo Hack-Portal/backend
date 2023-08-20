@@ -28,7 +28,7 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.Create
 	// 画像が空でないときに処理する
 	var imageURL string
 	if image != nil {
-		imageURL, err = pu.store.UploadImage(ctx, image)
+		_, imageURL, err = pu.store.UploadImage(ctx, image)
 		if err != nil {
 			return domain.PastWorkResponse{}, err
 		}
@@ -139,28 +139,32 @@ func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query domain.ListRe
 	return
 }
 
-func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body repository.UpdatePastWorksByIDParams) (result domain.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body domain.UpdatePastWorkRequestBody) (result domain.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 
-	pastWork, err := pu.store.UpdatePastWorksByID(ctx, body)
+	pastWork, err := pu.store.UpdatePastWorksByID(ctx, repository.UpdatePastWorksByIDParams{
+		Opus:            body.Opus,
+		Name:            body.Name,
+		ExplanatoryText: body.ExplanatoryText,
+	})
 	if err != nil {
-		return
+		return domain.PastWorkResponse{}, err
 	}
 
 	techTags, err := parsePastWorkTechTags(ctx, pu.store, pastWork.Opus)
 	if err != nil {
-		return
+		return domain.PastWorkResponse{}, err
 	}
 
 	frameworks, err := parsePastWorkFrameworks(ctx, pu.store, pastWork.Opus)
 	if err != nil {
-		return
+		return domain.PastWorkResponse{}, err
 	}
 
 	members, err := parsePastWorkMembers(ctx, pu.store, pastWork.Opus)
 	if err != nil {
-		return
+		return domain.PastWorkResponse{}, err
 	}
 
 	result = domain.PastWorkResponse{
@@ -169,7 +173,7 @@ func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body repository.U
 		Frameworks: frameworks,
 		Members:    members,
 	}
-	return
+	return result, nil
 }
 
 func (pu *pastWorkUsecase) DeletePastWork(ctx context.Context, args repository.DeletePastWorksByIDParams) error {

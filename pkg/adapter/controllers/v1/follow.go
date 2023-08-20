@@ -60,7 +60,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 // @Tags			Accounts
 // @Produce			json
 // @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
-// @Param			RemoveFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Remove Follow Request Body"
+// @Param			RemoveFollowRequestQueries 	formData 	domain.RemoveFollowRequestQueries		true	"Remove Follow Request Body"
 // @Success			200							{object}	SuccessResponse				"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
@@ -96,8 +96,8 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 // @Tags			Accounts
 // @Produce			json
 // @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
-// @Param			GetFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Get Follow Request Body"
-// @Success			200							{object}	SuccessResponse				"success response"
+// @Param			GetFollowRequestQueries 	formData 	domain.GetFollowRequestQueries		true	"Get Follow Request Body"
+// @Success			200							{object}	[]domain.FollowResponse				"success response"
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
 // @Router       	/accounts/{from_account_id}/follow			[get]
