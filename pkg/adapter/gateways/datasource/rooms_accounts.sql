@@ -1,9 +1,9 @@
 -- name: CreateRoomsAccounts :one
 INSERT INTO rooms_accounts (
+    rooms_account_id,
     account_id,
     room_id,
-    is_owner,
-    role
+    is_owner
 )VALUES(
     $1,$2,$3,$4
 )RETURNING *;
@@ -12,8 +12,7 @@ INSERT INTO rooms_accounts (
 SELECT 
     accounts.account_id, 
     accounts.icon,
-    rooms_accounts.is_owner,
-    rooms_accounts.role    
+    rooms_accounts.is_owner
 FROM 
     rooms_accounts
 LEFT OUTER JOIN 
