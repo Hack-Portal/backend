@@ -15,19 +15,34 @@ type pastWorkUsecase struct {
 	contextTimeout time.Duration
 }
 
-func NewPastWorkUsercase(store transaction.Store, timeout time.Duration) inputport.PastworksUsecase {
+func NewPastWorkUsercase(store transaction.Store, timeout time.Duration) inputport.PastworkUsecase {
 	return &pastWorkUsecase{
 		store:          store,
 		contextTimeout: timeout,
 	}
 }
 
-func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.CreatePastWorkParams) (result domain.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.CreatePastWorkParams, image []byte) (result domain.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
-	pastWork, err := pu.store.CreatePastWorkTx(ctx, arg)
+	// 画像が空でないときに処理する
+	var imageURL string
+	if image != nil {
+		imageURL, err = pu.store.UploadImage(ctx, image)
+		if err != nil {
+			return domain.PastWorkResponse{}, err
+		}
+	}
+	pastWork, err := pu.store.CreatePastWorkTx(ctx, domain.CreatePastWorkParams{
+		Name:               arg.Name,
+		ThumbnailImage:     imageURL,
+		ExplanatoryText:    arg.ExplanatoryText,
+		PastWorkTags:       arg.PastWorkTags,
+		PastWorkFrameworks: arg.PastWorkFrameworks,
+		AccountPastWorks:   arg.AccountPastWorks,
+	})
 	if err != nil {
-		return
+		return domain.PastWorkResponse{}, err
 	}
 
 	techTags, err := parsePastWorkTechTags(ctx, pu.store, pastWork.Opus)

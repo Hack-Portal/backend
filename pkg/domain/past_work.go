@@ -10,7 +10,6 @@ type PastWorksRequestWildCard struct {
 
 type CreatePastWorkRequestBody struct {
 	Name               string   `json:"name"`
-	ThumbnailImage     []byte   `json:"thumbnail_image"`
 	ExplanatoryText    string   `json:"explanatory_text"`
 	PastWorkTags       []int32  `json:"past_work_tags"`
 	PastWorkFrameworks []int32  `json:"past_work_frameworks"`
@@ -57,5 +56,3 @@ type ListPastWorkResponse struct {
 	Frameworks      []repository.Framework `json:"frameworks"`
 	Members         []PastWorkMembers      `json:"members"`
 }
-
-
