@@ -8,13 +8,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
-	tokens "github.com/hackhack-Geek-vol6/backend/pkg/util/token"
 	"github.com/lib/pq"
 )
 
@@ -67,10 +65,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 
-	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*tokens.Payload)
-	// ここでエラーが起きてる
-
-	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image, payload.Email)
+	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image)
 
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理

@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
-	tokens "github.com/hackhack-Geek-vol6/backend/pkg/util/token"
 )
 
 const (
@@ -16,7 +15,7 @@ const (
 	AuthorizationClaimsKey = "authorization_claim"
 )
 
-func AuthMiddleware(tokenMaker tokens.Maker) gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 
