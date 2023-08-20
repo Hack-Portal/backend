@@ -80,7 +80,7 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query domain.Lis
 
 	var expired time.Time
 	if query.Expired {
-		expired = time.Now().Add(time.Hour * 24 * 30 * 6)
+		expired = time.Now().Add(-time.Hour * 24 * 30 * 6)
 	} else {
 		expired = time.Now()
 	}
