@@ -10,12 +10,12 @@ import (
 	usecase "github.com/hackhack-Geek-vol6/backend/pkg/usecase/interactor"
 )
 
-func NewRateRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes) {
+func NewRateRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes, public *gin.RouterGroup) {
 	rateController := controller.RateController{
 		RateUsecase: usecase.NewRateUsercase(store, timeout),
 		Env:         env,
 	}
-	group.GET("/rate", rateController.ListAccountRate)
+	public.GET("/rate", rateController.ListAccountRate)
 	group.GET("/rate/:account_id", rateController.ListRate)
 	group.POST("/rate/:account_id", rateController.CreateRate)
 }

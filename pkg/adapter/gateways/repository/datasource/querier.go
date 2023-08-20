@@ -55,7 +55,6 @@ type Querier interface {
 	GetRolesByID(ctx context.Context, roleID int32) (Role, error)
 	GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error)
 	GetRoomsByID(ctx context.Context, roomID string) (Room, error)
-	GetStatusTagsByHackathonID(ctx context.Context, hackathonID int32) (StatusTag, error)
 	GetStatusTagsByTag(ctx context.Context, statusID int32) (StatusTag, error)
 	GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error)
 	ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error)

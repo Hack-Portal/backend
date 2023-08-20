@@ -30,7 +30,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body domain.Cre
 	var imageURL string
 	if image != nil {
 		var err error
-		imageURL, err = hu.store.UploadImage(ctx, image)
+		_, imageURL, err = hu.store.UploadImage(ctx, image)
 		if err != nil {
 			return domain.HackathonResponses{}, err
 		}

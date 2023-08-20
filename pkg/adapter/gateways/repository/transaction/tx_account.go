@@ -3,6 +3,7 @@ package transaction
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
@@ -42,10 +43,12 @@ func compAccount(request repository.Account, latest repository.Account) (result 
 
 		Username:        latest.Username,
 		ExplanatoryText: latest.ExplanatoryText,
+		Character:       latest.Character,
 		Icon:            latest.Icon,
 		LocateID:        latest.LocateID,
 		ShowLocate:      latest.ShowLocate,
 		ShowRate:        latest.ShowRate,
+		UpdateAt:        time.Now(),
 	}
 
 	if len(request.Username) != 0 {
@@ -72,6 +75,12 @@ func compAccount(request repository.Account, latest repository.Account) (result 
 	if request.LocateID != 0 {
 		if latest.LocateID != request.LocateID {
 			result.LocateID = request.LocateID
+		}
+	}
+
+	if request.Character.Int32 != 0 {
+		if latest.Character != request.Character {
+			result.Character = request.Character
 		}
 	}
 
@@ -132,7 +141,7 @@ func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAc
 			return err
 		}
 
-		if err := createAccountFrameworks(ctx, q, args.AccountInfo.AccountID, args.AccountTechTag); err != nil {
+		if err := createAccountTags(ctx, q, args.AccountInfo.AccountID, args.AccountTechTag); err != nil {
 			return err
 		}
 

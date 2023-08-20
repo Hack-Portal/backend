@@ -121,14 +121,14 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	), nil
 }
 
-func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateAccountRequest, image []byte, email string) (domain.AccountResponses, error) {
+func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateAccountRequest, image []byte) (domain.AccountResponses, error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	// 画像が空やないときに処理する
 	var imageURL string
 	if image != nil {
 		var err error
-		imageURL, err = au.store.UploadImage(ctx, image)
+		_, imageURL, err = au.store.UploadImage(ctx, image)
 		if err != nil {
 			return domain.AccountResponses{}, err
 		}
@@ -249,7 +249,7 @@ func uploadImage(ctx context.Context, store transaction.Store, image []byte) (st
 	var imageURL string
 	if image != nil {
 		var err error
-		imageURL, err = store.UploadImage(ctx, image)
+		_, imageURL, err = store.UploadImage(ctx, image)
 		if err != nil {
 			return "", err
 		}

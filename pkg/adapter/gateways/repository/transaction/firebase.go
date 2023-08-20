@@ -71,21 +71,21 @@ func (store *SQLStore) ReadDocsByRoomID(ctx context.Context, RoomID string) (map
 }
 
 // firebaseCloudStorageに画像を上げる
-func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, error) {
+func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, string, error) {
 	filename, err := uuid.NewGen().NewV7()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	// パス取得
 	fbstorage, err := store.App.Storage(ctx)
 	log.Println("1 :", err)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	bucket, err := fbstorage.DefaultBucket()
 	log.Println("2 :", err)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	obj := bucket.Object(filename.String() + ".jpg")
@@ -93,11 +93,11 @@ func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, er
 	wc.ContentType = "image/jpg"
 
 	if _, err := wc.Write(file); err != nil {
-		return "", fmt.Errorf("createFile:file %v: %v", filename, err)
+		return "", "", fmt.Errorf("createFile:file %v: %v", filename, err)
 	}
 
 	if err := wc.Close(); err != nil {
-		return "", fmt.Errorf("createFile:file %v: %v", filename, err)
+		return "", "", fmt.Errorf("createFile:file %v: %v", filename, err)
 	}
 	downloadURL, err := bucket.SignedURL(obj.ObjectName(), &storage.SignedURLOptions{
 		Expires: time.Now().AddDate(100, 0, 0),
@@ -105,8 +105,27 @@ func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, er
 	})
 
 	if err != nil {
-		return "", fmt.Errorf("downloadURL :%v", err)
+		return "", "", fmt.Errorf("downloadURL :%v", err)
 	}
 
-	return downloadURL, nil
+	return filename.String(), downloadURL, nil
+}
+
+func (store *SQLStore) DeleteImage(ctx context.Context, file string) error {
+	fbstorage, err := store.App.Storage(ctx)
+	log.Println("1 :", err)
+	if err != nil {
+		return err
+	}
+
+	bucket, err := fbstorage.DefaultBucket()
+	log.Println("2 :", err)
+	if err != nil {
+		return err
+	}
+
+	if err := bucket.Object(file).Delete(ctx); err != nil {
+		return err
+	}
+	return nil
 }
