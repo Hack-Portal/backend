@@ -523,6 +523,20 @@ func (mr *MockStoreMockRecorder) DeleteHackathonStatusTagsByID(ctx, hackathonID 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteHackathonStatusTagsByID", reflect.TypeOf((*MockStore)(nil).DeleteHackathonStatusTagsByID), ctx, hackathonID)
 }
 
+// DeleteImage mocks base method.
+func (m *MockStore) DeleteImage(ctx context.Context, file string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteImage", ctx, file)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteImage indicates an expected call of DeleteImage.
+func (mr *MockStoreMockRecorder) DeleteImage(ctx, file interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteImage", reflect.TypeOf((*MockStore)(nil).DeleteImage), ctx, file)
+}
+
 // DeleteLikesByID mocks base method.
 func (m *MockStore) DeleteLikesByID(ctx context.Context, arg repository.DeleteLikesByIDParams) (repository.Like, error) {
 	m.ctrl.T.Helper()
@@ -1283,12 +1297,13 @@ func (mr *MockStoreMockRecorder) UpdateTechTagsByID(ctx, arg interface{}) *gomoc
 }
 
 // UploadImage mocks base method.
-func (m *MockStore) UploadImage(ctx context.Context, file []byte) (string, error) {
+func (m *MockStore) UploadImage(ctx context.Context, file []byte) (string, string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UploadImage", ctx, file)
 	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(string)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // UploadImage indicates an expected call of UploadImage.
