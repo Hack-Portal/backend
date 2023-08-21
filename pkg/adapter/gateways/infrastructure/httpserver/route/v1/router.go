@@ -32,6 +32,7 @@ func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, g
 	// All Protect APIs
 	NewAccountRouter(env, timeout, store, protectRouter)
 	NewLikeRouter(env, timeout, store, protectRouter)
+	NewPastWorkRouter(env, timeout, store, protectRouter, publicRouter)
 	NewFollowRouter(env, timeout, store, protectRouter)
 	NewRateRouter(env, timeout, store, protectRouter, publicRouter)
 	NewRoomRouter(env, timeout, store, protectRouter)
