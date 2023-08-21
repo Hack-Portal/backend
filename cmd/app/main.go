@@ -57,7 +57,7 @@ func main() {
 	timeout := time.Duration(times) * time.Second
 
 	gin := gin.Default()
-	v1.Setup(&env, timeout, store, gin)
+	v1.NewRouter(&env, timeout, store, gin)
 
 	gin.Run(env.ServerPort)
 }

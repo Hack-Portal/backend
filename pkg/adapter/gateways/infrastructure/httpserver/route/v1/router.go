@@ -15,11 +15,10 @@ func setupCors(router *gin.Engine) {
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AllowHeaders = append(config.AllowHeaders, "dbauthorization")
-	config.AllowHeaders = append(config.AllowHeaders, "dbauthorization_type")
 	router.Use(cors.New(config))
 }
 
-func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
+func NewRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
 	setupCors(gin)
 
 	publicRouter := gin.Group("/v1")
