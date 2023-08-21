@@ -71,9 +71,11 @@ func contains(array []int32, variable int32) bool {
 }
 
 func StringToArrayInt32(base string) (result []int32, err error) {
+	base = strings.Replace(base, "[", "", -1)
+	base = strings.Replace(base, "]", "", -1)
 	bases := strings.Split(base, ",")
-	for b := range bases {
-		r, err := strconv.Atoi(bases[b])
+	for _, b := range bases {
+		r, err := strconv.Atoi(b)
 		if err != nil {
 			return result, err
 		}
