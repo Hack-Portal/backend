@@ -3,14 +3,14 @@ ALTER TABLE "rooms_accounts" DROP CONSTRAINT "rooms_accounts_room_id_fkey";
 ALTER TABLE "rooms_accounts" DROP CONSTRAINT "rooms_accounts_role_fkey";
 DROP TABLE IF EXISTS "rooms_accounts";
 CREATE TABLE "rooms_accounts" (
-  "rooms_account_id" varchar PRIMARY KEY,
+  "rooms_account_id" Serial PRIMARY KEY,
   "account_id" varchar NOT NULL,
   "room_id" varchar NOT NULL,
   "is_owner" boolean NOT NULL,
   "create_at" timestamptz NOT NULL DEFAULT (now())
 );
 CREATE TABLE "rooms_accounts_roles" (
-  "rooms_account_id" varchar NOT NULL,
+  "rooms_account_id" int NOT NULL,
   "role_id" int NOT NULL
 );
 ALTER TABLE "rooms_accounts_roles" ADD FOREIGN KEY ("role_id") REFERENCES "roles" ("role_id");
