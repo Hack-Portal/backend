@@ -33,7 +33,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		reqBody domain.CreatePastWorkRequestBody
 		image   []byte
 	)
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -132,7 +132,7 @@ func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 // @Tags			PastWorks
 // @Produce			json
 // @Param			opus 						path		string						true	"PastWorks API wildcard"
-// @Param			UpdatePastWorkRequest 		body 		UpdatePastWorkRequestBody	true	"Update PastWork Request"
+// @Param			UpdatePastWorkRequest 		body 		domain.CreatePastWorkRequestBody	true	"Update PastWork Request"
 // @Success			200							{object}	domain.UpdatePastWorkResponse
 // @Failure 		400							{object}	ErrorResponse				"error response"
 // @Failure 		500							{object}	ErrorResponse				"error response"
@@ -147,7 +147,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 		return
 	}
 
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
