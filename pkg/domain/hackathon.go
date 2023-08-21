@@ -11,13 +11,13 @@ type HackathonRequestWildCard struct {
 }
 
 type CreateHackathonRequestBody struct {
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Link        string    `json:"link"`
-	Expired     time.Time `json:"expired"`
-	StartDate   time.Time `json:"start_date"`
-	Term        int32     `json:"term"`
-	StatusTags  []int32   `json:"status_tags"`
+	Name        string    `form:"name"`
+	Description string    `form:"description"`
+	Link        string    `form:"link"`
+	Expired     time.Time `form:"expired"`
+	StartDate   time.Time `form:"start_date"`
+	Term        int32     `form:"term"`
+	StatusTags  []int32   `form:"status_tags"`
 }
 
 type HackathonResponses struct {

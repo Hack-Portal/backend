@@ -28,7 +28,7 @@ type AccountController struct {
 // @Description		Create an account from the requested body
 // @Tags			Accounts
 // @Produce			json
-// @Param			CreateAccountRequest 	body 			domain.CreateAccountRequest	true	"Create Account Request"
+// @Param			CreateAccountRequest 		body 			domain.CreateAccountRequest	true	"Create Account Request"
 // @Success			200							{object}		domain.AccountResponses		"create success response"
 // @Failure 		400							{object}		ErrorResponse				"bad request response"
 // @Failure 		500							{object}		ErrorResponse				"server error response"
@@ -38,7 +38,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		reqBody domain.CreateAccountRequest
 		image   []byte
 	)
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -132,7 +132,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
