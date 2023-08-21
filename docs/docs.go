@@ -28,6 +28,9 @@ const docTemplate = `{
         "/accounts": {
             "post": {
                 "description": "Create an account from the requested body",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -762,49 +765,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/login": {
-            "post": {
-                "description": "Login User",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Login User",
-                "parameters": [
-                    {
-                        "description": "List Rooms Request",
-                        "name": "CreateUserRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateUserResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/rate": {
             "get": {
                 "description": "List Account Rate",
@@ -1255,49 +1215,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/users": {
-            "post": {
-                "description": "Create User",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Create User",
-                "parameters": [
-                    {
-                        "description": "Create User Request",
-                        "name": "CreateUserRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateUserResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -1428,11 +1345,14 @@ const docTemplate = `{
         "domain.CreateAccountRequest": {
             "type": "object",
             "required": [
+                "account_id",
                 "locate_id",
-                "user_id",
                 "username"
             ],
             "properties": {
+                "account_id": {
+                    "type": "string"
+                },
                 "explanatory_text": {
                     "type": "string"
                 },
@@ -1456,9 +1376,6 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
-                },
-                "user_id": {
-                    "type": "string"
                 },
                 "username": {
                     "type": "string"
@@ -1547,32 +1464,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.CreateUserRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.CreateUserResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
                     "type": "string"
                 }
             }
@@ -1808,9 +1699,6 @@ const docTemplate = `{
                         "type": "integer"
                     }
                 },
-                "user_id": {
-                    "type": "string"
-                },
                 "username": {
                     "type": "string"
                 }
@@ -1886,6 +1774,9 @@ const docTemplate = `{
         "repository.TechTag": {
             "type": "object",
             "properties": {
+                "icon": {
+                    "type": "string"
+                },
                 "language": {
                     "type": "string"
                 },
