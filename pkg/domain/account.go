@@ -19,7 +19,15 @@ type CreateAccountRequest struct {
 	LocateID        int32  `form:"locate_id" binding:"required"`
 	ShowLocate      bool   `form:"show_locate"`
 	ShowRate        bool   `form:"show_rate" `
+	AccountID       string `form:"account_id" binding:"required"`
+	Username        string `form:"username" binding:"required"`
+	ExplanatoryText string `form:"explanatory_text"`
+	LocateID        int32  `form:"locate_id" binding:"required"`
+	ShowLocate      bool   `form:"show_locate"`
+	ShowRate        bool   `form:"show_rate" `
 
+	TechTags   []int32 `form:"tech_tags"`
+	Frameworks []int32 `form:"frameworks"`
 	TechTags   []int32 `form:"tech_tags"`
 	Frameworks []int32 `form:"frameworks"`
 }
