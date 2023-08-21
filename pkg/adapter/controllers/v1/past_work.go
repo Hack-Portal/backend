@@ -2,16 +2,15 @@ package controller
 
 import (
 	"bytes"
+	_ "database/sql"
 	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
-	"github.com/lib/pq"
 )
 
 type PastWorkController struct {
@@ -19,6 +18,16 @@ type PastWorkController struct {
 	Env             *bootstrap.Env
 }
 
+// CreatePastWork	godoc
+// @Summary			Create new past work
+// @Description		Create a past work from the requested body
+// @Tags			PastWorks
+// @Produce			json
+// @Param			CreatePastWorkRequest 	body 			domain.CreatePastWorkRequestBody	true	"Create PastWork Request"
+// @Success			200							{object}		domain.PastWorkResponse		"create success response"
+// @Failure 		400							{object}		ErrorResponse				"bad request response"
+// @Failure 		500							{object}		ErrorResponse				"server error response"
+// @Router       	/pastworks 	[post]
 func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 	var (
 		reqBody domain.CreatePastWorkRequestBody
@@ -61,24 +70,22 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		AccountPastWorks:   reqBody.AccountPastWorks,
 	}, image)
 	if err != nil {
-		if err != nil {
-			// すでに登録されている場合と参照エラーの処理
-			if pqErr, ok := err.(*pq.Error); ok {
-				switch pqErr.Code.Name() {
-				case transaction.ForeignKeyViolation, transaction.UniqueViolation:
-					ctx.JSON(http.StatusForbidden, errorResponse(err))
-					return
-				}
-			}
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			return
-		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	ctx.JSON(http.StatusOK, response)
 }
 
+// GetPastWork	godoc
+// @Summary			Get PastWork
+// @Description		Get PastWork
+// @Tags			PastWorks
+// @Produce			json
+// @Param			opus		string				true	"PastWorks API wildcard"
+// @Success			200		{object}	domain.GetPastWorkResponse
+// @Failure 		400		{object}	ErrorResponse			"error response"
+// @Failure 		500		{object}	ErrorResponse			"error response"
+// @Router       	/pastworks/{opus}		[get]
 func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 	var reqURI domain.PastWorksRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -93,6 +100,16 @@ func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// ListPastWork	godoc
+// @Summary			List PastWork
+// @Description		List PastWork
+// @Tags			PastWorks
+// @Produce			json
+// @Param			ListRequest 	query 		domain.ListRequest	true	"List PastWork Request"
+// @Success			200				{array}			domain.ListPastWorkResponse
+// @Failure 		400				{object}		ErrorResponse		"error response"
+// @Failure 		500				{object}		ErrorResponse		"error response"
+// @Router       	/pastworks 		[get]
 func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 	var reqQuery domain.ListRequest
 
@@ -109,6 +126,17 @@ func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// UpdatePastWork	godoc
+// @Summary			Update PastWork
+// @Description		Update PastWork
+// @Tags			PastWorks
+// @Produce			json
+// @Param			opus 						path		string						true	"PastWorks API wildcard"
+// @Param			UpdatePastWorkRequest 		body 		UpdatePastWorkRequestBody	true	"Update PastWork Request"
+// @Success			200							{object}	domain.UpdatePastWorkResponse
+// @Failure 		400							{object}	ErrorResponse				"error response"
+// @Failure 		500							{object}	ErrorResponse				"error response"
+// @Router       	/pastworks/{opus} 	[put]
 func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	var (
 		reqBody domain.CreatePastWorkRequestBody
@@ -138,6 +166,16 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// DeletePastWork	godoc
+// @Summary			Delete PastWork
+// @Description		Delete PastWork
+// @Tags			PastWorks
+// @Produce			json
+// @Param			opus 						path		string						true	"PastWorks API wildcard"
+// @Success			200							{object}	SuccessResponse
+// @Failure 		400							{object}	ErrorResponse				"error response"
+// @Failure 		500							{object}	ErrorResponse				"error response"
+// @Router       	/pastworks/{opus} 	[delete]
 func (pc *PastWorkController) DeletePastWork(ctx *gin.Context) {
 	var reqURI domain.PastWorksRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
