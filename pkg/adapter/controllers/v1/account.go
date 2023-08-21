@@ -37,8 +37,10 @@ type AccountController struct {
 // @Router       	/accounts 	[post]
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	var (
-		reqBody domain.CreateAccountRequest
-		image   []byte
+		reqBody    domain.CreateAccountRequest
+		image      []byte
+		tags       []int32
+		frameworks []int32
 	)
 	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -68,17 +70,20 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		}
 		image = icon.Bytes()
 	}
-
-	tags, err := util.StringToArrayInt32(reqBody.TechTags)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	if len(reqBody.TechTags) != 0 {
+		tags, err = util.StringToArrayInt32(reqBody.TechTags)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
 	}
 
-	frameworks, err := util.StringToArrayInt32(reqBody.Frameworks)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	if len(reqBody.Frameworks) != 0 {
+		frameworks, err = util.StringToArrayInt32(reqBody.Frameworks)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
 	}
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)

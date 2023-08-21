@@ -11,11 +11,11 @@ type PastWorksRequestWildCard struct {
 }
 
 type CreatePastWorkRequestBody struct {
-	Name               string `json:"name"`
-	ExplanatoryText    string `json:"explanatory_text"`
-	PastWorkTags       string `json:"past_work_tags"`
-	PastWorkFrameworks string `json:"past_work_frameworks"`
-	AccountPastWorks   string `json:"account_past_works"`
+	Name               string `form:"name"`
+	ExplanatoryText    string `form:"explanatory_text"`
+	PastWorkTags       string `form:"past_work_tags"`
+	PastWorkFrameworks string `form:"past_work_frameworks"`
+	AccountPastWorks   string `form:"account_past_works"`
 }
 
 type CreatePastWorkResponse struct {

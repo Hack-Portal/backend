@@ -31,8 +31,10 @@ type PastWorkController struct {
 // @Router       	/pastworks 	[post]
 func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 	var (
-		reqBody domain.CreatePastWorkRequestBody
-		image   []byte
+		reqBody    domain.CreatePastWorkRequestBody
+		image      []byte
+		tags       []int32
+		frameworks []int32
 	)
 	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -62,17 +64,20 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		}
 		image = icon.Bytes()
 	}
-
-	tags, err := util.StringToArrayInt32(reqBody.PastWorkTags)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	if len(reqBody.PastWorkTags) != 0 {
+		tags, err = util.StringToArrayInt32(reqBody.PastWorkTags)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
 	}
 
-	frameworks, err := util.StringToArrayInt32(reqBody.PastWorkFrameworks)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	if len(reqBody.PastWorkFrameworks) != 0 {
+		frameworks, err = util.StringToArrayInt32(reqBody.PastWorkFrameworks)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
 	}
 
 	response, err := pc.PastWorkUsecase.CreatePastWork(ctx, domain.CreatePastWorkParams{
