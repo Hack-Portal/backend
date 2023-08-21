@@ -14,32 +14,25 @@ const createRoomsAccounts = `-- name: CreateRoomsAccounts :one
 INSERT INTO rooms_accounts (
     account_id,
     room_id,
-    is_owner,
-    role
+    is_owner
 )VALUES(
-    $1,$2,$3,$4
-)RETURNING account_id, room_id, role, is_owner, create_at
+    $1,$2,$3
+)RETURNING rooms_account_id, account_id, room_id, is_owner, create_at
 `
 
 type CreateRoomsAccountsParams struct {
-	AccountID string        `json:"account_id"`
-	RoomID    string        `json:"room_id"`
-	IsOwner   bool          `json:"is_owner"`
-	Role      sql.NullInt32 `json:"role"`
+	AccountID string `json:"account_id"`
+	RoomID    string `json:"room_id"`
+	IsOwner   bool   `json:"is_owner"`
 }
 
 func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error) {
-	row := q.db.QueryRowContext(ctx, createRoomsAccounts,
-		arg.AccountID,
-		arg.RoomID,
-		arg.IsOwner,
-		arg.Role,
-	)
+	row := q.db.QueryRowContext(ctx, createRoomsAccounts, arg.AccountID, arg.RoomID, arg.IsOwner)
 	var i RoomsAccount
 	err := row.Scan(
+		&i.RoomsAccountID,
 		&i.AccountID,
 		&i.RoomID,
-		&i.Role,
 		&i.IsOwner,
 		&i.CreateAt,
 	)
@@ -65,7 +58,18 @@ SELECT
     accounts.account_id, 
     accounts.icon,
     rooms_accounts.is_owner,
-    rooms_accounts.role    
+    (
+        SELECT
+            role
+        FROM
+            rooms_accounts_roles
+        LEFT OUTER JOIN
+            roles
+        ON
+            roles.role_id = rooms_accounts_roles.role_id
+        WHERE
+            rooms_accounts_roles.rooms_account_id = rooms_accounts.rooms_account_id
+    ) as roles
 FROM 
     rooms_accounts
 LEFT OUTER JOIN 
@@ -80,7 +84,7 @@ type GetRoomsAccountsByIDRow struct {
 	AccountID sql.NullString `json:"account_id"`
 	Icon      sql.NullString `json:"icon"`
 	IsOwner   bool           `json:"is_owner"`
-	Role      sql.NullInt32  `json:"role"`
+	Roles     sql.NullString `json:"roles"`
 }
 
 func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error) {
@@ -96,7 +100,7 @@ func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]Ge
 			&i.AccountID,
 			&i.Icon,
 			&i.IsOwner,
-			&i.Role,
+			&i.Roles,
 		); err != nil {
 			return nil, err
 		}
