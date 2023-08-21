@@ -44,14 +44,14 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	}
 
 	file, _, err := ctx.Request.FormFile(ImageKey)
+
 	if err != nil {
 		switch err.Error() {
 		case MultiPartNextPartEoF:
 			ctx.JSON(400, errorResponse(err))
 			return
 		case HttpNoSuchFile:
-			ctx.JSON(400, errorResponse(err))
-			return
+			break
 		case RequestContentTypeIsnt:
 			break
 		default:
@@ -66,8 +66,8 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		}
 		image = icon.Bytes()
 	}
-	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image, payload.Email)
 
 	if err != nil {
@@ -143,8 +143,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 			ctx.JSON(400, errorResponse(err))
 			return
 		case HttpNoSuchFile:
-			ctx.JSON(400, errorResponse(err))
-			return
+			break
 		case RequestContentTypeIsnt:
 			break
 		default:
