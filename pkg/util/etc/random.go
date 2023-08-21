@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -67,4 +68,20 @@ func contains(array []int32, variable int32) bool {
 		}
 	}
 	return false
+}
+
+func StringToArrayInt32(base string) (result []int32, err error) {
+	bases := strings.Split(base, ",")
+	for b := range bases {
+		r, err := strconv.Atoi(bases[b])
+		if err != nil {
+			return result, err
+		}
+		result = append(result, int32(r))
+	}
+	return
+}
+
+func StringToArray(base string) []string {
+	return strings.Split(base, ",")
 }

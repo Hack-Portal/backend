@@ -11,6 +11,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 )
 
 type PastWorkController struct {
@@ -33,7 +34,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		reqBody domain.CreatePastWorkRequestBody
 		image   []byte
 	)
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -62,12 +63,24 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 
+	tags, err := util.StringToArrayInt32(reqBody.PastWorkTags)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	frameworks, err := util.StringToArrayInt32(reqBody.PastWorkFrameworks)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
 	response, err := pc.PastWorkUsecase.CreatePastWork(ctx, domain.CreatePastWorkParams{
 		Name:               reqBody.Name,
 		ExplanatoryText:    reqBody.ExplanatoryText,
-		PastWorkTags:       reqBody.PastWorkTags,
-		PastWorkFrameworks: reqBody.PastWorkFrameworks,
-		AccountPastWorks:   reqBody.AccountPastWorks,
+		PastWorkTags:       tags,
+		PastWorkFrameworks: frameworks,
+		AccountPastWorks:   util.StringToArray(reqBody.AccountPastWorks),
 	}, image)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -147,7 +160,19 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 		return
 	}
 
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	tags, err := util.StringToArrayInt32(reqBody.PastWorkTags)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	frameworks, err := util.StringToArrayInt32(reqBody.PastWorkFrameworks)
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -155,9 +180,9 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, domain.UpdatePastWorkRequestBody{
 		Name:               reqBody.Name,
 		ExplanatoryText:    reqBody.ExplanatoryText,
-		PastWorkTags:       reqBody.PastWorkTags,
-		PastWorkFrameworks: reqBody.PastWorkFrameworks,
-		AccountPastWorks:   reqBody.AccountPastWorks,
+		PastWorkTags:       tags,
+		PastWorkFrameworks: frameworks,
+		AccountPastWorks:   util.StringToArray(reqBody.AccountPastWorks),
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

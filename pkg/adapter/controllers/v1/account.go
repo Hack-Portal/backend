@@ -14,6 +14,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 	"github.com/lib/pq"
 )
@@ -68,8 +69,25 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 
+	tags, err := util.StringToArrayInt32(reqBody.TechTags)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	frameworks, err := util.StringToArrayInt32(reqBody.Frameworks)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
-	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image, payload.Email)
+
+	response, err := ac.AccountUsecase.CreateAccount(ctx, domain.CreateAccount{
+		ReqBody:    reqBody,
+		TechTags:   tags,
+		Frameworks: frameworks,
+	}, image, payload.Email)
 
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
@@ -160,6 +178,18 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 
+	tags, err := util.StringToArrayInt32(reqBody.TechTags)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	frameworks, err := util.StringToArrayInt32(reqBody.Frameworks)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
 	response, err := ac.AccountUsecase.UpdateAccount(
 		ctx,
 		domain.UpdateAccountParam{
@@ -174,8 +204,8 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 				ShowLocate: reqBody.ShowLocate,
 				ShowRate:   reqBody.ShowRate,
 			},
-			AccountTechTag:      reqBody.TechTags,
-			AccountFrameworkTag: reqBody.Frameworks,
+			AccountTechTag:      tags,
+			AccountFrameworkTag: frameworks,
 		},
 		image)
 	if err != nil {
