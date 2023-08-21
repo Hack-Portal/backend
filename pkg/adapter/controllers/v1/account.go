@@ -8,11 +8,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 	"github.com/lib/pq"
 )
 
@@ -24,9 +26,10 @@ type AccountController struct {
 // CreateAccount	godoc
 // @Summary			Create new account
 // @Description		Create an account from the requested body
+// @Accept			multipart/form-data
 // @Tags			Accounts
 // @Produce			json
-// @Param			CreateAccountRequest 	body 			domain.CreateAccountRequest	true	"Create Account Request"
+// @Param			CreateAccountRequest 		body 			domain.CreateAccountRequest	true	"Create Account Request"
 // @Success			200							{object}		domain.AccountResponses		"create success response"
 // @Failure 		400							{object}		ErrorResponse				"bad request response"
 // @Failure 		500							{object}		ErrorResponse				"server error response"
@@ -36,20 +39,20 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		reqBody domain.CreateAccountRequest
 		image   []byte
 	)
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	file, _, err := ctx.Request.FormFile(ImageKey)
+
 	if err != nil {
 		switch err.Error() {
 		case MultiPartNextPartEoF:
 			ctx.JSON(400, errorResponse(err))
 			return
 		case HttpNoSuchFile:
-			ctx.JSON(400, errorResponse(err))
-			return
+			break
 		case RequestContentTypeIsnt:
 			break
 		default:
@@ -65,7 +68,8 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 
-	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image)
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image, payload.Email)
 
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
@@ -129,7 +133,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -140,8 +144,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 			ctx.JSON(400, errorResponse(err))
 			return
 		case HttpNoSuchFile:
-			ctx.JSON(400, errorResponse(err))
-			return
+			break
 		case RequestContentTypeIsnt:
 			break
 		default:

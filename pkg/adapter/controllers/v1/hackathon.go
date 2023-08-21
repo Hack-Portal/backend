@@ -31,7 +31,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 		reqBody domain.CreateHackathonRequestBody
 		image   []byte
 	)
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}

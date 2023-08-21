@@ -165,15 +165,6 @@ definitions:
     - member_limit
     - title
     type: object
-  domain.FollowResponse:
-    properties:
-      account_id:
-        type: string
-      icon:
-        type: string
-      username:
-        type: string
-    type: object
   domain.GetRoomResponse:
     properties:
       create_at:
@@ -400,6 +391,8 @@ info:
 paths:
   /accounts:
     post:
+      consumes:
+      - multipart/form-data
       description: Create an account from the requested body
       parameters:
       - description: Create Account Request

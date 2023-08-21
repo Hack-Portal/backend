@@ -2,10 +2,9 @@
 INSERT INTO rooms_accounts (
     account_id,
     room_id,
-    is_owner,
-    role
+    is_owner
 )VALUES(
-    $1,$2,$3,$4
+    $1,$2,$3
 )RETURNING *;
 
 -- name: GetRoomsAccountsByID :many
@@ -13,7 +12,18 @@ SELECT
     accounts.account_id, 
     accounts.icon,
     rooms_accounts.is_owner,
-    rooms_accounts.role    
+    (
+        SELECT
+            role
+        FROM
+            rooms_accounts_roles
+        LEFT OUTER JOIN
+            roles
+        ON
+            roles.role_id = rooms_accounts_roles.role_id
+        WHERE
+            rooms_accounts_roles.rooms_account_id = rooms_accounts.rooms_account_id
+    ) as roles
 FROM 
     rooms_accounts
 LEFT OUTER JOIN 

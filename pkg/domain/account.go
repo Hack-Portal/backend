@@ -13,15 +13,15 @@ type AccountRequestWildCard struct {
 
 // アカウント作成のリクエストパラメータ
 type CreateAccountRequest struct {
-	AccountID       string `json:"account_id" binding:"required"`
-	Username        string `json:"username" binding:"required"`
-	ExplanatoryText string `json:"explanatory_text"`
-	LocateID        int32  `json:"locate_id" binding:"required"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate" `
+	AccountID       string `form:"account_id" binding:"required"`
+	Username        string `form:"username" binding:"required"`
+	ExplanatoryText string `form:"explanatory_text"`
+	LocateID        int32  `form:"locate_id" binding:"required"`
+	ShowLocate      bool   `form:"show_locate"`
+	ShowRate        bool   `form:"show_rate" `
 
-	TechTags   []int32 `json:"tech_tags"`
-	Frameworks []int32 `json:"frameworks"`
+	TechTags   []int32 `form:"tech_tags"`
+	Frameworks []int32 `form:"frameworks"`
 }
 
 // アカウント取得のレスポンス
@@ -44,15 +44,14 @@ type AccountResponses struct {
 
 // アカウント更新のリクエストパラメータ
 type UpdateAccountRequest struct {
-	AccountID       string `json:"account_id" binding:"required"`
-	Username        string `json:"username"`
-	ExplanatoryText string `json:"explanatory_text"`
-	LocateID        int32  `json:"locate_id"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate"`
+	Username        string `form:"username"`
+	ExplanatoryText string `form:"explanatory_text"`
+	LocateID        int32  `form:"locate_id"`
+	ShowLocate      bool   `form:"show_locate"`
+	ShowRate        bool   `form:"show_rate"`
 
-	TechTags   []int32 `json:"tech_tags"`
-	Frameworks []int32 `json:"frameworks"`
+	TechTags   []int32 `form:"tech_tags"`
+	Frameworks []int32 `form:"frameworks"`
 }
 
 type CreateAccountParams struct {

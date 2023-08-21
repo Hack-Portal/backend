@@ -6,23 +6,19 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/hackhack-Geek-vol6/backend/docs"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/apm"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 func setupCors(router *gin.Engine) {
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AllowHeaders = append(config.AllowHeaders, "dbauthorization")
-	config.AllowHeaders = append(config.AllowHeaders, "dbauthorization_type")
 	router.Use(cors.New(config))
 }
 
-func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
-	gin.Use(nrgin.Middleware(apm.ApmSetup(env)))
+func NewRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
 	setupCors(gin)
 
 	publicRouter := gin.Group("/v1")

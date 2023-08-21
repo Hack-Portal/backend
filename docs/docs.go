@@ -28,6 +28,9 @@ const docTemplate = `{
         "/accounts": {
             "post": {
                 "description": "Create an account from the requested body",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1477,16 +1480,28 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.FollowResponse": {
+        "domain.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateUserResponse": {
             "type": "object",
             "properties": {
-                "account_id": {
+                "token": {
                     "type": "string"
                 },
-                "icon": {
-                    "type": "string"
-                },
-                "username": {
+                "user_id": {
                     "type": "string"
                 }
             }
