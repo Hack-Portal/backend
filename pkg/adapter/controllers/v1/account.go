@@ -36,7 +36,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		reqBody domain.CreateAccountRequest
 		image   []byte
 	)
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -129,7 +129,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
