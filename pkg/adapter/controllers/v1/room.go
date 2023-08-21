@@ -9,7 +9,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
-	tokens "github.com/hackhack-Geek-vol6/backend/pkg/util/token"
+	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 )
 
 type RoomController struct {
@@ -128,7 +128,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 		return
 	}
 
-	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*tokens.Payload)
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 	fmt.Println(reqBody)
 
 	response, err := rc.RoomUsecase.UpdateRoom(ctx, domain.UpdateRoomParam{
@@ -165,7 +165,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 		return
 	}
 
-	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*tokens.Payload)
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
 	if err := rc.RoomUsecase.DeleteRoom(ctx, domain.DeleteRoomParam{
 		OwnerEmail: payload.Email,
@@ -234,7 +234,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 		return
 	}
 
-	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*tokens.Payload)
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
 	if err := rc.RoomUsecase.DeleteRoomAccount(ctx, domain.DeleteRoomAccount{
 		RoomID: reqURI.RoomID,
