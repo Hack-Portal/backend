@@ -22,7 +22,7 @@ INSERT INTO rooms_accounts (
 `
 
 type CreateRoomsAccountsParams struct {
-	RoomsAccountID string `json:"rooms_account_id"`
+	RoomsAccountID int32  `json:"rooms_account_id"`
 	AccountID      string `json:"account_id"`
 	RoomID         string `json:"room_id"`
 	IsOwner        bool   `json:"is_owner"`
@@ -64,7 +64,19 @@ const getRoomsAccountsByID = `-- name: GetRoomsAccountsByID :many
 SELECT 
     accounts.account_id, 
     accounts.icon,
-    rooms_accounts.is_owner
+    rooms_accounts.is_owner,
+    (
+        SELECT
+            role
+        FROM
+            rooms_accounts_roles
+        LEFT OUTER JOIN
+            roles
+        ON
+            roles.role_id = rooms_accounts_roles.role_id
+        WHERE
+            rooms_accounts_roles.rooms_account_id = rooms_accounts.rooms_account_id
+    ) as roles
 FROM 
     rooms_accounts
 LEFT OUTER JOIN 
@@ -79,6 +91,7 @@ type GetRoomsAccountsByIDRow struct {
 	AccountID sql.NullString `json:"account_id"`
 	Icon      sql.NullString `json:"icon"`
 	IsOwner   bool           `json:"is_owner"`
+	Roles     sql.NullString `json:"roles"`
 }
 
 func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error) {
@@ -90,7 +103,12 @@ func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]Ge
 	items := []GetRoomsAccountsByIDRow{}
 	for rows.Next() {
 		var i GetRoomsAccountsByIDRow
-		if err := rows.Scan(&i.AccountID, &i.Icon, &i.IsOwner); err != nil {
+		if err := rows.Scan(
+			&i.AccountID,
+			&i.Icon,
+			&i.IsOwner,
+			&i.Roles,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

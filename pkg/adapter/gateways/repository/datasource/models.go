@@ -153,7 +153,7 @@ type Room struct {
 }
 
 type RoomsAccount struct {
-	RoomsAccountID string    `json:"rooms_account_id"`
+	RoomsAccountID int32     `json:"rooms_account_id"`
 	AccountID      string    `json:"account_id"`
 	RoomID         string    `json:"room_id"`
 	IsOwner        bool      `json:"is_owner"`
@@ -161,8 +161,8 @@ type RoomsAccount struct {
 }
 
 type RoomsAccountsRole struct {
-	RoomsAccountID string `json:"rooms_account_id"`
-	RoleID         int32  `json:"role_id"`
+	RoomsAccountID int32 `json:"rooms_account_id"`
+	RoleID         int32 `json:"role_id"`
 }
 
 type StatusTag struct {
