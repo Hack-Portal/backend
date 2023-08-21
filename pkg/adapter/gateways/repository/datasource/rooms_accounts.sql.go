@@ -12,29 +12,22 @@ import (
 
 const createRoomsAccounts = `-- name: CreateRoomsAccounts :one
 INSERT INTO rooms_accounts (
-    rooms_account_id,
     account_id,
     room_id,
     is_owner
 )VALUES(
-    $1,$2,$3,$4
+    $1,$2,$3
 )RETURNING rooms_account_id, account_id, room_id, is_owner, create_at
 `
 
 type CreateRoomsAccountsParams struct {
-	RoomsAccountID int32  `json:"rooms_account_id"`
-	AccountID      string `json:"account_id"`
-	RoomID         string `json:"room_id"`
-	IsOwner        bool   `json:"is_owner"`
+	AccountID string `json:"account_id"`
+	RoomID    string `json:"room_id"`
+	IsOwner   bool   `json:"is_owner"`
 }
 
 func (q *Queries) CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error) {
-	row := q.db.QueryRowContext(ctx, createRoomsAccounts,
-		arg.RoomsAccountID,
-		arg.AccountID,
-		arg.RoomID,
-		arg.IsOwner,
-	)
+	row := q.db.QueryRowContext(ctx, createRoomsAccounts, arg.AccountID, arg.RoomID, arg.IsOwner)
 	var i RoomsAccount
 	err := row.Scan(
 		&i.RoomsAccountID,
