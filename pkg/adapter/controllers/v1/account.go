@@ -26,6 +26,7 @@ type AccountController struct {
 // CreateAccount	godoc
 // @Summary			Create new account
 // @Description		Create an account from the requested body
+// @Accept			multipart/form-data
 // @Tags			Accounts
 // @Produce			json
 // @Param			CreateAccountRequest 		body 			domain.CreateAccountRequest	true	"Create Account Request"
