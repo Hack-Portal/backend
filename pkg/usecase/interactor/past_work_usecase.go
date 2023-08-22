@@ -61,10 +61,16 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.Create
 	}
 
 	result = domain.PastWorkResponse{
-		PastWork:   pastWork,
-		TechTags:   techTags,
-		Frameworks: frameworks,
-		Members:    members,
+		Opus:            pastWork.Opus,
+		Name:            pastWork.Name,
+		ThumbnailImage:  pastWork.ThumbnailImage,
+		ExplanatoryText: pastWork.ExplanatoryText,
+		AwardDataID:     pastWork.AwardDataID.Int32,
+		CreateAt:        pastWork.CreateAt,
+		UpdateAt:        pastWork.UpdateAt,
+		TechTags:        techTags,
+		Frameworks:      frameworks,
+		Members:         members,
 	}
 	return
 }
@@ -94,10 +100,16 @@ func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result 
 	}
 
 	result = domain.PastWorkResponse{
-		PastWork:   pastWork,
-		TechTags:   techTags,
-		Frameworks: frameworks,
-		Members:    members,
+		Opus:            pastWork.Opus,
+		Name:            pastWork.Name,
+		ThumbnailImage:  pastWork.ThumbnailImage,
+		ExplanatoryText: pastWork.ExplanatoryText,
+		AwardDataID:     pastWork.AwardDataID.Int32,
+		CreateAt:        pastWork.CreateAt,
+		UpdateAt:        pastWork.UpdateAt,
+		TechTags:        techTags,
+		Frameworks:      frameworks,
+		Members:         members,
 	}
 	return
 }
@@ -164,10 +176,16 @@ func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body domain.Updat
 	}
 
 	result = domain.PastWorkResponse{
-		PastWork:   pastWork,
-		TechTags:   techTags,
-		Frameworks: frameworks,
-		Members:    members,
+		Opus:            pastWork.Opus,
+		Name:            pastWork.Name,
+		ThumbnailImage:  pastWork.ThumbnailImage,
+		ExplanatoryText: pastWork.ExplanatoryText,
+		AwardDataID:     pastWork.AwardDataID.Int32,
+		CreateAt:        pastWork.CreateAt,
+		UpdateAt:        pastWork.UpdateAt,
+		TechTags:        techTags,
+		Frameworks:      frameworks,
+		Members:         members,
 	}
 	return result, nil
 }

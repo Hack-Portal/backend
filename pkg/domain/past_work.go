@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"time"
+
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
 
@@ -42,7 +44,15 @@ type CreatePastWorkParams struct {
 }
 
 type PastWorkResponse struct {
-	PastWork   repository.PastWork    `json:"past_work"`
+	Opus            int32     `json:"opus"`
+	Name            string    `json:"name"`
+	ThumbnailImage  string    `json:"thumbnail_image"`
+	ExplanatoryText string    `json:"explanatory_text"`
+	AwardDataID     int32     `json:"award_data_id"`
+	CreateAt        time.Time `json:"create_at"`
+	UpdateAt        time.Time `json:"update_at"`
+	IsDelete        bool      `json:"is_delete"`
+
 	TechTags   []repository.TechTag   `json:"tech_tags"`
 	Frameworks []repository.Framework `json:"frameworks"`
 	Members    []PastWorkMembers      `json:"members"`
