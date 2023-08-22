@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	util "github.com/hackhack-Geek-vol6/backend/pkg/util/password"
+	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/stretchr/testify/require"
 )
 

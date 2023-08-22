@@ -18,16 +18,16 @@ type FollowController struct {
 
 // TODO:レスポンス変更　=> accounts
 // CreateFollow	godoc
-// @Summary			Create Follow
-// @Description		Follow!!!!!!!!
-// @Tags			Accounts
-// @Produce			json
-// @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
-// @Param			CreateFollowRequestBody 	body 		domain.CreateFollowRequestBody		true	"create Follow Request Body"
-// @Success			200							{array}		repository.Follow					"success response"
-// @Failure 		400							{object}	ErrorResponse				"error response"
-// @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/{from_account_id}/follow			[post]
+//	@Summary		Create Follow
+//	@Description	Follow!!!!!!!!
+//	@Tags			Accounts
+//	@Produce		json
+//	@Param			from_account_id						path		string							true	"Accounts API wildcard"
+//	@Param			CreateFollowRequestBody				body		domain.CreateFollowRequestBody	true	"create Follow Request Body"
+//	@Success		200									{array}		repository.Follow				"success response"
+//	@Failure		400									{object}	ErrorResponse					"error response"
+//	@Failure		500									{object}	ErrorResponse					"error response"
+//	@Router			/accounts/{from_account_id}/follow																					[post]
 func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 	var (
 		reqURI  domain.AccountRequestWildCard
@@ -55,16 +55,16 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 
 // TODO:レスポンス修正
 // RemoveFollow	godoc
-// @Summary			Remove follow
-// @Description		Remove follow account
-// @Tags			Accounts
-// @Produce			json
-// @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
-// @Param			RemoveFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Remove Follow Request Body"
-// @Success			200							{object}	SuccessResponse				"success response"
-// @Failure 		400							{object}	ErrorResponse				"error response"
-// @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/{from_account_id}/follow			[delete]
+//	@Summary		Remove follow
+//	@Description	Remove follow account
+//	@Tags			Accounts
+//	@Produce		json
+//	@Param			from_account_id						path		string								true	"Accounts API wildcard"
+//	@Param			RemoveFollowRequestQueries			formData	domain.RemoveFollowRequestQueries	true	"Remove Follow Request Body"
+//	@Success		200									{object}	SuccessResponse						"success response"
+//	@Failure		400									{object}	ErrorResponse						"error response"
+//	@Failure		500									{object}	ErrorResponse						"error response"
+//	@Router			/accounts/{from_account_id}/follow																							[delete]
 func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard
@@ -91,16 +91,16 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 }
 
 // GetFollow	godoc
-// @Summary			Get follow
-// @Description		Get follow account
-// @Tags			Accounts
-// @Produce			json
-// @Param			from_account_id 				path 		string						true	"Accounts API wildcard"
-// @Param			GetFollowRequestQueries 	formData 	domain.CreateFollowRequestBody		true	"Get Follow Request Body"
-// @Success			200							{object}	SuccessResponse				"success response"
-// @Failure 		400							{object}	ErrorResponse				"error response"
-// @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/accounts/{from_account_id}/follow			[get]
+//	@Summary		Get follow
+//	@Description	Get follow account
+//	@Tags			Accounts
+//	@Produce		json
+//	@Param			from_account_id						path		string							true	"Accounts API wildcard"
+//	@Param			GetFollowRequestQueries				formData	domain.GetFollowRequestQueries	true	"Get Follow Request Body"
+//	@Success		200									{object}	[]domain.FollowResponse			"success response"
+//	@Failure		400									{object}	ErrorResponse					"error response"
+//	@Failure		500									{object}	ErrorResponse					"error response"
+//	@Router			/accounts/{from_account_id}/follow																					[get]
 func (fc *FollowController) GetFollow(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard

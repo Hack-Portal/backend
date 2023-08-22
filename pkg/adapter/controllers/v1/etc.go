@@ -14,13 +14,13 @@ type EtcController struct {
 }
 
 // ListFrameworks	godoc
-// @Summary			Get Frameworks
-// @Description		Get Frameworks
-// @Tags			Frameworks
-// @Produce			json
-// @Success			200			{array}		repository.Framework	"success response"
-// @Failure 		500			{object}	ErrorResponse	"error response"
-// @Router       	/frameworks	[get]
+//	@Summary		Get Frameworks
+//	@Description	Get Frameworks
+//	@Tags			Frameworks
+//	@Produce		json
+//	@Success		200			{array}		repository.Framework	"success response"
+//	@Failure		500			{object}	ErrorResponse			"error response"
+//	@Router			/frameworks	[get]
 func (ec *EtcController) ListFrameworks(ctx *gin.Context) {
 	response, err := ec.EtcUsecase.GetFramework(ctx)
 	if err != nil {
@@ -31,13 +31,13 @@ func (ec *EtcController) ListFrameworks(ctx *gin.Context) {
 }
 
 // ListLocation	godoc
-// @Summary			Get Frameworks
-// @Description		Get Frameworks
-// @Tags			Locates
-// @Produce			json
-// @Success			200			{array}		repository.Locate		"success response"
-// @Failure 		500			{object}	ErrorResponse	"error response"
-// @Router       	/locates	[get]
+//	@Summary		Get Frameworks
+//	@Description	Get Frameworks
+//	@Tags			Locates
+//	@Produce		json
+//	@Success		200			{array}		repository.Locate	"success response"
+//	@Failure		500			{object}	ErrorResponse		"error response"
+//	@Router			/locates	[get]
 func (ec *EtcController) ListLocation(ctx *gin.Context) {
 	response, err := ec.EtcUsecase.GetLocat(ctx)
 	if err != nil {
@@ -48,13 +48,13 @@ func (ec *EtcController) ListLocation(ctx *gin.Context) {
 }
 
 // ListTechTags		godoc
-// @Summary			Get Frameworks
-// @Description		Get Frameworks
-// @Tags			TechTags
-// @Produce			json
-// @Success			200		{array}		repository.TechTag		"success response"
-// @Failure 		500		{object}	ErrorResponse	"error response"
-// @Router       	/tech_tags			[get]
+//	@Summary		Get Frameworks
+//	@Description	Get Frameworks
+//	@Tags			TechTags
+//	@Produce		json
+//	@Success		200			{array}		repository.TechTag	"success response"
+//	@Failure		500			{object}	ErrorResponse		"error response"
+//	@Router			/tech_tags															[get]
 func (ec *EtcController) ListTechTags(ctx *gin.Context) {
 	response, err := ec.EtcUsecase.GetTechTag(ctx)
 	if err != nil {
@@ -65,13 +65,13 @@ func (ec *EtcController) ListTechTags(ctx *gin.Context) {
 }
 
 // ListStatusTags	godoc
-// @Summary			Get Frameworks
-// @Description		Get Frameworks
-// @Tags			TechTags
-// @Produce			json
-// @Success			200		{array}		repository.StatusTag	"success response"
-// @Failure 		500		{object}	ErrorResponse			"error response"
-// @Router       	/status_tags			[get]
+//	@Summary		Get Frameworks
+//	@Description	Get Frameworks
+//	@Tags			TechTags
+//	@Produce		json
+//	@Success		200				{array}		repository.StatusTag	"success response"
+//	@Failure		500				{object}	ErrorResponse			"error response"
+//	@Router			/status_tags																	[get]
 func (ec *EtcController) ListStatusTags(ctx *gin.Context) {
 	response, err := ec.EtcUsecase.GetStatusTag(ctx)
 	if err != nil {

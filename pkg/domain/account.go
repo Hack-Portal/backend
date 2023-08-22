@@ -20,8 +20,14 @@ type CreateAccountRequest struct {
 	ShowLocate      bool   `form:"show_locate"`
 	ShowRate        bool   `form:"show_rate" `
 
-	TechTags   []int32 `form:"tech_tags"`
-	Frameworks []int32 `form:"frameworks"`
+	TechTags   string `form:"tech_tags"`
+	Frameworks string `form:"frameworks"`
+}
+
+type CreateAccount struct {
+	ReqBody    CreateAccountRequest
+	TechTags   []int32
+	Frameworks []int32
 }
 
 // アカウント取得のレスポンス
@@ -50,8 +56,8 @@ type UpdateAccountRequest struct {
 	ShowLocate      bool   `form:"show_locate"`
 	ShowRate        bool   `form:"show_rate"`
 
-	TechTags   []int32 `form:"tech_tags"`
-	Frameworks []int32 `form:"frameworks"`
+	TechTags   string `form:"tech_tags"`
+	Frameworks string `form:"frameworks"`
 }
 
 type CreateAccountParams struct {

@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"database/sql"
+	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
@@ -10,13 +10,12 @@ type PastWorksRequestWildCard struct {
 	Opus int32 `uri:"opus"`
 }
 
-type CreatePastWorkRequestBody struct {
-	Name               string   `json:"name"`
-	ThumbnailImage     []byte   `json:"thumbnail_image"`
-	ExplanatoryText    string   `json:"explanatory_text"`
-	PastWorkTags       []int32  `json:"past_work_tags"`
-	PastWorkFrameworks []int32  `json:"past_work_frameworks"`
-	AccountPastWorks   []string `json:"account_past_works"`
+type PastWorkRequestBody struct {
+	Name               string `form:"name"`
+	ExplanatoryText    string `form:"explanatory_text"`
+	PastWorkTags       string `form:"past_work_tags"`
+	PastWorkFrameworks string `form:"past_work_frameworks"`
+	AccountPastWorks   string `form:"account_past_works"`
 }
 
 type CreatePastWorkResponse struct {
@@ -36,17 +35,24 @@ type PastWorkMembers struct {
 }
 
 type CreatePastWorkParams struct {
-	Name               string        `json:"name"`
-	ThumbnailImage     string        `json:"thumbnail_image"`
-	ExplanatoryText    string        `json:"explanatory_text"`
-	AwardDataID        sql.NullInt32 `json:"award_data_id"`
-	PastWorkTags       []int32       `json:"past_work_tags"`
-	PastWorkFrameworks []int32       `json:"past_work_frameworks"`
-	AccountPastWorks   []string      `json:"account_past_works"`
+	Name               string   `json:"name"`
+	ThumbnailImage     string   `json:"thumbnail_image"`
+	ExplanatoryText    string   `json:"explanatory_text"`
+	PastWorkTags       []int32  `json:"past_work_tags"`
+	PastWorkFrameworks []int32  `json:"past_work_frameworks"`
+	AccountPastWorks   []string `json:"account_past_works"`
 }
 
 type PastWorkResponse struct {
-	PastWork   repository.PastWork    `json:"past_work"`
+	Opus            int32     `json:"opus"`
+	Name            string    `json:"name"`
+	ThumbnailImage  string    `json:"thumbnail_image"`
+	ExplanatoryText string    `json:"explanatory_text"`
+	AwardDataID     int32     `json:"award_data_id"`
+	CreateAt        time.Time `json:"create_at"`
+	UpdateAt        time.Time `json:"update_at"`
+	IsDelete        bool      `json:"is_delete"`
+
 	TechTags   []repository.TechTag   `json:"tech_tags"`
 	Frameworks []repository.Framework `json:"frameworks"`
 	Members    []PastWorkMembers      `json:"members"`
@@ -61,4 +67,11 @@ type ListPastWorkResponse struct {
 	Members         []PastWorkMembers      `json:"members"`
 }
 
-
+type UpdatePastWorkParams struct {
+	Opus               int32    `form:"opus"`
+	Name               string   `form:"name"`
+	ExplanatoryText    string   `form:"explanatory_text"`
+	PastWorkTags       []int32  `form:"past_work_tags"`
+	PastWorkFrameworks []int32  `form:"past_work_frameworks"`
+	AccountPastWorks   []string `form:"account_past_works"`
+}

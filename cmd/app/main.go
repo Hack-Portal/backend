@@ -16,20 +16,20 @@ import (
 	"google.golang.org/api/option"
 )
 
-// @title           Hack Hack Backend API
-// @version         1.0
-// @description     HackPortal Backend API serice
-// @termsOfService  https://seaffood.com/api
+//	@title			Hack Hack Backend API
+//	@version		1.0
+//	@description	HackPortal Backend API serice
+//	@termsOfService	https://seaffood.com/api
 
-// @contact.name   murasame
-// @contact.url    https://twitter.com/fresh_salmon256
-// @contact.email  oogiriminister@gmail.com
+//	@contact.name	murasame
+//	@contact.url	https://twitter.com/fresh_salmon256
+//	@contact.email	oogiriminister@gmail.com
 
-// @license.name  No-license
-// @license.url   No-license
+//	@license.name	No-license
+//	@license.url	No-license
 
-// @host      https://seaffood.com
-// @BasePath  /api/v1
+//	@host		https://seaffood.com
+//	@BasePath	/api/v1
 
 func main() {
 	env := bootstrap.LoadEnvConfig(".")

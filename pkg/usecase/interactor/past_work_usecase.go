@@ -15,19 +15,34 @@ type pastWorkUsecase struct {
 	contextTimeout time.Duration
 }
 
-func NewPastWorkUsercase(store transaction.Store, timeout time.Duration) inputport.PastworksUsecase {
+func NewPastWorkUsercase(store transaction.Store, timeout time.Duration) inputport.PastworkUsecase {
 	return &pastWorkUsecase{
 		store:          store,
 		contextTimeout: timeout,
 	}
 }
 
-func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.CreatePastWorkParams) (result domain.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.CreatePastWorkParams, image []byte) (result domain.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
-	pastWork, err := pu.store.CreatePastWorkTx(ctx, arg)
+	// 画像が空でないときに処理する
+	var imageURL string
+	if image != nil {
+		_, imageURL, err = pu.store.UploadImage(ctx, image)
+		if err != nil {
+			return domain.PastWorkResponse{}, err
+		}
+	}
+	pastWork, err := pu.store.CreatePastWorkTx(ctx, domain.CreatePastWorkParams{
+		Name:               arg.Name,
+		ThumbnailImage:     imageURL,
+		ExplanatoryText:    arg.ExplanatoryText,
+		PastWorkTags:       arg.PastWorkTags,
+		PastWorkFrameworks: arg.PastWorkFrameworks,
+		AccountPastWorks:   arg.AccountPastWorks,
+	})
 	if err != nil {
-		return
+		return domain.PastWorkResponse{}, err
 	}
 
 	techTags, err := parsePastWorkTechTags(ctx, pu.store, pastWork.Opus)
@@ -46,10 +61,16 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.Create
 	}
 
 	result = domain.PastWorkResponse{
-		PastWork:   pastWork,
-		TechTags:   techTags,
-		Frameworks: frameworks,
-		Members:    members,
+		Opus:            pastWork.Opus,
+		Name:            pastWork.Name,
+		ThumbnailImage:  pastWork.ThumbnailImage,
+		ExplanatoryText: pastWork.ExplanatoryText,
+		AwardDataID:     pastWork.AwardDataID.Int32,
+		CreateAt:        pastWork.CreateAt,
+		UpdateAt:        pastWork.UpdateAt,
+		TechTags:        techTags,
+		Frameworks:      frameworks,
+		Members:         members,
 	}
 	return
 }
@@ -79,10 +100,16 @@ func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result 
 	}
 
 	result = domain.PastWorkResponse{
-		PastWork:   pastWork,
-		TechTags:   techTags,
-		Frameworks: frameworks,
-		Members:    members,
+		Opus:            pastWork.Opus,
+		Name:            pastWork.Name,
+		ThumbnailImage:  pastWork.ThumbnailImage,
+		ExplanatoryText: pastWork.ExplanatoryText,
+		AwardDataID:     pastWork.AwardDataID.Int32,
+		CreateAt:        pastWork.CreateAt,
+		UpdateAt:        pastWork.UpdateAt,
+		TechTags:        techTags,
+		Frameworks:      frameworks,
+		Members:         members,
 	}
 	return
 }
@@ -124,11 +151,11 @@ func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query domain.ListRe
 	return
 }
 
-func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body repository.UpdatePastWorksByIDParams) (result domain.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body domain.UpdatePastWorkParams) (result domain.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 
-	pastWork, err := pu.store.UpdatePastWorksByID(ctx, body)
+	pastWork, err := pu.store.UpdatePastWorkTx(ctx, body)
 	if err != nil {
 		return
 	}
@@ -140,21 +167,27 @@ func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body repository.U
 
 	frameworks, err := parsePastWorkFrameworks(ctx, pu.store, pastWork.Opus)
 	if err != nil {
-		return
+		return domain.PastWorkResponse{}, err
 	}
 
 	members, err := parsePastWorkMembers(ctx, pu.store, pastWork.Opus)
 	if err != nil {
-		return
+		return domain.PastWorkResponse{}, err
 	}
 
 	result = domain.PastWorkResponse{
-		PastWork:   pastWork,
-		TechTags:   techTags,
-		Frameworks: frameworks,
-		Members:    members,
+		Opus:            pastWork.Opus,
+		Name:            pastWork.Name,
+		ThumbnailImage:  pastWork.ThumbnailImage,
+		ExplanatoryText: pastWork.ExplanatoryText,
+		AwardDataID:     pastWork.AwardDataID.Int32,
+		CreateAt:        pastWork.CreateAt,
+		UpdateAt:        pastWork.UpdateAt,
+		TechTags:        techTags,
+		Frameworks:      frameworks,
+		Members:         members,
 	}
-	return
+	return result, nil
 }
 
 func (pu *pastWorkUsecase) DeletePastWork(ctx context.Context, args repository.DeletePastWorksByIDParams) error {

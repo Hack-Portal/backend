@@ -7,7 +7,7 @@ import (
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
-	util "github.com/hackhack-Geek-vol6/backend/pkg/util/password"
+	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/stretchr/testify/require"
 )
 

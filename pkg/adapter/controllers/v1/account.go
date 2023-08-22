@@ -14,6 +14,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 	"github.com/lib/pq"
 )
@@ -24,20 +25,22 @@ type AccountController struct {
 }
 
 // CreateAccount	godoc
-// @Summary			Create new account
-// @Description		Create an account from the requested body
-// @Accept			multipart/form-data
-// @Tags			Accounts
-// @Produce			json
-// @Param			CreateAccountRequest 		body 			domain.CreateAccountRequest	true	"Create Account Request"
-// @Success			200							{object}		domain.AccountResponses		"create success response"
-// @Failure 		400							{object}		ErrorResponse				"bad request response"
-// @Failure 		500							{object}		ErrorResponse				"server error response"
-// @Router       	/accounts 	[post]
+//	@Summary		Create new account
+//	@Description	Create an account from the requested body
+//	@Accept			multipart/form-data
+//	@Tags			Accounts
+//	@Produce		json
+//	@Param			CreateAccountRequest	body		domain.CreateAccountRequest	true	"Create Account Request"
+//	@Success		200						{object}	domain.AccountResponses		"create success response"
+//	@Failure		400						{object}	ErrorResponse				"bad request response"
+//	@Failure		500						{object}	ErrorResponse				"server error response"
+//	@Router			/accounts 															[post]
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	var (
-		reqBody domain.CreateAccountRequest
-		image   []byte
+		reqBody    domain.CreateAccountRequest
+		image      []byte
+		tags       []int32
+		frameworks []int32
 	)
 	if err := ctx.ShouldBind(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -67,9 +70,29 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		}
 		image = icon.Bytes()
 	}
+	if len(reqBody.TechTags) != 0 {
+		tags, err = util.StringToArrayInt32(reqBody.TechTags)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+	}
+
+	if len(reqBody.Frameworks) != 0 {
+		frameworks, err = util.StringToArrayInt32(reqBody.Frameworks)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+	}
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
-	response, err := ac.AccountUsecase.CreateAccount(ctx, reqBody, image, payload.Email)
+
+	response, err := ac.AccountUsecase.CreateAccount(ctx, domain.CreateAccount{
+		ReqBody:    reqBody,
+		TechTags:   tags,
+		Frameworks: frameworks,
+	}, image, payload.Email)
 
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
@@ -87,15 +110,15 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 }
 
 // GetAccount		godoc
-// @Summary			Get account
-// @Description		Return a account from the id specified in the path
-// @Tags			Accounts
-// @Produce			json
-// @Param			account_id 	path			string				true	"Accounts API wildcard"
-// @Success			200			{object}		domain.AccountResponses	"Get success response"
-// @Failure 		400			{object}		ErrorResponse		"bad request response"
-// @Failure 		500			{object}		ErrorResponse		"server error response"
-// @Router       	/accounts/{account_id} 			[get]
+//	@Summary		Get account
+//	@Description	Return a account from the id specified in the path
+//	@Tags			Accounts
+//	@Produce		json
+//	@Param			account_id				path		string					true	"Accounts API wildcard"
+//	@Success		200						{object}	domain.AccountResponses	"Get success response"
+//	@Failure		400						{object}	ErrorResponse			"bad request response"
+//	@Failure		500						{object}	ErrorResponse			"server error response"
+//	@Router			/accounts/{account_id} 																	[get]
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	var reqUri domain.AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&reqUri); err != nil {
@@ -113,16 +136,16 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 }
 
 // UpdateAccount	godoc
-// @Summary			Update Account
-// @Description		Update account info from requested body
-// @Tags			Accounts
-// @Produce			json
-// @Param			account_id 					path		string						true	"Accounts API wildcard"
-// @Param			UpdateAccountRequest 	body		domain.UpdateAccountRequest	true	"Update Account Request Body"
-// @Success			200							{object}	domain.AccountResponses		"Update success response"
-// @Failure 		400							{object}	ErrorResponse				"bad request response"
-// @Failure 		500							{object}	ErrorResponse				"server error response"
-// @Router       	/accounts/{account_id} 			[put]
+//	@Summary		Update Account
+//	@Description	Update account info from requested body
+//	@Tags			Accounts
+//	@Produce		json
+//	@Param			account_id				path		string						true	"Accounts API wildcard"
+//	@Param			UpdateAccountRequest	body		domain.UpdateAccountRequest	true	"Update Account Request Body"
+//	@Success		200						{object}	domain.AccountResponses		"Update success response"
+//	@Failure		400						{object}	ErrorResponse				"bad request response"
+//	@Failure		500						{object}	ErrorResponse				"server error response"
+//	@Router			/accounts/{account_id} 																			[put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	var (
 		reqBody domain.UpdateAccountRequest
@@ -160,6 +183,18 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 
+	tags, err := util.StringToArrayInt32(reqBody.TechTags)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	frameworks, err := util.StringToArrayInt32(reqBody.Frameworks)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
 	response, err := ac.AccountUsecase.UpdateAccount(
 		ctx,
 		domain.UpdateAccountParam{
@@ -174,8 +209,8 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 				ShowLocate: reqBody.ShowLocate,
 				ShowRate:   reqBody.ShowRate,
 			},
-			AccountTechTag:      reqBody.TechTags,
-			AccountFrameworkTag: reqBody.Frameworks,
+			AccountTechTag:      tags,
+			AccountFrameworkTag: frameworks,
 		},
 		image)
 	if err != nil {
@@ -187,15 +222,15 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 }
 
 // DeleteAccount	godoc
-// @Summary			Remove Account
-// @Description		Only you can delete your account (logical delete)
-// @Tags			Accounts
-// @Produce			json
-// @Param			account_id 	path			string			true	"Accounts API wildcard"
-// @Success			200			{object}		SuccessResponse	"delete success response"
-// @Failure 		400			{object}		ErrorResponse	"bad request response"
-// @Failure 		500			{object}		ErrorResponse	"server error response"
-// @Router       	/accounts/{account_id} 		[delete]
+//	@Summary		Remove Account
+//	@Description	Only you can delete your account (logical delete)
+//	@Tags			Accounts
+//	@Produce		json
+//	@Param			account_id				path		string			true	"Accounts API wildcard"
+//	@Success		200						{object}	SuccessResponse	"delete success response"
+//	@Failure		400						{object}	ErrorResponse	"bad request response"
+//	@Failure		500						{object}	ErrorResponse	"server error response"
+//	@Router			/accounts/{account_id} 									[delete]
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	var reqURI domain.AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
