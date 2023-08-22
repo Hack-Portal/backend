@@ -2,12 +2,12 @@ package transaction
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
+	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 )
 
 func createAccountTags(ctx context.Context, q *repository.Queries, id string, techTags []int32) error {
@@ -51,25 +51,16 @@ func compAccount(request repository.Account, latest repository.Account) (result 
 		UpdateAt:        time.Now(),
 	}
 
-	if len(request.Username) != 0 {
-		if latest.Username != request.Username {
-			result.Username = request.Username
-		}
+	if util.CheckDiff(latest.Username, request.Username) {
+		result.Username = request.Username
 	}
 
-	if len(request.ExplanatoryText.String) != 0 {
-		if latest.ExplanatoryText.String != request.ExplanatoryText.String {
-			result.ExplanatoryText = dbutil.ToSqlNullString(request.ExplanatoryText.String)
-		}
+	if util.CheckDiff(latest.ExplanatoryText.String, request.ExplanatoryText.String) {
+		result.ExplanatoryText = dbutil.ToSqlNullString(request.ExplanatoryText.String)
 	}
 
-	if len(request.Icon.String) != 0 {
-		if latest.Icon.String != request.Icon.String {
-			result.Icon = sql.NullString{
-				String: request.Icon.String,
-				Valid:  true,
-			}
-		}
+	if util.CheckDiff(latest.Icon.String, request.Icon.String) {
+		result.Icon = dbutil.ToSqlNullString(request.Icon.String)
 	}
 
 	if request.LocateID != 0 {

@@ -7,6 +7,7 @@ import (
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 )
 
 func compRoom(request domain.UpdateRoomParam, latest repository.Room, members int32) (result repository.UpdateRoomsByIDParams, err error) {
@@ -19,16 +20,12 @@ func compRoom(request domain.UpdateRoomParam, latest repository.Room, members in
 		UpdateAt:    time.Now(),
 	}
 
-	if len(request.Title) != 0 {
-		if latest.Title != request.Title {
-			result.Title = request.Title
-		}
+	if util.CheckDiff(latest.Title, request.Title) {
+		result.Title = request.Title
 	}
 
-	if len(request.Description) != 0 {
-		if latest.Description != request.Description {
-			result.Description = request.Description
-		}
+	if util.CheckDiff(latest.Description, request.Description) {
+		result.Description = request.Description
 	}
 
 	if request.MemberLimit != 0 {

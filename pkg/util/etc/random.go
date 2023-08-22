@@ -89,7 +89,7 @@ func StringToArray(base string) []string {
 }
 
 func CheckDiff(b, a string) bool {
-	if len(a) == 0 {
+	if len(a) != 0 {
 		if b != a {
 			return true
 		}
