@@ -2,9 +2,11 @@ package transaction
 
 import (
 	"context"
+	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 )
 
 func createPastWorkTags(ctx context.Context, q *repository.Queries, opus int32, tags []int32) error {
@@ -38,6 +40,30 @@ func createPastWorkMembers(ctx context.Context, q *repository.Queries, opus int3
 	return nil
 }
 
+func compPastWork(request repository.UpdatePastWorksByIDParams, latest repository.PastWork) (result repository.UpdatePastWorksByIDParams) {
+	result = repository.UpdatePastWorksByIDParams{
+		Opus:            request.Opus,
+		Name:            latest.Name,
+		ThumbnailImage:  latest.ThumbnailImage,
+		ExplanatoryText: latest.ExplanatoryText,
+		UpdateAt:        time.Now(),
+	}
+
+	if util.CheckDiff(latest.Name, request.Name) {
+		result.Name = request.Name
+	}
+
+	if util.CheckDiff(latest.ThumbnailImage, request.ThumbnailImage) {
+		result.ThumbnailImage = request.ThumbnailImage
+	}
+
+	if util.CheckDiff(latest.ExplanatoryText, request.ExplanatoryText) {
+		result.ExplanatoryText = request.ExplanatoryText
+	}
+
+	return
+}
+
 func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg domain.CreatePastWorkParams) (repository.PastWork, error) {
 	var pastwork repository.PastWork
 	err := store.execTx(ctx, func(q *repository.Queries) error {
@@ -48,6 +74,50 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg domain.CreatePa
 			ExplanatoryText: arg.ExplanatoryText,
 		})
 		if err != nil {
+			return err
+		}
+
+		if err := createPastWorkTags(ctx, q, pastwork.Opus, arg.PastWorkTags); err != nil {
+			return err
+		}
+
+		if err := createPastWorkFrameworks(ctx, q, pastwork.Opus, arg.PastWorkFrameworks); err != nil {
+			return err
+		}
+
+		if err := createPastWorkMembers(ctx, q, pastwork.Opus, arg.AccountPastWorks); err != nil {
+			return err
+		}
+		return nil
+	})
+	return pastwork, err
+}
+
+func (store *SQLStore) UpdatePastWorkTx(ctx context.Context, arg domain.UpdatePastWorkRequestBody) (repository.PastWork, error) {
+	var pastwork repository.PastWork
+	err := store.execTx(ctx, func(q *repository.Queries) error {
+		latest, err := q.GetPastWorksByOpus(ctx, arg.Opus)
+		if err != nil {
+			return err
+		}
+
+		pastwork, err = q.UpdatePastWorksByID(ctx, compPastWork(repository.UpdatePastWorksByIDParams{
+			Name:            arg.Name,
+			ExplanatoryText: arg.ExplanatoryText,
+		}, latest))
+		if err != nil {
+			return err
+		}
+
+		if err := q.DeletePastWorkTagsByOpus(ctx, arg.Opus); err != nil {
+			return err
+		}
+
+		if err := q.DeletePastWorkFrameworksByOpus(ctx, arg.Opus); err != nil {
+			return err
+		}
+
+		if err := q.DeleteAccountPastWorksByOpus(ctx, arg.Opus); err != nil {
 			return err
 		}
 

@@ -143,18 +143,14 @@ func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body domain.Updat
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 
-	pastWork, err := pu.store.UpdatePastWorksByID(ctx, repository.UpdatePastWorksByIDParams{
-		Opus:            body.Opus,
-		Name:            body.Name,
-		ExplanatoryText: body.ExplanatoryText,
-	})
+	pastWork, err := pu.store.UpdatePastWorkTx(ctx, body)
 	if err != nil {
-		return domain.PastWorkResponse{}, err
+		return
 	}
 
 	techTags, err := parsePastWorkTechTags(ctx, pu.store, pastWork.Opus)
 	if err != nil {
-		return domain.PastWorkResponse{}, err
+		return
 	}
 
 	frameworks, err := parsePastWorkFrameworks(ctx, pu.store, pastWork.Opus)
