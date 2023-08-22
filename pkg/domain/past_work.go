@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"database/sql"
-
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
 
@@ -35,13 +33,12 @@ type PastWorkMembers struct {
 }
 
 type CreatePastWorkParams struct {
-	Name               string        `json:"name"`
-	ThumbnailImage     string        `json:"thumbnail_image"`
-	ExplanatoryText    string        `json:"explanatory_text"`
-	AwardDataID        sql.NullInt32 `json:"award_data_id"`
-	PastWorkTags       []int32       `json:"past_work_tags"`
-	PastWorkFrameworks []int32       `json:"past_work_frameworks"`
-	AccountPastWorks   []string      `json:"account_past_works"`
+	Name               string   `json:"name"`
+	ThumbnailImage     string   `json:"thumbnail_image"`
+	ExplanatoryText    string   `json:"explanatory_text"`
+	PastWorkTags       []int32  `json:"past_work_tags"`
+	PastWorkFrameworks []int32  `json:"past_work_frameworks"`
+	AccountPastWorks   []string `json:"account_past_works"`
 }
 
 type PastWorkResponse struct {

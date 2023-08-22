@@ -2,7 +2,6 @@ package controller
 
 import (
 	"bytes"
-	_ "database/sql"
 	"io"
 	"net/http"
 
