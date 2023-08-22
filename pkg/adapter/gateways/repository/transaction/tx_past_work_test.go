@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
@@ -22,7 +21,6 @@ func TestCreatePastWorkTx(t *testing.T) {
 		ThumbnailImage:  util.RandomString(10),
 		ExplanatoryText: util.RandomString(10),
 		//TODO:AwardData追加APIが追加されたら変更する
-		AwardDataID:        sql.NullInt32{Valid: false},
 		PastWorkTags:       util.RandomSelection(14, 3),
 		PastWorkFrameworks: util.RandomSelection(51, 3),
 		AccountPastWorks:   accountID,
@@ -42,7 +40,6 @@ func TestCreatePastWorkTx(t *testing.T) {
 	require.Equal(t, arg.Name, pastwork.Name)
 	require.Equal(t, arg.ThumbnailImage, pastwork.ThumbnailImage)
 	require.Equal(t, arg.ExplanatoryText, pastwork.ExplanatoryText)
-	require.Equal(t, arg.AwardDataID, pastwork.AwardDataID)
 	require.NotZero(t, pastwork.CreateAt)
 	require.NotZero(t, pastwork.UpdateAt)
 	require.Len(t, tag, len(arg.PastWorkTags))
