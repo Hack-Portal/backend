@@ -190,6 +190,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	}
 
 	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, domain.UpdatePastWorkRequestBody{
+		Opus:               reqURI.Opus,
 		Name:               reqBody.Name,
 		ExplanatoryText:    reqBody.ExplanatoryText,
 		PastWorkTags:       tags,

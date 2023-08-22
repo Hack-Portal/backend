@@ -104,6 +104,7 @@ func (store *SQLStore) UpdatePastWorkTx(ctx context.Context, arg domain.UpdatePa
 		pastwork, err = q.UpdatePastWorksByID(ctx, compPastWork(repository.UpdatePastWorksByIDParams{
 			Name:            arg.Name,
 			ExplanatoryText: arg.ExplanatoryText,
+			Opus:            arg.Opus,
 		}, latest))
 		if err != nil {
 			return err
