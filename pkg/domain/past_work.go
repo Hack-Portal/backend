@@ -10,7 +10,7 @@ type PastWorksRequestWildCard struct {
 	Opus int32 `uri:"opus"`
 }
 
-type CreatePastWorkRequestBody struct {
+type PastWorkRequestBody struct {
 	Name               string `form:"name"`
 	ExplanatoryText    string `form:"explanatory_text"`
 	PastWorkTags       string `form:"past_work_tags"`
@@ -67,7 +67,7 @@ type ListPastWorkResponse struct {
 	Members         []PastWorkMembers      `json:"members"`
 }
 
-type UpdatePastWorkRequestBody struct {
+type UpdatePastWorkParams struct {
 	Opus               int32    `form:"opus"`
 	Name               string   `form:"name"`
 	ExplanatoryText    string   `form:"explanatory_text"`

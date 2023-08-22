@@ -777,6 +777,222 @@ const docTemplate = `{
                 }
             }
         },
+        "/pastworks": {
+            "get": {
+                "description": "List PastWork",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "List PastWork",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.ListPastWorkResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a past work from the requested body",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Create new past work",
+                "parameters": [
+                    {
+                        "description": "Create PastWork Request",
+                        "name": "CreatePastWorkRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create success response",
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/pastworks/{opus}": {
+            "get": {
+                "description": "Get PastWork",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Get PastWork",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PastWorks API wildcard",
+                        "name": "opus",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update PastWork",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Update PastWork",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PastWorks API wildcard",
+                        "name": "opus",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update PastWork Request",
+                        "name": "UpdatePastWorkRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete PastWork",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Delete PastWork",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PastWorks API wildcard",
+                        "name": "opus",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/rate": {
             "get": {
                 "description": "List Account Rate",
@@ -1369,10 +1585,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "frameworks": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string"
                 },
                 "locate_id": {
                     "type": "integer"
@@ -1384,10 +1597,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"
@@ -1480,28 +1690,16 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.CreateUserRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.CreateUserResponse": {
+        "domain.FollowResponse": {
             "type": "object",
             "properties": {
-                "token": {
+                "account_id": {
                     "type": "string"
                 },
-                "user_id": {
+                "icon": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -1585,6 +1783,38 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.ListPastWorkResponse": {
+            "type": "object",
+            "properties": {
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Framework"
+                    }
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.PastWorkMembers"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "opus": {
+                    "type": "integer"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.TechTag"
+                    }
+                }
+            }
+        },
         "domain.ListRoomHackathonInfo": {
             "type": "object",
             "properties": {
@@ -1659,6 +1889,87 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.PastWorkMembers": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.PastWorkRequestBody": {
+            "type": "object",
+            "properties": {
+                "account_past_works": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "past_work_frameworks": {
+                    "type": "string"
+                },
+                "past_work_tags": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.PastWorkResponse": {
+            "type": "object",
+            "properties": {
+                "award_data_id": {
+                    "type": "integer"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Framework"
+                    }
+                },
+                "is_delete": {
+                    "type": "boolean"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.PastWorkMembers"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "opus": {
+                    "type": "integer"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.TechTag"
+                    }
+                },
+                "thumbnail_image": {
+                    "type": "string"
+                },
+                "update_at": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.RoomFramework": {
             "type": "object",
             "properties": {
@@ -1712,21 +2023,12 @@ const docTemplate = `{
         },
         "domain.UpdateAccountRequest": {
             "type": "object",
-            "required": [
-                "account_id"
-            ],
             "properties": {
-                "account_id": {
-                    "type": "string"
-                },
                 "explanatory_text": {
                     "type": "string"
                 },
                 "frameworks": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string"
                 },
                 "locate_id": {
                     "type": "integer"
@@ -1738,10 +2040,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"

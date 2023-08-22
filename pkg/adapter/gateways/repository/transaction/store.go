@@ -31,7 +31,7 @@ type Store interface {
 
 	// PastWork Tx
 	CreatePastWorkTx(ctx context.Context, arg domain.CreatePastWorkParams) (repository.PastWork, error)
-	UpdatePastWorkTx(ctx context.Context, arg domain.UpdatePastWorkRequestBody) (repository.PastWork, error)
+	UpdatePastWorkTx(ctx context.Context, arg domain.UpdatePastWorkParams) (repository.PastWork, error)
 
 	// Rate Entities Tx
 	CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntitiesParams) error

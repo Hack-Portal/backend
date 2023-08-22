@@ -19,18 +19,19 @@ type PastWorkController struct {
 }
 
 // CreatePastWork	godoc
-// @Summary			Create new past work
-// @Description		Create a past work from the requested body
-// @Tags			PastWorks
-// @Produce			json
-// @Param			CreatePastWorkRequest 	body 			domain.CreatePastWorkRequestBody	true	"Create PastWork Request"
-// @Success			200							{object}		domain.PastWorkResponse		"create success response"
-// @Failure 		400							{object}		ErrorResponse				"bad request response"
-// @Failure 		500							{object}		ErrorResponse				"server error response"
-// @Router       	/pastworks 	[post]
+//
+//	@Summary		Create new past work
+//	@Description	Create a past work from the requested body
+//	@Tags			PastWorks
+//	@Produce		json
+//	@Param			CreatePastWorkRequest	body		domain.PastWorkRequestBody	true	"Create PastWork Request"
+//	@Success		200						{object}	domain.PastWorkResponse		"create success response"
+//	@Failure		400						{object}	ErrorResponse				"bad request response"
+//	@Failure		500						{object}	ErrorResponse				"server error response"
+//	@Router			/pastworks 															[post]
 func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 	var (
-		reqBody    domain.CreatePastWorkRequestBody
+		reqBody    domain.PastWorkRequestBody
 		image      []byte
 		tags       []int32
 		frameworks []int32
@@ -94,15 +95,16 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 }
 
 // GetPastWork	godoc
-// @Summary			Get PastWork
-// @Description		Get PastWork
-// @Tags			PastWorks
-// @Produce			json
-// @Param			opus		string				true	"PastWorks API wildcard"
-// @Success			200		{object}	domain.GetPastWorkResponse
-// @Failure 		400		{object}	ErrorResponse			"error response"
-// @Failure 		500		{object}	ErrorResponse			"error response"
-// @Router       	/pastworks/{opus}		[get]
+//
+//	@Summary		Get PastWork
+//	@Description	Get PastWork
+//	@Tags			PastWorks
+//	@Produce		json
+//	@Param			opus				path		string	true	"PastWorks API wildcard"
+//	@Success		200					{object}	domain.PastWorkResponse
+//	@Failure		400					{object}	ErrorResponse	"error response"
+//	@Failure		500					{object}	ErrorResponse	"error response"
+//	@Router			/pastworks/{opus}									[get]
 func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 	var reqURI domain.PastWorksRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -118,15 +120,16 @@ func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 }
 
 // ListPastWork	godoc
-// @Summary			List PastWork
-// @Description		List PastWork
-// @Tags			PastWorks
-// @Produce			json
-// @Param			ListRequest 	query 		domain.ListRequest	true	"List PastWork Request"
-// @Success			200				{array}			domain.ListPastWorkResponse
-// @Failure 		400				{object}		ErrorResponse		"error response"
-// @Failure 		500				{object}		ErrorResponse		"error response"
-// @Router       	/pastworks 		[get]
+//
+//	@Summary		List PastWork
+//	@Description	List PastWork
+//	@Tags			PastWorks
+//	@Produce		json
+//	@Param			ListRequest	query		domain.ListRequest	true	"List PastWork Request"
+//	@Success		200			{array}		domain.ListPastWorkResponse
+//	@Failure		400			{object}	ErrorResponse	"error response"
+//	@Failure		500			{object}	ErrorResponse	"error response"
+//	@Router			/pastworks 									[get]
 func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 	var reqQuery domain.ListRequest
 
@@ -144,19 +147,20 @@ func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 }
 
 // UpdatePastWork	godoc
-// @Summary			Update PastWork
-// @Description		Update PastWork
-// @Tags			PastWorks
-// @Produce			json
-// @Param			opus 						path		string						true	"PastWorks API wildcard"
-// @Param			UpdatePastWorkRequest 		body 		UpdatePastWorkRequestBody	true	"Update PastWork Request"
-// @Success			200							{object}	domain.UpdatePastWorkResponse
-// @Failure 		400							{object}	ErrorResponse				"error response"
-// @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/pastworks/{opus} 	[put]
+//
+//	@Summary		Update PastWork
+//	@Description	Update PastWork
+//	@Tags			PastWorks
+//	@Produce		json
+//	@Param			opus					path		string						true	"PastWorks API wildcard"
+//	@Param			UpdatePastWorkRequest	body		domain.PastWorkRequestBody	true	"Update PastWork Request"
+//	@Success		200						{object}	domain.PastWorkResponse
+//	@Failure		400						{object}	ErrorResponse	"error response"
+//	@Failure		500						{object}	ErrorResponse	"error response"
+//	@Router			/pastworks/{opus} 					[put]
 func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	var (
-		reqBody    domain.CreatePastWorkRequestBody
+		reqBody    domain.PastWorkRequestBody
 		reqURI     domain.PastWorksRequestWildCard
 		tags       []int32
 		frameworks []int32
@@ -188,7 +192,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 		}
 	}
 
-	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, domain.UpdatePastWorkRequestBody{
+	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, domain.UpdatePastWorkParams{
 		Opus:               reqURI.Opus,
 		Name:               reqBody.Name,
 		ExplanatoryText:    reqBody.ExplanatoryText,
@@ -204,15 +208,16 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 }
 
 // DeletePastWork	godoc
-// @Summary			Delete PastWork
-// @Description		Delete PastWork
-// @Tags			PastWorks
-// @Produce			json
-// @Param			opus 						path		string						true	"PastWorks API wildcard"
-// @Success			200							{object}	SuccessResponse
-// @Failure 		400							{object}	ErrorResponse				"error response"
-// @Failure 		500							{object}	ErrorResponse				"error response"
-// @Router       	/pastworks/{opus} 	[delete]
+//
+//	@Summary		Delete PastWork
+//	@Description	Delete PastWork
+//	@Tags			PastWorks
+//	@Produce		json
+//	@Param			opus				path		string	true	"PastWorks API wildcard"
+//	@Success		200					{object}	SuccessResponse
+//	@Failure		400					{object}	ErrorResponse	"error response"
+//	@Failure		500					{object}	ErrorResponse	"error response"
+//	@Router			/pastworks/{opus} 	[delete]
 func (pc *PastWorkController) DeletePastWork(ctx *gin.Context) {
 	var reqURI domain.PastWorksRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {

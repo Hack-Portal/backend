@@ -93,7 +93,7 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg domain.CreatePa
 	return pastwork, err
 }
 
-func (store *SQLStore) UpdatePastWorkTx(ctx context.Context, arg domain.UpdatePastWorkRequestBody) (repository.PastWork, error) {
+func (store *SQLStore) UpdatePastWorkTx(ctx context.Context, arg domain.UpdatePastWorkParams) (repository.PastWork, error) {
 	var pastwork repository.PastWork
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		latest, err := q.GetPastWorksByOpus(ctx, arg.Opus)

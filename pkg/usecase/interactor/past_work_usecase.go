@@ -151,7 +151,7 @@ func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query domain.ListRe
 	return
 }
 
-func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body domain.UpdatePastWorkRequestBody) (result domain.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body domain.UpdatePastWorkParams) (result domain.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 
