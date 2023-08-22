@@ -157,8 +157,11 @@ func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 // @Router       	/pastworks/{opus} 	[put]
 func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	var (
-		reqBody domain.CreatePastWorkRequestBody
-		reqURI  domain.PastWorksRequestWildCard
+		reqBody    domain.CreatePastWorkRequestBody
+		reqURI     domain.PastWorksRequestWildCard
+		tags       []int32
+		frameworks []int32
+		err        error
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -170,16 +173,20 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 		return
 	}
 
-	tags, err := util.StringToArrayInt32(reqBody.PastWorkTags)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	if len(reqBody.PastWorkTags) != 0 {
+		tags, err = util.StringToArrayInt32(reqBody.PastWorkTags)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
 	}
 
-	frameworks, err := util.StringToArrayInt32(reqBody.PastWorkFrameworks)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	if len(reqBody.PastWorkFrameworks) != 0 {
+		frameworks, err = util.StringToArrayInt32(reqBody.PastWorkFrameworks)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
 	}
 
 	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, domain.UpdatePastWorkRequestBody{
