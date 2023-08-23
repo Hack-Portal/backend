@@ -18,6 +18,7 @@ type RoomController struct {
 }
 
 // ListRooms	godoc
+//
 //	@Summary		List Account
 //	@Description	List Account
 //	@Tags			Rooms
@@ -26,7 +27,7 @@ type RoomController struct {
 //	@Success		200			{array}		domain.ListRoomResponse	"success response"
 //	@Failure		400			{object}	ErrorResponse			"error response"
 //	@Failure		500			{object}	ErrorResponse			"error response"
-//	@Router			/rooms													[get]
+//	@Router			/rooms	[get]
 func (rc *RoomController) ListRooms(ctx *gin.Context) {
 	var (
 		reqURI domain.ListRequest
@@ -45,6 +46,7 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 }
 
 // GetRoom	godoc
+//
 //	@Summary		Get Room
 //	@Description	Get Room
 //	@Tags			Rooms
@@ -53,7 +55,7 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 //	@Success		200					{object}	domain.GetRoomResponse	"success response"
 //	@Failure		400					{object}	ErrorResponse			"error response"
 //	@Failure		500					{object}	ErrorResponse			"error response"
-//	@Router			/rooms/{room_id}																		[get]
+//	@Router			/rooms/{room_id}	[get]
 func (rc *RoomController) GetRoom(ctx *gin.Context) {
 	var request domain.RoomsRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
@@ -70,6 +72,7 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 }
 
 // CreateRoom		godoc
+//
 //	@Summary		Create Rooms
 //	@Description	Create Rooms
 //	@Tags			Rooms
@@ -78,7 +81,7 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 //	@Success		200						{object}	domain.GetRoomResponse			"success response"
 //	@Failure		400						{object}	ErrorResponse					"error response"
 //	@Failure		500						{object}	ErrorResponse					"error response"
-//	@Router			/rooms																																												[post]
+//	@Router			/rooms	[post]
 func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 	var reqBody domain.CreateRoomRequestBody
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
@@ -102,6 +105,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 }
 
 // UpdateRoom	godoc
+//
 //	@Summary		update Room
 //	@Description	update Room
 //	@Tags			Rooms
@@ -111,7 +115,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 //	@Success		200						{object}	domain.GetRoomResponse			"success response"
 //	@Failure		400						{object}	ErrorResponse					"error response"
 //	@Failure		500						{object}	ErrorResponse					"error response"
-//	@Router			/rooms/{room_id}																																	[put]
+//	@Router			/rooms/{room_id}	[put]
 func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 	var (
 		reqURI  domain.RoomsRequestWildCard
@@ -147,6 +151,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 }
 
 // DeleteRoom	godoc
+//
 //	@Summary		delete Room
 //	@Description	delete Room
 //	@Tags			Rooms
@@ -155,7 +160,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 //	@Success		200					{object}	SuccessResponse	"success response"
 //	@Failure		400					{object}	ErrorResponse	"error response"
 //	@Failure		500					{object}	ErrorResponse	"error response"
-//	@Router			/rooms/{room_id}														[delete]
+//	@Router			/rooms/{room_id}	[delete]
 func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 	var (
 		reqURI domain.RoomsRequestWildCard
@@ -178,6 +183,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 }
 
 // AddAccountInRoom	godoc
+//
 //	@Summary		Add Account In Rooms
 //	@Description	Add Account In Rooms
 //	@Tags			Rooms
@@ -215,6 +221,7 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 
 // TODO:ルームからメンバーを削除するユースケース
 // RemoveAccountInRoom	godoc
+//
 //	@Summary		Remove Account In Rooms
 //	@Description	Remove Account In Rooms
 //	@Tags			Rooms
@@ -247,6 +254,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 }
 
 // AddChat	godoc
+//
 //	@Summary		Add Chat Room
 //	@Description	Add Chat Room
 //	@Tags			Rooms
@@ -256,7 +264,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 //	@Success		200							{object}	domain.GetRoomResponse		"success response"
 //	@Failure		400							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
-//	@Router			/rooms/{room_id}/addchat																											[post]
+//	@Router			/rooms/{room_id}/addchat	[post]
 func (rc *RoomController) AddChat(ctx *gin.Context) {
 	var (
 		reqtURI domain.RoomsRequestWildCard

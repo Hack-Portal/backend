@@ -18,14 +18,14 @@ type LikeController struct {
 // CreateLike	godoc
 //
 //	@Summary		Create new like
-//	@Description	Create a like from the specified hackathon ID
+//	@Description	Create a like from the specified Account ID and hackathon ID
 //	@Tags			Like
 //	@Produce		json
 //	@Param			CreateLikeRequest	body		domain.CreateLikeRequest	true	"Create Like Request Body"
 //	@Success		200					{object}	domain.LikeResponse			"create success response"
 //	@Failure		400					{object}	ErrorResponse				"bad request response"
 //	@Failure		500					{object}	ErrorResponse				"server error response"
-//	@Router			/like		[post]
+//	@Router			/like	[post]
 func (bc *LikeController) CreateLike(ctx *gin.Context) {
 	var reqBody domain.CreateLikeRequest
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {

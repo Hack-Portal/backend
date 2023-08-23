@@ -62,25 +62,6 @@ definitions:
     - account_id
     - message
     type: object
-  domain.BookmarkResponse:
-    properties:
-      description:
-        type: string
-      expired:
-        type: string
-      hackathon_id:
-        type: integer
-      icon:
-        type: string
-      link:
-        type: string
-      name:
-        type: string
-      start_date:
-        type: string
-      term:
-        type: integer
-    type: object
   domain.CreateAccountRequest:
     properties:
       account_id:
@@ -103,13 +84,6 @@ definitions:
     - account_id
     - locate_id
     - username
-    type: object
-  domain.CreateBookmarkRequest:
-    properties:
-      account_id:
-        type: string
-      opus:
-        type: integer
     type: object
   domain.CreateFollowRequestBody:
     properties:
@@ -135,6 +109,13 @@ definitions:
           type: integer
         type: array
       term:
+        type: integer
+    type: object
+  domain.CreateLikeRequest:
+    properties:
+      account_id:
+        type: string
+      opus:
         type: integer
     type: object
   domain.CreateRateRequestBody:
@@ -219,6 +200,25 @@ definitions:
         items:
           $ref: '#/definitions/repository.StatusTag'
         type: array
+      term:
+        type: integer
+    type: object
+  domain.LikeResponse:
+    properties:
+      description:
+        type: string
+      expired:
+        type: string
+      hackathon_id:
+        type: integer
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
       term:
         type: integer
     type: object
@@ -739,95 +739,6 @@ paths:
       summary: Create Follow
       tags:
       - Accounts
-  /bookmarks:
-    post:
-      description: Create a bookmark from the specified hackathon ID
-      parameters:
-      - description: Create Bookmark Request Body
-        in: body
-        name: CreateBookmarkRequest
-        required: true
-        schema:
-          $ref: '#/definitions/domain.CreateBookmarkRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: create success response
-          schema:
-            $ref: '#/definitions/domain.BookmarkResponse'
-        "400":
-          description: bad request response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: server error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Create new bookmark
-      tags:
-      - Bookmark
-  /bookmarks/{account_id}:
-    delete:
-      description: Delete the bookmark of the specified hackathon ID
-      parameters:
-      - description: Delete Bookmark Request Body
-        in: path
-        name: account_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: delete success response
-          schema:
-            $ref: '#/definitions/domain.BookmarkResponse'
-        "400":
-          description: bad request response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: server error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Delete bookmark
-      tags:
-      - Bookmark
-    get:
-      description: Get my bookmarks
-      parameters:
-      - description: account_id
-        in: path
-        name: account_id
-        required: true
-        type: string
-      - in: formData
-        name: page_id
-        type: integer
-      - in: formData
-        name: page_size
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success response
-          schema:
-            items:
-              $ref: '#/definitions/domain.BookmarkResponse'
-            type: array
-        "400":
-          description: bad request response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-        "500":
-          description: server error response
-          schema:
-            $ref: '#/definitions/controller.ErrorResponse'
-      summary: Get bookmarks
-      tags:
-      - Bookmark
   /frameworks:
     get:
       description: Get Frameworks
@@ -851,13 +762,13 @@ paths:
     get:
       description: List Hackathon
       parameters:
-      - in: formData
+      - in: query
         name: expired
         type: boolean
-      - in: formData
+      - in: query
         name: page_id
         type: integer
-      - in: formData
+      - in: query
         name: page_size
         type: integer
       produces:
@@ -934,6 +845,95 @@ paths:
       summary: Get Hackathon
       tags:
       - Hackathon
+  /like:
+    post:
+      description: Create a like from the specified Account ID and hackathon ID
+      parameters:
+      - description: Create Like Request Body
+        in: body
+        name: CreateLikeRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateLikeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: create success response
+          schema:
+            $ref: '#/definitions/domain.LikeResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create new like
+      tags:
+      - Like
+  /like/{account_id}:
+    delete:
+      description: Delete a like from the specified Account ID
+      parameters:
+      - description: Delete Like Request Body
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete success response
+          schema:
+            $ref: '#/definitions/domain.LikeResponse'
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Delete like
+      tags:
+      - Like
+    get:
+      description: Get my likes
+      parameters:
+      - description: account_id
+        in: path
+        name: account_id
+        required: true
+        type: string
+      - in: formData
+        name: page_id
+        type: integer
+      - in: formData
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/domain.LikeResponse'
+            type: array
+        "400":
+          description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: server error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get likes
+      tags:
+      - Like
   /locates:
     get:
       description: Get Frameworks

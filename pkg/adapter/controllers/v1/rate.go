@@ -16,6 +16,7 @@ type RateController struct {
 }
 
 // CreateRate	godoc
+//
 //	@Summary		Create Rate
 //	@Description	Create Rate for User
 //	@Tags			Rate
@@ -24,7 +25,7 @@ type RateController struct {
 //	@Success		200								{object}	SuccessResponse					"success response"
 //	@Failure		400								{object}	ErrorResponse					"error response"
 //	@Failure		500								{object}	ErrorResponse					"error response"
-//	@Router			/accounts/{account_id}/rate 																						[post]
+//	@Router			/accounts/{account_id}/rate	[post]
 func (rc *RateController) CreateRate(ctx *gin.Context) {
 	var (
 		reqURI  domain.AccountRequestWildCard
@@ -51,6 +52,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 }
 
 // ListRate	godoc
+//
 //	@Summary		List Rate
 //	@Description	List Rate for User
 //	@Tags			Rate
@@ -60,7 +62,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 //	@Success		200								{array}		domain.AccountRateResponse	"success response"
 //	@Failure		400								{object}	ErrorResponse				"error response"
 //	@Failure		500								{object}	ErrorResponse				"error response"
-//	@Router			/accounts/{account_id}/rate 																				[get]
+//	@Router			/accounts/{account_id}/rate	[get]
 func (rc *RateController) ListRate(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard
@@ -87,6 +89,7 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 }
 
 // ListAccountRate	godoc
+//
 //	@Summary		List Account Rate
 //	@Description	List Account Rate
 //	@Tags			Rate
@@ -95,7 +98,7 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 //	@Success		200			{array}		domain.AccountRateResponse	"success response"
 //	@Failure		400			{object}	ErrorResponse				"error response"
 //	@Failure		500			{object}	ErrorResponse				"error response"
-//	@Router			/rate 																							[get]
+//	@Router			/rate	[get]
 func (rc *RateController) ListAccountRate(ctx *gin.Context) {
 	var reqQuery domain.ListRequest
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
