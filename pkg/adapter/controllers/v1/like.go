@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
@@ -33,6 +34,14 @@ func (bc *LikeController) CreateLike(ctx *gin.Context) {
 		return
 	}
 
+	_, err := bc.LikeUsecase.CreateLike(ctx, repository.CreateLikesParams{
+		Opus:      reqBody.Opus,
+		AccountID: reqBody.AccountID,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("create successful")})
 }
 
@@ -43,6 +52,7 @@ func (bc *LikeController) CreateLike(ctx *gin.Context) {
 //	@Tags			Like
 //	@Produce		json
 //	@Param			account_id			path		string				true	"Delete Like Request Body"
+//	@Param			opus				query		int32				true	"opus"
 //	@Success		200					{object}	domain.LikeResponse	"delete success response"
 //	@Failure		400					{object}	ErrorResponse		"bad request response"
 //	@Failure		500					{object}	ErrorResponse		"server error response"
@@ -60,7 +70,6 @@ func (bc *LikeController) RemoveLike(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
 	if err := bc.LikeUsecase.RemoveLike(ctx, reqURI.AccountID, reqBody.Opus); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
