@@ -22,20 +22,20 @@ func NewLikeUsercase(store transaction.Store, timeout time.Duration) inputport.L
 	}
 }
 
-func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (domain.BookmarkResponse, error) {
+func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (domain.LikeResponse, error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
-	bookmark, err := bu.store.CreateLikes(ctx, body)
+	like, err := bu.store.CreateLikes(ctx, body)
 	if err != nil {
-		return domain.BookmarkResponse{}, err
+		return domain.LikeResponse{}, err
 	}
 
-	result, err := bu.store.GetHackathonByID(ctx, bookmark.Opus)
+	result, err := bu.store.GetHackathonByID(ctx, like.Opus)
 	if err != nil {
-		return domain.BookmarkResponse{}, err
+		return domain.LikeResponse{}, err
 	}
 
-	return domain.BookmarkResponse{
+	return domain.LikeResponse{
 		HackathonID: result.HackathonID,
 		Name:        result.Name,
 		Icon:        result.Icon.String,
@@ -47,20 +47,20 @@ func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLik
 	}, nil
 }
 
-func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListRequest) (result []domain.BookmarkResponse, err error) {
+func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListRequest) (result []domain.LikeResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
 
-	bookmarks, err := bu.store.ListLikesByID(ctx, id)
+	likes, err := bu.store.ListLikesByID(ctx, id)
 	if err != nil {
 		return
 	}
-	for _, bookmark := range bookmarks {
-		hackathon, err := bu.store.GetHackathonByID(ctx, bookmark.Opus)
+	for _, like := range likes {
+		hackathon, err := bu.store.GetHackathonByID(ctx, like.Opus)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, domain.BookmarkResponse{
+		result = append(result, domain.LikeResponse{
 			HackathonID: hackathon.HackathonID,
 			Name:        hackathon.Name,
 			Icon:        hackathon.Icon.String,

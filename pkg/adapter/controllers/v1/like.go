@@ -16,18 +16,19 @@ type LikeController struct {
 	Env         *bootstrap.Env
 }
 
-// CreateBookmark	godoc
-//	@Summary		Create new bookmark
-//	@Description	Create a bookmark from the specified hackathon ID
-//	@Tags			Bookmark
+// CreateLike	godoc
+//
+//	@Summary		Create new like
+//	@Description	Create a like from the specified hackathon ID
+//	@Tags			Like
 //	@Produce		json
-//	@Param			CreateBookmarkRequest	body		domain.CreateBookmarkRequest	true	"Create Bookmark Request Body"
-//	@Success		200						{object}	domain.BookmarkResponse			"create success response"
+//	@Param			CreateLikeRequest	body		domain.CreateLikeRequest	true	"Create Like Request Body"
+//	@Success		200						{object}	domain.LikeResponse			"create success response"
 //	@Failure		400						{object}	ErrorResponse					"bad request response"
 //	@Failure		500						{object}	ErrorResponse					"server error response"
-//	@Router			/bookmarks 																																									[post]
-func (bc *LikeController) CreateBookmark(ctx *gin.Context) {
-	var reqBody domain.CreateBookmarkRequest
+//	@Router			/like		[post]
+func (bc *LikeController) CreateLike(ctx *gin.Context) {
+	var reqBody domain.CreateLikeRequest
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -41,20 +42,21 @@ func (bc *LikeController) CreateBookmark(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-// RemoveBookmark	godoc
-//	@Summary		Delete bookmark
-//	@Description	Delete the bookmark of the specified hackathon ID
-//	@Tags			Bookmark
+// RemoveLike	godoc
+//
+//	@Summary		Delete like
+//	@Description	Delete the like of the specified hackathon ID
+//	@Tags			Like
 //	@Produce		json
-//	@Param			account_id					path		string					true	"Delete Bookmark Request Body"
-//	@Success		200							{object}	domain.BookmarkResponse	"delete success response"
+//	@Param			account_id					path		string					true	"Delete Like Request Body"
+//	@Success		200							{object}	domain.LikeResponse	"delete success response"
 //	@Failure		400							{object}	ErrorResponse			"bad request response"
 //	@Failure		500							{object}	ErrorResponse			"server error response"
-//	@Router			/bookmarks/{account_id} 																		[delete]
-func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
+//	@Router			/like/{account_id} 	[delete]
+func (bc *LikeController) RemoveLike(ctx *gin.Context) {
 	var (
-		reqURI  domain.BookmarkRequestWildCard
-		reqBody domain.RemoveBookmarkRequestQueries
+		reqURI  domain.LikeRequestWildCard
+		reqBody domain.RemoveLikeRequestQueries
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -73,20 +75,21 @@ func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("delete successful")})
 }
 
-// ListBookmarkToHackathon	godoc
-//	@Summary		Get bookmarks
-//	@Description	Get my bookmarks
-//	@Tags			Bookmark
+// ListLikeToHackathon	godoc
+//
+//	@Summary		Get likes
+//	@Description	Get my likes
+//	@Tags			Like
 //	@Produce		json
 //	@Param			account_id					path		string					true	"account_id"
-//	@Param			ListRequest					formData	domain.ListRequest		true	"Bookmark Request Body"
-//	@Success		200							{array}		domain.BookmarkResponse	"success response"
+//	@Param			ListRequest					formData	domain.ListRequest		true	"Like Request Body"
+//	@Success		200							{array}		domain.LikeResponse	"success response"
 //	@Failure		400							{object}	ErrorResponse			"bad request response"
 //	@Failure		500							{object}	ErrorResponse			"server error response"
-//	@Router			/bookmarks/{account_id}  																		[get]
-func (bc *LikeController) ListBookmark(ctx *gin.Context) {
+//	@Router			/like/{account_id} 	[get]
+func (bc *LikeController) ListLike(ctx *gin.Context) {
 	var (
-		reqURI  domain.BookmarkRequestWildCard
+		reqURI  domain.LikeRequestWildCard
 		reqBody domain.ListRequest
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
