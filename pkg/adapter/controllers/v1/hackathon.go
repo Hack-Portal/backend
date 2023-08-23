@@ -25,7 +25,7 @@ type HackathonController struct {
 //	@Success		200							{object}	domain.HackathonResponses			"success response"
 //	@Failure		400							{object}	ErrorResponse						"error response"
 //	@Failure		500							{object}	ErrorResponse						"error response"
-//	@Router			/hackathons																																	[post]
+//	@Router			/hackathons																																															[post]
 func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 	var (
 		reqBody domain.CreateHackathonRequestBody
@@ -78,7 +78,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 //	@Success		200							{object}	domain.HackathonResponses	"success response"
 //	@Failure		400							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
-//	@Router			/hackathons/{hackathon_id} 												[get]
+//	@Router			/hackathons/{hackathon_id} 																				[get]
 func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 	var reqURI domain.HackathonRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -107,7 +107,7 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 //	@Success		200						{array}		domain.HackathonResponses	"success response"
 //	@Failure		400						{object}	ErrorResponse				"error response"
 //	@Failure		500						{object}	ErrorResponse				"error response"
-//	@Router			/hackathons 																							[get]
+//	@Router			/hackathons 																																	[get]
 func (hc *HackathonController) ListHackathons(ctx *gin.Context) {
 	var reqQuery domain.ListHackathonsParams
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {

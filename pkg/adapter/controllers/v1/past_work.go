@@ -28,7 +28,7 @@ type PastWorkController struct {
 //	@Success		200						{object}	domain.PastWorkResponse		"create success response"
 //	@Failure		400						{object}	ErrorResponse				"bad request response"
 //	@Failure		500						{object}	ErrorResponse				"server error response"
-//	@Router			/pastworks 															[post]
+//	@Router			/pastworks 																										[post]
 func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 	var (
 		reqBody    domain.PastWorkRequestBody
@@ -104,7 +104,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 //	@Success		200					{object}	domain.PastWorkResponse
 //	@Failure		400					{object}	ErrorResponse	"error response"
 //	@Failure		500					{object}	ErrorResponse	"error response"
-//	@Router			/pastworks/{opus}									[get]
+//	@Router			/pastworks/{opus}														[get]
 func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 	var reqURI domain.PastWorksRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -129,7 +129,7 @@ func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 //	@Success		200			{array}		domain.ListPastWorkResponse
 //	@Failure		400			{object}	ErrorResponse	"error response"
 //	@Failure		500			{object}	ErrorResponse	"error response"
-//	@Router			/pastworks 									[get]
+//	@Router			/pastworks 														[get]
 func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 	var reqQuery domain.ListRequest
 
@@ -157,7 +157,7 @@ func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 //	@Success		200						{object}	domain.PastWorkResponse
 //	@Failure		400						{object}	ErrorResponse	"error response"
 //	@Failure		500						{object}	ErrorResponse	"error response"
-//	@Router			/pastworks/{opus} 					[put]
+//	@Router			/pastworks/{opus} 											[put]
 func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	var (
 		reqBody    domain.PastWorkRequestBody

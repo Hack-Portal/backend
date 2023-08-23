@@ -25,7 +25,7 @@ type LikeController struct {
 //	@Success		200						{object}	domain.BookmarkResponse			"create success response"
 //	@Failure		400						{object}	ErrorResponse					"bad request response"
 //	@Failure		500						{object}	ErrorResponse					"server error response"
-//	@Router			/bookmarks 																													[post]
+//	@Router			/bookmarks 																																									[post]
 func (bc *LikeController) CreateBookmark(ctx *gin.Context) {
 	var reqBody domain.CreateBookmarkRequest
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
@@ -50,7 +50,7 @@ func (bc *LikeController) CreateBookmark(ctx *gin.Context) {
 //	@Success		200							{object}	domain.BookmarkResponse	"delete success response"
 //	@Failure		400							{object}	ErrorResponse			"bad request response"
 //	@Failure		500							{object}	ErrorResponse			"server error response"
-//	@Router			/bookmarks/{account_id} 											[delete]
+//	@Router			/bookmarks/{account_id} 																		[delete]
 func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 	var (
 		reqURI  domain.BookmarkRequestWildCard
@@ -83,7 +83,7 @@ func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 //	@Success		200							{array}		domain.BookmarkResponse	"success response"
 //	@Failure		400							{object}	ErrorResponse			"bad request response"
 //	@Failure		500							{object}	ErrorResponse			"server error response"
-//	@Router			/bookmarks/{account_id}  											[get]
+//	@Router			/bookmarks/{account_id}  																		[get]
 func (bc *LikeController) ListBookmark(ctx *gin.Context) {
 	var (
 		reqURI  domain.BookmarkRequestWildCard
