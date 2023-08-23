@@ -30,8 +30,11 @@ sqlc:
 
 serverRun:
 	go run ./cmd/app/main.go
+
+makeSwagger:
+	swag init -g ./cmd/app/main.go
 	
 test:
 	go test -coverpkg=./...  ./...
 	
-.PHONY: postgresRun postgresStart postgresStop resetDB installmigrate migrateup migrateup1 migratedown migratedown1 sqlc serverRun test
+.PHONY: postgresRun postgresStart postgresStop resetDB installmigrate migrateup migrateup1 migratedown migratedown1 sqlc serverRun test makeSwagger
