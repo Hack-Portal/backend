@@ -26,7 +26,7 @@ type RateController struct {
 //	@Success		200								{object}	SuccessResponse					"success response"
 //	@Failure		400								{object}	ErrorResponse					"error response"
 //	@Failure		500								{object}	ErrorResponse					"error response"
-//	@Router			/accounts/{account_id}/rate 													[post]
+//	@Router			/accounts/{account_id}/rate 																						[post]
 func (rc *RateController) CreateRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -65,7 +65,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 //	@Success		200								{array}		domain.AccountRateResponse	"success response"
 //	@Failure		400								{object}	ErrorResponse				"error response"
 //	@Failure		500								{object}	ErrorResponse				"error response"
-//	@Router			/accounts/{account_id}/rate 												[get]
+//	@Router			/accounts/{account_id}/rate 																				[get]
 func (rc *RateController) ListRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -103,7 +103,7 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 //	@Success		200			{array}		domain.AccountRateResponse	"success response"
 //	@Failure		400			{object}	ErrorResponse				"error response"
 //	@Failure		500			{object}	ErrorResponse				"error response"
-//	@Router			/rate 														[get]
+//	@Router			/rate 																							[get]
 func (rc *RateController) ListAccountRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
