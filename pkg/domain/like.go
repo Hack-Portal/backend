@@ -24,5 +24,5 @@ type LikeRequestWildCard struct {
 	AccountID string `uri:"account_id"`
 }
 type RemoveLikeRequestQueries struct {
-	Opus int32 `query:"opus" binding:"required"`
+	Opus int32 `form:"opus" binding:"required"`
 }
