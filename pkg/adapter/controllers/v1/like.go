@@ -23,9 +23,9 @@ type LikeController struct {
 //	@Tags			Like
 //	@Produce		json
 //	@Param			CreateLikeRequest	body		domain.CreateLikeRequest	true	"Create Like Request Body"
-//	@Success		200						{object}	domain.LikeResponse			"create success response"
-//	@Failure		400						{object}	ErrorResponse					"bad request response"
-//	@Failure		500						{object}	ErrorResponse					"server error response"
+//	@Success		200					{object}	domain.LikeResponse			"create success response"
+//	@Failure		400					{object}	ErrorResponse				"bad request response"
+//	@Failure		500					{object}	ErrorResponse				"server error response"
 //	@Router			/like		[post]
 func (bc *LikeController) CreateLike(ctx *gin.Context) {
 	var reqBody domain.CreateLikeRequest
@@ -48,10 +48,10 @@ func (bc *LikeController) CreateLike(ctx *gin.Context) {
 //	@Description	Delete the like of the specified hackathon ID
 //	@Tags			Like
 //	@Produce		json
-//	@Param			account_id					path		string					true	"Delete Like Request Body"
-//	@Success		200							{object}	domain.LikeResponse	"delete success response"
-//	@Failure		400							{object}	ErrorResponse			"bad request response"
-//	@Failure		500							{object}	ErrorResponse			"server error response"
+//	@Param			account_id			path		string				true	"Delete Like Request Body"
+//	@Success		200					{object}	domain.LikeResponse	"delete success response"
+//	@Failure		400					{object}	ErrorResponse		"bad request response"
+//	@Failure		500					{object}	ErrorResponse		"server error response"
 //	@Router			/like/{account_id} 	[delete]
 func (bc *LikeController) RemoveLike(ctx *gin.Context) {
 	var (
@@ -81,11 +81,11 @@ func (bc *LikeController) RemoveLike(ctx *gin.Context) {
 //	@Description	Get my likes
 //	@Tags			Like
 //	@Produce		json
-//	@Param			account_id					path		string					true	"account_id"
-//	@Param			ListRequest					formData	domain.ListRequest		true	"Like Request Body"
-//	@Success		200							{array}		domain.LikeResponse	"success response"
-//	@Failure		400							{object}	ErrorResponse			"bad request response"
-//	@Failure		500							{object}	ErrorResponse			"server error response"
+//	@Param			account_id			path		string				true	"account_id"
+//	@Param			ListRequest			formData	domain.ListRequest	true	"Like Request Body"
+//	@Success		200					{array}		domain.LikeResponse	"success response"
+//	@Failure		400					{object}	ErrorResponse		"bad request response"
+//	@Failure		500					{object}	ErrorResponse		"server error response"
 //	@Router			/like/{account_id} 	[get]
 func (bc *LikeController) ListLike(ctx *gin.Context) {
 	var (
