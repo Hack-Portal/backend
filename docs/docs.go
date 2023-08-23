@@ -449,142 +449,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/bookmarks": {
-            "post": {
-                "description": "Create a bookmark from the specified hackathon ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Bookmark"
-                ],
-                "summary": "Create new bookmark",
-                "parameters": [
-                    {
-                        "description": "Create Bookmark Request Body",
-                        "name": "CreateBookmarkRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateBookmarkRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "create success response",
-                        "schema": {
-                            "$ref": "#/definitions/domain.BookmarkResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "server error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/bookmarks/{account_id}": {
-            "get": {
-                "description": "Get my bookmarks",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Bookmark"
-                ],
-                "summary": "Get bookmarks",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "account_id",
-                        "name": "account_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "name": "page_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "page_size",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.BookmarkResponse"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "bad request response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "server error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete the bookmark of the specified hackathon ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Bookmark"
-                ],
-                "summary": "Delete bookmark",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Delete Bookmark Request Body",
-                        "name": "account_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "delete success response",
-                        "schema": {
-                            "$ref": "#/definitions/domain.BookmarkResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "server error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/frameworks": {
             "get": {
                 "description": "Get Frameworks",
@@ -1541,35 +1405,6 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.BookmarkResponse": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "expired": {
-                    "type": "string"
-                },
-                "hackathon_id": {
-                    "type": "integer"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "link": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "term": {
-                    "type": "integer"
-                }
-            }
-        },
         "domain.CreateAccountRequest": {
             "type": "object",
             "required": [
@@ -1601,17 +1436,6 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
-                }
-            }
-        },
-        "domain.CreateBookmarkRequest": {
-            "type": "object",
-            "properties": {
-                "account_id": {
-                    "type": "string"
-                },
-                "opus": {
-                    "type": "integer"
                 }
             }
         },
