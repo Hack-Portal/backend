@@ -22,12 +22,14 @@ func setupCors(router *gin.Engine) {
 
 func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
 	setupCors(gin)
-	gin.Use(nrgin.Middleware(apm.NewApm(env)))
+	apm := apm.NewApm(env)
+	gin.Use(nrgin.Middleware(apm))
 
 	publicRouter := gin.Group("/v1")
 	// All Public APIs
 	NewEtcRouter(env, timeout, store, publicRouter)
 	NewHackathonRouter(env, timeout, store, publicRouter)
+	setupSwagger(publicRouter)
 
 	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware())
 	//TODO:middlewareの追加
