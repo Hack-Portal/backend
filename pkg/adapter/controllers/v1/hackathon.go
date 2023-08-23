@@ -17,6 +17,7 @@ type HackathonController struct {
 }
 
 // CreateHackathon	godoc
+//
 //	@Summary		Create Hackathon
 //	@Description	Register a hackathon from given parameters
 //	@Tags			Hackathon
@@ -70,6 +71,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 }
 
 // GetHackathon	godoc
+//
 //	@Summary		Get Hackathon
 //	@Description	Get Hackathon
 //	@Tags			Hackathon
@@ -99,11 +101,12 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 // ハッカソン一覧を取得する際のパラメータ
 
 // ListHackathons	godoc
+//
 //	@Summary		List Hackathon
 //	@Description	List Hackathon
 //	@Tags			Hackathon
 //	@Produce		json
-//	@Param			ListHackathonsParams	formData	domain.ListHackathonsParams	true	"List hackathon Request queries"
+//	@Param			ListHackathonsParams	query	domain.ListHackathonsParams	true	"List hackathon Request queries"
 //	@Success		200						{array}		domain.HackathonResponses	"success response"
 //	@Failure		400						{object}	ErrorResponse				"error response"
 //	@Failure		500						{object}	ErrorResponse				"error response"
