@@ -16,8 +16,9 @@ type FollowController struct {
 	Env           *bootstrap.Env
 }
 
-// TODO:レスポンス変更　=> accounts
+// TODO:レスポンス変更 => accounts
 // CreateFollow	godoc
+//
 //	@Summary		Create Follow
 //	@Description	Follow!!!!!!!!
 //	@Tags			Accounts
@@ -55,12 +56,13 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 
 // TODO:レスポンス修正
 // RemoveFollow	godoc
+//
 //	@Summary		Remove follow
 //	@Description	Remove follow account
 //	@Tags			Accounts
 //	@Produce		json
 //	@Param			from_account_id						path		string								true	"Accounts API wildcard"
-//	@Param			RemoveFollowRequestQueries			formData	domain.RemoveFollowRequestQueries	true	"Remove Follow Request Body"
+//	@Param			RemoveFollowRequestQueries			query	domain.RemoveFollowRequestQueries	true	"Remove Follow Request Body"
 //	@Success		200									{object}	SuccessResponse						"success response"
 //	@Failure		400									{object}	ErrorResponse						"error response"
 //	@Failure		500									{object}	ErrorResponse						"error response"
@@ -91,12 +93,13 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 }
 
 // GetFollow	godoc
+//
 //	@Summary		Get follow
 //	@Description	Get follow account
 //	@Tags			Accounts
 //	@Produce		json
 //	@Param			from_account_id						path		string							true	"Accounts API wildcard"
-//	@Param			GetFollowRequestQueries				formData	domain.GetFollowRequestQueries	true	"Get Follow Request Body"
+//	@Param			GetFollowRequestQueries				query	domain.GetFollowRequestQueries	true	"Get Follow Request Body"
 //	@Success		200									{object}	[]domain.FollowResponse			"success response"
 //	@Failure		400									{object}	ErrorResponse					"error response"
 //	@Failure		500									{object}	ErrorResponse					"error response"

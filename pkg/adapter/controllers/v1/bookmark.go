@@ -17,6 +17,7 @@ type LikeController struct {
 }
 
 // CreateBookmark	godoc
+//
 //	@Summary		Create new bookmark
 //	@Description	Create a bookmark from the specified hackathon ID
 //	@Tags			Bookmark
@@ -42,6 +43,7 @@ func (bc *LikeController) CreateBookmark(ctx *gin.Context) {
 }
 
 // RemoveBookmark	godoc
+//
 //	@Summary		Delete bookmark
 //	@Description	Delete the bookmark of the specified hackathon ID
 //	@Tags			Bookmark
@@ -74,12 +76,13 @@ func (bc *LikeController) RemoveBookmark(ctx *gin.Context) {
 }
 
 // ListBookmarkToHackathon	godoc
+//
 //	@Summary		Get bookmarks
 //	@Description	Get my bookmarks
 //	@Tags			Bookmark
 //	@Produce		json
 //	@Param			account_id					path		string					true	"account_id"
-//	@Param			ListRequest					formData	domain.ListRequest		true	"Bookmark Request Body"
+//	@Param			ListRequest					query	domain.ListRequest		true	"Bookmark Request Body"
 //	@Success		200							{array}		domain.BookmarkResponse	"success response"
 //	@Failure		400							{object}	ErrorResponse			"bad request response"
 //	@Failure		500							{object}	ErrorResponse			"server error response"

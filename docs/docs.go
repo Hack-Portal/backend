@@ -315,17 +315,17 @@ const docTemplate = `{
                     {
                         "type": "boolean",
                         "name": "mode",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "name": "page_id",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "name": "page_size",
-                        "in": "formData"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -423,7 +423,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "account_id",
-                        "in": "formData",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -513,12 +513,12 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "name": "page_id",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "name": "page_size",
-                        "in": "formData"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -628,17 +628,17 @@ const docTemplate = `{
                     {
                         "type": "boolean",
                         "name": "expired",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "name": "page_id",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "name": "page_size",
-                        "in": "formData"
+                        "in": "query"
                     }
                 ],
                 "responses": {

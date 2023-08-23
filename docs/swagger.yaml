@@ -646,7 +646,7 @@ paths:
         name: from_account_id
         required: true
         type: string
-      - in: formData
+      - in: query
         name: account_id
         required: true
         type: string
@@ -676,13 +676,13 @@ paths:
         name: from_account_id
         required: true
         type: string
-      - in: formData
+      - in: query
         name: mode
         type: boolean
-      - in: formData
+      - in: query
         name: page_id
         type: string
-      - in: formData
+      - in: query
         name: page_size
         type: string
       produces:
@@ -802,10 +802,10 @@ paths:
         name: account_id
         required: true
         type: string
-      - in: formData
+      - in: query
         name: page_id
         type: integer
-      - in: formData
+      - in: query
         name: page_size
         type: integer
       produces:
@@ -851,13 +851,13 @@ paths:
     get:
       description: List Hackathon
       parameters:
-      - in: formData
+      - in: query
         name: expired
         type: boolean
-      - in: formData
+      - in: query
         name: page_id
         type: integer
-      - in: formData
+      - in: query
         name: page_size
         type: integer
       produces:
