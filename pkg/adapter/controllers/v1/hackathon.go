@@ -9,6 +9,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type HackathonController struct {
@@ -17,6 +18,7 @@ type HackathonController struct {
 }
 
 // CreateHackathon	godoc
+//
 //	@Summary		Create Hackathon
 //	@Description	Register a hackathon from given parameters
 //	@Tags			Hackathon
@@ -27,6 +29,8 @@ type HackathonController struct {
 //	@Failure		500							{object}	ErrorResponse						"error response"
 //	@Router			/hackathons																																	[post]
 func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqBody domain.CreateHackathonRequestBody
 		image   []byte
@@ -70,6 +74,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 }
 
 // GetHackathon	godoc
+//
 //	@Summary		Get Hackathon
 //	@Description	Get Hackathon
 //	@Tags			Hackathon
@@ -80,6 +85,8 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 //	@Failure		500							{object}	ErrorResponse				"error response"
 //	@Router			/hackathons/{hackathon_id} 												[get]
 func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var reqURI domain.HackathonRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -99,6 +106,7 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 // ハッカソン一覧を取得する際のパラメータ
 
 // ListHackathons	godoc
+//
 //	@Summary		List Hackathon
 //	@Description	List Hackathon
 //	@Tags			Hackathon
@@ -109,6 +117,8 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 //	@Failure		500						{object}	ErrorResponse				"error response"
 //	@Router			/hackathons 																							[get]
 func (hc *HackathonController) ListHackathons(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var reqQuery domain.ListHackathonsParams
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

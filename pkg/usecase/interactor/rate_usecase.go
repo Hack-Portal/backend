@@ -62,3 +62,15 @@ func (au *rateUsecase) ListAccountRate(ctx context.Context, args domain.ListRequ
 
 	return parseAccountRateResponse(accounts), nil
 }
+
+func parseAccountRateResponse(accounts []repository.Account) (result []domain.AccountRateResponse) {
+	for _, account := range accounts {
+		result = append(result, domain.AccountRateResponse{
+			AccountID: account.AccountID,
+			Username:  account.Username,
+			Icon:      account.Icon.String,
+			Rate:      account.Rate,
+		})
+	}
+	return
+}

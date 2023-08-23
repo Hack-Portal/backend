@@ -3,7 +3,6 @@ package transaction
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -78,12 +77,10 @@ func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, st
 	}
 	// パス取得
 	fbstorage, err := store.App.Storage(ctx)
-	log.Println("1 :", err)
 	if err != nil {
 		return "", "", err
 	}
 	bucket, err := fbstorage.DefaultBucket()
-	log.Println("2 :", err)
 	if err != nil {
 		return "", "", err
 	}
@@ -113,13 +110,11 @@ func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, st
 
 func (store *SQLStore) DeleteImage(ctx context.Context, file string) error {
 	fbstorage, err := store.App.Storage(ctx)
-	log.Println("1 :", err)
 	if err != nil {
 		return err
 	}
 
 	bucket, err := fbstorage.DefaultBucket()
-	log.Println("2 :", err)
 	if err != nil {
 		return err
 	}

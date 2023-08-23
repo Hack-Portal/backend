@@ -11,6 +11,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type PastWorkController struct {
@@ -30,6 +31,8 @@ type PastWorkController struct {
 //	@Failure		500						{object}	ErrorResponse				"server error response"
 //	@Router			/pastworks 															[post]
 func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqBody    domain.PastWorkRequestBody
 		image      []byte
@@ -106,6 +109,8 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 //	@Failure		500					{object}	ErrorResponse	"error response"
 //	@Router			/pastworks/{opus}									[get]
 func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var reqURI domain.PastWorksRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -131,6 +136,8 @@ func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 //	@Failure		500			{object}	ErrorResponse	"error response"
 //	@Router			/pastworks 									[get]
 func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var reqQuery domain.ListRequest
 
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
@@ -159,6 +166,8 @@ func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 //	@Failure		500						{object}	ErrorResponse	"error response"
 //	@Router			/pastworks/{opus} 					[put]
 func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqBody    domain.PastWorkRequestBody
 		reqURI     domain.PastWorksRequestWildCard
@@ -219,6 +228,8 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 //	@Failure		500					{object}	ErrorResponse	"error response"
 //	@Router			/pastworks/{opus} 	[delete]
 func (pc *PastWorkController) DeletePastWork(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var reqURI domain.PastWorksRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

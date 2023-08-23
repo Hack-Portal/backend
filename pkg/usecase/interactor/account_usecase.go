@@ -9,6 +9,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 )
 
 type accountUsecase struct {
@@ -23,41 +24,41 @@ func NewAccountUsercase(store transaction.Store, timeout time.Duration) inputpor
 	}
 }
 
-func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (domain.AccountResponses, error) {
+func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (result domain.AccountResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
 	account, err := au.store.GetAccountsByID(ctx, id)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	locate, err := au.store.GetLocatesByID(ctx, account.LocateID)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	tags, err := au.store.ListAccountTagsByUserID(ctx, id)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	fws, err := au.store.ListAccountFrameworksByUserID(ctx, id)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	techTags, err := parseTechTags(ctx, au.store, accountTechTagsStruct(tags))
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	frameworks, err := parseFrameworks(ctx, au.store, accountFWStruct(fws))
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
-	return parseAccountResponse(repository.Account{
+	result = parseAccountResponse(repository.Account{
 		AccountID:       account.AccountID,
 		Username:        account.Username,
 		Icon:            account.Icon,
@@ -69,44 +70,45 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (domain
 		locate.Name,
 		techTags,
 		frameworks,
-	), nil
+	)
+	return
 }
 
-func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (domain.AccountResponses, error) {
+func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (result domain.AccountResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
 	account, err := au.store.GetAccountsByEmail(ctx, email)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	locate, err := au.store.GetLocatesByID(ctx, account.LocateID)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	tags, err := au.store.ListAccountTagsByUserID(ctx, account.AccountID)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	fws, err := au.store.ListAccountFrameworksByUserID(ctx, account.AccountID)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	techTags, err := parseTechTags(ctx, au.store, accountTechTagsStruct(tags))
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	frameworks, err := parseFrameworks(ctx, au.store, accountFWStruct(fws))
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
-	return parseAccountResponse(repository.Account{
+	result = parseAccountResponse(repository.Account{
 		AccountID:       account.AccountID,
 		Username:        account.Username,
 		Icon:            account.Icon,
@@ -118,20 +120,21 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 		locate.Name,
 		techTags,
 		frameworks,
-	), nil
+	)
+
+	return
 }
 
-func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateAccount, image []byte, email string) (domain.AccountResponses, error) {
+func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateAccount, image []byte, email string) (result domain.AccountResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	// 画像が空やないときに処理する
 
 	var imageURL string
 	if image != nil {
-		var err error
 		_, imageURL, err = au.store.UploadImage(ctx, image)
 		if err != nil {
-			return domain.AccountResponses{}, err
+			return
 		}
 	}
 
@@ -157,60 +160,64 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 		AccountFrameworkTag: body.Frameworks,
 	})
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	locate, err := au.store.GetLocatesByID(ctx, account.LocateID)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	techTags, err := parseTechTags(ctx, au.store, body.TechTags)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	frameworks, err := parseFrameworks(ctx, au.store, body.Frameworks)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
-	return parseAccountResponse(account, locate.Name, techTags, frameworks), nil
+	result = parseAccountResponse(account, locate.Name, techTags, frameworks)
+	return
 }
 
-func (au *accountUsecase) UpdateAccount(ctx context.Context, body domain.UpdateAccountParam, image []byte) (domain.AccountResponses, error) {
+func (au *accountUsecase) UpdateAccount(ctx context.Context, body domain.UpdateAccountParam, image []byte) (result domain.AccountResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
-	imageURL, err := uploadImage(ctx, au.store, image)
-	if err != nil {
-		return domain.AccountResponses{}, err
+	var imageURL string
+	if image != nil {
+		_, imageURL, err = au.store.UploadImage(ctx, image)
+		if err != nil {
+			return
+		}
 	}
 
-	body.AccountInfo.Icon = sql.NullString{
-		String: imageURL,
-		Valid:  true,
-	}
+	body.AccountInfo.Icon = dbutil.ToSqlNullString(imageURL)
 
 	account, err := au.store.UpdateAccountTx(ctx, body)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	locate, err := au.store.GetLocatesByID(ctx, account.LocateID)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	techTags, err := parseTechTags(ctx, au.store, body.AccountTechTag)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
 
 	frameworks, err := parseFrameworks(ctx, au.store, body.AccountFrameworkTag)
 	if err != nil {
-		return domain.AccountResponses{}, err
+		return
 	}
-	return parseAccountResponse(account, locate.Name, techTags, frameworks), nil
+
+	result = parseAccountResponse(account, locate.Name, techTags, frameworks)
+
+	return
 }
 
 func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
@@ -233,28 +240,4 @@ func parseAccountResponse(account repository.Account, locate string, techTags []
 		TechTags:        techTags,
 		Frameworks:      frameworks,
 	}
-}
-
-func parseAccountRateResponse(accounts []repository.Account) (result []domain.AccountRateResponse) {
-	for _, account := range accounts {
-		result = append(result, domain.AccountRateResponse{
-			AccountID: account.AccountID,
-			Username:  account.Username,
-			Icon:      account.Icon.String,
-			Rate:      account.Rate,
-		})
-	}
-	return
-}
-
-func uploadImage(ctx context.Context, store transaction.Store, image []byte) (string, error) {
-	var imageURL string
-	if image != nil {
-		var err error
-		_, imageURL, err = store.UploadImage(ctx, image)
-		if err != nil {
-			return "", err
-		}
-	}
-	return imageURL, nil
 }

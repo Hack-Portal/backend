@@ -80,13 +80,11 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 			return err
 		}
 
-		_, err = q.CreateRoomsAccounts(ctx, repository.CreateRoomsAccountsParams{
+		if _, err = q.CreateRoomsAccounts(ctx, repository.CreateRoomsAccountsParams{
 			AccountID: args.OwnerID,
 			RoomID:    room.RoomID,
 			IsOwner:   true,
-		})
-
-		if err != nil {
+		}); err != nil {
 			return err
 		}
 

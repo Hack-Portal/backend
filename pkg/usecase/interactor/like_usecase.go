@@ -22,56 +22,18 @@ func NewLikeUsercase(store transaction.Store, timeout time.Duration) inputport.L
 	}
 }
 
-func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (domain.BookmarkResponse, error) {
+func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (repository.Like, error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
-	bookmark, err := bu.store.CreateLikes(ctx, body)
-	if err != nil {
-		return domain.BookmarkResponse{}, err
-	}
 
-	result, err := bu.store.GetHackathonByID(ctx, bookmark.Opus)
-	if err != nil {
-		return domain.BookmarkResponse{}, err
-	}
-
-	return domain.BookmarkResponse{
-		HackathonID: result.HackathonID,
-		Name:        result.Name,
-		Icon:        result.Icon.String,
-		Description: result.Description,
-		Link:        result.Link,
-		Expired:     result.Expired,
-		StartDate:   result.StartDate,
-		Term:        result.Term,
-	}, nil
+	return bu.store.CreateLikes(ctx, body)
 }
 
-func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListRequest) (result []domain.BookmarkResponse, err error) {
+func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListRequest) ([]repository.Like, error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
 
-	bookmarks, err := bu.store.ListLikesByID(ctx, id)
-	if err != nil {
-		return
-	}
-	for _, bookmark := range bookmarks {
-		hackathon, err := bu.store.GetHackathonByID(ctx, bookmark.Opus)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, domain.BookmarkResponse{
-			HackathonID: hackathon.HackathonID,
-			Name:        hackathon.Name,
-			Icon:        hackathon.Icon.String,
-			Description: hackathon.Description,
-			Link:        hackathon.Link,
-			Expired:     hackathon.Expired,
-			StartDate:   hackathon.StartDate,
-			Term:        hackathon.Term,
-		})
-	}
-	return
+	return bu.store.ListLikesByID(ctx, id)
 }
 
 func (bu *likeUsecase) RemoveLike(ctx context.Context, accountID string, opus int32) error {

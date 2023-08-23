@@ -10,6 +10,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type RoomController struct {
@@ -18,6 +19,7 @@ type RoomController struct {
 }
 
 // ListRooms	godoc
+//
 //	@Summary		List Account
 //	@Description	List Account
 //	@Tags			Rooms
@@ -28,6 +30,8 @@ type RoomController struct {
 //	@Failure		500			{object}	ErrorResponse			"error response"
 //	@Router			/rooms					[get]
 func (rc *RoomController) ListRooms(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqURI domain.ListRequest
 	)
@@ -45,6 +49,7 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 }
 
 // GetRoom	godoc
+//
 //	@Summary		Get Room
 //	@Description	Get Room
 //	@Tags			Rooms
@@ -55,6 +60,8 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 //	@Failure		500					{object}	ErrorResponse			"error response"
 //	@Router			/rooms/{room_id}											[get]
 func (rc *RoomController) GetRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var request domain.RoomsRequestWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -70,6 +77,7 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 }
 
 // CreateRoom		godoc
+//
 //	@Summary		Create Rooms
 //	@Description	Create Rooms
 //	@Tags			Rooms
@@ -80,6 +88,8 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 //	@Failure		500						{object}	ErrorResponse					"error response"
 //	@Router			/rooms																															[post]
 func (rc *RoomController) CreateRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var reqBody domain.CreateRoomRequestBody
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -102,6 +112,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 }
 
 // UpdateRoom	godoc
+//
 //	@Summary		update Room
 //	@Description	update Room
 //	@Tags			Rooms
@@ -113,6 +124,8 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 //	@Failure		500						{object}	ErrorResponse					"error response"
 //	@Router			/rooms/{room_id}																							[put]
 func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqURI  domain.RoomsRequestWildCard
 		reqBody domain.UpdateRoomRequestBody
@@ -147,6 +160,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 }
 
 // DeleteRoom	godoc
+//
 //	@Summary		delete Room
 //	@Description	delete Room
 //	@Tags			Rooms
@@ -157,6 +171,8 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 //	@Failure		500					{object}	ErrorResponse	"error response"
 //	@Router			/rooms/{room_id}									[delete]
 func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqURI domain.RoomsRequestWildCard
 	)
@@ -178,6 +194,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 }
 
 // AddAccountInRoom	godoc
+//
 //	@Summary		Add Account In Rooms
 //	@Description	Add Account In Rooms
 //	@Tags			Rooms
@@ -188,6 +205,8 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 //	@Failure		500							{object}	ErrorResponse	"error response"
 //	@Router			/rooms/{room_id}/members	[post]
 func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqURI  domain.RoomsRequestWildCard
 		reqBody domain.AddAccountInRoomRequestBody
@@ -215,6 +234,7 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 
 // TODO:ルームからメンバーを削除するユースケース
 // RemoveAccountInRoom	godoc
+//
 //	@Summary		Remove Account In Rooms
 //	@Description	Remove Account In Rooms
 //	@Tags			Rooms
@@ -225,6 +245,8 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 //	@Failure		500							{object}	ErrorResponse	"error response"
 //	@Router			/rooms/{room_id}/members	[delete]
 func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqURI domain.RoomsRequestWildCard
 	)
@@ -247,6 +269,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 }
 
 // AddChat	godoc
+//
 //	@Summary		Add Chat Room
 //	@Description	Add Chat Room
 //	@Tags			Rooms
@@ -258,6 +281,8 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 //	@Failure		500							{object}	ErrorResponse				"error response"
 //	@Router			/rooms/{room_id}/addchat																			[post]
 func (rc *RoomController) AddChat(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqtURI domain.RoomsRequestWildCard
 		reqBody domain.AddChatRequestBody

@@ -9,6 +9,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type FollowController struct {
@@ -18,6 +19,7 @@ type FollowController struct {
 
 // TODO:レスポンス変更　=> accounts
 // CreateFollow	godoc
+//
 //	@Summary		Create Follow
 //	@Description	Follow!!!!!!!!
 //	@Tags			Accounts
@@ -29,6 +31,8 @@ type FollowController struct {
 //	@Failure		500									{object}	ErrorResponse					"error response"
 //	@Router			/accounts/{from_account_id}/follow																					[post]
 func (fc *FollowController) CreateFollow(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqURI  domain.AccountRequestWildCard
 		reqBody domain.CreateFollowRequestBody
@@ -55,6 +59,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 
 // TODO:レスポンス修正
 // RemoveFollow	godoc
+//
 //	@Summary		Remove follow
 //	@Description	Remove follow account
 //	@Tags			Accounts
@@ -66,6 +71,8 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 //	@Failure		500									{object}	ErrorResponse						"error response"
 //	@Router			/accounts/{from_account_id}/follow																							[delete]
 func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqURI   domain.AccountRequestWildCard
 		reqQuery domain.RemoveFollowRequestQueries
@@ -91,6 +98,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 }
 
 // GetFollow	godoc
+//
 //	@Summary		Get follow
 //	@Description	Get follow account
 //	@Tags			Accounts
@@ -102,6 +110,8 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 //	@Failure		500									{object}	ErrorResponse					"error response"
 //	@Router			/accounts/{from_account_id}/follow																					[get]
 func (fc *FollowController) GetFollow(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqURI   domain.AccountRequestWildCard
 		reqQuery domain.GetFollowRequestQueries

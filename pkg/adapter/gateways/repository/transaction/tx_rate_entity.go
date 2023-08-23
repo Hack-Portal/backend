@@ -9,13 +9,12 @@ import (
 func (store *SQLStore) CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntitiesParams) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		var err error
-		_, err = q.CreateRateEntities(ctx, arg)
-		if err != nil {
+
+		if _, err = q.CreateRateEntities(ctx, arg); err != nil {
 			return err
 		}
 
-		_, err = q.UpdateRateByID(ctx, repository.UpdateRateByIDParams{AccountID: arg.AccountID, Rate: arg.Rate})
-		if err != nil {
+		if _, err = q.UpdateRateByID(ctx, repository.UpdateRateByIDParams{AccountID: arg.AccountID, Rate: arg.Rate}); err != nil {
 			return err
 		}
 

@@ -17,6 +17,7 @@ import (
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 	"github.com/lib/pq"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type AccountController struct {
@@ -25,6 +26,7 @@ type AccountController struct {
 }
 
 // CreateAccount	godoc
+//
 //	@Summary		Create new account
 //	@Description	Create an account from the requested body
 //	@Accept			multipart/form-data
@@ -36,6 +38,9 @@ type AccountController struct {
 //	@Failure		500						{object}	ErrorResponse				"server error response"
 //	@Router			/accounts 															[post]
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
+
 	var (
 		reqBody    domain.CreateAccountRequest
 		image      []byte
@@ -110,6 +115,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 }
 
 // GetAccount		godoc
+//
 //	@Summary		Get account
 //	@Description	Return a account from the id specified in the path
 //	@Tags			Accounts
@@ -120,6 +126,8 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 //	@Failure		500						{object}	ErrorResponse			"server error response"
 //	@Router			/accounts/{account_id} 																	[get]
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var reqUri domain.AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&reqUri); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -136,6 +144,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 }
 
 // UpdateAccount	godoc
+//
 //	@Summary		Update Account
 //	@Description	Update account info from requested body
 //	@Tags			Accounts
@@ -147,6 +156,8 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 //	@Failure		500						{object}	ErrorResponse				"server error response"
 //	@Router			/accounts/{account_id} 																			[put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var (
 		reqBody domain.UpdateAccountRequest
 		reqURI  domain.AccountRequestWildCard
@@ -222,6 +233,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 }
 
 // DeleteAccount	godoc
+//
 //	@Summary		Remove Account
 //	@Description	Only you can delete your account (logical delete)
 //	@Tags			Accounts
@@ -232,6 +244,8 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 //	@Failure		500						{object}	ErrorResponse	"server error response"
 //	@Router			/accounts/{account_id} 									[delete]
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
 	var reqURI domain.AccountRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
