@@ -22,62 +22,24 @@ func NewLikeUsercase(store transaction.Store, timeout time.Duration) inputport.L
 	}
 }
 
-func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (domain.LikeResponse, error) {
-	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
+func (lu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (repository.Like, error) {
+	ctx, cancel := context.WithTimeout(ctx, lu.contextTimeout)
 	defer cancel()
-	like, err := bu.store.CreateLikes(ctx, body)
-	if err != nil {
-		return domain.LikeResponse{}, err
-	}
 
-	result, err := bu.store.GetHackathonByID(ctx, like.Opus)
-	if err != nil {
-		return domain.LikeResponse{}, err
-	}
-
-	return domain.LikeResponse{
-		HackathonID: result.HackathonID,
-		Name:        result.Name,
-		Icon:        result.Icon.String,
-		Description: result.Description,
-		Link:        result.Link,
-		Expired:     result.Expired,
-		StartDate:   result.StartDate,
-		Term:        result.Term,
-	}, nil
+	return lu.store.CreateLikes(ctx, body)
 }
 
-func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListRequest) (result []domain.LikeResponse, err error) {
-	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
+func (lu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListRequest) (result []repository.Like, err error) {
+	ctx, cancel := context.WithTimeout(ctx, lu.contextTimeout)
 	defer cancel()
 
-	likes, err := bu.store.ListLikesByID(ctx, id)
-	if err != nil {
-		return
-	}
-	for _, like := range likes {
-		hackathon, err := bu.store.GetHackathonByID(ctx, like.Opus)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, domain.LikeResponse{
-			HackathonID: hackathon.HackathonID,
-			Name:        hackathon.Name,
-			Icon:        hackathon.Icon.String,
-			Description: hackathon.Description,
-			Link:        hackathon.Link,
-			Expired:     hackathon.Expired,
-			StartDate:   hackathon.StartDate,
-			Term:        hackathon.Term,
-		})
-	}
-	return
+	return lu.store.ListLikesByID(ctx, id)
 }
 
-func (bu *likeUsecase) RemoveLike(ctx context.Context, accountID string, opus int32) error {
-	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
+func (lu *likeUsecase) RemoveLike(ctx context.Context, accountID string, opus int32) error {
+	ctx, cancel := context.WithTimeout(ctx, lu.contextTimeout)
 	defer cancel()
 
-	_, err := bu.store.DeleteLikesByID(ctx, repository.DeleteLikesByIDParams{AccountID: accountID, Opus: opus})
+	_, err := lu.store.DeleteLikesByID(ctx, repository.DeleteLikesByIDParams{AccountID: accountID, Opus: opus})
 	return err
 }

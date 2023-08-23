@@ -18,6 +18,7 @@ type FollowController struct {
 
 // TODO:レスポンス変更　=> accounts
 // CreateFollow	godoc
+//
 //	@Summary		Create Follow
 //	@Description	Follow!!!!!!!!
 //	@Tags			Accounts
@@ -27,7 +28,7 @@ type FollowController struct {
 //	@Success		200									{array}		repository.Follow				"success response"
 //	@Failure		400									{object}	ErrorResponse					"error response"
 //	@Failure		500									{object}	ErrorResponse					"error response"
-//	@Router			/accounts/{from_account_id}/follow																														[post]
+//	@Router			/accounts/{from_account_id}/follow	[post]
 func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 	var (
 		reqURI  domain.AccountRequestWildCard
@@ -55,6 +56,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 
 // TODO:レスポンス修正
 // RemoveFollow	godoc
+//
 //	@Summary		Remove follow
 //	@Description	Remove follow account
 //	@Tags			Accounts
@@ -64,7 +66,7 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 //	@Success		200									{object}	SuccessResponse						"success response"
 //	@Failure		400									{object}	ErrorResponse						"error response"
 //	@Failure		500									{object}	ErrorResponse						"error response"
-//	@Router			/accounts/{from_account_id}/follow																																	[delete]
+//	@Router			/accounts/{from_account_id}/follow	[delete]
 func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard
@@ -91,6 +93,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 }
 
 // GetFollow	godoc
+//
 //	@Summary		Get follow
 //	@Description	Get follow account
 //	@Tags			Accounts
@@ -100,7 +103,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 //	@Success		200									{object}	[]domain.FollowResponse			"success response"
 //	@Failure		400									{object}	ErrorResponse					"error response"
 //	@Failure		500									{object}	ErrorResponse					"error response"
-//	@Router			/accounts/{from_account_id}/follow																														[get]
+//	@Router			/accounts/{from_account_id}/follow	[get]
 func (fc *FollowController) GetFollow(ctx *gin.Context) {
 	var (
 		reqURI   domain.AccountRequestWildCard

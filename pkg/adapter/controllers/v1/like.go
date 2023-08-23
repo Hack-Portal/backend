@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
@@ -34,18 +33,13 @@ func (bc *LikeController) CreateLike(ctx *gin.Context) {
 		return
 	}
 
-	response, err := bc.LikeUsecase.CreateLike(ctx, repository.CreateLikesParams{Opus: reqBody.Opus, AccountID: reqBody.AccountID})
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("create successful")})
 }
 
 // RemoveLike	godoc
 //
 //	@Summary		Delete like
-//	@Description	Delete the like of the specified hackathon ID
+//	@Description	Delete a like from the specified Account ID
 //	@Tags			Like
 //	@Produce		json
 //	@Param			account_id			path		string				true	"Delete Like Request Body"
@@ -75,7 +69,7 @@ func (bc *LikeController) RemoveLike(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("delete successful")})
 }
 
-// ListLikeToHackathon	godoc
+// ListLike	godoc
 //
 //	@Summary		Get likes
 //	@Description	Get my likes
