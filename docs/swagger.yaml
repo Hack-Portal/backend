@@ -52,6 +52,11 @@ definitions:
       username:
         type: string
     type: object
+  domain.AddAccountInRoomRequestBody:
+    properties:
+      account_id:
+        type: string
+    type: object
   domain.AddChatRequestBody:
     properties:
       account_id:
@@ -1222,6 +1227,12 @@ paths:
         name: room_id
         required: true
         type: string
+      - description: add account in room Request body
+        in: body
+        name: AddAccountInRoomRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.AddAccountInRoomRequestBody'
       produces:
       - application/json
       responses:

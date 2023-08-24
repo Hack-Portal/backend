@@ -1187,6 +1187,15 @@ const docTemplate = `{
                         "name": "room_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "add account in room Request body",
+                        "name": "AddAccountInRoomRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.AddAccountInRoomRequestBody"
+                        }
                     }
                 ],
                 "responses": {
@@ -1386,6 +1395,14 @@ const docTemplate = `{
                     }
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.AddAccountInRoomRequestBody": {
+            "type": "object",
+            "properties": {
+                "account_id": {
                     "type": "string"
                 }
             }
