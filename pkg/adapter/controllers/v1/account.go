@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -41,12 +40,6 @@ type AccountController struct {
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-
-	log.Println("locate:", ctx.PostForm("locate_id"))
-	log.Println("username:", ctx.PostForm("username"))
-	log.Println("account_id:", ctx.PostForm("account_id"))
-	log.Println("showlocate:", ctx.PostForm("showlocate"))
-	log.Println("showrate:", ctx.PostForm("showrate"))
 
 	var (
 		reqBody    domain.CreateAccountRequest
