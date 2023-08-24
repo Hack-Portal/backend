@@ -22,8 +22,7 @@ func setupCors(router *gin.Engine) {
 
 func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
 	setupCors(gin)
-	apm := apm.NewApm(env)
-	gin.Use(nrgin.Middleware(apm))
+	gin.Use(nrgin.Middleware(apm.NewApm(env)))
 
 	publicRouter := gin.Group("/v1")
 	// All Public APIs
