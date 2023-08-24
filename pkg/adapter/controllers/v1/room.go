@@ -200,6 +200,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 //	@Tags			Rooms
 //	@Produce		json
 //	@Param			room_id						path		string			true	"Rooms API wildcard"
+//	@Param			AddAccountInRoomRequestBody	body		domain.AddAccountInRoomRequestBody			true	"add account in room Request body"
 //	@Success		200							{object}	SuccessResponse	"success response"
 //	@Failure		400							{object}	ErrorResponse	"error response"
 //	@Failure		500							{object}	ErrorResponse	"error response"

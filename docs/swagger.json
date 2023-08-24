@@ -1180,6 +1180,15 @@
                         "name": "room_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "add account in room Request body",
+                        "name": "AddAccountInRoomRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.AddAccountInRoomRequestBody"
+                        }
                     }
                 ],
                 "responses": {
@@ -1383,6 +1392,14 @@
                 }
             }
         },
+        "domain.AddAccountInRoomRequestBody": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.AddChatRequestBody": {
             "type": "object",
             "required": [
@@ -1524,9 +1541,6 @@
         "domain.GetRoomResponse": {
             "type": "object",
             "properties": {
-                "create_at": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -1635,6 +1649,9 @@
         "domain.ListRoomHackathonInfo": {
             "type": "object",
             "properties": {
+                "expired": {
+                    "type": "string"
+                },
                 "hackathon_id": {
                     "type": "integer"
                 },
@@ -1801,6 +1818,9 @@
         "domain.RoomHackathonInfo": {
             "type": "object",
             "properties": {
+                "expired": {
+                    "type": "string"
+                },
                 "hackathon_id": {
                     "type": "integer"
                 },

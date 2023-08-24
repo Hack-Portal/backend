@@ -1187,6 +1187,15 @@ const docTemplate = `{
                         "name": "room_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "add account in room Request body",
+                        "name": "AddAccountInRoomRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.AddAccountInRoomRequestBody"
+                        }
                     }
                 ],
                 "responses": {
@@ -1390,6 +1399,14 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.AddAccountInRoomRequestBody": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.AddChatRequestBody": {
             "type": "object",
             "required": [
@@ -1531,9 +1548,6 @@ const docTemplate = `{
         "domain.GetRoomResponse": {
             "type": "object",
             "properties": {
-                "create_at": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -1642,6 +1656,9 @@ const docTemplate = `{
         "domain.ListRoomHackathonInfo": {
             "type": "object",
             "properties": {
+                "expired": {
+                    "type": "string"
+                },
                 "hackathon_id": {
                     "type": "integer"
                 },
@@ -1808,6 +1825,9 @@ const docTemplate = `{
         "domain.RoomHackathonInfo": {
             "type": "object",
             "properties": {
+                "expired": {
+                    "type": "string"
+                },
                 "hackathon_id": {
                     "type": "integer"
                 },
