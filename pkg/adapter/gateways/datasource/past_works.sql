@@ -18,7 +18,7 @@ SELECT *,
     WHEN $2 IS NOT NULL AND EXISTS (
       SELECT 1
       FROM likes
-      WHERE opus = $1 AND account_id = $2
+      WHERE likes.opus = $1 AND likes.account_id = $2
     ) THEN TRUE
     ELSE FALSE
   END as is_liked
@@ -38,7 +38,7 @@ SELECT opus,
     WHEN $2 IS NOT NULL AND EXISTS (
       SELECT 1
       FROM likes
-      WHERE likes.opus = past_works.opus AND account_id = $3
+      WHERE likes.opus = past_works.opus AND likes.account_id = $3
     ) THEN TRUE
     ELSE FALSE
   END as is_liked
