@@ -1531,9 +1531,6 @@ const docTemplate = `{
         "domain.GetRoomResponse": {
             "type": "object",
             "properties": {
-                "create_at": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -1642,6 +1639,9 @@ const docTemplate = `{
         "domain.ListRoomHackathonInfo": {
             "type": "object",
             "properties": {
+                "expired": {
+                    "type": "string"
+                },
                 "hackathon_id": {
                     "type": "integer"
                 },
@@ -1808,6 +1808,9 @@ const docTemplate = `{
         "domain.RoomHackathonInfo": {
             "type": "object",
             "properties": {
+                "expired": {
+                    "type": "string"
+                },
                 "hackathon_id": {
                     "type": "integer"
                 },
