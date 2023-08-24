@@ -42,12 +42,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 
-	log.Println("form", ctx.Request.Form)
-	log.Println("uri", ctx.Request.RequestURI)
-	log.Println("body", ctx.Request.Body)
-	log.Println("method", ctx.Request.Method)
-
-	log.Println("request", ctx.Request)
+	log.Println("form", ctx.Request.ParseForm())
 
 	var (
 		reqBody    domain.CreateAccountRequest
