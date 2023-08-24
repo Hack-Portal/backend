@@ -59,6 +59,7 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRequest) 
 				HackathonID:   hackathon.HackathonID,
 				HackathonName: hackathon.Name,
 				Icon:          hackathon.Icon.String,
+				Expired:       hackathon.Expired,
 			},
 			NowMember:         members,
 			MembersTechTags:   techtags,
@@ -105,6 +106,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
 		StatusTag:   statusTag,
+		Expired:     hackathon.Expired,
 	})
 	return
 }
@@ -153,6 +155,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		StartDate:   hackathon.StartDate,
 		Term:        hackathon.Term,
 		StatusTag:   statusTag,
+		Expired:     hackathon.Expired,
 	})
 
 	return
@@ -335,7 +338,6 @@ func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, ha
 		Description: room.Description,
 		MemberLimit: room.MemberLimit,
 		IsDelete:    room.IsDelete,
-		CreateAt:    room.CreateAt,
 		Hackathon:   hackathon,
 
 		NowMember:         response.NowMember,

@@ -39,9 +39,10 @@ type ListRoomRoomInfo struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 type ListRoomHackathonInfo struct {
-	HackathonID   int32  `json:"hackathon_id"`
-	HackathonName string `json:"hackathon_name"`
-	Icon          string `json:"icon"`
+	HackathonID   int32     `json:"hackathon_id"`
+	HackathonName string    `json:"hackathon_name"`
+	Icon          string    `json:"icon"`
+	Expired       time.Time `json:"expired"`
 }
 type ListRoomResponse struct {
 	Rooms             ListRoomRoomInfo      `json:"rooms"`
@@ -57,6 +58,7 @@ type RoomHackathonInfo struct {
 	Icon        string                 `json:"icon"`
 	Link        string                 `json:"link"`
 	StartDate   time.Time              `json:"start_date"`
+	Expired     time.Time              `json:"expired"`
 	Term        int32                  `json:"term"`
 	StatusTag   []repository.StatusTag `json:"status_tag"`
 }
@@ -67,7 +69,6 @@ type GetRoomResponse struct {
 	Description       string            `json:"description"`
 	MemberLimit       int32             `json:"member_limit"`
 	IsDelete          bool              `json:"is_status"`
-	CreateAt          time.Time         `json:"create_at"`
 	Hackathon         RoomHackathonInfo `json:"hackathon"`
 	NowMember         []NowRoomAccounts `json:"now_member"`
 	MembersTechTags   []RoomTechTags    `json:"members_tech_tags"`
