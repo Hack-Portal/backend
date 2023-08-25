@@ -38,7 +38,7 @@ DELETE FROM rooms_accounts WHERE room_id = $1 AND account_id = $2;
 
 -- name: ListJoinRoomByID :many
 SELECT
-    rooms_accounts.room_id
+    rooms_accounts.room_id,
     rooms.title
 FROM
     rooms_accounts
@@ -51,4 +51,4 @@ LEFT OUTER JOIN
 ON
     hackathons.hackathon_id = rooms.hackathon_id
 WHERE
-    account_id = $1 AND hackathons.expired > $2
+    account_id = $1 AND hackathons.expired > $2;

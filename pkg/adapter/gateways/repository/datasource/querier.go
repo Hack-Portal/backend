@@ -67,6 +67,7 @@ type Querier interface {
 	ListFrameworks(ctx context.Context) ([]Framework, error)
 	ListHackathonStatusTagsByID(ctx context.Context, hackathonID int32) ([]HackathonStatusTag, error)
 	ListHackathons(ctx context.Context, arg ListHackathonsParams) ([]Hackathon, error)
+	ListJoinRoomByID(ctx context.Context, arg ListJoinRoomByIDParams) ([]ListJoinRoomByIDRow, error)
 	ListLikesByID(ctx context.Context, accountID string) ([]Like, error)
 	ListLocates(ctx context.Context) ([]Locate, error)
 	ListPastWorkFrameworksByOpus(ctx context.Context, opus int32) ([]PastWorkFramework, error)
