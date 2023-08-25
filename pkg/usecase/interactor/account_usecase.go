@@ -24,7 +24,7 @@ func NewAccountUsercase(store transaction.Store, timeout time.Duration) inputpor
 	}
 }
 
-func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (result domain.AccountResponses, err error) {
+func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, email string) (result domain.AccountResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -56,6 +56,12 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (result
 	frameworks, err := parseFrameworks(ctx, au.store, accountFWStruct(fws))
 	if err != nil {
 		return
+	}
+
+	if len(email) == 0 {
+
+	} else {
+
 	}
 
 	result = parseAccountResponse(repository.Account{

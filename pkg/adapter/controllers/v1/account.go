@@ -135,7 +135,9 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 		return
 	}
 
-	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID)
+	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+
+	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID, payload.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
