@@ -62,7 +62,7 @@ func (ec *EtcController) ListLocation(ctx *gin.Context) {
 //	@Produce		json
 //	@Success		200			{array}		repository.TechTag	"success response"
 //	@Failure		500			{object}	ErrorResponse		"error response"
-//	@Router			/tech_tags																					[get]
+//	@Router			/tech_tags																																	[get]
 func (ec *EtcController) ListTechTags(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -82,7 +82,7 @@ func (ec *EtcController) ListTechTags(ctx *gin.Context) {
 //	@Produce		json
 //	@Success		200				{array}		repository.StatusTag	"success response"
 //	@Failure		500				{object}	ErrorResponse			"error response"
-//	@Router			/status_tags																								[get]
+//	@Router			/status_tags																																						[get]
 func (ec *EtcController) ListStatusTags(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()

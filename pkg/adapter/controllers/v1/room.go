@@ -28,7 +28,7 @@ type RoomController struct {
 //	@Success		200			{array}		domain.ListRoomResponse	"success response"
 //	@Failure		400			{object}	ErrorResponse			"error response"
 //	@Failure		500			{object}	ErrorResponse			"error response"
-//	@Router			/rooms													[get]
+//	@Router			/rooms																													[get]
 func (rc *RoomController) ListRooms(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -58,7 +58,7 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 //	@Success		200					{object}	domain.GetRoomResponse	"success response"
 //	@Failure		400					{object}	ErrorResponse			"error response"
 //	@Failure		500					{object}	ErrorResponse			"error response"
-//	@Router			/rooms/{room_id}																		[get]
+//	@Router			/rooms/{room_id}																																[get]
 func (rc *RoomController) GetRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -86,7 +86,7 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 //	@Success		200						{object}	domain.GetRoomResponse			"success response"
 //	@Failure		400						{object}	ErrorResponse					"error response"
 //	@Failure		500						{object}	ErrorResponse					"error response"
-//	@Router			/rooms																																												[post]
+//	@Router			/rooms																																																																						[post]
 func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -122,7 +122,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 //	@Success		200						{object}	domain.GetRoomResponse			"success response"
 //	@Failure		400						{object}	ErrorResponse					"error response"
 //	@Failure		500						{object}	ErrorResponse					"error response"
-//	@Router			/rooms/{room_id}																																	[put]
+//	@Router			/rooms/{room_id}																																																					[put]
 func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -169,7 +169,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 //	@Success		200					{object}	SuccessResponse	"success response"
 //	@Failure		400					{object}	ErrorResponse	"error response"
 //	@Failure		500					{object}	ErrorResponse	"error response"
-//	@Router			/rooms/{room_id}														[delete]
+//	@Router			/rooms/{room_id}																								[delete]
 func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -199,11 +199,11 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 //	@Description	Add Account In Rooms
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			room_id						path		string			true	"Rooms API wildcard"
-//	@Param			AddAccountInRoomRequestBody	body		domain.AddAccountInRoomRequestBody			true	"add account in room Request body"
-//	@Success		200							{object}	SuccessResponse	"success response"
-//	@Failure		400							{object}	ErrorResponse	"error response"
-//	@Failure		500							{object}	ErrorResponse	"error response"
+//	@Param			room_id						path		string								true	"Rooms API wildcard"
+//	@Param			AddAccountInRoomRequestBody	body		domain.AddAccountInRoomRequestBody	true	"add account in room Request body"
+//	@Success		200							{object}	SuccessResponse						"success response"
+//	@Failure		400							{object}	ErrorResponse						"error response"
+//	@Failure		500							{object}	ErrorResponse						"error response"
 //	@Router			/rooms/{room_id}/members	[post]
 func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
@@ -280,7 +280,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 //	@Success		200							{object}	domain.GetRoomResponse		"success response"
 //	@Failure		400							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
-//	@Router			/rooms/{room_id}/addchat																											[post]
+//	@Router			/rooms/{room_id}/addchat																																											[post]
 func (rc *RoomController) AddChat(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()

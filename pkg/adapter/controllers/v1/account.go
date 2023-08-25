@@ -3,9 +3,11 @@ package controller
 import (
 	"bytes"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
@@ -37,7 +39,7 @@ type AccountController struct {
 //	@Success		200						{object}	domain.AccountResponses		"create success response"
 //	@Failure		400						{object}	ErrorResponse				"bad request response"
 //	@Failure		500						{object}	ErrorResponse				"server error response"
-//	@Router			/accounts 																										[post]
+//	@Router			/accounts 																																																[post]
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -125,7 +127,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 //	@Success		200						{object}	domain.AccountResponses	"Get success response"
 //	@Failure		400						{object}	ErrorResponse			"bad request response"
 //	@Failure		500						{object}	ErrorResponse			"server error response"
-//	@Router			/accounts/{account_id} 																								[get]
+//	@Router			/accounts/{account_id} 																																						[get]
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -138,9 +140,33 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	authorizationHeader := ctx.GetHeader(middleware.AuthorizationHeaderKey)
+	if len(authorizationHeader) != 0 {
+		if len(authorizationHeader) == 0 {
+			err := errors.New("authorization header is not provided")
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
 
-	if len(ctx.GetHeader(middleware.AuthorizationHeaderKey)) != 0 {
-		payload = ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+		fields := strings.Fields(authorizationHeader)
+		if len(fields) < 1 {
+			err := errors.New("invalid authorization header format")
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
+		accessToken := fields[0]
+		hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
+		payload, err = jwt.JwtDecode.DecodeClaimFB(hCS[1])
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID, payload)
@@ -163,7 +189,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 //	@Success		200						{object}	domain.AccountResponses		"Update success response"
 //	@Failure		400						{object}	ErrorResponse				"bad request response"
 //	@Failure		500						{object}	ErrorResponse				"server error response"
-//	@Router			/accounts/{account_id} 																											[put]
+//	@Router			/accounts/{account_id} 																																											[put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -254,7 +280,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 //	@Success		200						{object}	SuccessResponse	"delete success response"
 //	@Failure		400						{object}	ErrorResponse	"bad request response"
 //	@Failure		500						{object}	ErrorResponse	"server error response"
-//	@Router			/accounts/{account_id} 														[delete]
+//	@Router			/accounts/{account_id} 																								[delete]
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -274,16 +300,16 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("delete successful")})
 }
 
-//	 GetJoinRoom	godoc
+// GetJoinRoom	godoc
 //
-//		@Summary		Get Join Room
-//		@Description	Get Join Room
-//		@Tags			Accounts
-//		@Produce		json
-//		@Success		200							{array}		domain.GetJoinRoomResponse		"success response"
-//		@Failure		400							{object}	ErrorResponse				"error response"
-//		@Failure		500							{object}	ErrorResponse				"error response"
-//		@Router			/accounts/{account_id}/rooms
+// @Summary		Get Join Room
+// @Description	Get Join Room
+// @Tags			Accounts
+// @Produce		json
+// @Success		200	{array}		domain.GetJoinRoomResponse	"success response"
+// @Failure		400	{object}	ErrorResponse				"error response"
+// @Failure		500	{object}	ErrorResponse				"error response"
+// @Router			/accounts/{account_id}/rooms
 func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
