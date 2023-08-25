@@ -129,15 +129,21 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqUri domain.AccountRequestWildCard
+	var (
+		payload *jwt.FireBaseCustomToken
+		reqUri  domain.AccountRequestWildCard
+	)
+
 	if err := ctx.ShouldBindUri(&reqUri); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+	if len(ctx.GetHeader(middleware.AuthorizationHeaderKey)) != 0 {
+		payload = ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+	}
 
-	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID, payload.Email)
+	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID, payload)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

@@ -10,6 +10,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
+	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 )
 
 type accountUsecase struct {
@@ -24,10 +25,9 @@ func NewAccountUsercase(store transaction.Store, timeout time.Duration) inputpor
 	}
 }
 
-func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, email string) (result domain.AccountResponses, err error) {
+func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *jwt.FireBaseCustomToken) (result domain.AccountResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
-
 	account, err := au.store.GetAccountsByID(ctx, id)
 	if err != nil {
 		return
@@ -72,18 +72,19 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, email s
 		frameworks,
 	)
 
-	if len(email) == 0 {
+	if token == nil {
 		if result.ShowLocate {
 			result.Locate = locate.Name
 		}
 		if result.ShowRate {
 			result.Rate = account.Rate
 		}
+		return
 	}
 
 	cnt, err := au.store.CheckAccount(ctx, repository.CheckAccountParams{
 		AccountID: account.AccountID,
-		Email:     email,
+		Email:     token.Email,
 	})
 	if err != nil {
 		return
