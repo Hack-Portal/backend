@@ -55,6 +55,9 @@ type UpdateAccountRequest struct {
 	LocateID        int32  `form:"locate_id"`
 	ShowLocate      bool   `form:"show_locate"`
 	ShowRate        bool   `form:"show_rate"`
+	GithubLink      string `form:"github_link"`
+	TwitterLink     string `form:"twitter_link"`
+	DiscordLink     string `form:"discord_link"`
 
 	TechTags   string `form:"tech_tags"`
 	Frameworks string `form:"frameworks"`

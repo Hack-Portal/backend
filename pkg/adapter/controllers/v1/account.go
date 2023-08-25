@@ -14,6 +14,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 	"github.com/lib/pq"
@@ -216,9 +217,12 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 					String: reqBody.ExplanatoryText,
 					Valid:  true,
 				},
-				LocateID:   reqBody.LocateID,
-				ShowLocate: reqBody.ShowLocate,
-				ShowRate:   reqBody.ShowRate,
+				LocateID:    reqBody.LocateID,
+				ShowLocate:  reqBody.ShowLocate,
+				ShowRate:    reqBody.ShowRate,
+				TwitterLink: dbutil.ToSqlNullString(reqBody.TwitterLink),
+				GithubLink:  dbutil.ToSqlNullString(reqBody.GithubLink),
+				DiscordLink: dbutil.ToSqlNullString(reqBody.DiscordLink),
 			},
 			AccountTechTag:      tags,
 			AccountFrameworkTag: frameworks,
