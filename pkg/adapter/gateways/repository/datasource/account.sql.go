@@ -11,6 +11,27 @@ import (
 	"time"
 )
 
+const checkAccount = `-- name: CheckAccount :one
+SELECT
+    count(*)
+FROM
+    accounts
+WHERE 
+    account_id = $1 AND email = $2
+`
+
+type CheckAccountParams struct {
+	AccountID string `json:"account_id"`
+	Email     string `json:"email"`
+}
+
+func (q *Queries) CheckAccount(ctx context.Context, arg CheckAccountParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkAccount, arg.AccountID, arg.Email)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createAccounts = `-- name: CreateAccounts :one
 INSERT INTO
     accounts (
