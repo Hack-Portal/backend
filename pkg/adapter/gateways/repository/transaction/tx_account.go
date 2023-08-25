@@ -48,7 +48,12 @@ func compAccount(request repository.Account, latest repository.Account) (result 
 		LocateID:        latest.LocateID,
 		ShowLocate:      latest.ShowLocate,
 		ShowRate:        latest.ShowRate,
-		UpdateAt:        time.Now(),
+
+		TwitterLink: latest.TwitterLink,
+		GithubLink:  latest.GithubLink,
+		DiscordLink: latest.DiscordLink,
+
+		UpdateAt: time.Now(),
 	}
 
 	if util.CheckDiff(latest.Username, request.Username) {
@@ -61,6 +66,18 @@ func compAccount(request repository.Account, latest repository.Account) (result 
 
 	if util.CheckDiff(latest.Icon.String, request.Icon.String) {
 		result.Icon = dbutil.ToSqlNullString(request.Icon.String)
+	}
+
+	if util.CheckDiff(latest.TwitterLink.String, request.TwitterLink.String) {
+		result.TwitterLink = dbutil.ToSqlNullString(request.TwitterLink.String)
+	}
+
+	if util.CheckDiff(latest.GithubLink.String, request.GithubLink.String) {
+		result.GithubLink = dbutil.ToSqlNullString(request.GithubLink.String)
+	}
+
+	if util.CheckDiff(latest.DiscordLink.String, request.DiscordLink.String) {
+		result.DiscordLink = dbutil.ToSqlNullString(request.DiscordLink.String)
 	}
 
 	if request.LocateID != 0 {

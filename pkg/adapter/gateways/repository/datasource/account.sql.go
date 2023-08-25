@@ -11,6 +11,27 @@ import (
 	"time"
 )
 
+const checkAccount = `-- name: CheckAccount :one
+SELECT
+    count(*)
+FROM
+    accounts
+WHERE 
+    account_id = $1 AND email = $2
+`
+
+type CheckAccountParams struct {
+	AccountID string `json:"account_id"`
+	Email     string `json:"email"`
+}
+
+func (q *Queries) CheckAccount(ctx context.Context, arg CheckAccountParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkAccount, arg.AccountID, arg.Email)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createAccounts = `-- name: CreateAccounts :one
 INSERT INTO
     accounts (
@@ -37,7 +58,7 @@ VALUES
         $8,
         $9,
         $10
-    ) RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
+    ) RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email, twitter_link, github_link, discord_link
 `
 
 type CreateAccountsParams struct {
@@ -81,6 +102,9 @@ func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) 
 		&i.UpdateAt,
 		&i.IsDelete,
 		&i.Email,
+		&i.TwitterLink,
+		&i.GithubLink,
+		&i.DiscordLink,
 	)
 	return i, err
 }
@@ -91,7 +115,7 @@ UPDATE
 SET
     is_delete = true
 WHERE
-    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
+    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email, twitter_link, github_link, discord_link
 `
 
 func (q *Queries) DeleteAccounts(ctx context.Context, accountID string) (Account, error) {
@@ -111,13 +135,16 @@ func (q *Queries) DeleteAccounts(ctx context.Context, accountID string) (Account
 		&i.UpdateAt,
 		&i.IsDelete,
 		&i.Email,
+		&i.TwitterLink,
+		&i.GithubLink,
+		&i.DiscordLink,
 	)
 	return i, err
 }
 
 const getAccountsByEmail = `-- name: GetAccountsByEmail :one
 SELECT
-    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
+    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email, twitter_link, github_link, discord_link
 FROM
     accounts
 WHERE
@@ -141,13 +168,16 @@ func (q *Queries) GetAccountsByEmail(ctx context.Context, email string) (Account
 		&i.UpdateAt,
 		&i.IsDelete,
 		&i.Email,
+		&i.TwitterLink,
+		&i.GithubLink,
+		&i.DiscordLink,
 	)
 	return i, err
 }
 
 const getAccountsByID = `-- name: GetAccountsByID :one
 SELECT
-    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
+    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email, twitter_link, github_link, discord_link
 FROM
     accounts
 WHERE
@@ -171,13 +201,16 @@ func (q *Queries) GetAccountsByID(ctx context.Context, accountID string) (Accoun
 		&i.UpdateAt,
 		&i.IsDelete,
 		&i.Email,
+		&i.TwitterLink,
+		&i.GithubLink,
+		&i.DiscordLink,
 	)
 	return i, err
 }
 
 const listAccounts = `-- name: ListAccounts :many
 SELECT
-    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
+    account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email, twitter_link, github_link, discord_link
 FROM
     accounts
 WHERE
@@ -216,6 +249,9 @@ func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]A
 			&i.UpdateAt,
 			&i.IsDelete,
 			&i.Email,
+			&i.TwitterLink,
+			&i.GithubLink,
+			&i.DiscordLink,
 		); err != nil {
 			return nil, err
 		}
@@ -242,9 +278,12 @@ SET
     character = $7,
     show_locate = $8,
     show_rate = $9,
-    update_at = $10
+    update_at = $10,
+    twitter_link = $11,
+    github_link = $12,
+    discord_link = $13
 WHERE
-    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
+    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email, twitter_link, github_link, discord_link
 `
 
 type UpdateAccountsParams struct {
@@ -258,6 +297,9 @@ type UpdateAccountsParams struct {
 	ShowLocate      bool           `json:"show_locate"`
 	ShowRate        bool           `json:"show_rate"`
 	UpdateAt        time.Time      `json:"update_at"`
+	TwitterLink     sql.NullString `json:"twitter_link"`
+	GithubLink      sql.NullString `json:"github_link"`
+	DiscordLink     sql.NullString `json:"discord_link"`
 }
 
 func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) (Account, error) {
@@ -272,6 +314,9 @@ func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) 
 		arg.ShowLocate,
 		arg.ShowRate,
 		arg.UpdateAt,
+		arg.TwitterLink,
+		arg.GithubLink,
+		arg.DiscordLink,
 	)
 	var i Account
 	err := row.Scan(
@@ -288,6 +333,9 @@ func (q *Queries) UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) 
 		&i.UpdateAt,
 		&i.IsDelete,
 		&i.Email,
+		&i.TwitterLink,
+		&i.GithubLink,
+		&i.DiscordLink,
 	)
 	return i, err
 }
@@ -299,7 +347,7 @@ SET
     rate = $2,
     update_at = $3
 WHERE
-    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email
+    account_id = $1 RETURNING account_id, username, icon, explanatory_text, locate_id, rate, character, show_locate, show_rate, create_at, update_at, is_delete, email, twitter_link, github_link, discord_link
 `
 
 type UpdateRateByIDParams struct {
@@ -325,6 +373,9 @@ func (q *Queries) UpdateRateByID(ctx context.Context, arg UpdateRateByIDParams) 
 		&i.UpdateAt,
 		&i.IsDelete,
 		&i.Email,
+		&i.TwitterLink,
+		&i.GithubLink,
+		&i.DiscordLink,
 	)
 	return i, err
 }

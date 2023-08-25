@@ -14,6 +14,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 	"github.com/lib/pq"
@@ -128,13 +129,21 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqUri domain.AccountRequestWildCard
+	var (
+		payload *jwt.FireBaseCustomToken
+		reqUri  domain.AccountRequestWildCard
+	)
+
 	if err := ctx.ShouldBindUri(&reqUri); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID)
+	if len(ctx.GetHeader(middleware.AuthorizationHeaderKey)) != 0 {
+		payload = ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
+	}
+
+	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID, payload)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -216,9 +225,12 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 					String: reqBody.ExplanatoryText,
 					Valid:  true,
 				},
-				LocateID:   reqBody.LocateID,
-				ShowLocate: reqBody.ShowLocate,
-				ShowRate:   reqBody.ShowRate,
+				LocateID:    reqBody.LocateID,
+				ShowLocate:  reqBody.ShowLocate,
+				ShowRate:    reqBody.ShowRate,
+				TwitterLink: dbutil.ToSqlNullString(reqBody.TwitterLink),
+				GithubLink:  dbutil.ToSqlNullString(reqBody.GithubLink),
+				DiscordLink: dbutil.ToSqlNullString(reqBody.DiscordLink),
 			},
 			AccountTechTag:      tags,
 			AccountFrameworkTag: frameworks,
@@ -260,4 +272,33 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("delete successful")})
+}
+
+//	 GetJoinRoom	godoc
+//
+//		@Summary		Get Join Room
+//		@Description	Get Join Room
+//		@Tags			Accounts
+//		@Produce		json
+//		@Success		200							{array}		domain.GetJoinRoomResponse		"success response"
+//		@Failure		400							{object}	ErrorResponse				"error response"
+//		@Failure		500							{object}	ErrorResponse				"error response"
+//		@Router			/accounts/{account_id}/rooms
+func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
+
+	var reqURI domain.AccountRequestWildCard
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	response, err := ac.AccountUsecase.GetJoinRoom(ctx, reqURI.AccountID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

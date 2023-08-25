@@ -10,6 +10,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
+	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 )
 
 type accountUsecase struct {
@@ -24,10 +25,9 @@ func NewAccountUsercase(store transaction.Store, timeout time.Duration) inputpor
 	}
 }
 
-func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (result domain.AccountResponses, err error) {
+func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *jwt.FireBaseCustomToken) (result domain.AccountResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
-
 	account, err := au.store.GetAccountsByID(ctx, id)
 	if err != nil {
 		return
@@ -71,6 +71,37 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string) (result
 		techTags,
 		frameworks,
 	)
+
+	if token == nil {
+		if result.ShowLocate {
+			result.Locate = locate.Name
+		}
+		if result.ShowRate {
+			result.Rate = account.Rate
+		}
+		return
+	}
+
+	cnt, err := au.store.CheckAccount(ctx, repository.CheckAccountParams{
+		AccountID: account.AccountID,
+		Email:     token.Email,
+	})
+	if err != nil {
+		return
+	}
+
+	if cnt >= 1 {
+		result.Locate = locate.Name
+		result.Rate = account.Rate
+	} else {
+		if result.ShowLocate {
+			result.Locate = locate.Name
+		}
+		if result.ShowRate {
+			result.Rate = account.Rate
+		}
+	}
+
 	return
 }
 
@@ -227,14 +258,36 @@ func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
 	return err
 }
 
+func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (result []domain.GetJoinRoomResponse, err error) {
+	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	defer cancel()
+
+	rooms, err := au.store.ListJoinRoomByID(ctx, repository.ListJoinRoomByIDParams{
+		AccountID: accountID,
+		Expired:   time.Now().Add(-time.Hour * 24 * 30),
+	})
+	if err != nil {
+		return
+	}
+
+	for _, room := range rooms {
+		result = append(result, domain.GetJoinRoomResponse{
+			RoomID: room.RoomID,
+			Title:  room.Title.String,
+		})
+	}
+	return
+}
+
 func parseAccountResponse(account repository.Account, locate string, techTags []repository.TechTag, frameworks []repository.Framework) domain.AccountResponses {
 	return domain.AccountResponses{
 		AccountID:       account.AccountID,
 		Username:        account.Username,
 		Icon:            account.Icon.String,
 		ExplanatoryText: account.ExplanatoryText.String,
-		Rate:            account.Rate,
-		Locate:          locate,
+		GithubLink:      account.GithubLink.String,
+		TwitterLink:     account.TwitterLink.String,
+		DiscordLink:     account.DiscordLink.String,
 		ShowRate:        account.ShowRate,
 		ShowLocate:      account.ShowLocate,
 		TechTags:        techTags,

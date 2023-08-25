@@ -8,6 +8,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createRoomsAccounts = `-- name: CreateRoomsAccounts :one
@@ -102,6 +103,57 @@ func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]Ge
 			&i.IsOwner,
 			&i.Roles,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listJoinRoomByID = `-- name: ListJoinRoomByID :many
+SELECT
+    rooms_accounts.room_id,
+    rooms.title
+FROM
+    rooms_accounts
+LEFT OUTER JOIN 
+    rooms
+ON
+    rooms_accounts.room_id = rooms.room_id
+LEFT OUTER JOIN 
+    hackathons
+ON
+    hackathons.hackathon_id = rooms.hackathon_id
+WHERE
+    account_id = $1 AND hackathons.expired > $2
+`
+
+type ListJoinRoomByIDParams struct {
+	AccountID string    `json:"account_id"`
+	Expired   time.Time `json:"expired"`
+}
+
+type ListJoinRoomByIDRow struct {
+	RoomID string         `json:"room_id"`
+	Title  sql.NullString `json:"title"`
+}
+
+func (q *Queries) ListJoinRoomByID(ctx context.Context, arg ListJoinRoomByIDParams) ([]ListJoinRoomByIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listJoinRoomByID, arg.AccountID, arg.Expired)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListJoinRoomByIDRow{}
+	for rows.Next() {
+		var i ListJoinRoomByIDRow
+		if err := rows.Scan(&i.RoomID, &i.Title); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

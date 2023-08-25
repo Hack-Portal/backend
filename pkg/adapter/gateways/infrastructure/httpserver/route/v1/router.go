@@ -33,7 +33,7 @@ func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, g
 	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware())
 	//TODO:middlewareの追加
 	// All Protect APIs
-	NewAccountRouter(env, timeout, store, protectRouter)
+	NewAccountRouter(env, timeout, store, protectRouter, publicRouter)
 	NewLikeRouter(env, timeout, store, protectRouter)
 	NewPastWorkRouter(env, timeout, store, protectRouter, publicRouter)
 	NewFollowRouter(env, timeout, store, protectRouter)
