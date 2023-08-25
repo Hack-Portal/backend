@@ -35,3 +35,20 @@ WHERE
 
 -- name: DeleteRoomsAccountsByID :exec
 DELETE FROM rooms_accounts WHERE room_id = $1 AND account_id = $2;
+
+-- name: ListJoinRoomByID :many
+SELECT
+    rooms_accounts.room_id
+    rooms.title
+FROM
+    rooms_accounts
+LEFT OUTER JOIN 
+    rooms
+ON
+    rooms_accounts.room_id = rooms.room_id
+LEFT OUTER JOIN 
+    hackathons
+ON
+    hackathons.hackathon_id = rooms.hackathon_id
+WHERE
+    account_id = $1 AND hackathons.expired > $2
