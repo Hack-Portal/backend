@@ -258,6 +258,27 @@ func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
 	return err
 }
 
+func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (result []domain.GetJoinRoomResponse, err error) {
+	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	defer cancel()
+
+	rooms, err := au.store.ListJoinRoomByID(ctx, repository.ListJoinRoomByIDParams{
+		AccountID: accountID,
+		Expired:   time.Now().Add(-time.Hour * 24 * 30),
+	})
+	if err != nil {
+		return
+	}
+
+	for _, room := range rooms {
+		result = append(result, domain.GetJoinRoomResponse{
+			RoomID: room.RoomID,
+			Title:  room.Title.String,
+		})
+	}
+	return
+}
+
 func parseAccountResponse(account repository.Account, locate string, techTags []repository.TechTag, frameworks []repository.Framework) domain.AccountResponses {
 	return domain.AccountResponses{
 		AccountID:       account.AccountID,

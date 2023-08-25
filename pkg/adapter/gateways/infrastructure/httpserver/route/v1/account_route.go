@@ -18,6 +18,8 @@ func NewAccountRouter(env *bootstrap.Env, timeout time.Duration, store transacti
 	}
 	group.POST("/accounts", accountController.CreateAccount)
 	public.GET("/accounts/:account_id", accountController.GetAccount)
+	group.GET("/accounts/:account_id/rooms", accountController.GetJoinRoom)
 	group.PUT("/accounts/:account_id", accountController.UpdateAccount)
 	group.DELETE("/accounts/:account_id", accountController.DeleteAccount)
+
 }

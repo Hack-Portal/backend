@@ -273,3 +273,32 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: fmt.Sprintf("delete successful")})
 }
+
+//	 GetJoinRoom	godoc
+//
+//		@Summary		Get Join Room
+//		@Description	Get Join Room
+//		@Tags			Accounts
+//		@Produce		json
+//		@Success		200							{array}		domain.GetJoinRoomResponse		"success response"
+//		@Failure		400							{object}	ErrorResponse				"error response"
+//		@Failure		500							{object}	ErrorResponse				"error response"
+//		@Router			/accounts/{account_id}/rooms
+func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
+
+	var reqURI domain.AccountRequestWildCard
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	response, err := ac.AccountUsecase.GetJoinRoom(ctx, reqURI.AccountID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}

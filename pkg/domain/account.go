@@ -81,3 +81,8 @@ type AccountRateResponse struct {
 	Icon      string `json:"icon"`
 	Rate      int32  `json:"rate"`
 }
+
+type GetJoinRoomResponse struct {
+	RoomID string `json:"room_id"`
+	Title  string `json:"title"`
+}
