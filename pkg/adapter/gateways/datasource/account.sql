@@ -74,7 +74,10 @@ SET
     character = $7,
     show_locate = $8,
     show_rate = $9,
-    update_at = $10
+    update_at = $10,
+    twitter_link = $11,
+    github_link = $12,
+    discord_link = $13
 WHERE
     account_id = $1 RETURNING *;
 
