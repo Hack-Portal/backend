@@ -90,3 +90,11 @@ SET
     update_at = $3
 WHERE
     account_id = $1 RETURNING *;
+
+-- name: CheckAccount :one
+SELECT
+    count(*)
+FROM
+    accounts
+WHERE 
+    account_id = $1 AND email = $2;
