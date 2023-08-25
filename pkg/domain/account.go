@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"time"
-
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
 
@@ -39,13 +37,15 @@ type AccountResponses struct {
 	Rate            int32  `json:"rate"`
 	Email           string `json:"email"`
 	Locate          string `json:"locate"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate"`
+	GithubLink      string `form:"github_link"`
+	TwitterLink     string `form:"twitter_link"`
+	DiscordLink     string `form:"discord_link"`
+
+	ShowLocate bool `json:"show_locate"`
+	ShowRate   bool `json:"show_rate"`
 
 	TechTags   []repository.TechTag   `json:"tech_tags"`
 	Frameworks []repository.Framework `json:"frameworks"`
-
-	CreatedAt time.Time `json:"created_at"`
 }
 
 // アカウント更新のリクエストパラメータ

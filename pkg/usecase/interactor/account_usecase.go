@@ -58,12 +58,6 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, email s
 		return
 	}
 
-	if len(email) == 0 {
-
-	} else {
-
-	}
-
 	result = parseAccountResponse(repository.Account{
 		AccountID:       account.AccountID,
 		Username:        account.Username,
@@ -77,6 +71,36 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, email s
 		techTags,
 		frameworks,
 	)
+
+	if len(email) == 0 {
+		if result.ShowLocate {
+			result.Locate = locate.Name
+		}
+		if result.ShowRate {
+			result.Rate = account.Rate
+		}
+	}
+
+	cnt, err := au.store.CheckAccount(ctx, repository.CheckAccountParams{
+		AccountID: account.AccountID,
+		Email:     email,
+	})
+	if err != nil {
+		return
+	}
+
+	if cnt >= 1 {
+		result.Locate = locate.Name
+		result.Rate = account.Rate
+	} else {
+		if result.ShowLocate {
+			result.Locate = locate.Name
+		}
+		if result.ShowRate {
+			result.Rate = account.Rate
+		}
+	}
+
 	return
 }
 
@@ -239,8 +263,9 @@ func parseAccountResponse(account repository.Account, locate string, techTags []
 		Username:        account.Username,
 		Icon:            account.Icon.String,
 		ExplanatoryText: account.ExplanatoryText.String,
-		Rate:            account.Rate,
-		Locate:          locate,
+		GithubLink:      account.GithubLink.String,
+		TwitterLink:     account.TwitterLink.String,
+		DiscordLink:     account.DiscordLink.String,
 		ShowRate:        account.ShowRate,
 		ShowLocate:      account.ShowLocate,
 		TechTags:        techTags,
