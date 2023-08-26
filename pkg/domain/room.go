@@ -27,9 +27,11 @@ type RoomFramework struct {
 }
 
 type NowRoomAccounts struct {
-	AccountID string `json:"account_id"`
-	Icon      string `json:"icon"`
-	IsOwner   bool   `json:"is_owner"`
+	AccountID  string                 `json:"account_id"`
+	Icon       string                 `json:"icon"`
+	IsOwner    bool                   `json:"is_owner"`
+	TechTags   []repository.TechTag   `json:"tech_tags"`
+	Frameworks []repository.Framework `json:"frameworks"`
 }
 
 type ListRoomRoomInfo struct {
@@ -64,15 +66,13 @@ type RoomHackathonInfo struct {
 }
 
 type GetRoomResponse struct {
-	RoomID            string            `json:"room_id"`
-	Title             string            `json:"title"`
-	Description       string            `json:"description"`
-	MemberLimit       int32             `json:"member_limit"`
-	IsDelete          bool              `json:"is_status"`
-	Hackathon         RoomHackathonInfo `json:"hackathon"`
-	NowMember         []NowRoomAccounts `json:"now_member"`
-	MembersTechTags   []RoomTechTags    `json:"members_tech_tags"`
-	MembersFrameworks []RoomFramework   `json:"members_frameworks"`
+	RoomID      string            `json:"room_id"`
+	Title       string            `json:"title"`
+	Description string            `json:"description"`
+	MemberLimit int32             `json:"member_limit"`
+	IsDelete    bool              `json:"is_status"`
+	Hackathon   RoomHackathonInfo `json:"hackathon"`
+	NowMember   []NowRoomAccounts `json:"now_member"`
 }
 
 type AddChatRequestBody struct {
