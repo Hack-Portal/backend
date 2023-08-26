@@ -322,12 +322,12 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 //	@Success		200										{object}	SuccessResponse				"success response"
 //	@Failure		400										{object}	ErrorResponse				"error response"
 //	@Failure		500										{object}	ErrorResponse				"error response"
-//	@Router			/rooms/{room_id}/members/{rooms_account_id}/role	[post]
+//	@Router			/rooms/:room_id/roles	[post]
 func (rc *RoomController) AddRoomAccountRole(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  domain.RoomsAccountsRequestWildCard
+		reqURI  domain.RoomsRequestWildCard
 		reqBody domain.RoomAccountRoleByIDRequestBody
 	)
 

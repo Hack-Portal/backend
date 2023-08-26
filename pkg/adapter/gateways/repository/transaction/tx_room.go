@@ -196,8 +196,6 @@ func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args domain.R
 
 		arg := repository.ListRoomsAccountsRolesByIDParams{
 			RoomsAccountID: args.RoomsAccountID,
-			Limit:          255,
-			Offset:         0,
 		}
 		roles, err := q.ListRoomsAccountsRolesByID(ctx, arg)
 		if err != nil {

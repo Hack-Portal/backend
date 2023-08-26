@@ -9,9 +9,6 @@ import (
 type RoomsRequestWildCard struct {
 	RoomID string `uri:"room_id"`
 }
-type RoomsAccountsRequestWildCard struct {
-	RoomsAccountID int32 `json:"rooms_account_id"`
-}
 
 type CreateRoomRequestBody struct {
 	HackathonID int32  `json:"hackathon_id" binding:"required"`
@@ -134,12 +131,14 @@ type AddChatParams struct {
 }
 
 type RoomAccountRoleByIDParam struct {
-	RoomsAccountID int32 `json:"rooms_account_id"`
-	RoleID         int32 `json:"role_id"`
+	RoomID    string `json:"room_id"`
+	AccountID string `json:"account_id"`
+	RoleID    int32  `json:"role_id"`
 }
 
 type RoomAccountRoleByIDRequestBody struct {
-	RoleID int32 `json:"role_id"`
+	AccountID string `json:"account_id"`
+	RoleID    int32  `json:"role_id"`
 }
 
 type WriteFireStoreParam struct {
