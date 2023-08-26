@@ -11,4 +11,4 @@ LIMIT $2 OFFSET $3;
 
 -- name: DeleteRoomsAccountsRolesByID :exec
 DELETE FROM rooms_accounts_roles
-WHERE rooms_account_id = $1;
+WHERE rooms_account_id = $1 AND role_id = $2;
