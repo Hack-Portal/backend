@@ -64,6 +64,15 @@ func checkDuplication(members []repository.GetRoomsAccountsByIDRow, id string) b
 	return false
 }
 
+func checkRoles(roles []repository.RoomsAccountsRole, id int32) bool {
+	for _, role := range roles {
+		if role.RoleID == id {
+			return true
+		}
+	}
+	return false
+}
+
 func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (repository.Room, error) {
 	var room repository.Room
 	err := store.execTx(ctx, func(q *repository.Queries) error {
@@ -172,6 +181,35 @@ func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAcco
 			AccountID: args.AccountID,
 			RoomID:    args.RoomID,
 			IsOwner:   false,
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return err
+}
+
+func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args domain.AddRoomAccountRoleByIDParam) error {
+	err := store.execTx(ctx, func(q *repository.Queries) error {
+
+		arg := repository.ListRoomsAccountsRolesByIDParams{
+			RoomsAccountID: args.RoomsAccountID,
+			Limit:          255,
+			Offset:         0,
+		}
+		roles, err := q.ListRoomsAccountsRolesByID(ctx, arg)
+		if err != nil {
+			return err
+		}
+		if checkRoles(roles, args.RoleID) {
+			return errors.New("そのロールはすでに付与されている。")
+		}
+
+		_, err = q.CreateRoomsAccountsRoles(ctx, repository.CreateRoomsAccountsRolesParams{
+			RoomsAccountID: args.RoomsAccountID,
+			RoleID:         args.RoleID,
 		})
 		if err != nil {
 			return err
