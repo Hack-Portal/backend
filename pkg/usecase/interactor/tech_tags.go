@@ -12,20 +12,12 @@ func parseTechTags(ctx context.Context, store transaction.Store, accountID strin
 	if err != nil {
 		return
 	}
-	// TODO:iconを追加する
 	for _, tag := range tags {
 		result = append(result, repository.TechTag{
 			TechTagID: tag.TechTagID.Int32,
 			Language:  tag.Language.String,
+			Icon:      tag.Icon.String,
 		})
 	}
 	return
-}
-
-func accountTechTagsStruct(tags []repository.ListAccountTagsByUserIDRow) []int32 {
-	var result []int32
-	for _, tag := range tags {
-		result = append(result, tag.TechTagID.Int32)
-	}
-	return result
 }

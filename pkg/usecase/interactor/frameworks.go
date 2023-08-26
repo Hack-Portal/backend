@@ -21,11 +21,3 @@ func parseFrameworks(ctx context.Context, store transaction.Store, accountID str
 	}
 	return
 }
-
-func accountFWStruct(fws []repository.ListAccountFrameworksByUserIDRow) []int32 {
-	var result []int32
-	for _, fw := range fws {
-		result = append(result, fw.FrameworkID.Int32)
-	}
-	return result
-}

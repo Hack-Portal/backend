@@ -300,22 +300,6 @@ func margeFrameworkArray(roomFramework []domain.RoomFramework, framework reposit
 	return roomFramework
 }
 
-func margeRoomAccount(ctx context.Context, q *repository.Queries, id string) (result []domain.NowRoomAccounts, err error) {
-	nowMembers, err := q.GetRoomsAccountsByID(ctx, id)
-	if err != nil {
-		return
-	}
-
-	for _, nowMember := range nowMembers {
-		result = append(result, domain.NowRoomAccounts{
-			AccountID: nowMember.AccountID.String,
-			Icon:      nowMember.Icon.String,
-			IsOwner:   nowMember.IsOwner,
-		})
-	}
-	return
-}
-
 func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, hackathon domain.RoomHackathonInfo) domain.GetRoomResponse {
 	return domain.GetRoomResponse{
 		RoomID:      room.RoomID,
