@@ -7,9 +7,13 @@ SELECT roles.role_id,
   roles.role
 FROM roles
   LEFT OUTER JOIN rooms_accounts_roles ON rooms_accounts_roles.role_id = roles.role_id
-WHERE rooms_accounts_roles.rooms_account_id = $1
-LIMIT $2 OFFSET $3;
--- name: DeleteRoomsAccountsRolesByID :exec
+WHERE rooms_accounts_roles.rooms_account_id = (
+    SELECT rooms_accounts_id
+    FROM rooms_accounts
+    WHERE room_id = $1
+      AND account_id = $2
+  );
+WHERE -- name: DeleteRoomsAccountsRolesByID :exec
 DELETE FROM rooms_accounts_roles
 WHERE rooms_account_id = $1
   AND role_id = $2;
