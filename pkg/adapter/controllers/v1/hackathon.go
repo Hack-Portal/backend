@@ -83,7 +83,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 //	@Success		200							{object}	domain.HackathonResponses	"success response"
 //	@Failure		400							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
-//	@Router			/hackathons/{hackathon_id} 																																				[get]
+//	@Router			/hackathons/{hackathon_id}	[get]
 func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -115,7 +115,7 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 //	@Success		200						{array}		domain.HackathonResponses	"success response"
 //	@Failure		400						{object}	ErrorResponse				"error response"
 //	@Failure		500						{object}	ErrorResponse				"error response"
-//	@Router			/hackathons 																																																					[get]
+//	@Router			/hackathons	[get]
 func (hc *HackathonController) ListHackathons(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
