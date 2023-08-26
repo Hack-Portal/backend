@@ -281,11 +281,15 @@ func (ru *roomUsecase) ListRoomAccountRole(ctx context.Context, query domain.Lis
 	}
 	return result, nil
 }
-func (ru *roomUsecase) DeleteRoomAccountRoleByID(ctx context.Context, body domain.RoomAccountRoleByIDParam) error {
+func (ru *roomUsecase) DeleteRoomAccountRole(ctx context.Context, body domain.RoomAccountRoleByIDParam) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	return ru.store.DeleteRoomsAccountsRolesByID(ctx, body)
+	err = ru.store.DeleteRoomsAccountsRolesByID(ctx, repository.DeleteRoomsAccountsRolesByIDParams{
+		RoomsAccountID: body.RoomsAccountID,
+		RoleID:         body.RoleID,
+	})
+	return
 }
 
 func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room repository.Room) ([]domain.RoomTechTags, []domain.RoomFramework, error) {
