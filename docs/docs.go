@@ -294,6 +294,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{account_id}/rooms": {
+            "get": {
+                "description": "Get Join Room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get Join Room",
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.GetJoinRoomResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/accounts/{from_account_id}/follow": {
             "get": {
                 "description": "Get follow account",
@@ -385,7 +420,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/repository.Follow"
+                                "$ref": "#/definitions/domain.FollowResponse"
                             }
                         }
                     },
@@ -1358,7 +1393,7 @@ const docTemplate = `{
                 "account_id": {
                     "type": "string"
                 },
-                "created_at": {
+                "discord_link": {
                     "type": "string"
                 },
                 "email": {
@@ -1372,6 +1407,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/repository.Framework"
                     }
+                },
+                "github_link": {
+                    "type": "string"
                 },
                 "icon": {
                     "type": "string"
@@ -1393,6 +1431,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/repository.TechTag"
                     }
+                },
+                "twitter_link": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"
@@ -1545,6 +1586,17 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.GetJoinRoomResponse": {
+            "type": "object",
+            "properties": {
+                "room_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.GetRoomResponse": {
             "type": "object",
             "properties": {
@@ -1559,18 +1611,6 @@ const docTemplate = `{
                 },
                 "member_limit": {
                     "type": "integer"
-                },
-                "members_frameworks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/domain.RoomFramework"
-                    }
-                },
-                "members_tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/domain.RoomTechTags"
-                    }
                 },
                 "now_member": {
                     "type": "array",
@@ -1722,11 +1762,26 @@ const docTemplate = `{
                 "account_id": {
                     "type": "string"
                 },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Framework"
+                    }
+                },
                 "icon": {
                     "type": "string"
                 },
                 "is_owner": {
                     "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.TechTag"
+                    }
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
@@ -1868,10 +1923,16 @@ const docTemplate = `{
         "domain.UpdateAccountRequest": {
             "type": "object",
             "properties": {
+                "discord_link": {
+                    "type": "string"
+                },
                 "explanatory_text": {
                     "type": "string"
                 },
                 "frameworks": {
+                    "type": "string"
+                },
+                "github_link": {
                     "type": "string"
                 },
                 "locate_id": {
@@ -1884,6 +1945,9 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "tech_tags": {
+                    "type": "string"
+                },
+                "twitter_link": {
                     "type": "string"
                 },
                 "username": {
@@ -1904,20 +1968,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "repository.Follow": {
-            "type": "object",
-            "properties": {
-                "create_at": {
-                    "type": "string"
-                },
-                "from_account_id": {
-                    "type": "string"
-                },
-                "to_account_id": {
                     "type": "string"
                 }
             }
