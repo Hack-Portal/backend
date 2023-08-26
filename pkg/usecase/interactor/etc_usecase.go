@@ -51,9 +51,9 @@ func (eu *etcUsecase) GetStatusTag(ctx context.Context) ([]repository.StatusTag,
 	return eu.store.ListStatusTags(ctx)
 }
 
-func (eu *etcUsecase) GetRolesByID(ctx context.Context, roleID int32) (repository.Role, error) {
+func (eu *etcUsecase) ListRoles(ctx context.Context) ([]repository.Role, error) {
 	ctx, cancel := context.WithTimeout(ctx, eu.contextTimeout)
 	defer cancel()
 
-	return eu.store.GetRolesByID(ctx, roleID)
+	return eu.store.ListRoles(ctx)
 }

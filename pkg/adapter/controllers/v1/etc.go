@@ -97,3 +97,23 @@ func (ec *EtcController) ListStatusTags(ctx *gin.Context) {
 func (ec *EtcController) Ping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 }
+
+// ListRoles	godoc
+//
+//	@Summary		Get Roles
+//	@Description	Get Roles
+//	@Tags			Roles
+//	@Produce		json
+//	@Success		200				{array}		repository.Role	"success response"
+//	@Failure		500				{object}	ErrorResponse		"error response"
+//	@Router			/roles																										[get]
+func (ec *EtcController) ListRoles(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
+	response, err := ec.EtcUsecase.ListRoles(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+}
