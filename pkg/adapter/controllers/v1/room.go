@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -57,6 +59,7 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 //	@Param			room_id				path		string					true	"Rooms API wildcard"
 //	@Success		200					{object}	domain.GetRoomResponse	"success response"
 //	@Failure		400					{object}	ErrorResponse			"error response"
+//	@Failure		403	{object}	ErrorResponse				"error response"
 //	@Failure		500					{object}	ErrorResponse			"error response"
 //	@Router			/rooms/{room_id}																																[get]
 func (rc *RoomController) GetRoom(ctx *gin.Context) {
@@ -70,7 +73,14 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 
 	response, err := rc.RoomUsecase.GetRoom(ctx, request.RoomID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなルームないで")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 	ctx.JSON(http.StatusOK, response)
@@ -85,6 +95,7 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 //	@Param			CreateRoomRequestBody	body		domain.CreateRoomRequestBody	true	"create Room Request Body"
 //	@Success		200						{object}	domain.GetRoomResponse			"success response"
 //	@Failure		400						{object}	ErrorResponse					"error response"
+//	@Failure		403						{object}	ErrorResponse					"error response"
 //	@Failure		500						{object}	ErrorResponse					"error response"
 //	@Router			/rooms																																																																						[post]
 func (rc *RoomController) CreateRoom(ctx *gin.Context) {
@@ -104,7 +115,14 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 		OwnerID:     reqBody.AccountID,
 	})
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザ/ルームないで")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 
@@ -121,6 +139,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 //	@Param			UpdateRoomRequestBody	body		domain.UpdateRoomRequestBody	true	"update Room Request body"
 //	@Success		200						{object}	domain.GetRoomResponse			"success response"
 //	@Failure		400						{object}	ErrorResponse					"error response"
+//	@Failure		403						{object}	ErrorResponse					"error response"
 //	@Failure		500						{object}	ErrorResponse					"error response"
 //	@Router			/rooms/{room_id}																																																					[put]
 func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
@@ -153,7 +172,14 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 		OwnerEmail:  payload.Email,
 	})
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザ/ルームないで")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 	ctx.JSON(http.StatusOK, response)
@@ -168,6 +194,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 //	@Param			room_id				path		string			true	"Rooms API wildcard"
 //	@Success		200					{object}	SuccessResponse	"success response"
 //	@Failure		400					{object}	ErrorResponse	"error response"
+//	@Failure		403					{object}	ErrorResponse	"error response"
 //	@Failure		500					{object}	ErrorResponse	"error response"
 //	@Router			/rooms/{room_id}																								[delete]
 func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
@@ -187,7 +214,14 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 		OwnerEmail: payload.Email,
 		RoomID:     reqURI.RoomID,
 	}); err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザ/ルームないで")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: "Delete Successful"})
@@ -203,6 +237,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 //	@Param			AddAccountInRoomRequestBody	body		domain.AddAccountInRoomRequestBody	true	"add account in room Request body"
 //	@Success		200							{object}	SuccessResponse						"success response"
 //	@Failure		400							{object}	ErrorResponse						"error response"
+//	@Failure		403							{object}	ErrorResponse						"error response"
 //	@Failure		500							{object}	ErrorResponse						"error response"
 //	@Router			/rooms/{room_id}/members	[post]
 func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
@@ -227,7 +262,14 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 		AccountID: reqBody.AccountID,
 		RoomID:    reqURI.RoomID,
 	}); err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザ/ルームないで")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: "Join Successful"})
@@ -243,6 +285,7 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 //	@Param			room_id						path		string			true	"Rooms API wildcard"
 //	@Success		200							{object}	SuccessResponse	"success response"
 //	@Failure		400							{object}	ErrorResponse	"error response"
+//	@Failure		403							{object}	ErrorResponse	"error response"
 //	@Failure		500							{object}	ErrorResponse	"error response"
 //	@Router			/rooms/{room_id}/members	[delete]
 func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
@@ -279,6 +322,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 //	@Param			AddChatRequestBody			body		domain.AddChatRequestBody	true	"add chat Room Request body"
 //	@Success		200							{object}	domain.GetRoomResponse		"success response"
 //	@Failure		400							{object}	ErrorResponse				"error response"
+//	@Failure		403							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
 //	@Router			/rooms/{room_id}/addchat																																											[post]
 func (rc *RoomController) AddChat(ctx *gin.Context) {
@@ -304,7 +348,14 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 		AccountID: reqBody.AccountID,
 		Message:   reqBody.Message,
 	}); err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 

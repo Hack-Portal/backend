@@ -126,6 +126,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 //	@Param			account_id				path		string					true	"Accounts API wildcard"
 //	@Success		200						{object}	domain.AccountResponses	"Get success response"
 //	@Failure		400						{object}	ErrorResponse			"bad request response"
+//	@Failure		403						{object}	ErrorResponse			"error response"
 //	@Failure		500						{object}	ErrorResponse			"server error response"
 //	@Router			/accounts/{account_id} 																																						[get]
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
@@ -171,7 +172,14 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 
 	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID, payload)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 
@@ -188,6 +196,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 //	@Param			UpdateAccountRequest	body		domain.UpdateAccountRequest	true	"Update Account Request Body"
 //	@Success		200						{object}	domain.AccountResponses		"Update success response"
 //	@Failure		400						{object}	ErrorResponse				"bad request response"
+//	@Failure		403						{object}	ErrorResponse				"error response"
 //	@Failure		500						{object}	ErrorResponse				"server error response"
 //	@Router			/accounts/{account_id} 																																											[put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
@@ -263,7 +272,14 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		},
 		image)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 
@@ -279,6 +295,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 //	@Param			account_id				path		string			true	"Accounts API wildcard"
 //	@Success		200						{object}	SuccessResponse	"delete success response"
 //	@Failure		400						{object}	ErrorResponse	"bad request response"
+//	@Failure		403						{object}	ErrorResponse	"error response"
 //	@Failure		500						{object}	ErrorResponse	"server error response"
 //	@Router			/accounts/{account_id} 																								[delete]
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
@@ -293,7 +310,14 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	err := ac.AccountUsecase.DeleteAccount(ctx, reqURI.AccountID)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 
@@ -308,6 +332,7 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 // @Produce		json
 // @Success		200	{array}		domain.GetJoinRoomResponse	"success response"
 // @Failure		400	{object}	ErrorResponse				"error response"
+// @Failure		403	{object}	ErrorResponse				"error response"
 // @Failure		500	{object}	ErrorResponse				"error response"
 // @Router			/accounts/{account_id}/rooms
 func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
@@ -322,7 +347,14 @@ func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
 
 	response, err := ac.AccountUsecase.GetJoinRoom(ctx, reqURI.AccountID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 

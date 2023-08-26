@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -28,6 +30,7 @@ type FollowController struct {
 //	@Param			CreateFollowRequestBody				body		domain.CreateFollowRequestBody	true	"create Follow Request Body"
 //	@Success		200									{array}		repository.Follow				"success response"
 //	@Failure		400									{object}	ErrorResponse					"error response"
+//	@Failure		403	{object}	ErrorResponse				"error response"
 //	@Failure		500									{object}	ErrorResponse					"error response"
 //	@Router			/accounts/{from_account_id}/follow																																																[post]
 func (fc *FollowController) CreateFollow(ctx *gin.Context) {
@@ -51,7 +54,14 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 		FromAccountID: reqURI.AccountID,
 	})
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 	ctx.JSON(http.StatusOK, response)
@@ -107,6 +117,7 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 //	@Param			GetFollowRequestQueries				query		domain.GetFollowRequestQueries	true	"Get Follow Request Body"
 //	@Success		200									{object}	[]domain.FollowResponse			"success response"
 //	@Failure		400									{object}	ErrorResponse					"error response"
+//	@Failure		403									{object}	ErrorResponse					"error response"
 //	@Failure		500									{object}	ErrorResponse					"error response"
 //	@Router			/accounts/{from_account_id}/follow																																																[get]
 func (fc *FollowController) GetFollow(ctx *gin.Context) {
@@ -130,7 +141,14 @@ func (fc *FollowController) GetFollow(ctx *gin.Context) {
 
 	result, err = fc.FollowUsecase.GetFollowByID(ctx, reqURI.AccountID, reqQuery.Mode)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 	ctx.JSON(http.StatusOK, result)

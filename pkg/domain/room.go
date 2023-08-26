@@ -31,6 +31,7 @@ type NowRoomAccounts struct {
 	Username   string                 `json:"username"`
 	Icon       string                 `json:"icon"`
 	IsOwner    bool                   `json:"is_owner"`
+	Roles      []repository.Role      `json:"roles"`
 	TechTags   []repository.TechTag   `json:"tech_tags"`
 	Frameworks []repository.Framework `json:"frameworks"`
 }

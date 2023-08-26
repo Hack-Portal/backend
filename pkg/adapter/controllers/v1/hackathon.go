@@ -2,6 +2,8 @@ package controller
 
 import (
 	"bytes"
+	"database/sql"
+	"errors"
 	"io"
 	"net/http"
 
@@ -82,6 +84,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 //	@Param			hackathon_id				path		string						true	"Hackathons API wildcard"
 //	@Success		200							{object}	domain.HackathonResponses	"success response"
 //	@Failure		400							{object}	ErrorResponse				"error response"
+//	@Failure		403							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
 //	@Router			/hackathons/{hackathon_id} 																																				[get]
 func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
@@ -95,7 +98,14 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 
 	response, err := hc.HackathonUsecase.GetHackathon(ctx, reqURI.HackathonID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなハッカソンはないわ")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 

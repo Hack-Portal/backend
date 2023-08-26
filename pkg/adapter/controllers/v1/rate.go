@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -47,7 +49,14 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 		AccountID: reqURI.AccountID,
 		Rate:      reqBody.Rate,
 	}); err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			err := errors.New("すまんサーバエラーや")
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
 		return
 	}
 
@@ -64,6 +73,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 //	@Param			ListRequest						query		domain.ListRequest			true	"List Rate Params"
 //	@Success		200								{array}		domain.AccountRateResponse	"success response"
 //	@Failure		400								{object}	ErrorResponse				"error response"
+//	@Failure		403								{object}	ErrorResponse				"error response"
 //	@Failure		500								{object}	ErrorResponse				"error response"
 //	@Router			/accounts/{account_id}/rate 																																				[get]
 func (rc *RateController) ListRate(ctx *gin.Context) {
