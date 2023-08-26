@@ -126,6 +126,10 @@ type AddChatParams struct {
 	Message   string `json:"message"`
 }
 
+type AddRoomAccountRoleByIDParam struct {
+	RoomsAccountID int32 `json:"rooms_account_id"`
+	RoleID         int32 `json:"role_id"`
+}
 type WriteFireStoreParam struct {
 	RoomID  string `json:"room_id"`
 	Index   int    `json:"index"`

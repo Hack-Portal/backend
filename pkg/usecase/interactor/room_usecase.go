@@ -250,6 +250,20 @@ func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.Delete
 	return
 }
 
+func (ru *roomUsecase) AddRoomAccountRoleByID(ctx context.Context, body domain.AddRoomAccountRoleByIDParam) error {
+	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	defer cancel()
+
+	return ru.store.AddRoomAccountRoleByID(ctx, body)
+}
+
+func (ru *roomUsecase) DeleteRoomAccountRoleByID(ctx context.Context, body domain.DeleteRoomAccountRoleByIDParam) error {
+	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	defer cancel()
+
+	return ru.store.DeleteRoomsAccountsRolesByID(ctx, body)
+}
+
 func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room repository.Room) ([]domain.RoomTechTags, []domain.RoomFramework, error) {
 	var (
 		roomTechTags   []domain.RoomTechTags
