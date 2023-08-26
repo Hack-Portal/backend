@@ -7,7 +7,7 @@ VALUES
 -- name: ListAccountTagsByUserID :many
 SELECT
     tech_tags.tech_tag_id,
-    tech_tags.language
+    tech_tags.language,
     tech_tags.icon
 FROM
     account_tags
