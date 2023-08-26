@@ -38,22 +38,12 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *
 		return
 	}
 
-	tags, err := au.store.ListAccountTagsByUserID(ctx, id)
+	techTags, err := parseTechTags(ctx, au.store, account.AccountID)
 	if err != nil {
 		return
 	}
 
-	fws, err := au.store.ListAccountFrameworksByUserID(ctx, id)
-	if err != nil {
-		return
-	}
-
-	techTags, err := parseTechTags(ctx, au.store, accountTechTagsStruct(tags))
-	if err != nil {
-		return
-	}
-
-	frameworks, err := parseFrameworks(ctx, au.store, accountFWStruct(fws))
+	frameworks, err := parseFrameworks(ctx, au.store, account.AccountID)
 	if err != nil {
 		return
 	}
@@ -119,22 +109,12 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 		return
 	}
 
-	tags, err := au.store.ListAccountTagsByUserID(ctx, account.AccountID)
+	techTags, err := parseTechTags(ctx, au.store, account.AccountID)
 	if err != nil {
 		return
 	}
 
-	fws, err := au.store.ListAccountFrameworksByUserID(ctx, account.AccountID)
-	if err != nil {
-		return
-	}
-
-	techTags, err := parseTechTags(ctx, au.store, accountTechTagsStruct(tags))
-	if err != nil {
-		return
-	}
-
-	frameworks, err := parseFrameworks(ctx, au.store, accountFWStruct(fws))
+	frameworks, err := parseFrameworks(ctx, au.store, account.AccountID)
 	if err != nil {
 		return
 	}
@@ -199,12 +179,12 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 		return
 	}
 
-	techTags, err := parseTechTags(ctx, au.store, body.TechTags)
+	techTags, err := parseTechTags(ctx, au.store, account.AccountID)
 	if err != nil {
 		return
 	}
 
-	frameworks, err := parseFrameworks(ctx, au.store, body.Frameworks)
+	frameworks, err := parseFrameworks(ctx, au.store, account.AccountID)
 	if err != nil {
 		return
 	}
@@ -236,12 +216,12 @@ func (au *accountUsecase) UpdateAccount(ctx context.Context, body domain.UpdateA
 		return
 	}
 
-	techTags, err := parseTechTags(ctx, au.store, body.AccountTechTag)
+	techTags, err := parseTechTags(ctx, au.store, account.AccountID)
 	if err != nil {
 		return
 	}
 
-	frameworks, err := parseFrameworks(ctx, au.store, body.AccountFrameworkTag)
+	frameworks, err := parseFrameworks(ctx, au.store, account.AccountID)
 	if err != nil {
 		return
 	}
