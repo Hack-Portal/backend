@@ -64,7 +64,7 @@ func checkDuplication(members []repository.GetRoomsAccountsByIDRow, id string) b
 	return false
 }
 
-func checkRoles(roles []repository.RoomsAccountsRole, id int32) bool {
+func checkRoles(roles []repository.Role, id int32) bool {
 	for _, role := range roles {
 		if role.RoleID == id {
 			return true
