@@ -191,7 +191,7 @@ func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAcco
 	return err
 }
 
-func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args domain.AddRoomAccountRoleByIDParam) error {
+func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args domain.RoomAccountRoleByIDParam) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
 		arg := repository.ListRoomsAccountsRolesByIDParams{

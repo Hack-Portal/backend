@@ -14,5 +14,6 @@ type RoomUsecase interface {
 	DeleteRoom(ctx context.Context, query domain.DeleteRoomParam) error
 	AddAccountInRoom(ctx context.Context, query domain.AddAccountInRoomParam) error
 	AddChat(ctx context.Context, body domain.AddChatParams) error
+	AddRoomAccountRole(ctx context.Context, body domain.RoomAccountRoleByIDParam) error
 	DeleteRoomAccount(ctx context.Context, body domain.DeleteRoomAccount) (err error)
 }
