@@ -337,6 +337,7 @@ func getRoomMember(ctx context.Context, store transaction.Store, accountID strin
 
 		result = append(result, domain.NowRoomAccounts{
 			AccountID:  user.AccountID,
+			Username:   user.Username,
 			Icon:       user.Icon.String,
 			IsOwner:    account.IsOwner,
 			TechTags:   tags,

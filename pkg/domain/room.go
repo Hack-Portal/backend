@@ -28,6 +28,7 @@ type RoomFramework struct {
 
 type NowRoomAccounts struct {
 	AccountID  string                 `json:"account_id"`
+	Username   string                 `json:"username"`
 	Icon       string                 `json:"icon"`
 	IsOwner    bool                   `json:"is_owner"`
 	TechTags   []repository.TechTag   `json:"tech_tags"`
