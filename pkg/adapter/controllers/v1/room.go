@@ -30,7 +30,7 @@ type RoomController struct {
 //	@Success		200			{array}		domain.ListRoomResponse	"success response"
 //	@Failure		400			{object}	ErrorResponse			"error response"
 //	@Failure		500			{object}	ErrorResponse			"error response"
-//	@Router			/rooms																													[get]
+//	@Router			/rooms	[get]
 func (rc *RoomController) ListRooms(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -141,7 +141,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 //	@Failure		400						{object}	ErrorResponse					"error response"
 //	@Failure		403						{object}	ErrorResponse					"error response"
 //	@Failure		500						{object}	ErrorResponse					"error response"
-//	@Router			/rooms/{room_id}																																																					[put]
+//	@Router			/rooms/{room_id}	[put]
 func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -196,7 +196,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 //	@Failure		400					{object}	ErrorResponse	"error response"
 //	@Failure		403					{object}	ErrorResponse	"error response"
 //	@Failure		500					{object}	ErrorResponse	"error response"
-//	@Router			/rooms/{room_id}																								[delete]
+//	@Router			/rooms/{room_id}	[delete]
 func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -324,7 +324,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 //	@Failure		400							{object}	ErrorResponse				"error response"
 //	@Failure		403							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
-//	@Router			/rooms/{room_id}/addchat																																											[post]
+//	@Router			/rooms/{room_id}/addchat	[post]
 func (rc *RoomController) AddChat(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()

@@ -39,7 +39,7 @@ type AccountController struct {
 //	@Success		200						{object}	domain.AccountResponses		"create success response"
 //	@Failure		400						{object}	ErrorResponse				"bad request response"
 //	@Failure		500						{object}	ErrorResponse				"server error response"
-//	@Router			/accounts 																																																[post]
+//	@Router			/accounts	[post]
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -128,7 +128,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 //	@Failure		400						{object}	ErrorResponse			"bad request response"
 //	@Failure		403						{object}	ErrorResponse			"error response"
 //	@Failure		500						{object}	ErrorResponse			"server error response"
-//	@Router			/accounts/{account_id} 																																						[get]
+//	@Router			/accounts/{account_id}	[get]
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -198,7 +198,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 //	@Failure		400						{object}	ErrorResponse				"bad request response"
 //	@Failure		403						{object}	ErrorResponse				"error response"
 //	@Failure		500						{object}	ErrorResponse				"server error response"
-//	@Router			/accounts/{account_id} 																																											[put]
+//	@Router			/accounts/{account_id} [put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -297,7 +297,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 //	@Failure		400						{object}	ErrorResponse	"bad request response"
 //	@Failure		403						{object}	ErrorResponse	"error response"
 //	@Failure		500						{object}	ErrorResponse	"server error response"
-//	@Router			/accounts/{account_id} 																								[delete]
+//	@Router			/accounts/{account_id}	[delete]
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -334,7 +334,7 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 // @Failure		400	{object}	ErrorResponse				"error response"
 // @Failure		403	{object}	ErrorResponse				"error response"
 // @Failure		500	{object}	ErrorResponse				"error response"
-// @Router			/accounts/{account_id}/rooms
+// @Router			/accounts/{account_id}/rooms	[get]
 func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
