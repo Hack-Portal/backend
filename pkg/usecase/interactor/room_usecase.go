@@ -242,6 +242,17 @@ func (ru *roomUsecase) AddRoomAccountRole(ctx context.Context, body domain.RoomA
 	return ru.store.AddRoomAccountRoleByID(ctx, body)
 }
 
+func (ru *roomUsecase) DeleteRoomAccountRole(ctx context.Context, body domain.RoomAccountRoleByIDParam) (err error) {
+	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	defer cancel()
+
+	err = ru.store.DeleteRoomsAccountsRolesByID(ctx, repository.DeleteRoomsAccountsRolesByIDParams{
+		RoomsAccountID: body.RoomsAccountID,
+		RoleID:         body.RoleID,
+	})
+	return
+}
+
 func parseRoles(ctx context.Context, store transaction.Store, RoomsAccountID int32) (result []repository.Role, err error) {
 	arg := repository.ListRoomsAccountsRolesByIDParams{
 		RoomsAccountID: RoomsAccountID,
@@ -258,17 +269,6 @@ func parseRoles(ctx context.Context, store transaction.Store, RoomsAccountID int
 			Role:   role.Role,
 		})
 	}
-	return
-}
-
-func (ru *roomUsecase) DeleteRoomAccountRole(ctx context.Context, body domain.RoomAccountRoleByIDParam) (err error) {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
-	defer cancel()
-
-	err = ru.store.DeleteRoomsAccountsRolesByID(ctx, repository.DeleteRoomsAccountsRolesByIDParams{
-		RoomsAccountID: body.RoomsAccountID,
-		RoleID:         body.RoleID,
-	})
 	return
 }
 
@@ -362,6 +362,11 @@ func getRoomMember(ctx context.Context, store transaction.Store, accountID strin
 			return nil, err
 		}
 
+		roles, err := parseRoles(ctx, store, account.RoomsAccountID)
+		if err != nil {
+			return nil, err
+		}
+
 		tags, err := parseTechTags(ctx, store, account.AccountID.String)
 		if err != nil {
 			return nil, err
@@ -377,6 +382,7 @@ func getRoomMember(ctx context.Context, store transaction.Store, accountID strin
 			Username:   user.Username,
 			Icon:       user.Icon.String,
 			IsOwner:    account.IsOwner,
+			Roles:      roles,
 			TechTags:   tags,
 			Frameworks: frameworks,
 		})
