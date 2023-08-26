@@ -250,14 +250,38 @@ func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.Delete
 	return
 }
 
-func (ru *roomUsecase) AddRoomAccountRoleByID(ctx context.Context, body domain.AddRoomAccountRoleByIDParam) error {
+func (ru *roomUsecase) AddRoomAccountRole(ctx context.Context, body domain.RoomAccountRoleByIDParam) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	return ru.store.AddRoomAccountRoleByID(ctx, body)
 }
 
-func (ru *roomUsecase) DeleteRoomAccountRoleByID(ctx context.Context, body domain.DeleteRoomAccountRoleByIDParam) error {
+func (ru *roomUsecase) ListRoomAccountRole(ctx context.Context, query domain.ListRequest) ([]domain.RoomAccountRoleResponse, error) {
+	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	defer cancel()
+
+	accounts, err := ru.store.ListRoomsAccounts(ctx, repository.ListRoomsAccountsParams{
+		Limit:  query.PageSize,
+		Offset: (query.PageID - 1) * query.PageSize,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var result []domain.RoomAccountRoleResponse
+	for _, account := range accounts {
+		result = append(result, domain.RoomAccountRoleResponse{
+			AccountID: account.AccountID.String,
+			Email:     account.Email,
+			Icon:      account.Icon.String,
+			IsOwner:   account.IsOwner,
+			Role:      account.Role,
+		})
+	}
+	return result, nil
+}
+func (ru *roomUsecase) DeleteRoomAccountRoleByID(ctx context.Context, body domain.RoomAccountRoleByIDParam) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
