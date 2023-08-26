@@ -7,7 +7,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 )
 
-func parseTechTags(ctx context.Context, store *transaction.SQLStore, accountID string) (result []repository.TechTag, err error) {
+func parseTechTags(ctx context.Context, store transaction.Store, accountID string) (result []repository.TechTag, err error) {
 	tags, err := store.ListAccountTagsByUserID(ctx, accountID)
 	if err != nil {
 		return
