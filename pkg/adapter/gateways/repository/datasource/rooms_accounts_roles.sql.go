@@ -29,11 +29,16 @@ func (q *Queries) CreateRoomsAccountsRoles(ctx context.Context, arg CreateRoomsA
 
 const deleteRoomsAccountsRolesByID = `-- name: DeleteRoomsAccountsRolesByID :exec
 DELETE FROM rooms_accounts_roles
-WHERE rooms_account_id = $1
+WHERE rooms_account_id = $1 AND role_id = $2
 `
 
-func (q *Queries) DeleteRoomsAccountsRolesByID(ctx context.Context, roomsAccountID int32) error {
-	_, err := q.db.ExecContext(ctx, deleteRoomsAccountsRolesByID, roomsAccountID)
+type DeleteRoomsAccountsRolesByIDParams struct {
+	RoomsAccountID int32 `json:"rooms_account_id"`
+	RoleID         int32 `json:"role_id"`
+}
+
+func (q *Queries) DeleteRoomsAccountsRolesByID(ctx context.Context, arg DeleteRoomsAccountsRolesByIDParams) error {
+	_, err := q.db.ExecContext(ctx, deleteRoomsAccountsRolesByID, arg.RoomsAccountID, arg.RoleID)
 	return err
 }
 
