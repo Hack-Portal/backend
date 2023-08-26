@@ -29,7 +29,8 @@ func (q *Queries) CreateRoomsAccountsRoles(ctx context.Context, arg CreateRoomsA
 
 const deleteRoomsAccountsRolesByID = `-- name: DeleteRoomsAccountsRolesByID :exec
 DELETE FROM rooms_accounts_roles
-WHERE rooms_account_id = $1 AND role_id = $2
+WHERE rooms_account_id = $1
+  AND role_id = $2
 `
 
 type DeleteRoomsAccountsRolesByIDParams struct {
@@ -43,9 +44,11 @@ func (q *Queries) DeleteRoomsAccountsRolesByID(ctx context.Context, arg DeleteRo
 }
 
 const listRoomsAccountsRolesByID = `-- name: ListRoomsAccountsRolesByID :many
-SELECT rooms_account_id, role_id
-FROM rooms_accounts_roles
-WHERE rooms_account_id = $1
+SELECT roles.role_id,
+  roles.role
+FROM roles
+  LEFT OUTER JOIN rooms_accounts_roles ON rooms_accounts_roles.role_id = roles.role_id
+WHERE rooms_accounts_roles.rooms_account_id = $1
 LIMIT $2 OFFSET $3
 `
 
@@ -55,16 +58,16 @@ type ListRoomsAccountsRolesByIDParams struct {
 	Offset         int32 `json:"offset"`
 }
 
-func (q *Queries) ListRoomsAccountsRolesByID(ctx context.Context, arg ListRoomsAccountsRolesByIDParams) ([]RoomsAccountsRole, error) {
+func (q *Queries) ListRoomsAccountsRolesByID(ctx context.Context, arg ListRoomsAccountsRolesByIDParams) ([]Role, error) {
 	rows, err := q.db.QueryContext(ctx, listRoomsAccountsRolesByID, arg.RoomsAccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []RoomsAccountsRole{}
+	items := []Role{}
 	for rows.Next() {
-		var i RoomsAccountsRole
-		if err := rows.Scan(&i.RoomsAccountID, &i.RoleID); err != nil {
+		var i Role
+		if err := rows.Scan(&i.RoleID, &i.Role); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

@@ -78,7 +78,7 @@ type Querier interface {
 	ListRateEntities(ctx context.Context, arg ListRateEntitiesParams) ([]RateEntity, error)
 	ListRoles(ctx context.Context) ([]Role, error)
 	ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, error)
-	ListRoomsAccountsRolesByID(ctx context.Context, arg ListRoomsAccountsRolesByIDParams) ([]RoomsAccountsRole, error)
+	ListRoomsAccountsRolesByID(ctx context.Context, arg ListRoomsAccountsRolesByIDParams) ([]Role, error)
 	ListStatusTags(ctx context.Context) ([]StatusTag, error)
 	ListTechTags(ctx context.Context) ([]TechTag, error)
 	UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) (Account, error)
