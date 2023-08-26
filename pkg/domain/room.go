@@ -28,12 +28,15 @@ type RoomFramework struct {
 	Framework repository.Framework `json:"framework"`
 	Count     int32                `json:"count"`
 }
-
+type RoomRole struct {
+	Role repository.Role `json:"role"`
+}
 type NowRoomAccounts struct {
 	AccountID  string                 `json:"account_id"`
 	Username   string                 `json:"username"`
 	Icon       string                 `json:"icon"`
 	IsOwner    bool                   `json:"is_owner"`
+	Roles      []repository.Role      `json:"roles"`
 	TechTags   []repository.TechTag   `json:"tech_tags"`
 	Frameworks []repository.Framework `json:"frameworks"`
 }
