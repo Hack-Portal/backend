@@ -6,7 +6,7 @@ RETURNING *;
 SELECT roles.role_id,
   roles.role
 FROM roles
-  LEFT OUTER JOIN roles ON rooms_accounts_roles.role_id = roles.role_id
+  LEFT OUTER JOIN rooms_accounts_roles ON rooms_accounts_roles.role_id = roles.role_id
 WHERE rooms_accounts_roles.rooms_account_id = $1
 LIMIT $2 OFFSET $3;
 -- name: DeleteRoomsAccountsRolesByID :exec
