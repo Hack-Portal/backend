@@ -13,7 +13,7 @@ WHERE rooms_accounts_roles.rooms_account_id = (
     WHERE room_id = $1
       AND account_id = $2
   );
-WHERE -- name: DeleteRoomsAccountsRolesByID :exec
+-- name: DeleteRoomsAccountsRolesByID :exec
 DELETE FROM rooms_accounts_roles
 WHERE rooms_account_id = $1
   AND role_id = $2;

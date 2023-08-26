@@ -48,18 +48,21 @@ SELECT roles.role_id,
   roles.role
 FROM roles
   LEFT OUTER JOIN rooms_accounts_roles ON rooms_accounts_roles.role_id = roles.role_id
-WHERE rooms_accounts_roles.rooms_account_id = $1
-LIMIT $2 OFFSET $3
+WHERE rooms_accounts_roles.rooms_account_id = (
+    SELECT rooms_accounts_id
+    FROM rooms_accounts
+    WHERE room_id = $1
+      AND account_id = $2
+  )
 `
 
 type ListRoomsAccountsRolesByIDParams struct {
-	RoomsAccountID int32 `json:"rooms_account_id"`
-	Limit          int32 `json:"limit"`
-	Offset         int32 `json:"offset"`
+	RoomID    string `json:"room_id"`
+	AccountID string `json:"account_id"`
 }
 
 func (q *Queries) ListRoomsAccountsRolesByID(ctx context.Context, arg ListRoomsAccountsRolesByIDParams) ([]Role, error) {
-	rows, err := q.db.QueryContext(ctx, listRoomsAccountsRolesByID, arg.RoomsAccountID, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, listRoomsAccountsRolesByID, arg.RoomID, arg.AccountID)
 	if err != nil {
 		return nil, err
 	}
