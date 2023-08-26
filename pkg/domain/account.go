@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"time"
-
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
 
@@ -39,13 +37,15 @@ type AccountResponses struct {
 	Rate            int32  `json:"rate"`
 	Email           string `json:"email"`
 	Locate          string `json:"locate"`
-	ShowLocate      bool   `json:"show_locate"`
-	ShowRate        bool   `json:"show_rate"`
+	GithubLink      string `form:"github_link"`
+	TwitterLink     string `form:"twitter_link"`
+	DiscordLink     string `form:"discord_link"`
+
+	ShowLocate bool `json:"show_locate"`
+	ShowRate   bool `json:"show_rate"`
 
 	TechTags   []repository.TechTag   `json:"tech_tags"`
 	Frameworks []repository.Framework `json:"frameworks"`
-
-	CreatedAt time.Time `json:"created_at"`
 }
 
 // アカウント更新のリクエストパラメータ
@@ -55,6 +55,9 @@ type UpdateAccountRequest struct {
 	LocateID        int32  `form:"locate_id"`
 	ShowLocate      bool   `form:"show_locate"`
 	ShowRate        bool   `form:"show_rate"`
+	GithubLink      string `form:"github_link"`
+	TwitterLink     string `form:"twitter_link"`
+	DiscordLink     string `form:"discord_link"`
 
 	TechTags   string `form:"tech_tags"`
 	Frameworks string `form:"frameworks"`
@@ -77,4 +80,9 @@ type AccountRateResponse struct {
 	Username  string `json:"username"`
 	Icon      string `json:"icon"`
 	Rate      int32  `json:"rate"`
+}
+
+type GetJoinRoomResponse struct {
+	RoomID string `json:"room_id"`
+	Title  string `json:"title"`
 }

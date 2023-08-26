@@ -88,11 +88,6 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 		return
 	}
 
-	result.MembersTechTags, result.MembersFrameworks, err = stackTagAndFrameworks(ctx, ru.store, room)
-	if err != nil {
-		return
-	}
-
 	result.NowMember, err = getRoomMember(ctx, ru.store, id)
 	if err != nil {
 		return
@@ -137,11 +132,6 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		return
 	}
 
-	result.MembersTechTags, result.MembersFrameworks, err = stackTagAndFrameworks(ctx, ru.store, room)
-	if err != nil {
-		return
-	}
-
 	result.NowMember, err = getRoomMember(ctx, ru.store, room.RoomID)
 	if err != nil {
 		return
@@ -175,11 +165,6 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomPar
 	}
 
 	statusTag, err := getHackathonTag(ctx, ru.store, hackathon.HackathonID)
-	if err != nil {
-		return
-	}
-
-	result.MembersTechTags, result.MembersFrameworks, err = stackTagAndFrameworks(ctx, ru.store, room)
 	if err != nil {
 		return
 	}
@@ -357,22 +342,6 @@ func margeFrameworkArray(roomFramework []domain.RoomFramework, framework reposit
 	return roomFramework
 }
 
-func margeRoomAccount(ctx context.Context, q *repository.Queries, id string) (result []domain.NowRoomAccounts, err error) {
-	nowMembers, err := q.GetRoomsAccountsByID(ctx, id)
-	if err != nil {
-		return
-	}
-
-	for _, nowMember := range nowMembers {
-		result = append(result, domain.NowRoomAccounts{
-			AccountID: nowMember.AccountID.String,
-			Icon:      nowMember.Icon.String,
-			IsOwner:   nowMember.IsOwner,
-		})
-	}
-	return
-}
-
 func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, hackathon domain.RoomHackathonInfo) domain.GetRoomResponse {
 	return domain.GetRoomResponse{
 		RoomID:      room.RoomID,
@@ -382,14 +351,12 @@ func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, ha
 		IsDelete:    room.IsDelete,
 		Hackathon:   hackathon,
 
-		NowMember:         response.NowMember,
-		MembersTechTags:   response.MembersTechTags,
-		MembersFrameworks: response.MembersFrameworks,
+		NowMember: response.NowMember,
 	}
 }
 
-func getRoomMember(ctx context.Context, store transaction.Store, id string) (result []domain.NowRoomAccounts, err error) {
-	accounts, err := store.GetRoomsAccountsByID(ctx, id)
+func getRoomMember(ctx context.Context, store transaction.Store, accountID string) (result []domain.NowRoomAccounts, err error) {
+	accounts, err := store.GetRoomsAccountsByID(ctx, accountID)
 	if err != nil {
 		return
 	}
@@ -399,10 +366,24 @@ func getRoomMember(ctx context.Context, store transaction.Store, id string) (res
 		if err != nil {
 			return nil, err
 		}
+
+		tags, err := parseTechTags(ctx, store, account.AccountID.String)
+		if err != nil {
+			return nil, err
+		}
+
+		frameworks, err := parseFrameworks(ctx, store, account.AccountID.String)
+		if err != nil {
+			return nil, err
+		}
+
 		result = append(result, domain.NowRoomAccounts{
-			AccountID: user.AccountID,
-			Icon:      user.Icon.String,
-			IsOwner:   account.IsOwner,
+			AccountID:  user.AccountID,
+			Username:   user.Username,
+			Icon:       user.Icon.String,
+			IsOwner:    account.IsOwner,
+			TechTags:   tags,
+			Frameworks: frameworks,
 		})
 	}
 	return

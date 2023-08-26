@@ -32,7 +32,6 @@ serverRun:
 	go run ./cmd/app/main.go
 
 makeSwagger:
-	swag fmt
 	swag init -g ./cmd/app/main.go
 	
 test:

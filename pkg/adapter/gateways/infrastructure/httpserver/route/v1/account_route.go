@@ -11,13 +11,15 @@ import (
 )
 
 // アカウントのルーティングを定義する
-func NewAccountRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes) {
+func NewAccountRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes, public *gin.RouterGroup) {
 	accountController := controller.AccountController{
 		AccountUsecase: usecase.NewAccountUsercase(store, timeout),
 		Env:            env,
 	}
 	group.POST("/accounts", accountController.CreateAccount)
-	group.GET("/accounts/:account_id", accountController.GetAccount)
+	public.GET("/accounts/:account_id", accountController.GetAccount)
+	group.GET("/accounts/:account_id/rooms", accountController.GetJoinRoom)
 	group.PUT("/accounts/:account_id", accountController.UpdateAccount)
 	group.DELETE("/accounts/:account_id", accountController.DeleteAccount)
+
 }

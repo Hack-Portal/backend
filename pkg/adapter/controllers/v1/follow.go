@@ -26,10 +26,10 @@ type FollowController struct {
 //	@Produce		json
 //	@Param			from_account_id						path		string							true	"Accounts API wildcard"
 //	@Param			CreateFollowRequestBody				body		domain.CreateFollowRequestBody	true	"create Follow Request Body"
-//	@Success		200									{array}		repository.Follow				"success response"
+//	@Success		200									{array}		domain.FollowResponse				"success response"
 //	@Failure		400									{object}	ErrorResponse					"error response"
 //	@Failure		500									{object}	ErrorResponse					"error response"
-//	@Router			/accounts/{from_account_id}/follow																														[post]
+//	@Router			/accounts/{from_account_id}/follow	[post]
 func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -65,11 +65,11 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 //	@Tags			Accounts
 //	@Produce		json
 //	@Param			from_account_id						path		string								true	"Accounts API wildcard"
-//	@Param			RemoveFollowRequestQueries			query	domain.RemoveFollowRequestQueries	true	"Remove Follow Request Body"
+//	@Param			RemoveFollowRequestQueries			query		domain.RemoveFollowRequestQueries	true	"Remove Follow Request Body"
 //	@Success		200									{object}	SuccessResponse						"success response"
 //	@Failure		400									{object}	ErrorResponse						"error response"
 //	@Failure		500									{object}	ErrorResponse						"error response"
-//	@Router			/accounts/{from_account_id}/follow																																	[delete]
+//	@Router			/accounts/{from_account_id}/follow	[delete]
 func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -104,11 +104,11 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 //	@Tags			Accounts
 //	@Produce		json
 //	@Param			from_account_id						path		string							true	"Accounts API wildcard"
-//	@Param			GetFollowRequestQueries				query	domain.GetFollowRequestQueries	true	"Get Follow Request Body"
+//	@Param			GetFollowRequestQueries				query		domain.GetFollowRequestQueries	true	"Get Follow Request Body"
 //	@Success		200									{object}	[]domain.FollowResponse			"success response"
 //	@Failure		400									{object}	ErrorResponse					"error response"
 //	@Failure		500									{object}	ErrorResponse					"error response"
-//	@Router			/accounts/{from_account_id}/follow																														[get]
+//	@Router			/accounts/{from_account_id}/follow	[get]
 func (fc *FollowController) GetFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()

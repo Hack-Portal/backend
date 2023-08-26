@@ -44,7 +44,8 @@ func (q *Queries) DeleteAccountTagsByUserID(ctx context.Context, accountID strin
 const listAccountTagsByUserID = `-- name: ListAccountTagsByUserID :many
 SELECT
     tech_tags.tech_tag_id,
-    tech_tags.language
+    tech_tags.language,
+    tech_tags.icon
 FROM
     account_tags
     LEFT OUTER JOIN tech_tags ON account_tags.tech_tag_id = tech_tags.tech_tag_id
@@ -55,6 +56,7 @@ WHERE
 type ListAccountTagsByUserIDRow struct {
 	TechTagID sql.NullInt32  `json:"tech_tag_id"`
 	Language  sql.NullString `json:"language"`
+	Icon      sql.NullString `json:"icon"`
 }
 
 func (q *Queries) ListAccountTagsByUserID(ctx context.Context, accountID string) ([]ListAccountTagsByUserIDRow, error) {
@@ -66,7 +68,7 @@ func (q *Queries) ListAccountTagsByUserID(ctx context.Context, accountID string)
 	items := []ListAccountTagsByUserIDRow{}
 	for rows.Next() {
 		var i ListAccountTagsByUserIDRow
-		if err := rows.Scan(&i.TechTagID, &i.Language); err != nil {
+		if err := rows.Scan(&i.TechTagID, &i.Language, &i.Icon); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

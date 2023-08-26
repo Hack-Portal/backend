@@ -22,8 +22,7 @@ func setupCors(router *gin.Engine) {
 
 func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
 	setupCors(gin)
-	apm := apm.NewApm(env)
-	gin.Use(nrgin.Middleware(apm))
+	gin.Use(nrgin.Middleware(apm.NewApm(env)))
 
 	publicRouter := gin.Group("/v1")
 	// All Public APIs
@@ -34,7 +33,7 @@ func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, g
 	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware())
 	//TODO:middlewareの追加
 	// All Protect APIs
-	NewAccountRouter(env, timeout, store, protectRouter)
+	NewAccountRouter(env, timeout, store, protectRouter, publicRouter)
 	NewLikeRouter(env, timeout, store, protectRouter)
 	NewPastWorkRouter(env, timeout, store, protectRouter, publicRouter)
 	NewFollowRouter(env, timeout, store, protectRouter)

@@ -7,21 +7,17 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 )
 
-func parseFrameworks(ctx context.Context, store transaction.Store, frameworks []int32) (result []repository.Framework, err error) {
+func parseFrameworks(ctx context.Context, store transaction.Store, accountID string) (result []repository.Framework, err error) {
+	frameworks, err := store.ListAccountFrameworksByUserID(ctx, accountID)
+	if err != nil {
+		return
+	}
 	for _, framework := range frameworks {
-		fw, err := store.GetFrameworksByID(ctx, framework)
-		if err != nil {
-			return result, err
-		}
-		result = append(result, repository.Framework{TechTagID: fw.TechTagID, FrameworkID: fw.FrameworkID, Framework: fw.Framework})
+		result = append(result, repository.Framework{
+			FrameworkID: framework.FrameworkID.Int32,
+			TechTagID:   framework.TechTagID.Int32,
+			Framework:   framework.Framework.String,
+		})
 	}
 	return
-}
-
-func accountFWStruct(fws []repository.ListAccountFrameworksByUserIDRow) []int32 {
-	var result []int32
-	for _, fw := range fws {
-		result = append(result, fw.FrameworkID.Int32)
-	}
-	return result
 }

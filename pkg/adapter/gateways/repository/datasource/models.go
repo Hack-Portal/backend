@@ -23,6 +23,9 @@ type Account struct {
 	UpdateAt        time.Time      `json:"update_at"`
 	IsDelete        bool           `json:"is_delete"`
 	Email           string         `json:"email"`
+	TwitterLink     sql.NullString `json:"twitter_link"`
+	GithubLink      sql.NullString `json:"github_link"`
+	DiscordLink     sql.NullString `json:"discord_link"`
 }
 
 type AccountFramework struct {
