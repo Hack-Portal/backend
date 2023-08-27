@@ -56,8 +56,8 @@ func main() {
 
 	timeout := time.Duration(times) * time.Second
 
-	// gin.SetMode(gin.ReleaseMode)
-	// gin.DisableConsoleColor()
+	gin.SetMode(gin.ReleaseMode)
+	gin.DisableConsoleColor()
 	gin := gin.Default()
 
 	route.Setup(&env, timeout, store, gin)
