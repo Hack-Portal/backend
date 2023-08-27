@@ -1,3 +1,8 @@
+-- name: GetRoomsAccountsRolesIDByIDs :one
+SELECT rooms_accounts_id
+FROM rooms_accounts
+WHERE room_id = $1
+  AND account_id = $2;
 -- name: CreateRoomsAccountsRoles :one
 INSERT INTO rooms_accounts_roles (rooms_account_id, role_id)
 VALUES ($1, $2)
