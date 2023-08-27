@@ -193,9 +193,9 @@ func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAcco
 
 func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args domain.RoomAccountRoleByIDParam) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
-
 		arg := repository.ListRoomsAccountsRolesByIDParams{
-			RoomsAccountID: args.RoomsAccountID,
+			RoomID:    args.RoomID,
+			AccountID: args.AccountID,
 		}
 		roles, err := q.ListRoomsAccountsRolesByID(ctx, arg)
 		if err != nil {
@@ -204,9 +204,15 @@ func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args domain.R
 		if checkRoles(roles, args.RoleID) {
 			return errors.New("そのロールはすでに付与されている。")
 		}
-
+		id, err := q.GetRoomsAccountsRolesIDByIDs(ctx, repository.GetRoomsAccountsRolesIDByIDsParams{
+			RoomID:    args.RoomID,
+			AccountID: args.AccountID,
+		})
+		if err != nil {
+			return err
+		}
 		_, err = q.CreateRoomsAccountsRoles(ctx, repository.CreateRoomsAccountsRolesParams{
-			RoomsAccountID: args.RoomsAccountID,
+			RoomsAccountID: id,
 			RoleID:         args.RoleID,
 		})
 		if err != nil {

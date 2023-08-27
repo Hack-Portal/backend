@@ -342,8 +342,9 @@ func (rc *RoomController) AddRoomAccountRole(ctx *gin.Context) {
 	}
 
 	if err := rc.RoomUsecase.AddRoomAccountRole(ctx, domain.RoomAccountRoleByIDParam{
-		RoomsAccountID: reqURI.RoomsAccountID,
-		RoleID:         reqBody.RoleID,
+		RoomID:    reqURI.RoomID,
+		AccountID: reqBody.AccountID,
+		RoleID:    reqBody.RoleID,
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
