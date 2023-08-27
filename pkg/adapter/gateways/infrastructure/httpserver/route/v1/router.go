@@ -20,16 +20,17 @@ func setupCors(router *gin.Engine) {
 	router.Use(cors.New(config))
 }
 
-func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, route *gin.Engine) {
-	setupCors(route)
-	route.Use(nrgin.Middleware(apm.NewApm(env)))
-	publicRouter := route.Group("/v1").Use(middleware.CheckJWT())
+func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
+	setupCors(gin)
+	gin.Use(nrgin.Middleware(apm.NewApm(env)))
+
+	publicRouter := gin.Group("/v1").Use(middleware.CheckJWT())
 	// All Public APIs
 	NewEtcRouter(env, timeout, store, publicRouter)
 	NewHackathonRouter(env, timeout, store, publicRouter)
 	setupSwagger(publicRouter)
 
-	protectRouter := route.Group("/v1").Use(middleware.AuthMiddleware())
+	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware())
 	// All Protect APIs
 	NewAccountRouter(env, timeout, store, protectRouter, publicRouter)
 	NewLikeRouter(env, timeout, store, protectRouter)
