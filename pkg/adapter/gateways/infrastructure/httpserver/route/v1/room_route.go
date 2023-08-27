@@ -27,4 +27,7 @@ func NewRoomRouter(env *bootstrap.Env, timeout time.Duration, store transaction.
 	group.POST("/rooms/:room_id/members", roomController.AddAccountInRoom)
 	group.DELETE("/rooms/:room_id/members", roomController.RemoveAccountInRoom)
 	group.POST("/rooms/:room_id/addchat", roomController.AddChat)
+
+	group.POST("/rooms/:room_id/roles", roomController.AddRoomAccountRole)
+	group.PUT("/rooms/:room_id/roles", roomController.UpdateRoomAccountRole)
 }
