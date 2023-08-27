@@ -2,16 +2,22 @@
 
 ## 動作環境
 
+### 必須環境
+
 - docker
-- docker-compose
-- make
-- go 1.20.6
+- go 1.20
+- go-migrations
+
+### 推奨環境
+
+- docker
+- go 1.20.7
+- go-migrations
 - gin
 - swag
-- go-migrations
-- swagger
+- make
 
-## ローカルでの動かし方
+## ローカルでのセットアップ
 
 1. 動作環境を整える
 2. 任意の新規フォルダにて以下のコマンドを実行して、リポジトリをクローンする
@@ -27,8 +33,9 @@ make postgresRun
 make postgresStart
 make resetdb
 make migrateup
-make serverRun
 ```
+
+4. app.env を記述する
 
 ## memo
 
