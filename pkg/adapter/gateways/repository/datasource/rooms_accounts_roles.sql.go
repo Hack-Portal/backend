@@ -67,6 +67,37 @@ SELECT roles.role_id,
   roles.role
 FROM roles
   LEFT OUTER JOIN rooms_accounts_roles ON rooms_accounts_roles.role_id = roles.role_id
+WHERE rooms_accounts_roles.rooms_account_id = $1
+`
+
+func (q *Queries) ListRoomsAccountsRolesByID(ctx context.Context, roomsAccountID int32) ([]Role, error) {
+	rows, err := q.db.QueryContext(ctx, listRoomsAccountsRolesByID, roomsAccountID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Role{}
+	for rows.Next() {
+		var i Role
+		if err := rows.Scan(&i.RoleID, &i.Role); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listRoomsAccountsRolesByIDs = `-- name: ListRoomsAccountsRolesByIDs :many
+SELECT roles.role_id,
+  roles.role
+FROM roles
+  LEFT OUTER JOIN rooms_accounts_roles ON rooms_accounts_roles.role_id = roles.role_id
 WHERE rooms_accounts_roles.rooms_account_id = (
     SELECT rooms_account_id
     FROM rooms_accounts
@@ -75,13 +106,13 @@ WHERE rooms_accounts_roles.rooms_account_id = (
   )
 `
 
-type ListRoomsAccountsRolesByIDParams struct {
+type ListRoomsAccountsRolesByIDsParams struct {
 	RoomID    string `json:"room_id"`
 	AccountID string `json:"account_id"`
 }
 
-func (q *Queries) ListRoomsAccountsRolesByID(ctx context.Context, arg ListRoomsAccountsRolesByIDParams) ([]Role, error) {
-	rows, err := q.db.QueryContext(ctx, listRoomsAccountsRolesByID, arg.RoomID, arg.AccountID)
+func (q *Queries) ListRoomsAccountsRolesByIDs(ctx context.Context, arg ListRoomsAccountsRolesByIDsParams) ([]Role, error) {
+	rows, err := q.db.QueryContext(ctx, listRoomsAccountsRolesByIDs, arg.RoomID, arg.AccountID)
 	if err != nil {
 		return nil, err
 	}
