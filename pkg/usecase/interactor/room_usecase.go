@@ -111,11 +111,6 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 	defer cancel()
 
 	body.RoomID = uuid.New().String()
-	// チャットルームの初期化
-	_, err = ru.store.InitChatRoom(ctx, body.RoomID)
-	if err != nil {
-		return
-	}
 
 	room, err := ru.store.CreateRoomTx(ctx, body)
 	if err != nil {
@@ -209,9 +204,9 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) e
 	if err != nil {
 		return err
 	}
-	_, err = ru.store.WriteFireStore(ctx, domain.WriteFireStoreParam{
+	_, err = ru.store.CreateSubCollection(ctx, domain.WriteFireStoreParam{
 		RoomID:  body.RoomID,
-		Index:   len(data) + 1,
+		Index:   data + 1,
 		UID:     body.AccountID,
 		Message: body.Message,
 	})
