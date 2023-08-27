@@ -193,11 +193,11 @@ func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAcco
 
 func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args domain.RoomAccountRoleByIDParam) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
-		arg := repository.ListRoomsAccountsRolesByIDParams{
+		arg := repository.ListRoomsAccountsRolesByIDsParams{
 			RoomID:    args.RoomID,
 			AccountID: args.AccountID,
 		}
-		roles, err := q.ListRoomsAccountsRolesByID(ctx, arg)
+		roles, err := q.ListRoomsAccountsRolesByIDs(ctx, arg)
 		if err != nil {
 			return err
 		}
@@ -215,6 +215,53 @@ func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args domain.R
 			RoomsAccountID: id,
 			RoleID:         args.RoleID,
 		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return err
+}
+
+func (store *SQLStore) UpdateRoomsAccountRoleByID(ctx context.Context, args domain.UpdateRoomAccountRoleByIDParam) error {
+	err := store.execTx(ctx, func(q *repository.Queries) error {
+
+		id, err := q.GetRoomsAccountsRolesIDByIDs(ctx, repository.GetRoomsAccountsRolesIDByIDsParams{
+			RoomID:    args.RoomID,
+			AccountID: args.AccountID,
+		})
+		if err != nil {
+			return err
+		}
+		arg := repository.ListRoomsAccountsRolesByIDsParams{
+			RoomID:    args.RoomID,
+			AccountID: args.AccountID,
+		}
+		roles, err := store.ListRoomsAccountsRolesByIDs(ctx, arg)
+		if err != nil {
+			return err
+		}
+		for _, role := range roles {
+			err = q.DeleteRoomsAccountsRolesByID(ctx, repository.DeleteRoomsAccountsRolesByIDParams{
+				RoomsAccountID: id,
+				RoleID:         role.RoleID,
+			})
+			if err != nil {
+				return err
+			}
+		}
+
+		for _, roleID := range args.RoleID {
+			_, err = q.CreateRoomsAccountsRoles(ctx, repository.CreateRoomsAccountsRolesParams{
+				RoomsAccountID: id,
+				RoleID:         roleID,
+			})
+			if err != nil {
+				return err
+			}
+		}
+
 		if err != nil {
 			return err
 		}

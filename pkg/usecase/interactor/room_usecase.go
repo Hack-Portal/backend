@@ -242,24 +242,16 @@ func (ru *roomUsecase) AddRoomAccountRole(ctx context.Context, body domain.RoomA
 	return ru.store.AddRoomAccountRoleByID(ctx, body)
 }
 
-func (ru *roomUsecase) DeleteRoomAccountRole(ctx context.Context, body domain.RoomAccountRoleByIDParam) (err error) {
+func (ru *roomUsecase) UpdateRoomAccountRole(ctx context.Context, body domain.UpdateRoomAccountRoleByIDParam) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	err = ru.store.DeleteRoomsAccountsRolesByID(ctx, repository.DeleteRoomsAccountsRolesByIDParams{
-		RoomsAccountID: body.RoomsAccountID,
-		RoleID:         body.RoleID,
-	})
-	return
+	return ru.store.UpdateRoomsAccountRoleByID(ctx, body)
 }
 
-func parseRoles(ctx context.Context, store transaction.Store, RoomsAccountID int32) (result []repository.Role, err error) {
-	arg := repository.ListRoomsAccountsRolesByIDParams{
-		RoomsAccountID: RoomsAccountID,
-		Limit:          255,
-		Offset:         0,
-	}
-	roles, err := store.ListRoomsAccountsRolesByID(ctx, arg)
+func parseRoles(ctx context.Context, store transaction.Store, id int32) (result []repository.Role, err error) {
+
+	roles, err := store.ListRoomsAccountsRolesByID(ctx, id)
 	if err != nil {
 		return
 	}

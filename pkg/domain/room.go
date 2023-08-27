@@ -136,6 +136,17 @@ type RoomAccountRoleByIDParam struct {
 	RoleID    int32  `json:"role_id"`
 }
 
+type UpdateRoomAccountRoleByIDParam struct {
+	RoomID    string  `json:"room_id"`
+	AccountID string  `json:"account_id"`
+	RoleID    []int32 `json:"role_id"`
+}
+
+type UpdateRoomAccountRoleRequestBody struct {
+	AccountID string  `json:"account_id"`
+	RoleID    []int32 `json:"role_id"`
+}
+
 type RoomAccountRoleByIDRequestBody struct {
 	AccountID string `json:"account_id"`
 	RoleID    int32  `json:"role_id"`
