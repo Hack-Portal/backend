@@ -1,5 +1,5 @@
 -- name: GetRoomsAccountsRolesIDByIDs :one
-SELECT rooms_accounts_id
+SELECT rooms_account_id
 FROM rooms_accounts
 WHERE room_id = $1
   AND account_id = $2;
@@ -13,7 +13,7 @@ SELECT roles.role_id,
 FROM roles
   LEFT OUTER JOIN rooms_accounts_roles ON rooms_accounts_roles.role_id = roles.role_id
 WHERE rooms_accounts_roles.rooms_account_id = (
-    SELECT rooms_accounts_id
+    SELECT rooms_account_id
     FROM rooms_accounts
     WHERE room_id = $1
       AND account_id = $2
