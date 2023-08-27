@@ -77,6 +77,7 @@ func (store *SQLStore) ReadDocsByRoomID(ctx context.Context, roomID string) (int
 // firebaseCloudStorageに画像を上げる
 func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, string, error) {
 	filename, err := uuid.NewGen().NewV7()
+	print("test1")
 	if err != nil {
 		return "", "", err
 	}
@@ -97,7 +98,6 @@ func (store *SQLStore) UploadImage(ctx context.Context, file []byte) (string, st
 	if _, err := wc.Write(file); err != nil {
 		return "", "", fmt.Errorf("createFile:file %v: %v", filename, err)
 	}
-
 	if err := wc.Close(); err != nil {
 		return "", "", fmt.Errorf("createFile:file %v: %v", filename, err)
 	}

@@ -1,10 +1,5 @@
 package jwt
 
-import (
-	"errors"
-	"time"
-)
-
 type jwtDecodeInterface interface {
 	DecomposeFB(string) ([]string, error)
 	DecodeClaimFB(string) (*FireBaseCustomToken, error)
@@ -32,9 +27,9 @@ func ValidJWTtoken(token string) (*FireBaseCustomToken, error) {
 		return nil, err
 	}
 
-	if payload.Expires-time.Now().Unix() < 0 {
-		return nil, errors.New("トークンの期限きれてんで？")
-	}
+	// if payload.Expires-time.Now().Unix() < 0 {
+	// 	return nil, errors.New("トークンの期限きれてんで？")
+	// }
 
 	return payload, nil
 }
