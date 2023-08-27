@@ -39,7 +39,7 @@ func main() {
 	}
 
 	firebaseconfig := &firebase.Config{
-		StorageBucket: "hackthon-geek-v6.appspot.com",
+		StorageBucket: "hack-portal-2.appspot.com",
 	}
 
 	serviceAccount := option.WithCredentialsFile("./serviceAccount.json")
