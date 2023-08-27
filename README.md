@@ -14,7 +14,13 @@
 ## ローカルでの動かし方
 
 1. 動作環境を整える
-2. 任意の新規フォルダにて以下のコマンドを実行する
+2. 任意の新規フォルダにて以下のコマンドを実行して、リポジトリをクローンする
+
+```bash
+git clone https://github.com/Hack-Hack-geek-Vol6/backend
+```
+
+3. 以下のコマンドを実行する  
 
 ```bash
 make postgresRun
