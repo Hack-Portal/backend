@@ -13,30 +13,25 @@ import (
 
 const (
 	FireStoreChatRoomCollectionName = "chatrooms"
+	FireStoreSubCollectionName      = "messages"
 )
 
-// fireStoreにデータを追加する
-func (store *SQLStore) WriteFireStore(ctx context.Context, arg domain.WriteFireStoreParam) (*firestore.WriteResult, error) {
-	update := []firestore.Update{
-		{
-			Path: fmt.Sprint(arg.Index),
-			Value: domain.ChatRoomsWrite{
-				UID:       arg.UID,
-				Message:   arg.Message,
-				CreatedAt: time.Now(),
-			},
-		},
-	}
+func (store *SQLStore) CreateSubCollection(ctx context.Context, arg domain.WriteFireStoreParam) (*firestore.WriteResult, error) {
+	var update []firestore.Update
 	client, err := store.App.Firestore(ctx)
 	if err != nil {
 		return nil, err
 	}
-	result, err := client.Collection(FireStoreChatRoomCollectionName).Doc(arg.RoomID).Update(ctx, update)
-	if err != nil {
-		return nil, err
-	}
 
-	return result, nil
+	update = append(update, firestore.Update{
+		Path: fmt.Sprint(arg.Index),
+		Value: domain.ChatRoomsWrite{
+			UID:       arg.UID,
+			Message:   arg.Message,
+			CreatedAt: time.Now(),
+		},
+	})
+	return client.Collection(FireStoreChatRoomCollectionName).Doc(arg.RoomID).Collection(FireStoreChatRoomCollectionName).Doc(string(arg.Index)).Update(ctx, update)
 }
 
 // 初期化する

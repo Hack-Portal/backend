@@ -209,7 +209,7 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) e
 	if err != nil {
 		return err
 	}
-	_, err = ru.store.WriteFireStore(ctx, domain.WriteFireStoreParam{
+	_, err = ru.store.CreateSubCollection(ctx, domain.WriteFireStoreParam{
 		RoomID:  body.RoomID,
 		Index:   len(data) + 1,
 		UID:     body.AccountID,
