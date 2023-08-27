@@ -120,7 +120,6 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 			err := errors.New("そんなユーザ/ルームないで")
 			ctx.JSON(http.StatusForbidden, errorResponse(err))
 		default:
-			err := errors.New("すまんサーバエラーや")
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		}
 		return
@@ -353,7 +352,6 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 			err := errors.New("そんなユーザおらんがな")
 			ctx.JSON(http.StatusForbidden, errorResponse(err))
 		default:
-			err := errors.New("すまんサーバエラーや")
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		}
 		return
