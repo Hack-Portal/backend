@@ -43,13 +43,32 @@ func (q *Queries) DeleteRoomsAccountsRolesByID(ctx context.Context, arg DeleteRo
 	return err
 }
 
+const getRoomsAccountsRolesIDByIDs = `-- name: GetRoomsAccountsRolesIDByIDs :one
+SELECT rooms_account_id
+FROM rooms_accounts
+WHERE room_id = $1
+  AND account_id = $2
+`
+
+type GetRoomsAccountsRolesIDByIDsParams struct {
+	RoomID    string `json:"room_id"`
+	AccountID string `json:"account_id"`
+}
+
+func (q *Queries) GetRoomsAccountsRolesIDByIDs(ctx context.Context, arg GetRoomsAccountsRolesIDByIDsParams) (int32, error) {
+	row := q.db.QueryRowContext(ctx, getRoomsAccountsRolesIDByIDs, arg.RoomID, arg.AccountID)
+	var rooms_account_id int32
+	err := row.Scan(&rooms_account_id)
+	return rooms_account_id, err
+}
+
 const listRoomsAccountsRolesByID = `-- name: ListRoomsAccountsRolesByID :many
 SELECT roles.role_id,
   roles.role
 FROM roles
   LEFT OUTER JOIN rooms_accounts_roles ON rooms_accounts_roles.role_id = roles.role_id
 WHERE rooms_accounts_roles.rooms_account_id = (
-    SELECT rooms_accounts_id
+    SELECT rooms_account_id
     FROM rooms_accounts
     WHERE room_id = $1
       AND account_id = $2

@@ -57,6 +57,7 @@ type Querier interface {
 	GetPastWorksByOpus(ctx context.Context, opus int32) (PastWork, error)
 	GetRolesByID(ctx context.Context, roleID int32) (Role, error)
 	GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error)
+	GetRoomsAccountsRolesIDByIDs(ctx context.Context, arg GetRoomsAccountsRolesIDByIDsParams) (int32, error)
 	GetRoomsByID(ctx context.Context, roomID string) (Room, error)
 	GetStatusTagsByTag(ctx context.Context, statusID int32) (StatusTag, error)
 	GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error)
