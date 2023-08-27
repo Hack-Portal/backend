@@ -10,10 +10,23 @@ import (
 )
 
 const (
-	AuthorizationHeaderKey = "dbauthorization"
-	AuthorizationType      = "dbauthorization_type"
-	AuthorizationClaimsKey = "authorization_claim"
+	AuthorizationHeaderKey     = "dbauthorization"
+	AuthorizationType          = "dbauthorization_type"
+	AuthorizationClaimsKey     = "authorization_claim"
+	AuthorizationKeyNotInclude = "authorization_not_include"
 )
+
+func CheckJWT() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
+		if len(authorizationHeader) == 0 {
+			ctx.Set(AuthorizationKeyNotInclude, true)
+		} else {
+			DecodeJwt(ctx, authorizationHeader, false)
+		}
+
+	}
+}
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -25,60 +38,23 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		fields := strings.Fields(authorizationHeader)
-		if len(fields) < 1 {
-			err := errors.New("invalid authorization header format")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
-
-		accessToken := fields[0]
-		hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
-
-		payload, err := jwt.JwtDecode.DecodeClaimFB(hCS[1])
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
-
-		ctx.Set(AuthorizationClaimsKey, payload)
-		ctx.Next()
+		DecodeJwt(ctx, authorizationHeader, false)
 	}
 }
 
-func DecodeJwt(ctx *gin.Context) {
-	authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
-
-	if len(authorizationHeader) == 0 {
-		err := errors.New("authorization header is not provided")
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-
-	fields := strings.Fields(authorizationHeader)
+func DecodeJwt(ctx *gin.Context, header string, auth bool) {
+	fields := strings.Fields(header)
 	if len(fields) < 1 {
-		err := errors.New("invalid authorization header format")
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization header format"})
 		return
 	}
 
 	accessToken := fields[0]
-	hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
+	payload, err := jwt.ValidJWTtoken(accessToken)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
 	}
-
-	payload, err := jwt.JwtDecode.DecodeClaimFB(hCS[1])
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-
+	ctx.Set(AuthorizationKeyNotInclude, auth)
 	ctx.Set(AuthorizationClaimsKey, payload)
 	ctx.Next()
 }

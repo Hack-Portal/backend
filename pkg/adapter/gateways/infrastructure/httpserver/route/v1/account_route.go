@@ -11,7 +11,7 @@ import (
 )
 
 // アカウントのルーティングを定義する
-func NewAccountRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes, public *gin.RouterGroup) {
+func NewAccountRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group, public gin.IRoutes) {
 	accountController := controller.AccountController{
 		AccountUsecase: usecase.NewAccountUsercase(store, timeout),
 		Env:            env,

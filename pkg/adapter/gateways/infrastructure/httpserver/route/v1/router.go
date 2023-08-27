@@ -24,14 +24,13 @@ func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, g
 	setupCors(gin)
 	gin.Use(nrgin.Middleware(apm.NewApm(env)))
 
-	publicRouter := gin.Group("/v1")
+	publicRouter := gin.Group("/v1").Use(middleware.CheckJWT())
 	// All Public APIs
 	NewEtcRouter(env, timeout, store, publicRouter)
 	NewHackathonRouter(env, timeout, store, publicRouter)
 	setupSwagger(publicRouter)
 
 	protectRouter := gin.Group("/v1").Use(middleware.AuthMiddleware())
-	//TODO:middlewareの追加
 	// All Protect APIs
 	NewAccountRouter(env, timeout, store, protectRouter, publicRouter)
 	NewLikeRouter(env, timeout, store, protectRouter)

@@ -12,7 +12,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func NewEtcRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group *gin.RouterGroup) {
+func NewEtcRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes) {
 	etcController := controller.EtcController{
 		EtcUsecase: usecase.NewEtcUsercase(store, timeout),
 		Env:        env,
@@ -25,6 +25,6 @@ func NewEtcRouter(env *bootstrap.Env, timeout time.Duration, store transaction.S
 	group.GET("/status_tags", etcController.ListStatusTags)
 }
 
-func setupSwagger(group *gin.RouterGroup) {
+func setupSwagger(group gin.IRoutes) {
 	group.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }

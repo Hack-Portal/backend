@@ -10,7 +10,7 @@ import (
 	usecase "github.com/hackhack-Geek-vol6/backend/pkg/usecase/interactor"
 )
 
-func NewHackathonRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group *gin.RouterGroup) {
+func NewHackathonRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes) {
 	hackathonController := controller.HackathonController{
 		HackathonUsecase: usecase.NewHackathonUsercase(store, timeout),
 		Env:              env,

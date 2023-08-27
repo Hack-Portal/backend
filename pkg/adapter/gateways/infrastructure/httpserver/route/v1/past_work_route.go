@@ -10,7 +10,7 @@ import (
 	usecase "github.com/hackhack-Geek-vol6/backend/pkg/usecase/interactor"
 )
 
-func NewPastWorkRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes, public *gin.RouterGroup) {
+func NewPastWorkRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group, public gin.IRoutes) {
 	PastWorkController := controller.PastWorkController{
 		PastWorkUsecase: usecase.NewPastWorkUsercase(store, timeout),
 		Env:             env,

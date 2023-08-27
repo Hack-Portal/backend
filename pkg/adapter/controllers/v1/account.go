@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
@@ -141,33 +140,9 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	authorizationHeader := ctx.GetHeader(middleware.AuthorizationHeaderKey)
-	if len(authorizationHeader) != 0 {
-		if len(authorizationHeader) == 0 {
-			err := errors.New("authorization header is not provided")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
 
-		fields := strings.Fields(authorizationHeader)
-		if len(fields) < 1 {
-			err := errors.New("invalid authorization header format")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
-
-		accessToken := fields[0]
-		hCS, err := jwt.JwtDecode.DecomposeFB(accessToken)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
-
-		payload, err = jwt.JwtDecode.DecodeClaimFB(hCS[1])
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
+	if !ctx.MustGet(middleware.AuthorizationKeyNotInclude).(bool) {
+		payload = ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 	}
 
 	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID, payload)
