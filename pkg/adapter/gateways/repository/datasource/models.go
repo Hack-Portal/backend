@@ -144,15 +144,16 @@ type Role struct {
 }
 
 type Room struct {
-	RoomID      string    `json:"room_id"`
-	HackathonID int32     `json:"hackathon_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	MemberLimit int32     `json:"member_limit"`
-	IncludeRate bool      `json:"include_rate"`
-	CreateAt    time.Time `json:"create_at"`
-	UpdateAt    time.Time `json:"update_at"`
-	IsDelete    bool      `json:"is_delete"`
+	RoomID      string       `json:"room_id"`
+	HackathonID int32        `json:"hackathon_id"`
+	Title       string       `json:"title"`
+	Description string       `json:"description"`
+	MemberLimit int32        `json:"member_limit"`
+	IncludeRate bool         `json:"include_rate"`
+	CreateAt    time.Time    `json:"create_at"`
+	UpdateAt    time.Time    `json:"update_at"`
+	IsDelete    bool         `json:"is_delete"`
+	IsClosing   sql.NullBool `json:"is_closing"`
 }
 
 type RoomsAccount struct {
