@@ -7,6 +7,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -163,18 +164,20 @@ SET hackathon_id = $1,
     title = $2,
     description = $3,
     member_limit = $4,
-    update_at = $5
-WHERE room_id = $6
+    update_at = $5,
+    is_closing = $6
+WHERE room_id = $7
 RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 `
 
 type UpdateRoomsByIDParams struct {
-	HackathonID int32     `json:"hackathon_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	MemberLimit int32     `json:"member_limit"`
-	UpdateAt    time.Time `json:"update_at"`
-	RoomID      string    `json:"room_id"`
+	HackathonID int32        `json:"hackathon_id"`
+	Title       string       `json:"title"`
+	Description string       `json:"description"`
+	MemberLimit int32        `json:"member_limit"`
+	UpdateAt    time.Time    `json:"update_at"`
+	IsClosing   sql.NullBool `json:"is_closing"`
+	RoomID      string       `json:"room_id"`
 }
 
 func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams) (Room, error) {
@@ -184,6 +187,7 @@ func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams
 		arg.Description,
 		arg.MemberLimit,
 		arg.UpdateAt,
+		arg.IsClosing,
 		arg.RoomID,
 	)
 	var i Room
