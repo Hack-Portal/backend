@@ -96,6 +96,22 @@ func TestUpdateRoomTx(t *testing.T) {
 			checkResult: func(t *testing.T, arg domain.UpdateRoomParam, room repository.Room, err error) {
 				require.Error(t, err)
 			},
+		}, {
+			name: "success - close room",
+			arg: domain.UpdateRoomParam{
+				RoomID:     room.RoomID,
+				IsClosing:  true,
+				OwnerEmail: owner.Email,
+			},
+			checkResult: func(t *testing.T, arg domain.UpdateRoomParam, room repository.Room, err error) {
+				require.NoError(t, err)
+				require.NotEmpty(t, room)
+
+				require.Equal(t, arg.RoomID, room.RoomID)
+				require.Equal(t, false, room.IsDelete)
+				require.NotZero(t, room.CreateAt)
+				require.NotZero(t, room.UpdateAt)
+			},
 		},
 	}
 	for _, tc := range testCases {

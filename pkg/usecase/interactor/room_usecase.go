@@ -53,6 +53,7 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRequest) 
 				RoomID:      room.RoomID,
 				Title:       room.Title,
 				MemberLimit: room.MemberLimit,
+				IsClosing:   room.IsClosing.Bool,
 				CreatedAt:   room.CreateAt,
 			},
 			Hackathon: domain.ListRoomHackathonInfo{
@@ -303,8 +304,8 @@ func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, ha
 		MemberLimit: room.MemberLimit,
 		IsDelete:    room.IsDelete,
 		Hackathon:   hackathon,
-
-		NowMember: response.NowMember,
+		IsClosing:   room.IsClosing.Bool,
+		NowMember:   response.NowMember,
 	}
 }
 
