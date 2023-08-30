@@ -87,6 +87,7 @@ type UpdateRoomRequestBody struct {
 	Description string `json:"description"`
 	MemberLimit int32  `json:"member_limit"`
 	HackathonID int32  `json:"hackathonID"`
+	IsClosing   bool   `json:"is_closing"`
 }
 
 type CreateRoomParam struct {

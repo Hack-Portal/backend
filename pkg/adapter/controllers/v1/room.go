@@ -169,6 +169,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 		HackathonID: reqBody.HackathonID,
 		MemberLimit: reqBody.MemberLimit,
 		OwnerEmail:  payload.Email,
+		IsClosing:   reqBody.IsClosing,
 	})
 	if err != nil {
 		switch err.Error() {
