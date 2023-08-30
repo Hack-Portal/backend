@@ -1,12 +1,15 @@
-version: "1"
-packages:
-  - name: "db"
-    path: "./db/sqlc/"
-    queries: "./db/query/"
-    schema: "./db/migration/"
+version: "2"
+sql:
+  - queries: "./pkg/adapter/gateways/datasource/"
+    schema: "./cmd/migrations/"
     engine: "postgresql"
-    emit_json_tags: true
-    emit_prepared_queries: false
-    emit_interface: true
-    emit_exact_table_names: true
-    emit_empty_slices: true
+    gen:
+      go:
+        package: "repository"
+        out: "./pkg/adapter/gateways/repository/datasource/"
+        emit_json_tags: true
+        emit_prepared_queries: false
+        emit_interface: true
+        emit_exact_table_names: false
+        emit_empty_slices: true
+        emit_pointers_for_null_types: true

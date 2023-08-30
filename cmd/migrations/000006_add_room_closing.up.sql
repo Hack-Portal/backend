@@ -1,0 +1,1 @@
+ALTER TABLE rooms ADD COLUMN is_closing BOOLEAN;

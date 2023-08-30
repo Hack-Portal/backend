@@ -1,8 +1,9 @@
-name: Deploy to production
+name: Deploy to Staging
 
 on:
   push:
     branches: [ master ]
+
 permissions:
   actions: write
   checks: write
@@ -45,22 +46,40 @@ jobs:
       run: |
         docker build ./ -t ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}
         docker push ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}
-    - name: Install yq
-      run: |
-        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-        sudo chmod a+x /usr/local/bin/yq
 
-    - name: Push to Repo
-      run: |
-        git config --global user.email ${{ secrets.EMAIL_GITHUB }}
-        git config --global user.name ${{ secrets.USERNAME_GITHUB }}
-        
-        cd config/manifest/product
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
 
-        yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'deployment.yaml'
+      - name: Checkout another repo
+        uses: actions/checkout@v3
+        with:
+          repository: Hack-Hack-geek-Vol6/k8s-config
+          token: ${{ secrets.GH_PAT }}
+          ref: master
+          path: configs
+          
+    
+      - name: Change manifest
+        run: |
+          cd configs/config/manifest/product
+          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.run_number }}"' 'deployment.yaml'
+      
+      - name: push repository
+        run: |
+          cd configs
+          git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
+          git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
 
-        if (git diff --shortstat | grep '[0-9]'); then \
-          git add .; \
-          git commit -m "Updated by GitHub Actions"; \
-          git push origin master; \
-        fi
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git add .; \
+            git commit -m "GitHub Action Push"; \
+            git push origin master; \
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}

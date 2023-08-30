@@ -28,6 +28,9 @@ const docTemplate = `{
         "/accounts": {
             "post": {
                 "description": "Create an account from the requested body",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -37,138 +40,40 @@ const docTemplate = `{
                 "summary": "Create new account",
                 "parameters": [
                     {
-                        "description": "Create Account Request Body",
-                        "name": "CreateAccountRequestBody",
+                        "description": "Create Account Request",
+                        "name": "CreateAccountRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.CreateAccountRequestBody"
+                            "$ref": "#/definitions/domain.CreateAccountRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "create succsss response",
+                        "description": "create success response",
                         "schema": {
-                            "$ref": "#/definitions/api.CreateAccountResponses"
+                            "$ref": "#/definitions/domain.AccountResponses"
                         }
                     },
                     "400": {
                         "description": "bad request response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "server error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/accounts/:from_user_id/follow": {
-            "post": {
-                "description": "Follow!!!!!!!!",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Create Follow",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Accounts API wildcard",
-                        "name": "from_user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "create Follow Request Body",
-                        "name": "CreateFollowRequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.CreateFollowRequestBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "succsss response",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.Follows"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Unfollow",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Remove follow",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Accounts API wildcard",
-                        "name": "from_user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "name": "to_user_id",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "succsss response",
-                        "schema": {
-                            "$ref": "#/definitions/api.DeleteResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/accounts/:user_id": {
+        "/accounts/{account_id}": {
             "get": {
-                "description": "Return a user from the id specified in the path",
+                "description": "Return a account from the id specified in the path",
                 "produces": [
                     "application/json"
                 ],
@@ -180,7 +85,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Accounts API wildcard",
-                        "name": "user_id",
+                        "name": "account_id",
                         "in": "path",
                         "required": true
                     }
@@ -189,25 +94,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Get success response",
                         "schema": {
-                            "$ref": "#/definitions/api.GetAccountResponses"
+                            "$ref": "#/definitions/domain.AccountResponses"
                         }
                     },
                     "400": {
                         "description": "bad request response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "server error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
             },
             "put": {
-                "description": "Update user info from requested body",
+                "description": "Update account info from requested body",
                 "produces": [
                     "application/json"
                 ],
@@ -219,37 +124,37 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Accounts API wildcard",
-                        "name": "user_id",
+                        "name": "account_id",
                         "in": "path",
                         "required": true
                     },
                     {
                         "description": "Update Account Request Body",
-                        "name": "UpdateAccountRequestBody",
+                        "name": "UpdateAccountRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.UpdateAccountRequestBody"
+                            "$ref": "#/definitions/domain.UpdateAccountRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Update succsss response",
+                        "description": "Update success response",
                         "schema": {
-                            "$ref": "#/definitions/api.UpdateAccountResponse"
+                            "$ref": "#/definitions/domain.AccountResponses"
                         }
                     },
                     "400": {
                         "description": "bad request response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "server error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -267,154 +172,313 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Accounts API wildcard",
-                        "name": "user_id",
+                        "name": "account_id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "delete success response",
                         "schema": {
-                            "$ref": "#/definitions/api.DeleteResponse"
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "bad request response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "server error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/bookmarks": {
-            "post": {
-                "description": "Create a bookmark from the specified hackathon ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Bookmark"
-                ],
-                "summary": "Create new bookmark",
-                "parameters": [
-                    {
-                        "description": "Create Bookmark Request Body",
-                        "name": "CreateBookmarkRequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.CreateBookmarkRequestBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "create succsss response",
-                        "schema": {
-                            "$ref": "#/definitions/api.BookmarkResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "server error response",
-                        "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/bookmarks/:hackathon_id": {
+        "/accounts/{account_id}/rate": {
             "get": {
-                "description": "Get my bookmarks",
+                "description": "List Rate for User",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Bookmark"
+                    "Rate"
                 ],
-                "summary": "Get bookmarks",
+                "summary": "List Rate",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Delete Bookmark Request Body",
-                        "name": "ListBookmarkRequestQueries",
-                        "in": "formData",
+                        "description": "Account ID",
+                        "name": "account_id",
+                        "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/api.BookmarkResponse"
+                                "$ref": "#/definitions/domain.AccountRateResponse"
                             }
                         }
                     },
                     "400": {
-                        "description": "bad request response",
+                        "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "server error response",
+                        "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Rate for User",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rate"
+                ],
+                "summary": "Create Rate",
+                "parameters": [
+                    {
+                        "description": "Create Rate Request Body",
+                        "name": "CreateRateRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateRateRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{account_id}/rooms": {
+            "get": {
+                "description": "Get Join Room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get Join Room",
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.GetJoinRoomResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{from_account_id}/follow": {
+            "get": {
+                "description": "Get follow account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "from_account_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "mode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.FollowResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Follow!!!!!!!!",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create Follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Accounts API wildcard",
+                        "name": "from_account_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "create Follow Request Body",
+                        "name": "CreateFollowRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateFollowRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.FollowResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
             },
             "delete": {
-                "description": "Delete the bookmark of the specified hackathon ID",
+                "description": "Remove follow account",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Bookmark"
+                    "Accounts"
                 ],
-                "summary": "Delete bookmark",
+                "summary": "Remove follow",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Delete Bookmark Request Body",
-                        "name": "hackathon_id",
+                        "description": "Accounts API wildcard",
+                        "name": "from_account_id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "account_id",
+                        "in": "query",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "delete succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/api.BookmarkResponse"
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
-                        "description": "bad request response",
+                        "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "server error response",
+                        "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -422,28 +486,28 @@ const docTemplate = `{
         },
         "/frameworks": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Framewroks"
+                    "Frameworks"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.Frameworks"
+                                "$ref": "#/definitions/repository.Framework"
                             }
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -463,39 +527,39 @@ const docTemplate = `{
                     {
                         "type": "boolean",
                         "name": "expired",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "name": "page_id",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "name": "page_size",
-                        "in": "formData"
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/api.HackathonResponses"
+                                "$ref": "#/definitions/domain.HackathonResponses"
                             }
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -516,33 +580,33 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.CreateHackathonRequestBody"
+                            "$ref": "#/definitions/domain.CreateHackathonRequestBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/api.HackathonResponses"
+                            "$ref": "#/definitions/domain.HackathonResponses"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/hackathons/:hackathon_id": {
+        "/hackathons/{hackathon_id}": {
             "get": {
                 "description": "Get Hackathon",
                 "produces": [
@@ -563,21 +627,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/api.HackathonResponses"
+                            "$ref": "#/definitions/domain.HackathonResponses"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -585,28 +649,291 @@ const docTemplate = `{
         },
         "/locates": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Locates"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.Locates"
+                                "$ref": "#/definitions/repository.Locate"
                             }
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/pastworks": {
+            "get": {
+                "description": "List PastWork",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "List PastWork",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.ListPastWorkResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a past work from the requested body",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Create new past work",
+                "parameters": [
+                    {
+                        "description": "Create PastWork Request",
+                        "name": "CreatePastWorkRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create success response",
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "server error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/pastworks/{opus}": {
+            "get": {
+                "description": "Get PastWork",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Get PastWork",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PastWorks API wildcard",
+                        "name": "opus",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update PastWork",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Update PastWork",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PastWorks API wildcard",
+                        "name": "opus",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update PastWork Request",
+                        "name": "UpdatePastWorkRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.PastWorkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete PastWork",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PastWorks"
+                ],
+                "summary": "Delete PastWork",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PastWorks API wildcard",
+                        "name": "opus",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rate": {
+            "get": {
+                "description": "List Account Rate",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rate"
+                ],
+                "summary": "List Account Rate",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.AccountRateResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -624,36 +951,36 @@ const docTemplate = `{
                 "summary": "List Account",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Rooms API wildcard",
-                        "name": "room_id",
-                        "in": "path",
-                        "required": true
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/db.ListRoomTxResult"
-                                }
+                                "$ref": "#/definitions/domain.ListRoomResponse"
                             }
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -674,33 +1001,33 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.CreateRoomRequestBody"
+                            "$ref": "#/definitions/domain.CreateRoomRequestBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/db.CreateRoomTxResult"
+                            "$ref": "#/definitions/domain.GetRoomResponse"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/rooms/:room_id": {
+        "/rooms/{room_id}": {
             "get": {
                 "description": "Get Room",
                 "produces": [
@@ -721,21 +1048,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/api.GetRoomResponse"
+                            "$ref": "#/definitions/domain.GetRoomResponse"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -763,27 +1090,27 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.UpdateRoomRequestBody"
+                            "$ref": "#/definitions/domain.UpdateRoomRequestBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/api.GetRoomResponse"
+                            "$ref": "#/definitions/domain.GetRoomResponse"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -808,27 +1135,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/api.DeleteResponse"
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/rooms/:room_id/addchat": {
+        "/rooms/{room_id}/addchat": {
             "post": {
                 "description": "Add Chat Room",
                 "produces": [
@@ -852,33 +1179,33 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.AddChatRequestBody"
+                            "$ref": "#/definitions/domain.AddChatRequestBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/api.GetRoomResponse"
+                            "$ref": "#/definitions/domain.GetRoomResponse"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/rooms/:room_id/members": {
+        "/rooms/{room_id}/members": {
             "post": {
                 "description": "Add Account In Rooms",
                 "produces": [
@@ -895,25 +1222,34 @@ const docTemplate = `{
                         "name": "room_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "add account in room Request body",
+                        "name": "AddAccountInRoomRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.AddAccountInRoomRequestBody"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/db.CreateRoomTxResult"
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -938,21 +1274,50 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/api.DeleteResponse"
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/status_tags": {
+            "get": {
+                "description": "Get Frameworks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TechTags"
+                ],
+                "summary": "Get Frameworks",
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.StatusTag"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -960,28 +1325,28 @@ const docTemplate = `{
         },
         "/tech_tags": {
             "get": {
-                "description": "Get Framewroks",
+                "description": "Get Frameworks",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "TechTags"
                 ],
-                "summary": "Get Framewroks",
+                "summary": "Get Frameworks",
                 "responses": {
                     "200": {
-                        "description": "succsss response",
+                        "description": "success response",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.TechTags"
+                                "$ref": "#/definitions/repository.TechTag"
                             }
                         }
                     },
                     "500": {
                         "description": "error response",
                         "schema": {
-                            "$ref": "#/definitions/api.ErrorResponse"
+                            "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     }
                 }
@@ -989,225 +1354,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api.AddChatRequestBody": {
-            "type": "object",
-            "required": [
-                "message"
-            ],
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.BookmarkResponse": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "expired": {
-                    "type": "string"
-                },
-                "hackathon_id": {
-                    "type": "integer"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "link": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "term": {
-                    "type": "integer"
-                }
-            }
-        },
-        "api.CreateAccountRequestBody": {
-            "type": "object",
-            "required": [
-                "locate_id",
-                "show_locate",
-                "show_rate",
-                "user_id",
-                "username"
-            ],
-            "properties": {
-                "explanatory_text": {
-                    "type": "string"
-                },
-                "frameworks": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "locate_id": {
-                    "type": "integer"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "show_locate": {
-                    "type": "boolean"
-                },
-                "show_rate": {
-                    "type": "boolean"
-                },
-                "tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "user_id": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.CreateAccountResponses": {
-            "type": "object",
-            "properties": {
-                "explanatory_text": {
-                    "type": "string"
-                },
-                "frameworks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.Frameworks"
-                    }
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "locate": {
-                    "type": "string"
-                },
-                "rate": {
-                    "type": "integer"
-                },
-                "show_locate": {
-                    "type": "boolean"
-                },
-                "show_rate": {
-                    "type": "boolean"
-                },
-                "tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.TechTags"
-                    }
-                },
-                "user_id": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.CreateBookmarkRequestBody": {
-            "type": "object",
-            "properties": {
-                "hackathon_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.CreateFollowRequestBody": {
-            "type": "object",
-            "required": [
-                "to_user_id"
-            ],
-            "properties": {
-                "to_user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.CreateHackathonRequestBody": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "expired": {
-                    "type": "string"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "link": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "status_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "term": {
-                    "type": "integer"
-                }
-            }
-        },
-        "api.CreateRoomRequestBody": {
-            "type": "object",
-            "required": [
-                "description",
-                "hackathon_id",
-                "member_limit",
-                "title",
-                "user_id"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "hackathon_id": {
-                    "type": "integer"
-                },
-                "member_limit": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.DeleteResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.ErrorResponse": {
+        "controller.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -1215,9 +1362,40 @@ const docTemplate = `{
                 }
             }
         },
-        "api.GetAccountResponses": {
+        "controller.SuccessResponse": {
             "type": "object",
             "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.AccountRateResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.AccountResponses": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "discord_link": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -1227,8 +1405,11 @@ const docTemplate = `{
                 "frameworks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.Frameworks"
+                        "$ref": "#/definitions/repository.Framework"
                     }
+                },
+                "github_link": {
+                    "type": "string"
                 },
                 "icon": {
                     "type": "string"
@@ -1248,10 +1429,10 @@ const docTemplate = `{
                 "tech_tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.TechTags"
+                        "$ref": "#/definitions/repository.TechTag"
                     }
                 },
-                "user_id": {
+                "twitter_link": {
                     "type": "string"
                 },
                 "username": {
@@ -1259,17 +1440,171 @@ const docTemplate = `{
                 }
             }
         },
-        "api.GetRoomResponse": {
+        "domain.AddAccountInRoomRequestBody": {
             "type": "object",
             "properties": {
-                "create_at": {
+                "account_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.AddChatRequestBody": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "message"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateAccountRequest": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "locate_id",
+                "username"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "string"
+                },
+                "locate_id": {
+                    "type": "integer"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateFollowRequestBody": {
+            "type": "object",
+            "required": [
+                "to_account_id"
+            ],
+            "properties": {
+                "to_account_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateHackathonRequestBody": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "expired": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.CreateRateRequestBody": {
+            "type": "object",
+            "properties": {
+                "rate": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.CreateRoomRequestBody": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "description",
+                "hackathon_id",
+                "member_limit",
+                "title"
+            ],
+            "properties": {
+                "account_id": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
                 },
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.FollowResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.GetJoinRoomResponse": {
+            "type": "object",
+            "properties": {
+                "room_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.GetRoomResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
                 "hackathon": {
-                    "$ref": "#/definitions/api.hackathonInfo"
+                    "$ref": "#/definitions/domain.RoomHackathonInfo"
                 },
                 "is_status": {
                     "type": "boolean"
@@ -1277,22 +1612,10 @@ const docTemplate = `{
                 "member_limit": {
                     "type": "integer"
                 },
-                "members_frameworks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.RoomFramework"
-                    }
-                },
-                "members_tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.RoomTechTags"
-                    }
-                },
                 "now_member": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.NowRoomAccounts"
+                        "$ref": "#/definitions/domain.NowRoomAccounts"
                     }
                 },
                 "room_id": {
@@ -1303,7 +1626,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.HackathonResponses": {
+        "domain.HackathonResponses": {
             "type": "object",
             "properties": {
                 "description": {
@@ -1330,7 +1653,7 @@ const docTemplate = `{
                 "status_tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.StatusTags"
+                        "$ref": "#/definitions/repository.StatusTag"
                     }
                 },
                 "term": {
@@ -1338,89 +1661,225 @@ const docTemplate = `{
                 }
             }
         },
-        "api.UpdateAccountRequestBody": {
+        "domain.ListPastWorkResponse": {
             "type": "object",
             "properties": {
                 "explanatory_text": {
                     "type": "string"
                 },
-                "hashed_password": {
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Framework"
+                    }
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.PastWorkMembers"
+                    }
+                },
+                "name": {
                     "type": "string"
                 },
-                "locate_id": {
+                "opus": {
                     "type": "integer"
                 },
-                "rate": {
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.TechTag"
+                    }
+                }
+            }
+        },
+        "domain.ListRoomHackathonInfo": {
+            "type": "object",
+            "properties": {
+                "expired": {
+                    "type": "string"
+                },
+                "hackathon_id": {
                     "type": "integer"
                 },
-                "show_locate": {
-                    "type": "boolean"
+                "hackathon_name": {
+                    "type": "string"
                 },
-                "show_rate": {
-                    "type": "boolean"
-                },
-                "username": {
+                "icon": {
                     "type": "string"
                 }
             }
         },
-        "api.UpdateAccountResponse": {
+        "domain.ListRoomResponse": {
+            "type": "object",
+            "properties": {
+                "hackathon": {
+                    "$ref": "#/definitions/domain.ListRoomHackathonInfo"
+                },
+                "members_frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.RoomFramework"
+                    }
+                },
+                "members_tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.RoomTechTags"
+                    }
+                },
+                "now_member": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.NowRoomAccounts"
+                    }
+                },
+                "rooms": {
+                    "$ref": "#/definitions/domain.ListRoomRoomInfo"
+                }
+            }
+        },
+        "domain.ListRoomRoomInfo": {
             "type": "object",
             "properties": {
                 "created_at": {
                     "type": "string"
                 },
-                "explanatory_text": {
-                    "type": "string"
-                },
-                "hashed_password": {
-                    "type": "string"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "locate": {
-                    "type": "string"
-                },
-                "rate": {
-                    "type": "integer"
-                },
-                "show_locate": {
-                    "type": "boolean"
-                },
-                "show_rate": {
-                    "type": "boolean"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.UpdateRoomRequestBody": {
-            "type": "object",
-            "required": [
-                "description",
-                "member_limit",
-                "title"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "member_limit": {
                     "type": "integer"
+                },
+                "room_id": {
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"
                 }
             }
         },
-        "api.hackathonInfo": {
+        "domain.NowRoomAccounts": {
             "type": "object",
             "properties": {
-                "description": {
+                "account_id": {
                     "type": "string"
                 },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Framework"
+                    }
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "is_owner": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.TechTag"
+                    }
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.PastWorkMembers": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.PastWorkRequestBody": {
+            "type": "object",
+            "properties": {
+                "account_past_works": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "past_work_frameworks": {
+                    "type": "string"
+                },
+                "past_work_tags": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.PastWorkResponse": {
+            "type": "object",
+            "properties": {
+                "award_data_id": {
+                    "type": "integer"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Framework"
+                    }
+                },
+                "is_delete": {
+                    "type": "boolean"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.PastWorkMembers"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "opus": {
+                    "type": "integer"
+                },
+                "tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.TechTag"
+                    }
+                },
+                "thumbnail_image": {
+                    "type": "string"
+                },
+                "update_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.RoomFramework": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "framework": {
+                    "$ref": "#/definitions/repository.Framework"
+                }
+            }
+        },
+        "domain.RoomHackathonInfo": {
+            "type": "object",
+            "properties": {
                 "expired": {
                     "type": "string"
                 },
@@ -1439,10 +1898,10 @@ const docTemplate = `{
                 "start_date": {
                     "type": "string"
                 },
-                "tags": {
+                "status_tag": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/db.StatusTags"
+                        "$ref": "#/definitions/repository.StatusTag"
                     }
                 },
                 "term": {
@@ -1450,68 +1909,70 @@ const docTemplate = `{
                 }
             }
         },
-        "db.CreateRoomTxResult": {
+        "domain.RoomTechTags": {
             "type": "object",
             "properties": {
-                "accounts": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.NowRoomAccounts"
-                    }
+                "count": {
+                    "type": "integer"
                 },
-                "create_at": {
+                "tech_tag": {
+                    "$ref": "#/definitions/repository.TechTag"
+                }
+            }
+        },
+        "domain.UpdateAccountRequest": {
+            "type": "object",
+            "properties": {
+                "discord_link": {
                     "type": "string"
                 },
-                "description": {
+                "explanatory_text": {
                     "type": "string"
                 },
                 "frameworks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.RoomFramework"
-                    }
+                    "type": "string"
                 },
-                "hackathon": {
-                    "$ref": "#/definitions/db.RoomHackathonData"
+                "github_link": {
+                    "type": "string"
                 },
-                "hackathon_id": {
+                "locate_id": {
                     "type": "integer"
                 },
-                "is_delete": {
+                "show_locate": {
                     "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "string"
+                },
+                "twitter_link": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.UpdateRoomRequestBody": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "hackathonID": {
+                    "type": "integer"
                 },
                 "member_limit": {
                     "type": "integer"
-                },
-                "room_id": {
-                    "type": "string"
-                },
-                "techtags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.RoomTechTags"
-                    }
                 },
                 "title": {
                     "type": "string"
                 }
             }
         },
-        "db.Follows": {
-            "type": "object",
-            "properties": {
-                "create_at": {
-                    "type": "string"
-                },
-                "from_user_id": {
-                    "type": "string"
-                },
-                "to_user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "db.Frameworks": {
+        "repository.Framework": {
             "type": "object",
             "properties": {
                 "framework": {
@@ -1525,67 +1986,7 @@ const docTemplate = `{
                 }
             }
         },
-        "db.ListRoomTxHackathonInfo": {
-            "type": "object",
-            "properties": {
-                "hackathon_id": {
-                    "type": "integer"
-                },
-                "hackathon_name": {
-                    "type": "string"
-                },
-                "icon": {
-                    "type": "string"
-                }
-            }
-        },
-        "db.ListRoomTxResult": {
-            "type": "object",
-            "properties": {
-                "hackathon": {
-                    "$ref": "#/definitions/db.ListRoomTxHackathonInfo"
-                },
-                "members_frameworks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.RoomFramework"
-                    }
-                },
-                "members_tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.RoomTechTags"
-                    }
-                },
-                "now_member": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.NowRoomAccounts"
-                    }
-                },
-                "rooms": {
-                    "$ref": "#/definitions/db.ListRoomTxRoomInfo"
-                }
-            }
-        },
-        "db.ListRoomTxRoomInfo": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "member_limit": {
-                    "type": "integer"
-                },
-                "room_id": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "db.Locates": {
+        "repository.Locate": {
             "type": "object",
             "properties": {
                 "locate_id": {
@@ -1596,57 +1997,7 @@ const docTemplate = `{
                 }
             }
         },
-        "db.NowRoomAccounts": {
-            "type": "object",
-            "properties": {
-                "icon": {
-                    "type": "string"
-                },
-                "is_owner": {
-                    "type": "boolean"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "db.RoomFramework": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "framework": {
-                    "$ref": "#/definitions/db.Frameworks"
-                }
-            }
-        },
-        "db.RoomHackathonData": {
-            "type": "object",
-            "properties": {
-                "icon": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "db.RoomTechTags": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "tech_tag": {
-                    "$ref": "#/definitions/db.TechTags"
-                }
-            }
-        },
-        "db.StatusTags": {
+        "repository.StatusTag": {
             "type": "object",
             "properties": {
                 "status": {
@@ -1657,9 +2008,12 @@ const docTemplate = `{
                 }
             }
         },
-        "db.TechTags": {
+        "repository.TechTag": {
             "type": "object",
             "properties": {
+                "icon": {
+                    "type": "string"
+                },
                 "language": {
                     "type": "string"
                 },

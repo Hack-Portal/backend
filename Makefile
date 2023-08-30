@@ -7,28 +7,34 @@ postgresStart:
 postgresStop:
 	docker stop hackhack-postgres
 
-connectdb:
-	docker exec -it hackhack-postgres psql hackhack
-
-createdb:
+resetdb:
+	docker stop hackhack-postgres
+	docker start hackhack-postgres
+	docker exec -it hackhack-postgres dropdb hackhack
 	docker exec -it hackhack-postgres createdb --username=root --owner=root hackhack
 
-dropdb:
-	docker exec -it hackhack-postgres dropdb hackhack
-
-installmigrate:
-	scoop install migrate
-
 migrateup:
-	migrate -path db/migration -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose up
+	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose up
+
+migrateup1:
+	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose up 1
 
 migratedown:
-	migrate -path db/migration -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose down
+	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose down
+
+migratedown1:
+	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose down 1
 
 sqlc:
 	sqlc generate
 
-test:
-	go test -v -cover ./...
+serverRun:
+	go run ./cmd/app/main.go
+
+makeSwagger:
+	swag init -g ./cmd/app/main.go
 	
-.PHONY: postgresRun postgresStart postgresStop connectDB createdb dropdb installmigrate migrateup migratedown sqlc test 
+test:
+	go test -coverpkg=./...  ./...
+	
+.PHONY: postgresRun postgresStart postgresStop resetDB installmigrate migrateup migrateup1 migratedown migratedown1 sqlc serverRun test makeSwagger
