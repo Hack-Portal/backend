@@ -105,6 +105,7 @@ type UpdateRoomParam struct {
 	Description string `json:"description"`
 	HackathonID int32  `json:"hackathon_id"`
 	MemberLimit int32  `json:"member_limit"`
+	IsClosing   bool   `json:"is_closing"`
 	OwnerEmail  string `json:"owner_email"`
 }
 

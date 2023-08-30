@@ -5,9 +5,10 @@ INSERT INTO rooms (
         title,
         description,
         member_limit,
-        include_rate
+        include_rate,
+        is_closing
     )
-VALUES($1, $2, $3, $4, $5, $6)
+VALUES($1, $2, $3, $4, $5, $6, $7)
 RETURNING *;
 
 -- name: GetRoomsByID :one
