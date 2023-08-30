@@ -11,7 +11,7 @@ import (
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 )
 
-func compRoom(request domain.UpdateRoomParam, latest repository.Room, members int32) (result repository.UpdateRoomsByIDParams, err error) {
+func compRoom(request domain.UpdateRoomParam, latest repository.Room) (result repository.UpdateRoomsByIDParams, err error) {
 	result = repository.UpdateRoomsByIDParams{
 		HackathonID: latest.HackathonID,
 		Title:       latest.Title,
@@ -72,7 +72,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 			Description: args.Description,
 			MemberLimit: args.MemberLimit,
 			IncludeRate: args.IncludeRate,
-			IsClosing:   false,
+			IsClosing:   sql.NullBool{Bool: false, Valid: true},
 		})
 		if err != nil {
 			return err
@@ -112,7 +112,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 			return errors.New("あんたオーナーとちゃうやん")
 		}
 
-		args, err := compRoom(body, latest, int32(len(members)))
+		args, err := compRoom(body, latest)
 		if err != nil {
 			return err
 		}

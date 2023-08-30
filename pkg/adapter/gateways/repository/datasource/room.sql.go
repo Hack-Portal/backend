@@ -18,19 +18,21 @@ INSERT INTO rooms (
         title,
         description,
         member_limit,
-        include_rate
+        include_rate,
+        is_closing
     )
-VALUES($1, $2, $3, $4, $5, $6)
+VALUES($1, $2, $3, $4, $5, $6, $7)
 RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 `
 
 type CreateRoomsParams struct {
-	RoomID      string `json:"room_id"`
-	HackathonID int32  `json:"hackathon_id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	MemberLimit int32  `json:"member_limit"`
-	IncludeRate bool   `json:"include_rate"`
+	RoomID      string       `json:"room_id"`
+	HackathonID int32        `json:"hackathon_id"`
+	Title       string       `json:"title"`
+	Description string       `json:"description"`
+	MemberLimit int32        `json:"member_limit"`
+	IncludeRate bool         `json:"include_rate"`
+	IsClosing   sql.NullBool `json:"is_closing"`
 }
 
 func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error) {
@@ -41,6 +43,7 @@ func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room,
 		arg.Description,
 		arg.MemberLimit,
 		arg.IncludeRate,
+		arg.IsClosing,
 	)
 	var i Room
 	err := row.Scan(
