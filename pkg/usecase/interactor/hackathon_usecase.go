@@ -112,7 +112,9 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query domain.Lis
 
 		result = append(result, domain.ListHackathonsResponses{
 			HackathonID: hackathon.HackathonID,
+			Icon:        hackathon.Icon.String,
 			Name:        hackathon.Name,
+			Link:        hackathon.Link,
 			Expired:     hackathon.Expired,
 			StartDate:   hackathon.StartDate,
 			Term:        hackathon.Term,
