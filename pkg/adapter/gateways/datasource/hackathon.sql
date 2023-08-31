@@ -20,7 +20,7 @@ FROM
 WHERE
   expired > $1
 ORDER BY
-  hackathon_id
+  expired ASC
 LIMIT
   $2 OFFSET $3;
 
