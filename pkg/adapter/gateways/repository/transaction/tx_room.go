@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"time"
 
@@ -10,13 +11,14 @@ import (
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 )
 
-func compRoom(request domain.UpdateRoomParam, latest repository.Room, members int32) (result repository.UpdateRoomsByIDParams, err error) {
+func compRoom(request domain.UpdateRoomParam, latest repository.Room) (result repository.UpdateRoomsByIDParams, err error) {
 	result = repository.UpdateRoomsByIDParams{
 		HackathonID: latest.HackathonID,
 		Title:       latest.Title,
 		Description: latest.Description,
 		MemberLimit: latest.MemberLimit,
 		RoomID:      request.RoomID,
+		IsClosing:   sql.NullBool{Bool: request.IsClosing, Valid: true},
 		UpdateAt:    time.Now(),
 	}
 
@@ -29,12 +31,7 @@ func compRoom(request domain.UpdateRoomParam, latest repository.Room, members in
 	}
 
 	if request.MemberLimit != 0 {
-		if request.MemberLimit > int32(members) {
-			result.MemberLimit = request.MemberLimit
-		} else {
-			err = errors.New("現在の加入メンバーを下回る変更はできない")
-			return
-		}
+		result.MemberLimit = request.MemberLimit
 	}
 
 	if request.HackathonID != 0 {
@@ -75,6 +72,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args domain.CreateRoomP
 			Description: args.Description,
 			MemberLimit: args.MemberLimit,
 			IncludeRate: args.IncludeRate,
+			IsClosing:   sql.NullBool{Bool: false, Valid: true},
 		})
 		if err != nil {
 			return err
@@ -114,7 +112,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body domain.UpdateRoomP
 			return errors.New("あんたオーナーとちゃうやん")
 		}
 
-		args, err := compRoom(body, latest, int32(len(members)))
+		args, err := compRoom(body, latest)
 		if err != nil {
 			return err
 		}
@@ -158,6 +156,15 @@ func (store *SQLStore) DeleteRoomTx(ctx context.Context, args domain.DeleteRoomP
 
 func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAccountInRoomParam) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
+
+		rooms, err := q.GetRoomsByID(ctx, args.RoomID)
+		if err != nil {
+			return err
+		}
+
+		if rooms.IsClosing.Bool {
+			return errors.New("すまんが、もう閉め切ってんねんなこのルーム")
+		}
 
 		members, err := q.GetRoomsAccountsByID(ctx, args.RoomID)
 		if err != nil {

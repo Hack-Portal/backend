@@ -5,11 +5,11 @@ INSERT INTO rooms (
         title,
         description,
         member_limit,
-        include_rate
+        include_rate,
+        is_closing
     )
-VALUES($1, $2, $3, $4, $5, $6)
+VALUES($1, $2, $3, $4, $5, $6, $7)
 RETURNING *;
-
 -- name: GetRoomsByID :one
 SELECT *
 FROM rooms
@@ -39,6 +39,7 @@ SET hackathon_id = $1,
     title = $2,
     description = $3,
     member_limit = $4,
-    update_at = $5
-WHERE room_id = $6
+    update_at = $5,
+    is_closing = $6
+WHERE room_id = $7
 RETURNING *;

@@ -7,6 +7,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -17,19 +18,21 @@ INSERT INTO rooms (
         title,
         description,
         member_limit,
-        include_rate
+        include_rate,
+        is_closing
     )
-VALUES($1, $2, $3, $4, $5, $6)
-RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
+VALUES($1, $2, $3, $4, $5, $6, $7)
+RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 `
 
 type CreateRoomsParams struct {
-	RoomID      string `json:"room_id"`
-	HackathonID int32  `json:"hackathon_id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	MemberLimit int32  `json:"member_limit"`
-	IncludeRate bool   `json:"include_rate"`
+	RoomID      string       `json:"room_id"`
+	HackathonID int32        `json:"hackathon_id"`
+	Title       string       `json:"title"`
+	Description string       `json:"description"`
+	MemberLimit int32        `json:"member_limit"`
+	IncludeRate bool         `json:"include_rate"`
+	IsClosing   sql.NullBool `json:"is_closing"`
 }
 
 func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error) {
@@ -40,6 +43,7 @@ func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room,
 		arg.Description,
 		arg.MemberLimit,
 		arg.IncludeRate,
+		arg.IsClosing,
 	)
 	var i Room
 	err := row.Scan(
@@ -52,6 +56,7 @@ func (q *Queries) CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room,
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.IsClosing,
 	)
 	return i, err
 }
@@ -60,7 +65,7 @@ const deleteRoomsByID = `-- name: DeleteRoomsByID :one
 UPDATE rooms
 SET is_delete = true
 WHERE room_id = $1
-RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
+RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 `
 
 func (q *Queries) DeleteRoomsByID(ctx context.Context, roomID string) (Room, error) {
@@ -76,12 +81,13 @@ func (q *Queries) DeleteRoomsByID(ctx context.Context, roomID string) (Room, err
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.IsClosing,
 	)
 	return i, err
 }
 
 const getRoomsByID = `-- name: GetRoomsByID :one
-SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
+SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 FROM rooms
 WHERE room_id = $1 AND is_delete = false
 `
@@ -99,12 +105,13 @@ func (q *Queries) GetRoomsByID(ctx context.Context, roomID string) (Room, error)
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.IsClosing,
 	)
 	return i, err
 }
 
 const listRooms = `-- name: ListRooms :many
-SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
+SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 FROM rooms
 WHERE member_limit > (
         SELECT count(*)
@@ -139,6 +146,7 @@ func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, e
 			&i.CreateAt,
 			&i.UpdateAt,
 			&i.IsDelete,
+			&i.IsClosing,
 		); err != nil {
 			return nil, err
 		}
@@ -159,18 +167,20 @@ SET hackathon_id = $1,
     title = $2,
     description = $3,
     member_limit = $4,
-    update_at = $5
-WHERE room_id = $6
-RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete
+    update_at = $5,
+    is_closing = $6
+WHERE room_id = $7
+RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 `
 
 type UpdateRoomsByIDParams struct {
-	HackathonID int32     `json:"hackathon_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	MemberLimit int32     `json:"member_limit"`
-	UpdateAt    time.Time `json:"update_at"`
-	RoomID      string    `json:"room_id"`
+	HackathonID int32        `json:"hackathon_id"`
+	Title       string       `json:"title"`
+	Description string       `json:"description"`
+	MemberLimit int32        `json:"member_limit"`
+	UpdateAt    time.Time    `json:"update_at"`
+	IsClosing   sql.NullBool `json:"is_closing"`
+	RoomID      string       `json:"room_id"`
 }
 
 func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams) (Room, error) {
@@ -180,6 +190,7 @@ func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams
 		arg.Description,
 		arg.MemberLimit,
 		arg.UpdateAt,
+		arg.IsClosing,
 		arg.RoomID,
 	)
 	var i Room
@@ -193,6 +204,7 @@ func (q *Queries) UpdateRoomsByID(ctx context.Context, arg UpdateRoomsByIDParams
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.IsDelete,
+		&i.IsClosing,
 	)
 	return i, err
 }

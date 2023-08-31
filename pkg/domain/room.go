@@ -40,6 +40,7 @@ type ListRoomRoomInfo struct {
 	RoomID      string    `json:"room_id"`
 	Title       string    `json:"title"`
 	MemberLimit int32     `json:"member_limit"`
+	IsClosing   bool      `json:"is_closing"`
 	CreatedAt   time.Time `json:"created_at"`
 }
 type ListRoomHackathonInfo struct {
@@ -72,6 +73,7 @@ type GetRoomResponse struct {
 	Title       string            `json:"title"`
 	Description string            `json:"description"`
 	MemberLimit int32             `json:"member_limit"`
+	IsClosing   bool              `json:"is_closing"`
 	IsDelete    bool              `json:"is_status"`
 	Hackathon   RoomHackathonInfo `json:"hackathon"`
 	NowMember   []NowRoomAccounts `json:"now_member"`
@@ -87,6 +89,7 @@ type UpdateRoomRequestBody struct {
 	Description string `json:"description"`
 	MemberLimit int32  `json:"member_limit"`
 	HackathonID int32  `json:"hackathonID"`
+	IsClosing   bool   `json:"is_closing"`
 }
 
 type CreateRoomParam struct {
@@ -105,6 +108,7 @@ type UpdateRoomParam struct {
 	Description string `json:"description"`
 	HackathonID int32  `json:"hackathon_id"`
 	MemberLimit int32  `json:"member_limit"`
+	IsClosing   bool   `json:"is_closing"`
 	OwnerEmail  string `json:"owner_email"`
 }
 
