@@ -20,6 +20,7 @@ WHERE room_id = $1 AND is_delete = false;
 SELECT *
 FROM rooms
 WHERE is_delete = false
+ORDER BY create_at DESC
 LIMIT $1 OFFSET $2;
 
 -- name: DeleteRoomsByID :one
