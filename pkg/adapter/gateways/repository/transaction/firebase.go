@@ -30,7 +30,7 @@ func (store *SQLStore) CreateSubCollection(ctx context.Context, arg domain.Write
 	}
 	defer client.Close()
 
-	return client.Collection(FireStoreChatRoomCollectionName).Doc(arg.RoomID).Collection(FireStoreSubCollectionName).Doc(fmt.Sprintf("chat%d", arg.Index)).Set(ctx, Chat{
+	return client.Collection(FireStoreChatRoomCollectionName).Doc(arg.RoomID).Collection(FireStoreSubCollectionName).Doc(fmt.Sprintf("chat%05d", arg.Index)).Set(ctx, Chat{
 		UID:       arg.UID,
 		Message:   arg.Message,
 		CreatedAt: time.Now(),
