@@ -8,7 +8,8 @@ VALUES
 SELECT
     frameworks.framework_id,
     frameworks.tech_tag_id,
-    frameworks.framework
+    frameworks.framework,
+    frameworks.icon
 FROM
     account_frameworks
     LEFT OUTER JOIN frameworks ON account_frameworks.framework_id = frameworks.framework_id
