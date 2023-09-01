@@ -10,4 +10,6 @@ ALTER TABLE "accounts" ADD "user_id" varchar NOT NULL;
 ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 ALTER TABLE "awards" DROP COLUMN "icon";
 ALTER TABLE "tech_tags" DROP COLUMN "icon";
+ALTER TABLE frameworks DROP COLUMN icon,
+
 ALTER TABLE "accounts" DROP COLUMN "email";
