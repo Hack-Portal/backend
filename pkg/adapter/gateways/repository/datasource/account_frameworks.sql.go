@@ -45,7 +45,8 @@ const listAccountFrameworksByUserID = `-- name: ListAccountFrameworksByUserID :m
 SELECT
     frameworks.framework_id,
     frameworks.tech_tag_id,
-    frameworks.framework
+    frameworks.framework,
+    frameworks.icon
 FROM
     account_frameworks
     LEFT OUTER JOIN frameworks ON account_frameworks.framework_id = frameworks.framework_id
@@ -57,6 +58,7 @@ type ListAccountFrameworksByUserIDRow struct {
 	FrameworkID sql.NullInt32  `json:"framework_id"`
 	TechTagID   sql.NullInt32  `json:"tech_tag_id"`
 	Framework   sql.NullString `json:"framework"`
+	Icon        sql.NullString `json:"icon"`
 }
 
 func (q *Queries) ListAccountFrameworksByUserID(ctx context.Context, accountID string) ([]ListAccountFrameworksByUserIDRow, error) {
@@ -68,7 +70,12 @@ func (q *Queries) ListAccountFrameworksByUserID(ctx context.Context, accountID s
 	items := []ListAccountFrameworksByUserIDRow{}
 	for rows.Next() {
 		var i ListAccountFrameworksByUserIDRow
-		if err := rows.Scan(&i.FrameworkID, &i.TechTagID, &i.Framework); err != nil {
+		if err := rows.Scan(
+			&i.FrameworkID,
+			&i.TechTagID,
+			&i.Framework,
+			&i.Icon,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
