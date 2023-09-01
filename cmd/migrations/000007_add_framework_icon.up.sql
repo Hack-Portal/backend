@@ -1,0 +1,1 @@
+ALTER TABLE "frameworks" ADD "icon" text NOT NULL;

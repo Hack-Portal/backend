@@ -250,6 +250,7 @@ func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room re
 			roomTechTags = margeTechTagArray(roomTechTags, repository.TechTag{
 				TechTagID: techTag.TechTagID.Int32,
 				Language:  techTag.Language.String,
+				Icon:      techTag.Icon.String,
 			})
 		}
 
