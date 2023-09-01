@@ -103,6 +103,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "server error response",
                         "schema": {
@@ -151,6 +157,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "server error response",
                         "schema": {
@@ -186,6 +198,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "bad request response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
@@ -239,6 +257,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -320,6 +344,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "error response",
                         "schema": {
@@ -379,6 +409,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "error response",
                         "schema": {
@@ -425,6 +461,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -633,6 +675,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -1018,6 +1066,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "error response",
                         "schema": {
@@ -1054,6 +1108,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -1107,6 +1167,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "error response",
                         "schema": {
@@ -1141,6 +1207,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -1196,6 +1268,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "error response",
                         "schema": {
@@ -1246,6 +1324,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "error response",
                         "schema": {
@@ -1280,6 +1364,12 @@ const docTemplate = `{
                         }
                     },
                     "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -1606,6 +1696,9 @@ const docTemplate = `{
                 "hackathon": {
                     "$ref": "#/definitions/domain.RoomHackathonInfo"
                 },
+                "is_closing": {
+                    "type": "boolean"
+                },
                 "is_status": {
                     "type": "boolean"
                 },
@@ -1745,6 +1838,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "is_closing": {
+                    "type": "boolean"
+                },
                 "member_limit": {
                     "type": "integer"
                 },
@@ -1773,6 +1869,12 @@ const docTemplate = `{
                 },
                 "is_owner": {
                     "type": "boolean"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Role"
+                    }
                 },
                 "tech_tags": {
                     "type": "array",
@@ -1964,6 +2066,9 @@ const docTemplate = `{
                 "hackathonID": {
                     "type": "integer"
                 },
+                "is_closing": {
+                    "type": "boolean"
+                },
                 "member_limit": {
                     "type": "integer"
                 },
@@ -1981,6 +2086,9 @@ const docTemplate = `{
                 "framework_id": {
                     "type": "integer"
                 },
+                "icon": {
+                    "type": "string"
+                },
                 "tech_tag_id": {
                     "type": "integer"
                 }
@@ -1994,6 +2102,17 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "repository.Role": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
                 }
             }
         },

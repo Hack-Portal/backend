@@ -19,12 +19,7 @@ WHERE room_id = $1 AND is_delete = false;
 -- name: ListRooms :many
 SELECT *
 FROM rooms
-WHERE member_limit > (
-        SELECT count(*)
-        FROM rooms_accounts
-        WHERE rooms_accounts.room_id = rooms.room_id
-    )
-    AND is_delete = false
+WHERE is_delete = false
 LIMIT $1 OFFSET $2;
 
 -- name: DeleteRoomsByID :one
