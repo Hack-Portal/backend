@@ -113,12 +113,7 @@ func (q *Queries) GetRoomsByID(ctx context.Context, roomID string) (Room, error)
 const listRooms = `-- name: ListRooms :many
 SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 FROM rooms
-WHERE member_limit > (
-        SELECT count(*)
-        FROM rooms_accounts
-        WHERE rooms_accounts.room_id = rooms.room_id
-    )
-    AND is_delete = false
+WHERE is_delete = false
 LIMIT $1 OFFSET $2
 `
 
