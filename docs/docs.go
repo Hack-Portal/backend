@@ -2086,6 +2086,9 @@ const docTemplate = `{
                 "framework_id": {
                     "type": "integer"
                 },
+                "icon": {
+                    "type": "string"
+                },
                 "tech_tag_id": {
                     "type": "integer"
                 }
