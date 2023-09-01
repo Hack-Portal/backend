@@ -149,7 +149,8 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	if err != nil {
 		switch err.Error() {
 		case sql.ErrNoRows.Error():
-			ctx.JSON(http.StatusOK, nil)
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
 		default:
 			err := errors.New("すまんサーバエラーや")
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
