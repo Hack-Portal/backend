@@ -5,4 +5,5 @@ DROP TABLE IF EXISTS "users";
 ALTER TABLE "accounts" DROP COLUMN "user_id";
 ALTER TABLE "awards" ADD "icon" text NOT NULL;
 ALTER TABLE "tech_tags" ADD "icon" text NOT NULL;
+ALTER TABLE "frameworks" ADD "icon" text NOT NULL;
 ALTER TABLE "accounts" ADD "email" varchar UNIQUE NOT NULL;

@@ -166,6 +166,8 @@ definitions:
         type: string
       hackathon:
         $ref: '#/definitions/domain.RoomHackathonInfo'
+      is_closing:
+        type: boolean
       is_status:
         type: boolean
       member_limit:
@@ -257,6 +259,8 @@ definitions:
     properties:
       created_at:
         type: string
+      is_closing:
+        type: boolean
       member_limit:
         type: integer
       room_id:
@@ -276,6 +280,10 @@ definitions:
         type: string
       is_owner:
         type: boolean
+      roles:
+        items:
+          $ref: '#/definitions/repository.Role'
+        type: array
       tech_tags:
         items:
           $ref: '#/definitions/repository.TechTag'
@@ -400,6 +408,8 @@ definitions:
         type: string
       hackathonID:
         type: integer
+      is_closing:
+        type: boolean
       member_limit:
         type: integer
       title:
@@ -411,6 +421,8 @@ definitions:
         type: string
       framework_id:
         type: integer
+      icon:
+        type: string
       tech_tag_id:
         type: integer
     type: object
@@ -420,6 +432,13 @@ definitions:
         type: integer
       name:
         type: string
+    type: object
+  repository.Role:
+    properties:
+      role:
+        type: string
+      role_id:
+        type: integer
     type: object
   repository.StatusTag:
     properties:
@@ -501,6 +520,10 @@ paths:
           description: bad request response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: server error response
           schema:
@@ -525,6 +548,10 @@ paths:
             $ref: '#/definitions/domain.AccountResponses'
         "400":
           description: bad request response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
         "500":
@@ -559,6 +586,10 @@ paths:
           description: bad request response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: server error response
           schema:
@@ -591,6 +622,10 @@ paths:
               $ref: '#/definitions/domain.AccountRateResponse'
             type: array
         "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
@@ -641,6 +676,10 @@ paths:
               $ref: '#/definitions/domain.GetJoinRoomResponse'
             type: array
         "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
@@ -712,6 +751,10 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: error response
           schema:
@@ -743,6 +786,10 @@ paths:
               $ref: '#/definitions/domain.FollowResponse'
             type: array
         "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
@@ -849,6 +896,10 @@ paths:
           schema:
             $ref: '#/definitions/domain.HackathonResponses'
         "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
@@ -1100,6 +1151,10 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: error response
           schema:
@@ -1127,6 +1182,10 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: error response
           schema:
@@ -1150,6 +1209,10 @@ paths:
           schema:
             $ref: '#/definitions/domain.GetRoomResponse'
         "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
@@ -1182,6 +1245,10 @@ paths:
           schema:
             $ref: '#/definitions/domain.GetRoomResponse'
         "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
@@ -1218,6 +1285,10 @@ paths:
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: error response
           schema:
@@ -1242,6 +1313,10 @@ paths:
           schema:
             $ref: '#/definitions/controller.SuccessResponse'
         "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
@@ -1274,6 +1349,10 @@ paths:
           schema:
             $ref: '#/definitions/controller.SuccessResponse'
         "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
           description: error response
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
