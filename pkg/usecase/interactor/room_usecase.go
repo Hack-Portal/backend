@@ -263,6 +263,7 @@ func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room re
 				FrameworkID: framework.FrameworkID.Int32,
 				TechTagID:   framework.TechTagID.Int32,
 				Framework:   framework.Framework.String,
+				Icon:        framework.Icon,
 			})
 		}
 	}
