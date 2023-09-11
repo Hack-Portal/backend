@@ -1354,6 +1354,11 @@ const docTemplate = `{
                         "name": "room_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "account_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
