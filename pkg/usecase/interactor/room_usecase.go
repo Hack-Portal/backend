@@ -219,14 +219,9 @@ func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.Delete
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	account, err := ru.store.GetAccountsByEmail(ctx, body.Email)
-	if err != nil {
-		return
-	}
-
 	err = ru.store.DeleteRoomsAccountsByID(ctx, repository.DeleteRoomsAccountsByIDParams{
 		RoomID:    body.RoomID,
-		AccountID: account.AccountID,
+		AccountID: body.AccountID,
 	})
 	return
 }
