@@ -44,8 +44,8 @@ jobs:
 
     - name: BuildAndPushImageOnHarbor
       run: |
-        docker build -t ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.sha }} .
-        docker push ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.sha }}
+        docker build -t ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend .
+        docker push ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend 
 
   deploy:
     needs: build
@@ -68,7 +68,7 @@ jobs:
       - name: Change manifest
         run: |
           cd configs/config/manifest/stage
-          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.sha }}"' 'deployment.yaml'
+          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:latest"' 'deployment.yaml'
       
       - name: push repository
         run: |
