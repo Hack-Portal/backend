@@ -1305,6 +1305,9 @@ paths:
         name: room_id
         required: true
         type: string
+      - in: query
+        name: account_id
+        type: string
       produces:
       - application/json
       responses:

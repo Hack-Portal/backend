@@ -150,3 +150,7 @@ type DeleteRoomAccount struct {
 	Email     string `json:"email"`
 	AccountID string `json:"account_id"`
 }
+
+type RemoveAccountInRoomRequest struct {
+	AccountID string `form:"account_id"`
+}

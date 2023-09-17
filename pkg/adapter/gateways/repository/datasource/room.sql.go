@@ -114,6 +114,7 @@ const listRooms = `-- name: ListRooms :many
 SELECT room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
 FROM rooms
 WHERE is_delete = false
+ORDER BY create_at DESC
 LIMIT $1 OFFSET $2
 `
 

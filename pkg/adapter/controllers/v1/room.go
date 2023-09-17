@@ -283,6 +283,7 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 //	@Tags			Rooms
 //	@Produce		json
 //	@Param			room_id						path		string			true	"Rooms API wildcard"
+//	@Param			RemoveAccountInRoom			query		domain.RemoveAccountInRoomRequest		true	"Remove Account In Room Request"
 //	@Success		200							{object}	SuccessResponse	"success response"
 //	@Failure		400							{object}	ErrorResponse	"error response"
 //	@Failure		403							{object}	ErrorResponse	"error response"
@@ -292,10 +293,15 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI domain.RoomsRequestWildCard
+		reqURI   domain.RoomsRequestWildCard
+		reqQuery domain.RemoveAccountInRoomRequest
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -303,8 +309,9 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
 	if err := rc.RoomUsecase.DeleteRoomAccount(ctx, domain.DeleteRoomAccount{
-		RoomID: reqURI.RoomID,
-		Email:  payload.Email,
+		RoomID:    reqURI.RoomID,
+		Email:     payload.Email,
+		AccountID: reqQuery.AccountID,
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
