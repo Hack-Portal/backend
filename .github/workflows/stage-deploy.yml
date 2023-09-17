@@ -44,7 +44,7 @@ jobs:
 
     - name: BuildAndPushImageOnHarbor
       run: |
-        docker build ./ -t ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.sha }}
+        docker build -t ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.sha }} .
         docker push ${{ secrets.HARBOR_REGISTRY  }}/hackhack/hackhack-backend:${{ github.sha }}
 
   deploy:
