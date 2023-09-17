@@ -178,9 +178,11 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody domain.UpdateAccountRequest
-		reqURI  domain.AccountRequestWildCard
-		image   []byte
+		reqBody    domain.UpdateAccountRequest
+		reqURI     domain.AccountRequestWildCard
+		image      []byte
+		tags       []int32
+		frameworks []int32
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -190,7 +192,9 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+
 	file, _, err := ctx.Request.FormFile(ImageKey)
+
 	if err != nil {
 		switch err.Error() {
 		case MultiPartNextPartEoF:
@@ -213,16 +217,20 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 
-	tags, err := util.StringToArrayInt32(reqBody.TechTags)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	if len(reqBody.TechTags) != 0 {
+		tags, err = util.StringToArrayInt32(reqBody.TechTags)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
 	}
 
-	frameworks, err := util.StringToArrayInt32(reqBody.Frameworks)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	if len(reqBody.Frameworks) != 0 {
+		frameworks, err = util.StringToArrayInt32(reqBody.Frameworks)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
 	}
 
 	response, err := ac.AccountUsecase.UpdateAccount(
@@ -252,7 +260,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 			err := errors.New("そんなユーザおらんがな")
 			ctx.JSON(http.StatusForbidden, errorResponse(err))
 		default:
-			err := errors.New("すまんサーバエラーや")
+			err := errors.New(fmt.Sprintf("すまんサーバエラーや%s", err))
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		}
 		return

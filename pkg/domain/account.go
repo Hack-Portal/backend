@@ -37,9 +37,9 @@ type AccountResponses struct {
 	Rate            int32  `json:"rate"`
 	Email           string `json:"email"`
 	Locate          string `json:"locate"`
-	GithubLink      string `form:"github_link"`
-	TwitterLink     string `form:"twitter_link"`
-	DiscordLink     string `form:"discord_link"`
+	GithubLink      string `json:"github_link"`
+	TwitterLink     string `json:"twitter_link"`
+	DiscordLink     string `json:"discord_link"`
 
 	ShowLocate bool `json:"show_locate"`
 	ShowRate   bool `json:"show_rate"`
