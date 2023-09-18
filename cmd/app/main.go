@@ -38,7 +38,7 @@ func main() {
 		log.Fatal("cannot connect to db", err)
 	}
 	if err := db.Ping(); err != nil {
-		log.Fatal("cannot ping to db", err)
+		log.Println("cannot ping to db", err)
 	}
 
 	firebaseconfig := &firebase.Config{
