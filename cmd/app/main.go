@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"log"
-	"net"
 	"strconv"
 	"time"
 
@@ -33,8 +32,8 @@ import (
 //	@BasePath	/api/v1
 
 func main() {
-	log.Println(net.InterfaceAddrs())
 	env := bootstrap.LoadEnvConfig(".")
+	log.Println("env:", env)
 	db, err := sql.Open(env.DBDriver, env.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db", err)
