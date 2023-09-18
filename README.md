@@ -1,5 +1,7 @@
 # HackPortalBackend
 
+https://api-test.seafood-dev.com/v1/docs/index.html
+
 ## 動作環境
 
 ### 必須環境
