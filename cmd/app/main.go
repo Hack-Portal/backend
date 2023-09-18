@@ -33,7 +33,6 @@ import (
 
 func main() {
 	env := bootstrap.LoadEnvConfig(".")
-	log.Println("env:", env)
 	db, err := sql.Open(env.DBDriver, env.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db", err)
