@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -144,6 +145,9 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	if !ctx.MustGet(middleware.AuthorizationKeyNotInclude).(bool) {
 		payload = ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 	}
+
+	log.Println(payload)
+	log.Println(reqUri.AccountID)
 
 	response, err := ac.AccountUsecase.GetAccountByID(ctx, reqUri.AccountID, payload)
 	if err != nil {
