@@ -10,6 +10,7 @@ import (
 
 type Querier interface {
 	CheckAccount(ctx context.Context, arg CheckAccountParams) (int64, error)
+	CloseRoomByID(ctx context.Context, roomID string) (Room, error)
 	CreateAccountFrameworks(ctx context.Context, arg CreateAccountFrameworksParams) (AccountFramework, error)
 	CreateAccountPastWorks(ctx context.Context, arg CreateAccountPastWorksParams) (AccountPastWork, error)
 	CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTag, error)

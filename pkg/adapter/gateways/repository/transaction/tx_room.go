@@ -222,6 +222,10 @@ func (store *SQLStore) CloseRoom(ctx context.Context, args domain.CloseRoomParam
 			}
 		}
 
+		if _, err = q.CloseRoomByID(ctx, args.RoomID); err != nil {
+			return err
+		}
+
 		return nil
 	})
 	return err
