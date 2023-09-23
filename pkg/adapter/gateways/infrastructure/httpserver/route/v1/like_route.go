@@ -16,7 +16,7 @@ func NewLikeRouter(env *bootstrap.Env, timeout time.Duration, store transaction.
 		LikeUsecase: usecase.NewLikeUsercase(store, timeout),
 		Env:         env,
 	}
-	group.POST("/bookmarks", LikeController.CreateBookmark)
-	group.GET("/bookmarks/:user_id", LikeController.ListBookmark)
-	group.DELETE("/bookmarks/:user_id", LikeController.RemoveBookmark)
+	group.POST("/like", LikeController.CreateLike)
+	group.GET("/like/:account_id", LikeController.ListLike)
+	group.DELETE("/like/:account_id", LikeController.RemoveLike)
 }

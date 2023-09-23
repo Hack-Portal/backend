@@ -22,24 +22,24 @@ func NewLikeUsercase(store transaction.Store, timeout time.Duration) inputport.L
 	}
 }
 
-func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (repository.Like, error) {
-	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
+func (lu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLikesParams) (repository.Like, error) {
+	ctx, cancel := context.WithTimeout(ctx, lu.contextTimeout)
 	defer cancel()
 
-	return bu.store.CreateLikes(ctx, body)
+	return lu.store.CreateLikes(ctx, body)
 }
 
-func (bu *likeUsecase) GetLike(ctx context.Context, id string, query request.ListRequest) ([]repository.Like, error) {
-	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
+func (lu *likeUsecase) GetLike(ctx context.Context, id string, query request.ListRequest) (result []repository.Like, err error) {
+	ctx, cancel := context.WithTimeout(ctx, lu.contextTimeout)
 	defer cancel()
 
-	return bu.store.ListLikesByID(ctx, id)
+	return lu.store.ListLikesByID(ctx, id)
 }
 
-func (bu *likeUsecase) RemoveLike(ctx context.Context, accountID string, opus int32) error {
-	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
+func (lu *likeUsecase) RemoveLike(ctx context.Context, accountID string, opus int32) error {
+	ctx, cancel := context.WithTimeout(ctx, lu.contextTimeout)
 	defer cancel()
 
-	_, err := bu.store.DeleteLikesByID(ctx, repository.DeleteLikesByIDParams{AccountID: accountID, Opus: opus})
+	_, err := lu.store.DeleteLikesByID(ctx, repository.DeleteLikesByIDParams{AccountID: accountID, Opus: opus, IsDelete: true})
 	return err
 }
