@@ -1,5 +1,5 @@
 package request
 
-type CreateRateRequestBody struct {
+type CreateRate struct {
 	Rate int32 `json:"rate"`
 }

@@ -33,8 +33,8 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  request.AccountRequestWildCard
-		reqBody request.CreateRateRequestBody
+		reqURI  request.AccountWildCard
+		reqBody request.CreateRate
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -80,7 +80,7 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   request.AccountRequestWildCard
+		reqURI   request.AccountWildCard
 		reqQuery request.ListRequest
 	)
 

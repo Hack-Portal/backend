@@ -1,10 +1,10 @@
 package request
 
-type AccountRequestWildCard struct {
+type AccountWildCard struct {
 	AccountID string `uri:"account_id"`
 }
 
-type CreateAccountRequest struct {
+type CreateAccount struct {
 	AccountID       string `form:"account_id" binding:"required"`
 	Username        string `form:"username" binding:"required"`
 	ExplanatoryText string `form:"explanatory_text"`
@@ -16,7 +16,7 @@ type CreateAccountRequest struct {
 	Frameworks string `form:"frameworks"`
 }
 
-type UpdateAccountRequest struct {
+type UpdateAccount struct {
 	Username        string `form:"username"`
 	ExplanatoryText string `form:"explanatory_text"`
 	LocateID        int32  `form:"locate_id"`

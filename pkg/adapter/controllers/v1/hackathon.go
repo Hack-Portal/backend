@@ -34,7 +34,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody request.CreateHackathonRequestBody
+		reqBody request.CreateHackathon
 		image   []byte
 	)
 	if err := ctx.ShouldBind(&reqBody); err != nil {
@@ -90,7 +90,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqURI request.HackathonRequestWildCard
+	var reqURI request.HackathonWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -129,7 +129,7 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 func (hc *HackathonController) ListHackathons(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqQuery request.ListHackathonsRequest
+	var reqQuery request.ListHackathons
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

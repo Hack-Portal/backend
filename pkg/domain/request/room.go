@@ -1,10 +1,10 @@
 package request
 
-type RoomsRequestWildCard struct {
+type RoomsWildCard struct {
 	RoomID string `uri:"room_id"`
 }
 
-type CreateRoomRequestBody struct {
+type CreateRoom struct {
 	HackathonID int32  `json:"hackathon_id" binding:"required"`
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
@@ -12,12 +12,12 @@ type CreateRoomRequestBody struct {
 	AccountID   string `json:"account_id" binding:"required"`
 }
 
-type AddChatRequestBody struct {
+type AddChat struct {
 	AccountID string `json:"account_id" binding:"required"`
 	Message   string `json:"message" binding:"required"`
 }
 
-type UpdateRoomRequestBody struct {
+type UpdateRoom struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	MemberLimit int32  `json:"member_limit"`
@@ -25,14 +25,14 @@ type UpdateRoomRequestBody struct {
 	IsClosing   bool   `json:"is_closing"`
 }
 
-type AddAccountInRoomRequestBody struct {
+type AddAccountInRoom struct {
 	AccountID string `json:"account_id"`
 }
 
-type RemoveAccountInRoomRequest struct {
+type RemoveAccountInRoom struct {
 	AccountID string `form:"account_id"`
 }
 
-type CloseRoomRequest struct {
+type CloseRoom struct {
 	AccountID []string `json:"account_id"`
 }

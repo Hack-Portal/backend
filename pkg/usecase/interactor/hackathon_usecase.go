@@ -25,7 +25,7 @@ func NewHackathonUsercase(store transaction.Store, timeout time.Duration) inputp
 	}
 }
 
-func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.CreateHackathonRequestBody, image []byte) (result response.HackathonResponses, err error) {
+func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.CreateHackathon, image []byte) (result response.HackathonResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
 	defer cancel()
 
@@ -76,7 +76,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.Cr
 	return
 }
 
-func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.ListHackathonsRequest) (result []response.ListHackathonsResponses, err error) {
+func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.ListHackathons) (result []response.ListHackathonsResponses, err error) {
 	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
 	defer cancel()
 

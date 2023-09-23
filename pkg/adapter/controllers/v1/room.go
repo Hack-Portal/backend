@@ -66,7 +66,7 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 func (rc *RoomController) GetRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var request request.RoomsRequestWildCard
+	var request request.RoomsWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -102,7 +102,7 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqBody request.CreateRoomRequestBody
+	var reqBody request.CreateRoom
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -146,8 +146,8 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  request.RoomsRequestWildCard
-		reqBody request.UpdateRoomRequestBody
+		reqURI  request.RoomsWildCard
+		reqBody request.UpdateRoom
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -202,7 +202,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI request.RoomsRequestWildCard
+		reqURI request.RoomsWildCard
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -245,8 +245,8 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  request.RoomsRequestWildCard
-		reqBody request.AddAccountInRoomRequestBody
+		reqURI  request.RoomsWildCard
+		reqBody request.AddAccountInRoom
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -294,8 +294,8 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   request.RoomsRequestWildCard
-		reqQuery request.RemoveAccountInRoomRequest
+		reqURI   request.RoomsWildCard
+		reqQuery request.RemoveAccountInRoom
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -337,8 +337,8 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqtURI request.RoomsRequestWildCard
-		reqBody request.AddChatRequestBody
+		reqtURI request.RoomsWildCard
+		reqBody request.AddChat
 	)
 
 	if err := ctx.ShouldBindUri(&reqtURI); err != nil {
@@ -386,8 +386,8 @@ func (rc *RoomController) CloseRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqtURI request.RoomsRequestWildCard
-		reqBody request.CloseRoomRequest
+		reqtURI request.RoomsWildCard
+		reqBody request.CloseRoom
 	)
 
 	if err := ctx.ShouldBindUri(&reqtURI); err != nil {

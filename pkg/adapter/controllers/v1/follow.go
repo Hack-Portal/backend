@@ -37,8 +37,8 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  request.AccountRequestWildCard
-		reqBody request.CreateFollowRequestBody
+		reqURI  request.AccountWildCard
+		reqBody request.CreateFollow
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -84,8 +84,8 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   request.AccountRequestWildCard
-		reqQuery request.RemoveFollowRequestQueries
+		reqURI   request.AccountWildCard
+		reqQuery request.RemoveFollow
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -124,8 +124,8 @@ func (fc *FollowController) GetFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   request.AccountRequestWildCard
-		reqQuery request.GetFollowRequestQueries
+		reqURI   request.AccountWildCard
+		reqQuery request.GetFollow
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

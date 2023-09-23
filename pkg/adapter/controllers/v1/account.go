@@ -46,7 +46,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	defer txn.End()
 
 	var (
-		reqBody    request.CreateAccountRequest
+		reqBody    request.CreateAccount
 		image      []byte
 		tags       []int32
 		frameworks []int32
@@ -143,7 +143,7 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	defer txn.End()
 	var (
 		payload *jwt.FireBaseCustomToken
-		reqUri  request.AccountRequestWildCard
+		reqUri  request.AccountWildCard
 	)
 
 	if err := ctx.ShouldBindUri(&reqUri); err != nil {
@@ -191,8 +191,8 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody    request.UpdateAccountRequest
-		reqURI     request.AccountRequestWildCard
+		reqBody    request.UpdateAccount
+		reqURI     request.AccountWildCard
 		image      []byte
 		tags       []int32
 		frameworks []int32
@@ -297,7 +297,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqURI request.AccountRequestWildCard
+	var reqURI request.AccountWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -335,7 +335,7 @@ func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 
-	var reqURI request.AccountRequestWildCard
+	var reqURI request.AccountWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

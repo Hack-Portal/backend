@@ -35,7 +35,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody    request.PastWorkRequestBody
+		reqBody    request.PastWork
 		image      []byte
 		tags       []int32
 		frameworks []int32
@@ -112,7 +112,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqURI request.PastWorksRequestWildCard
+	var reqURI request.PastWorksWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -170,8 +170,8 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody    request.PastWorkRequestBody
-		reqURI     request.PastWorksRequestWildCard
+		reqBody    request.PastWork
+		reqURI     request.PastWorksWildCard
 		tags       []int32
 		frameworks []int32
 		err        error
@@ -231,7 +231,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 func (pc *PastWorkController) DeletePastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqURI request.PastWorksRequestWildCard
+	var reqURI request.PastWorksWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

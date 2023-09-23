@@ -2,16 +2,16 @@ package request
 
 import "time"
 
-type HackathonRequestWildCard struct {
+type HackathonWildCard struct {
 	HackathonID int32 `uri:"hackathon_id"`
 }
 
-type ListHackathonsRequest struct {
+type ListHackathons struct {
 	ListRequest
 	Expired bool `form:"expired"`
 }
 
-type CreateHackathonRequestBody struct {
+type CreateHackathon struct {
 	Name        string    `form:"name"`
 	Description string    `form:"description"`
 	Link        string    `form:"link"`
