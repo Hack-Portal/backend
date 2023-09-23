@@ -19,7 +19,7 @@ import (
 //	@title			Hack Hack Backend API
 //	@version		1.0
 //	@description	HackPortal Backend API serice
-//	@termsOfService	https://seaffood.com/api
+//	@termsOfService	https://api-test.seafood-dev.com
 
 //	@contact.name	murasame
 //	@contact.url	https://twitter.com/fresh_salmon256
@@ -28,8 +28,8 @@ import (
 //	@license.name	No-license
 //	@license.url	No-license
 
-//	@host		https://seaffood.com
-//	@BasePath	/api/v1
+//	@host		https://api-test.seafood-dev.com
+//	@BasePath	/v1
 
 func main() {
 	env := bootstrap.LoadEnvConfig(".")
