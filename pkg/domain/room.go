@@ -154,3 +154,12 @@ type DeleteRoomAccount struct {
 type RemoveAccountInRoomRequest struct {
 	AccountID string `form:"account_id"`
 }
+
+type CloseRoomRequest struct {
+	AccountID []string `json:"account_id"`
+}
+
+type CloseRoomParams struct {
+	RoomID    string
+	AccountID []string
+}

@@ -11,6 +11,31 @@ import (
 	"time"
 )
 
+const closeRoomByID = `-- name: CloseRoomByID :one
+UPDATE rooms
+SET is_closing = true
+WHERE room_id = $1
+RETURNING room_id, hackathon_id, title, description, member_limit, include_rate, create_at, update_at, is_delete, is_closing
+`
+
+func (q *Queries) CloseRoomByID(ctx context.Context, roomID string) (Room, error) {
+	row := q.db.QueryRowContext(ctx, closeRoomByID, roomID)
+	var i Room
+	err := row.Scan(
+		&i.RoomID,
+		&i.HackathonID,
+		&i.Title,
+		&i.Description,
+		&i.MemberLimit,
+		&i.IncludeRate,
+		&i.CreateAt,
+		&i.UpdateAt,
+		&i.IsDelete,
+		&i.IsClosing,
+	)
+	return i, err
+}
+
 const createRooms = `-- name: CreateRooms :one
 INSERT INTO rooms (
         room_id,

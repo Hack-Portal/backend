@@ -215,15 +215,22 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) e
 	return err
 }
 
-func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.DeleteRoomAccount) (err error) {
+func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.DeleteRoomAccount) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	err = ru.store.DeleteRoomsAccountsByID(ctx, repository.DeleteRoomsAccountsByIDParams{
+	return ru.store.DeleteRoomsAccountsByID(ctx, repository.DeleteRoomsAccountsByIDParams{
 		RoomID:    body.RoomID,
 		AccountID: body.AccountID,
 	})
-	return
+
+}
+
+func (ru *roomUsecase) CloseRoom(ctx context.Context, body domain.CloseRoomParams) error {
+	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	defer cancel()
+
+	return ru.store.CloseRoom(ctx, body)
 }
 
 func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room repository.Room) ([]domain.RoomTechTags, []domain.RoomFramework, error) {

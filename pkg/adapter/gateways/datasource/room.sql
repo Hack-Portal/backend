@@ -39,3 +39,9 @@ SET hackathon_id = $1,
     is_closing = $6
 WHERE room_id = $7
 RETURNING *;
+
+-- name: CloseRoomByID :one
+UPDATE rooms
+SET is_closing = true
+WHERE room_id = $1
+RETURNING *;
