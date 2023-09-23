@@ -416,3 +416,87 @@ func (rc *RoomController) CloseRoom(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, SuccessResponse{Result: "successfully"})
 }
+
+// AddRoomAccountRole godoc
+//
+//	@Summary		Add a role for an account in a room
+//	@Description	Add a role for an account in a room
+//	@Tags			Rooms
+//	@Produce		json
+//	@Param			rooms_account_id						path		string						true	"Rooms API wildcard"
+//	@Param			RoomAccountRoleByIDRequestBody			body		domain.RoomAccountRoleByIDRequestBody true "add role for an account in a room Request body"
+//	@Success		200										{object}	SuccessResponse				"success response"
+//	@Failure		400										{object}	ErrorResponse				"error response"
+//	@Failure		500										{object}	ErrorResponse				"error response"
+//	@Router			/rooms/:room_id/roles	[post]
+func (rc *RoomController) AddRoomAccountRole(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
+	var (
+		reqURI  request.RoomsWildCard
+		reqBody request.RoomAccountRole
+	)
+
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if err := rc.RoomUsecase.AddRoomAccountRole(ctx, params.RoomAccountRole{
+		RoomID:    reqURI.RoomID,
+		AccountID: reqBody.AccountID,
+		RoleID:    reqBody.RoleID,
+	}); err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: "inserted successfully"})
+}
+
+// UpdateRoomAccountRole godoc
+//
+//	@Summary		Update a role for an account in a room
+//	@Description	Update a role for an account in a room
+//	@Tags			Rooms
+//	@Produce		json
+//	@Param			rooms_account_id						path		string						true	"Rooms API wildcard"
+//	@Param			RoomAccountRoleByIDRequestBody			body		domain.UpdateRoomAccountRoleRequestBody true "update role for an account in a room Request body"
+//	@Success		200										{object}	SuccessResponse				"success response"
+//	@Failure		400										{object}	ErrorResponse				"error response"
+//	@Failure		500										{object}	ErrorResponse				"error response"
+//	@Router			/rooms/:room_id/roles	[put]
+func (rc *RoomController) UpdateRoomAccountRole(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
+	var (
+		reqURI  request.RoomsWildCard
+		reqBody request.RoomAccountRole
+	)
+
+	if err := ctx.ShouldBindUri(&reqURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if err := rc.RoomUsecase.UpdateRoomAccountRole(ctx, params.RoomAccountRole{
+		RoomID:    reqURI.RoomID,
+		AccountID: reqBody.AccountID,
+		RoleID:    reqBody.RoleID,
+	}); err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: "updated successfully"})
+}

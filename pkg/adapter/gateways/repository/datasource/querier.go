@@ -28,6 +28,7 @@ type Querier interface {
 	CreateRoles(ctx context.Context, role string) (Role, error)
 	CreateRooms(ctx context.Context, arg CreateRoomsParams) (Room, error)
 	CreateRoomsAccounts(ctx context.Context, arg CreateRoomsAccountsParams) (RoomsAccount, error)
+	CreateRoomsAccountsRoles(ctx context.Context, arg CreateRoomsAccountsRolesParams) (RoomsAccountsRole, error)
 	CreateStatusTags(ctx context.Context, status string) (StatusTag, error)
 	CreateTechTags(ctx context.Context, language string) (TechTag, error)
 	DeleteAccountFrameworkByUserID(ctx context.Context, accountID string) error
@@ -43,6 +44,7 @@ type Querier interface {
 	DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
 	DeletePastWorksByID(ctx context.Context, arg DeletePastWorksByIDParams) (PastWork, error)
 	DeleteRoomsAccountsByID(ctx context.Context, arg DeleteRoomsAccountsByIDParams) error
+	DeleteRoomsAccountsRolesByID(ctx context.Context, arg DeleteRoomsAccountsRolesByIDParams) error
 	DeleteRoomsByID(ctx context.Context, roomID string) (Room, error)
 	DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error
 	DeleteTechTagsByID(ctx context.Context, techTagID int32) error
@@ -56,6 +58,7 @@ type Querier interface {
 	GetPastWorksByOpus(ctx context.Context, opus int32) (PastWork, error)
 	GetRolesByID(ctx context.Context, roleID int32) (Role, error)
 	GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error)
+	GetRoomsAccountsRolesIDByIDs(ctx context.Context, arg GetRoomsAccountsRolesIDByIDsParams) (int32, error)
 	GetRoomsByID(ctx context.Context, roomID string) (Room, error)
 	GetStatusTagsByTag(ctx context.Context, statusID int32) (StatusTag, error)
 	GetTechTagsByID(ctx context.Context, techTagID int32) (TechTag, error)
@@ -77,6 +80,8 @@ type Querier interface {
 	ListRateEntities(ctx context.Context, arg ListRateEntitiesParams) ([]RateEntity, error)
 	ListRoles(ctx context.Context) ([]Role, error)
 	ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, error)
+	ListRoomsAccountsRolesByID(ctx context.Context, roomsAccountID int32) ([]Role, error)
+	ListRoomsAccountsRolesByIDs(ctx context.Context, arg ListRoomsAccountsRolesByIDsParams) ([]Role, error)
 	ListStatusTags(ctx context.Context) ([]StatusTag, error)
 	ListTechTags(ctx context.Context) ([]TechTag, error)
 	UpdateAccounts(ctx context.Context, arg UpdateAccountsParams) (Account, error)

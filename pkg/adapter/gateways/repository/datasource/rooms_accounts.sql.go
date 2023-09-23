@@ -56,6 +56,7 @@ func (q *Queries) DeleteRoomsAccountsByID(ctx context.Context, arg DeleteRoomsAc
 
 const getRoomsAccountsByID = `-- name: GetRoomsAccountsByID :many
 SELECT 
+    rooms_accounts.rooms_account_id,
     accounts.account_id, 
     accounts.icon,
     rooms_accounts.is_owner,
@@ -82,10 +83,11 @@ WHERE
 `
 
 type GetRoomsAccountsByIDRow struct {
-	AccountID sql.NullString `json:"account_id"`
-	Icon      sql.NullString `json:"icon"`
-	IsOwner   bool           `json:"is_owner"`
-	Roles     sql.NullString `json:"roles"`
+	RoomsAccountID int32          `json:"rooms_account_id"`
+	AccountID      sql.NullString `json:"account_id"`
+	Icon           sql.NullString `json:"icon"`
+	IsOwner        bool           `json:"is_owner"`
+	Roles          sql.NullString `json:"roles"`
 }
 
 func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]GetRoomsAccountsByIDRow, error) {
@@ -98,6 +100,7 @@ func (q *Queries) GetRoomsAccountsByID(ctx context.Context, roomID string) ([]Ge
 	for rows.Next() {
 		var i GetRoomsAccountsByIDRow
 		if err := rows.Scan(
+			&i.RoomsAccountID,
 			&i.AccountID,
 			&i.Icon,
 			&i.IsOwner,

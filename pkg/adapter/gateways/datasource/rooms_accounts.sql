@@ -9,6 +9,7 @@ INSERT INTO rooms_accounts (
 
 -- name: GetRoomsAccountsByID :many
 SELECT 
+    rooms_accounts.rooms_account_id,
     accounts.account_id, 
     accounts.icon,
     rooms_accounts.is_owner,

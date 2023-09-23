@@ -27,6 +27,8 @@ type Store interface {
 	DeleteRoomTx(ctx context.Context, args params.DeleteRoom) error
 	AddAccountInRoom(ctx context.Context, args params.AddAccountInRoom) error
 	CloseRoom(ctx context.Context, args params.CloseRoom) error
+	AddRoomAccountRoleByID(ctx context.Context, args params.RoomAccountRole) error
+	UpdateRoomsAccountRoleByID(ctx context.Context, args params.RoomAccountRole) error
 	// Hackathon Tx
 	CreateHackathonTx(ctx context.Context, args params.CreateHackathon) (repository.Hackathon, error)
 

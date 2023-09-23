@@ -57,6 +57,12 @@ type DeleteRoomAccount struct {
 	AccountID string `json:"account_id"`
 }
 
+type RoomAccountRole struct {
+	RoomID    string  `json:"room_id"`
+	AccountID string  `json:"account_id"`
+	RoleID    []int32 `json:"role_id"`
+}
+
 type CloseRoom struct {
 	RoomID    string
 	AccountID []string

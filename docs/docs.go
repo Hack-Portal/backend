@@ -987,6 +987,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/roles": {
+            "get": {
+                "description": "Get Roles",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Get Roles",
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.Role"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/rooms": {
             "get": {
                 "description": "List Account",
@@ -1070,6 +1099,104 @@ const docTemplate = `{
                         }
                     },
                     "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/:room_id/roles": {
+            "put": {
+                "description": "Update a role for an account in a room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Update a role for an account in a room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Rooms API wildcard",
+                        "name": "rooms_account_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "update role for an account in a room Request body",
+                        "name": "RoomAccountRoleByIDRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.UpdateRoomAccountRoleRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a role for an account in a room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Add a role for an account in a room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Rooms API wildcard",
+                        "name": "rooms_account_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "add role for an account in a room Request body",
+                        "name": "RoomAccountRoleByIDRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.RoomAccountRoleByIDRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -2095,6 +2222,12 @@ const docTemplate = `{
                 },
                 "is_owner": {
                     "type": "boolean"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Role"
+                    }
                 },
                 "roles": {
                     "type": "array",

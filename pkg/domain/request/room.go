@@ -33,6 +33,11 @@ type RemoveAccountInRoom struct {
 	AccountID string `form:"account_id"`
 }
 
+type RoomAccountRole struct {
+	AccountID string  `json:"account_id"`
+	RoleID    []int32 `json:"role_id"`
+}
+
 type CloseRoom struct {
 	AccountID []string `json:"account_id"`
 }

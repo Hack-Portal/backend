@@ -390,6 +390,10 @@ definitions:
         items:
           $ref: '#/definitions/repository.Role'
         type: array
+      roles:
+        items:
+          $ref: '#/definitions/repository.Role'
+        type: array
       tech_tags:
         items:
           $ref: '#/definitions/repository.TechTag'
@@ -1138,6 +1142,25 @@ paths:
       summary: List Account Rate
       tags:
       - Rate
+  /roles:
+    get:
+      description: Get Roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/repository.Role'
+            type: array
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Get Roles
+      tags:
+      - Roles
   /rooms:
     get:
       description: List Account
@@ -1199,6 +1222,71 @@ paths:
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
       summary: Create Rooms
+      tags:
+      - Rooms
+  /rooms/:room_id/roles:
+    post:
+      description: Add a role for an account in a room
+      parameters:
+      - description: Rooms API wildcard
+        in: path
+        name: rooms_account_id
+        required: true
+        type: string
+      - description: add role for an account in a room Request body
+        in: body
+        name: RoomAccountRoleByIDRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RoomAccountRoleByIDRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Add a role for an account in a room
+      tags:
+      - Rooms
+    put:
+      description: Update a role for an account in a room
+      parameters:
+      - description: Rooms API wildcard
+        in: path
+        name: rooms_account_id
+        required: true
+        type: string
+      - description: update role for an account in a room Request body
+        in: body
+        name: RoomAccountRoleByIDRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateRoomAccountRoleRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: error response
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Update a role for an account in a room
       tags:
       - Rooms
   /rooms/{room_id}:

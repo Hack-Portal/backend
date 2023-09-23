@@ -61,6 +61,15 @@ func checkDuplication(members []repository.GetRoomsAccountsByIDRow, id string) b
 	return false
 }
 
+func checkRoles(roles []repository.Role, id int32) bool {
+	for _, role := range roles {
+		if role.RoleID == id {
+			return true
+		}
+	}
+	return false
+}
+
 func (store *SQLStore) CreateRoomTx(ctx context.Context, args params.CreateRoom) (repository.Room, error) {
 	var room repository.Room
 	err := store.execTx(ctx, func(q *repository.Queries) error {
@@ -226,6 +235,58 @@ func (store *SQLStore) CloseRoom(ctx context.Context, args params.CloseRoom) err
 			return err
 		}
 
+		return nil
+	})
+	return err
+}
+
+func (store *SQLStore) AddRoomAccountRoleByID(ctx context.Context, args params.RoomAccountRole) error {
+	err := store.execTx(ctx, func(q *repository.Queries) error {
+		roomAccountId, err := q.GetRoomsAccountsRolesIDByIDs(ctx, repository.GetRoomsAccountsRolesIDByIDsParams{
+			RoomID:    args.RoomID,
+			AccountID: args.AccountID,
+		})
+		if err != nil {
+			return err
+		}
+
+		for _, roleID := range args.RoleID {
+			_, err = q.CreateRoomsAccountsRoles(ctx, repository.CreateRoomsAccountsRolesParams{
+				RoomsAccountID: roomAccountId,
+				RoleID:         roleID,
+			})
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return err
+}
+
+func (store *SQLStore) UpdateRoomsAccountRoleByID(ctx context.Context, args params.RoomAccountRole) error {
+	err := store.execTx(ctx, func(q *repository.Queries) error {
+		roomAccountId, err := q.GetRoomsAccountsRolesIDByIDs(ctx, repository.GetRoomsAccountsRolesIDByIDsParams{
+			RoomID:    args.RoomID,
+			AccountID: args.AccountID,
+		})
+		if err != nil {
+			return err
+		}
+
+		if err = q.DeleteRoomsAccountsRolesByID(ctx, roomAccountId); err != nil {
+			return nil
+		}
+
+		for _, roleID := range args.RoleID {
+			_, err = q.CreateRoomsAccountsRoles(ctx, repository.CreateRoomsAccountsRolesParams{
+				RoomsAccountID: roomAccountId,
+				RoleID:         roleID,
+			})
+			if err != nil {
+				return err
+			}
+		}
 		return nil
 	})
 	return err

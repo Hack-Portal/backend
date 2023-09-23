@@ -235,6 +235,35 @@ func (ru *roomUsecase) CloseRoom(ctx context.Context, body params.CloseRoom) err
 	return ru.store.CloseRoom(ctx, body)
 }
 
+func (ru *roomUsecase) AddRoomAccountRole(ctx context.Context, body params.RoomAccountRole) error {
+	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	defer cancel()
+
+	return ru.store.AddRoomAccountRoleByID(ctx, body)
+}
+
+func (ru *roomUsecase) UpdateRoomAccountRole(ctx context.Context, body params.RoomAccountRole) (err error) {
+	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	defer cancel()
+
+	return ru.store.UpdateRoomsAccountRoleByID(ctx, body)
+}
+
+func parseRoles(ctx context.Context, store transaction.Store, id int32) (result []repository.Role, err error) {
+
+	roles, err := store.ListRoomsAccountsRolesByID(ctx, id)
+	if err != nil {
+		return
+	}
+	for _, role := range roles {
+		result = append(result, repository.Role{
+			RoleID: role.RoleID,
+			Role:   role.Role,
+		})
+	}
+	return
+}
+
 func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room repository.Room) ([]response.RoomTechTags, []response.RoomFramework, error) {
 	var (
 		roomTechTags   []response.RoomTechTags
@@ -327,6 +356,11 @@ func getRoomMember(ctx context.Context, store transaction.Store, accountID strin
 			return nil, err
 		}
 
+		roles, err := parseRoles(ctx, store, account.RoomsAccountID)
+		if err != nil {
+			return nil, err
+		}
+
 		tags, err := parseTechTags(ctx, store, account.AccountID.String)
 		if err != nil {
 			return nil, err
@@ -342,6 +376,7 @@ func getRoomMember(ctx context.Context, store transaction.Store, accountID strin
 			Username:   user.Username,
 			Icon:       user.Icon.String,
 			IsOwner:    account.IsOwner,
+			Roles:      roles,
 			TechTags:   tags,
 			Frameworks: frameworks,
 		})
