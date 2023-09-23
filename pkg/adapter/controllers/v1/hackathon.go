@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
@@ -34,7 +34,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody domain.CreateHackathonRequestBody
+		reqBody request.CreateHackathonRequestBody
 		image   []byte
 	)
 	if err := ctx.ShouldBind(&reqBody); err != nil {
@@ -90,7 +90,7 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqURI domain.HackathonRequestWildCard
+	var reqURI request.HackathonRequestWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -129,7 +129,7 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 func (hc *HackathonController) ListHackathons(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqQuery domain.ListHackathonsParams
+	var reqQuery request.ListHackathonsRequest
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

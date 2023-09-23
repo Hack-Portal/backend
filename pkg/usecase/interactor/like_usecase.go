@@ -6,7 +6,7 @@ import (
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 
@@ -29,7 +29,7 @@ func (bu *likeUsecase) CreateLike(ctx context.Context, body repository.CreateLik
 	return bu.store.CreateLikes(ctx, body)
 }
 
-func (bu *likeUsecase) GetLike(ctx context.Context, id string, query domain.ListRequest) ([]repository.Like, error) {
+func (bu *likeUsecase) GetLike(ctx context.Context, id string, query request.ListRequest) ([]repository.Like, error) {
 	ctx, cancel := context.WithTimeout(ctx, bu.contextTimeout)
 	defer cancel()
 

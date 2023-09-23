@@ -5,7 +5,7 @@ import (
 	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 )
@@ -103,7 +103,7 @@ func compAccount(request repository.Account, latest repository.Account) (result 
 	return
 }
 
-func (store *SQLStore) CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (repository.Account, error) {
+func (store *SQLStore) CreateAccountTx(ctx context.Context, args params.CreateAccountParams) (repository.Account, error) {
 	var account repository.Account
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		var err error
@@ -125,7 +125,7 @@ func (store *SQLStore) CreateAccountTx(ctx context.Context, args domain.CreateAc
 	return account, err
 }
 
-func (store *SQLStore) UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (repository.Account, error) {
+func (store *SQLStore) UpdateAccountTx(ctx context.Context, args params.UpdateAccountParams) (repository.Account, error) {
 	var account repository.Account
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		latest, err := q.GetAccountsByID(ctx, args.AccountInfo.AccountID)

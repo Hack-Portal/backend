@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
@@ -37,8 +37,8 @@ func (fc *FollowController) CreateFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  domain.AccountRequestWildCard
-		reqBody domain.CreateFollowRequestBody
+		reqURI  request.AccountRequestWildCard
+		reqBody request.CreateFollowRequestBody
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -84,8 +84,8 @@ func (fc *FollowController) RemoveFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   domain.AccountRequestWildCard
-		reqQuery domain.RemoveFollowRequestQueries
+		reqURI   request.AccountRequestWildCard
+		reqQuery request.RemoveFollowRequestQueries
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -124,10 +124,8 @@ func (fc *FollowController) GetFollow(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   domain.AccountRequestWildCard
-		reqQuery domain.GetFollowRequestQueries
-		result   []domain.FollowResponse
-		err      error
+		reqURI   request.AccountRequestWildCard
+		reqQuery request.GetFollowRequestQueries
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -139,7 +137,7 @@ func (fc *FollowController) GetFollow(ctx *gin.Context) {
 		return
 	}
 
-	result, err = fc.FollowUsecase.GetFollowByID(ctx, reqURI.AccountID, reqQuery.Mode)
+	result, err := fc.FollowUsecase.GetFollowByID(ctx, reqURI.AccountID, reqQuery.Mode)
 	if err != nil {
 		switch err.Error() {
 		case sql.ErrNoRows.Error():

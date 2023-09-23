@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/stretchr/testify/require"
 )
@@ -16,7 +16,7 @@ func TestCreatePastWorkTx(t *testing.T) {
 		accountID = append(accountID, account.AccountID)
 	}
 
-	arg := domain.CreatePastWorkParams{
+	arg := params.CreatePastWorkParams{
 		Name:            util.RandomString(10),
 		ThumbnailImage:  util.RandomString(10),
 		ExplanatoryText: util.RandomString(10),

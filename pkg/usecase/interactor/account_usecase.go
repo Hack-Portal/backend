@@ -7,7 +7,8 @@ import (
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/response"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
@@ -25,7 +26,7 @@ func NewAccountUsercase(store transaction.Store, timeout time.Duration) inputpor
 	}
 }
 
-func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *jwt.FireBaseCustomToken) (result domain.AccountResponses, err error) {
+func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *jwt.FireBaseCustomToken) (result response.AccountResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	account, err := au.store.GetAccountsByID(ctx, id)
@@ -95,7 +96,7 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *
 	return
 }
 
-func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (result domain.AccountResponses, err error) {
+func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (result response.AccountResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -136,7 +137,7 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	return
 }
 
-func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateAccount, image []byte, email string) (result domain.AccountResponses, err error) {
+func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateAccount, image []byte, email string) (result response.AccountResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	// 画像が空やないときに処理する
@@ -149,7 +150,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 		}
 	}
 
-	account, err := au.store.CreateAccountTx(ctx, domain.CreateAccountParams{
+	account, err := au.store.CreateAccountTx(ctx, params.CreateAccountParams{
 		AccountInfo: repository.CreateAccountsParams{
 			AccountID: body.ReqBody.AccountID,
 			Username:  body.ReqBody.Username,
@@ -192,7 +193,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body domain.CreateA
 	return
 }
 
-func (au *accountUsecase) UpdateAccount(ctx context.Context, body domain.UpdateAccountParam, image []byte) (result domain.AccountResponses, err error) {
+func (au *accountUsecase) UpdateAccount(ctx context.Context, body params.UpdateAccountParams, image []byte) (result response.AccountResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -238,7 +239,7 @@ func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
 	return err
 }
 
-func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (result []domain.GetJoinRoomResponse, err error) {
+func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (result []response.GetJoinRoomResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -251,7 +252,7 @@ func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (re
 	}
 
 	for _, room := range rooms {
-		result = append(result, domain.GetJoinRoomResponse{
+		result = append(result, response.GetJoinRoomResponse{
 			RoomID: room.RoomID,
 			Title:  room.Title.String,
 		})
@@ -259,8 +260,8 @@ func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (re
 	return
 }
 
-func parseAccountResponse(account repository.Account, locate string, techTags []repository.TechTag, frameworks []repository.Framework) domain.AccountResponses {
-	return domain.AccountResponses{
+func parseAccountResponse(account repository.Account, locate string, techTags []repository.TechTag, frameworks []repository.Framework) response.AccountResponse {
+	return response.AccountResponse{
 		AccountID:       account.AccountID,
 		Username:        account.Username,
 		Icon:            account.Icon.String,

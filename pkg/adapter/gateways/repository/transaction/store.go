@@ -8,7 +8,7 @@ import (
 	"cloud.google.com/go/firestore"
 	fb "firebase.google.com/go"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
 )
 
 const (
@@ -19,27 +19,27 @@ const (
 type Store interface {
 	repository.Querier
 	// Account Tx
-	CreateAccountTx(ctx context.Context, args domain.CreateAccountParams) (repository.Account, error)
-	UpdateAccountTx(ctx context.Context, args domain.UpdateAccountParam) (repository.Account, error)
+	CreateAccountTx(ctx context.Context, args params.CreateAccountParams) (repository.Account, error)
+	UpdateAccountTx(ctx context.Context, args params.UpdateAccountParams) (repository.Account, error)
 	// Room Tx
-	CreateRoomTx(ctx context.Context, args domain.CreateRoomParam) (repository.Room, error)
-	UpdateRoomTx(ctx context.Context, body domain.UpdateRoomParam) (repository.Room, error)
-	DeleteRoomTx(ctx context.Context, args domain.DeleteRoomParam) error
-	AddAccountInRoom(ctx context.Context, args domain.AddAccountInRoomParam) error
-	CloseRoom(ctx context.Context, args domain.CloseRoomParams) error
+	CreateRoomTx(ctx context.Context, args params.CreateRoomParams) (repository.Room, error)
+	UpdateRoomTx(ctx context.Context, body params.UpdateRoomParams) (repository.Room, error)
+	DeleteRoomTx(ctx context.Context, args params.DeleteRoomParams) error
+	AddAccountInRoom(ctx context.Context, args params.AddAccountInRoomParams) error
+	CloseRoom(ctx context.Context, args params.CloseRoomParams) error
 	// Hackathon Tx
-	CreateHackathonTx(ctx context.Context, args domain.CreateHackathonParams) (repository.Hackathon, error)
+	CreateHackathonTx(ctx context.Context, args params.CreateHackathonParams) (repository.Hackathon, error)
 
 	// PastWork Tx
-	CreatePastWorkTx(ctx context.Context, arg domain.CreatePastWorkParams) (repository.PastWork, error)
-	UpdatePastWorkTx(ctx context.Context, arg domain.UpdatePastWorkParams) (repository.PastWork, error)
+	CreatePastWorkTx(ctx context.Context, arg params.CreatePastWorkParams) (repository.PastWork, error)
+	UpdatePastWorkTx(ctx context.Context, arg params.UpdatePastWorkParams) (repository.PastWork, error)
 
 	// Rate Entities Tx
 	CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntitiesParams) error
 
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
-	CreateSubCollection(ctx context.Context, arg domain.WriteFireStoreParam) (*firestore.WriteResult, error)
+	CreateSubCollection(ctx context.Context, arg params.WriteFireStoreParams) (*firestore.WriteResult, error)
 	ReadDocsByRoomID(ctx context.Context, roomID string) (int, error)
 	UploadImage(ctx context.Context, file []byte) (string, string, error)
 	DeleteImage(ctx context.Context, file string) error

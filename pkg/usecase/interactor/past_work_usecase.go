@@ -6,7 +6,9 @@ import (
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/response"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 
@@ -22,7 +24,7 @@ func NewPastWorkUsercase(store transaction.Store, timeout time.Duration) inputpo
 	}
 }
 
-func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.CreatePastWorkParams, image []byte) (result domain.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg params.CreatePastWorkParams, image []byte) (result response.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 	// 画像が空でないときに処理する
@@ -30,10 +32,10 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.Create
 	if image != nil {
 		_, imageURL, err = pu.store.UploadImage(ctx, image)
 		if err != nil {
-			return domain.PastWorkResponse{}, err
+			return response.PastWorkResponse{}, err
 		}
 	}
-	pastWork, err := pu.store.CreatePastWorkTx(ctx, domain.CreatePastWorkParams{
+	pastWork, err := pu.store.CreatePastWorkTx(ctx, params.CreatePastWorkParams{
 		Name:               arg.Name,
 		ThumbnailImage:     imageURL,
 		ExplanatoryText:    arg.ExplanatoryText,
@@ -42,7 +44,7 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.Create
 		AccountPastWorks:   arg.AccountPastWorks,
 	})
 	if err != nil {
-		return domain.PastWorkResponse{}, err
+		return response.PastWorkResponse{}, err
 	}
 
 	techTags, err := parsePastWorkTechTags(ctx, pu.store, pastWork.Opus)
@@ -60,7 +62,7 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.Create
 		return
 	}
 
-	result = domain.PastWorkResponse{
+	result = response.PastWorkResponse{
 		Opus:            pastWork.Opus,
 		Name:            pastWork.Name,
 		ThumbnailImage:  pastWork.ThumbnailImage,
@@ -75,7 +77,7 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg domain.Create
 	return
 }
 
-func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result domain.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result response.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 
@@ -99,7 +101,7 @@ func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result 
 		return
 	}
 
-	result = domain.PastWorkResponse{
+	result = response.PastWorkResponse{
 		Opus:            pastWork.Opus,
 		Name:            pastWork.Name,
 		ThumbnailImage:  pastWork.ThumbnailImage,
@@ -114,7 +116,7 @@ func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result 
 	return
 }
 
-func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query domain.ListRequest) (result []domain.ListPastWorkResponse, err error) {
+func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query request.ListRequest) (result []response.ListPastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 
@@ -139,7 +141,7 @@ func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query domain.ListRe
 			return nil, err
 		}
 
-		result = append(result, domain.ListPastWorkResponse{
+		result = append(result, response.ListPastWorkResponse{
 			Opus:            pastWork.Opus,
 			Name:            pastWork.Name,
 			ExplanatoryText: pastWork.ExplanatoryText,
@@ -151,7 +153,7 @@ func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query domain.ListRe
 	return
 }
 
-func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body domain.UpdatePastWorkParams) (result domain.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body params.UpdatePastWorkParams) (result response.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 
@@ -167,15 +169,15 @@ func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body domain.Updat
 
 	frameworks, err := parsePastWorkFrameworks(ctx, pu.store, pastWork.Opus)
 	if err != nil {
-		return domain.PastWorkResponse{}, err
+		return response.PastWorkResponse{}, err
 	}
 
 	members, err := parsePastWorkMembers(ctx, pu.store, pastWork.Opus)
 	if err != nil {
-		return domain.PastWorkResponse{}, err
+		return response.PastWorkResponse{}, err
 	}
 
-	result = domain.PastWorkResponse{
+	result = response.PastWorkResponse{
 		Opus:            pastWork.Opus,
 		Name:            pastWork.Name,
 		ThumbnailImage:  pastWork.ThumbnailImage,
@@ -198,7 +200,7 @@ func (pu *pastWorkUsecase) DeletePastWork(ctx context.Context, args repository.D
 	return err
 }
 
-func parsePastWorkMembers(ctx context.Context, store transaction.Store, opus int32) (result []domain.PastWorkMembers, err error) {
+func parsePastWorkMembers(ctx context.Context, store transaction.Store, opus int32) (result []response.PastWorkMembers, err error) {
 	members, err := store.ListAccountPastWorksByOpus(ctx, opus)
 	if err != nil {
 		return
@@ -209,7 +211,7 @@ func parsePastWorkMembers(ctx context.Context, store transaction.Store, opus int
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, domain.PastWorkMembers{AccountID: account.AccountID, Name: account.Username, Icon: account.Icon.String})
+		result = append(result, response.PastWorkMembers{AccountID: account.AccountID, Name: account.Username, Icon: account.Icon.String})
 	}
 	return
 }

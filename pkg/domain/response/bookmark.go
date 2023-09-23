@@ -1,13 +1,6 @@
-package domain
+package response
 
-import (
-	"time"
-)
-
-type CreateBookmarkRequest struct {
-	AccountID string `json:"account_id"`
-	Opus      int32  `json:"opus"`
-}
+import "time"
 
 type BookmarkResponse struct {
 	HackathonID int32     `json:"hackathon_id"`
@@ -18,11 +11,4 @@ type BookmarkResponse struct {
 	Expired     time.Time `json:"expired"`
 	StartDate   time.Time `json:"start_date"`
 	Term        int32     `json:"term"`
-}
-
-type BookmarkRequestWildCard struct {
-	AccountID string `uri:"account_id"`
-}
-type RemoveBookmarkRequestQueries struct {
-	Opus int32 `query:"opus" binding:"required"`
 }

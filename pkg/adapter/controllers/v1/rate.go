@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
@@ -33,8 +33,8 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  domain.AccountRequestWildCard
-		reqBody domain.CreateRateRequestBody
+		reqURI  request.AccountRequestWildCard
+		reqBody request.CreateRateRequestBody
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -80,8 +80,8 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   domain.AccountRequestWildCard
-		reqQuery domain.ListRequest
+		reqURI   request.AccountRequestWildCard
+		reqQuery request.ListRequest
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -117,7 +117,7 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 func (rc *RateController) ListAccountRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqQuery domain.ListRequest
+	var reqQuery request.ListRequest
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
