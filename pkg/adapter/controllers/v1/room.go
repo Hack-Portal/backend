@@ -239,7 +239,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 //	@Failure		400							{object}	ErrorResponse						"error response"
 //	@Failure		403							{object}	ErrorResponse						"error response"
 //	@Failure		500							{object}	ErrorResponse						"error response"
-//	@Router			/rooms/{room_id}/members	[post]
+//	@Router			/rooms/{room_id}			[post]
 func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -327,7 +327,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			room_id						path		string						true	"Rooms API wildcard"
 //	@Param			AddChatRequestBody			body		domain.AddChatRequestBody	true	"add chat Room Request body"
-//	@Success		200							{object}	domain.GetRoomResponse		"success response"
+//	@Success		200							{object}	SuccessResponse				"success response"
 //	@Failure		400							{object}	ErrorResponse				"error response"
 //	@Failure		403							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
@@ -365,5 +365,53 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"success": "inserted successfully"})
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: "inserted successfully"})
+}
+
+// AddChat	godoc
+//
+//	@Summary		CloseRoom
+//	@Description	CloseRoom
+//	@Tags			Rooms
+//	@Produce		json
+//	@Param			room_id						path		string						true	"Rooms API wildcard"
+//	@Param			CloseRoomRequest			body		domain.CloseRoomRequest		true	"Close Room Request body"
+//	@Success		200							{object}	SuccessResponse				"success response"
+//	@Failure		400							{object}	ErrorResponse				"error response"
+//	@Failure		403							{object}	ErrorResponse				"error response"
+//	@Failure		500							{object}	ErrorResponse				"error response"
+//	@Router			/rooms/{room_id}/members	[post]
+func (rc *RoomController) CloseRoom(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
+	var (
+		reqtURI domain.RoomsRequestWildCard
+		reqBody domain.CloseRoomRequest
+	)
+
+	if err := ctx.ShouldBindUri(&reqtURI); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if err := rc.RoomUsecase.CloseRoom(ctx, domain.CloseRoomParams{
+		RoomID:    reqtURI.RoomID,
+		AccountID: reqBody.AccountID,
+	}); err != nil {
+		switch err.Error() {
+		case sql.ErrNoRows.Error():
+			err := errors.New("そんなユーザおらんがな")
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+		default:
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		}
+		return
+	}
+
+	ctx.JSON(http.StatusOK, SuccessResponse{Result: "successfully"})
 }

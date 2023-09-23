@@ -188,3 +188,41 @@ func (store *SQLStore) AddAccountInRoom(ctx context.Context, args domain.AddAcco
 	})
 	return err
 }
+
+func (store *SQLStore) CloseRoom(ctx context.Context, args domain.CloseRoomParams) error {
+	err := store.execTx(ctx, func(q *repository.Queries) error {
+
+		rooms, err := q.GetRoomsByID(ctx, args.RoomID)
+		if err != nil {
+			return err
+		}
+
+		if rooms.IsClosing.Bool {
+			return errors.New("すまんが、もう閉め切ってんねんなこのルーム")
+		}
+
+		members, err := q.GetRoomsAccountsByID(ctx, args.RoomID)
+		if err != nil {
+			return err
+		}
+
+		if len(args.AccountID) > len(members) {
+			return errors.New("募集人数より多ないか？")
+		}
+		for _, member := range members {
+			for _, accountID := range args.AccountID {
+				if member.AccountID.String != accountID {
+					if err := q.DeleteRoomsAccountsByID(ctx, repository.DeleteRoomsAccountsByIDParams{
+						RoomID:    args.RoomID,
+						AccountID: member.AccountID.String,
+					}); err != nil {
+						return err
+					}
+				}
+			}
+		}
+
+		return nil
+	})
+	return err
+}
