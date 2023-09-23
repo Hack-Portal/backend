@@ -44,7 +44,7 @@ type Querier interface {
 	DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
 	DeletePastWorksByID(ctx context.Context, arg DeletePastWorksByIDParams) (PastWork, error)
 	DeleteRoomsAccountsByID(ctx context.Context, arg DeleteRoomsAccountsByIDParams) error
-	DeleteRoomsAccountsRolesByID(ctx context.Context, arg DeleteRoomsAccountsRolesByIDParams) error
+	DeleteRoomsAccountsRolesByID(ctx context.Context, roomsAccountID int32) error
 	DeleteRoomsByID(ctx context.Context, roomID string) (Room, error)
 	DeleteStatusTagsByStatusID(ctx context.Context, statusID int32) error
 	DeleteTechTagsByID(ctx context.Context, techTagID int32) error
