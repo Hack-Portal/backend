@@ -14,7 +14,8 @@ import (
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
@@ -35,17 +36,17 @@ type AccountController struct {
 //	@Accept			multipart/form-data
 //	@Tags			Accounts
 //	@Produce		json
-//	@Param			CreateAccountRequest	body		domain.CreateAccountRequest	true	"Create Account Request"
-//	@Success		200						{object}	domain.AccountResponses		"create success response"
-//	@Failure		400						{object}	ErrorResponse				"bad request response"
-//	@Failure		500						{object}	ErrorResponse				"server error response"
-//	@Router			/accounts	[post]
+//	@Param			CreateAccountRequest	body		request.CreateAccount	true	"Create Account Request"
+//	@Success		200						{object}	response.Account		"create success response"
+//	@Failure		400						{object}	ErrorResponse			"bad request response"
+//	@Failure		500						{object}	ErrorResponse			"server error response"
+//	@Router			/accounts				[post]
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 
 	var (
-		reqBody    domain.CreateAccountRequest
+		reqBody    request.CreateAccount
 		image      []byte
 		tags       []int32
 		frameworks []int32
@@ -96,11 +97,19 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
-	response, err := ac.AccountUsecase.CreateAccount(ctx, domain.CreateAccount{
-		ReqBody:    reqBody,
-		TechTags:   tags,
-		Frameworks: frameworks,
-	}, image, payload.Email)
+	response, err := ac.AccountUsecase.CreateAccount(ctx, params.CreateAccount{
+		AccountInfo: repository.CreateAccountsParams{
+			AccountID:       reqBody.AccountID,
+			Email:           payload.Email,
+			Username:        reqBody.Username,
+			LocateID:        reqBody.LocateID,
+			ExplanatoryText: dbutil.ToSqlNullString(reqBody.ExplanatoryText),
+			ShowLocate:      reqBody.ShowLocate,
+			ShowRate:        reqBody.ShowRate,
+		},
+		AccountTechTag:      tags,
+		AccountFrameworkTag: frameworks,
+	}, image)
 
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
@@ -123,18 +132,18 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 //	@Description	Return a account from the id specified in the path
 //	@Tags			Accounts
 //	@Produce		json
-//	@Param			account_id				path		string					true	"Accounts API wildcard"
-//	@Success		200						{object}	domain.AccountResponses	"Get success response"
-//	@Failure		400						{object}	ErrorResponse			"bad request response"
-//	@Failure		403						{object}	ErrorResponse			"error response"
-//	@Failure		500						{object}	ErrorResponse			"server error response"
+//	@Param			account_id				path		string				true	"Accounts API wildcard"
+//	@Success		200						{object}	response.Account	"Get success response"
+//	@Failure		400						{object}	ErrorResponse		"bad request response"
+//	@Failure		403						{object}	ErrorResponse		"error response"
+//	@Failure		500						{object}	ErrorResponse		"server error response"
 //	@Router			/accounts/{account_id}	[get]
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
 		payload *jwt.FireBaseCustomToken
-		reqUri  domain.AccountRequestWildCard
+		reqUri  request.AccountWildCard
 	)
 
 	if err := ctx.ShouldBindUri(&reqUri); err != nil {
@@ -171,19 +180,19 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 //	@Description	Update account info from requested body
 //	@Tags			Accounts
 //	@Produce		json
-//	@Param			account_id				path		string						true	"Accounts API wildcard"
-//	@Param			UpdateAccountRequest	body		domain.UpdateAccountRequest	true	"Update Account Request Body"
-//	@Success		200						{object}	domain.AccountResponses		"Update success response"
-//	@Failure		400						{object}	ErrorResponse				"bad request response"
-//	@Failure		403						{object}	ErrorResponse				"error response"
-//	@Failure		500						{object}	ErrorResponse				"server error response"
+//	@Param			account_id				path		string					true	"Accounts API wildcard"
+//	@Param			UpdateAccountRequest	body		request.UpdateAccount	true	"Update Account Request Body"
+//	@Success		200						{object}	response.Account		"Update success response"
+//	@Failure		400						{object}	ErrorResponse			"bad request response"
+//	@Failure		403						{object}	ErrorResponse			"error response"
+//	@Failure		500						{object}	ErrorResponse			"server error response"
 //	@Router			/accounts/{account_id} [put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody    domain.UpdateAccountRequest
-		reqURI     domain.AccountRequestWildCard
+		reqBody    request.UpdateAccount
+		reqURI     request.AccountWildCard
 		image      []byte
 		tags       []int32
 		frameworks []int32
@@ -239,7 +248,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 
 	response, err := ac.AccountUsecase.UpdateAccount(
 		ctx,
-		domain.UpdateAccountParam{
+		params.UpdateAccount{
 			AccountInfo: repository.Account{
 				AccountID: reqURI.AccountID,
 				Username:  reqBody.Username,
@@ -288,7 +297,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqURI domain.AccountRequestWildCard
+	var reqURI request.AccountWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -313,20 +322,20 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 
 // GetJoinRoom	godoc
 //
-// @Summary		Get Join Room
-// @Description	Get Join Room
-// @Tags			Accounts
-// @Produce		json
-// @Success		200	{array}		domain.GetJoinRoomResponse	"success response"
-// @Failure		400	{object}	ErrorResponse				"error response"
-// @Failure		403	{object}	ErrorResponse				"error response"
-// @Failure		500	{object}	ErrorResponse				"error response"
-// @Router			/accounts/{account_id}/rooms	[get]
+//	@Summary		Get Join Room
+//	@Description	Get Join Room
+//	@Tags			Accounts
+//	@Produce		json
+//	@Success		200								{array}		response.GetJoinRoom	"success response"
+//	@Failure		400								{object}	ErrorResponse			"error response"
+//	@Failure		403								{object}	ErrorResponse			"error response"
+//	@Failure		500								{object}	ErrorResponse			"error response"
+//	@Router			/accounts/{account_id}/rooms	[get]
 func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 
-	var reqURI domain.AccountRequestWildCard
+	var reqURI request.AccountWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
@@ -24,17 +24,17 @@ type RateController struct {
 //	@Description	Create Rate for User
 //	@Tags			Rate
 //	@Produce		json
-//	@Param			CreateRateRequestBody			body		domain.CreateRateRequestBody	true	"Create Rate Request Body"
-//	@Success		200								{object}	SuccessResponse					"success response"
-//	@Failure		400								{object}	ErrorResponse					"error response"
-//	@Failure		500								{object}	ErrorResponse					"error response"
+//	@Param			CreateRateRequest			body		request.CreateRate	true	"Create Rate Request Body"
+//	@Success		200							{object}	SuccessResponse		"success response"
+//	@Failure		400							{object}	ErrorResponse		"error response"
+//	@Failure		500							{object}	ErrorResponse		"error response"
 //	@Router			/accounts/{account_id}/rate	[post]
 func (rc *RateController) CreateRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  domain.AccountRequestWildCard
-		reqBody domain.CreateRateRequestBody
+		reqURI  request.AccountWildCard
+		reqBody request.CreateRate
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -69,19 +69,19 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 //	@Description	List Rate for User
 //	@Tags			Rate
 //	@Produce		json
-//	@Param			account_id						path		string						true	"Account ID"
-//	@Param			ListRequest						query		domain.ListRequest			true	"List Rate Params"
-//	@Success		200								{array}		domain.AccountRateResponse	"success response"
-//	@Failure		400								{object}	ErrorResponse				"error response"
-//	@Failure		403								{object}	ErrorResponse				"error response"
-//	@Failure		500								{object}	ErrorResponse				"error response"
+//	@Param			account_id					path		string					true	"Account ID"
+//	@Param			ListRequest					query		request.ListRequest		true	"List Rate Params"
+//	@Success		200							{array}		repository.RateEntity	"success response"
+//	@Failure		400							{object}	ErrorResponse			"error response"
+//	@Failure		403							{object}	ErrorResponse			"error response"
+//	@Failure		500							{object}	ErrorResponse			"error response"
 //	@Router			/accounts/{account_id}/rate	[get]
 func (rc *RateController) ListRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   domain.AccountRequestWildCard
-		reqQuery domain.ListRequest
+		reqURI   request.AccountWildCard
+		reqQuery request.ListRequest
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -109,15 +109,15 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 //	@Description	List Account Rate
 //	@Tags			Rate
 //	@Produce		json
-//	@Param			ListRequest	query		domain.ListRequest			true	"List Rate Params"
-//	@Success		200			{array}		domain.AccountRateResponse	"success response"
-//	@Failure		400			{object}	ErrorResponse				"error response"
-//	@Failure		500			{object}	ErrorResponse				"error response"
-//	@Router			/rate	[get]
+//	@Param			ListRequest	query		request.ListRequest		true	"List Rate Params"
+//	@Success		200			{array}		response.AccountRate	"success response"
+//	@Failure		400			{object}	ErrorResponse			"error response"
+//	@Failure		500			{object}	ErrorResponse			"error response"
+//	@Router			/rate		[get]
 func (rc *RateController) ListAccountRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqQuery domain.ListRequest
+	var reqQuery request.ListRequest
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

@@ -6,7 +6,9 @@ import (
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/response"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 
@@ -33,7 +35,7 @@ func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.Crea
 	return nil
 }
 
-func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domain.ListRequest) ([]repository.RateEntity, error) {
+func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query request.ListRequest) ([]repository.RateEntity, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -48,7 +50,7 @@ func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query domai
 	return rates, nil
 }
 
-func (au *rateUsecase) ListAccountRate(ctx context.Context, args domain.ListRequest) (result []domain.AccountRateResponse, err error) {
+func (au *rateUsecase) ListAccountRate(ctx context.Context, args request.ListRequest) (result []response.AccountRate, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -63,9 +65,9 @@ func (au *rateUsecase) ListAccountRate(ctx context.Context, args domain.ListRequ
 	return parseAccountRateResponse(accounts), nil
 }
 
-func parseAccountRateResponse(accounts []repository.Account) (result []domain.AccountRateResponse) {
+func parseAccountRateResponse(accounts []repository.Account) (result []response.AccountRate) {
 	for _, account := range accounts {
-		result = append(result, domain.AccountRateResponse{
+		result = append(result, response.AccountRate{
 			AccountID: account.AccountID,
 			Username:  account.Username,
 			Icon:      account.Icon.String,

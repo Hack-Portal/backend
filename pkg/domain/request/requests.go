@@ -1,4 +1,4 @@
-package domain
+package request
 
 type ListRequest struct {
 	PageSize int32 `form:"page_size"`

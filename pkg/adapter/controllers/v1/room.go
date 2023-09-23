@@ -9,7 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
@@ -26,16 +27,16 @@ type RoomController struct {
 //	@Description	List Account
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			ListRequest	query		domain.ListRequest		true	"List Rooms Request"
-//	@Success		200			{array}		domain.ListRoomResponse	"success response"
-//	@Failure		400			{object}	ErrorResponse			"error response"
-//	@Failure		500			{object}	ErrorResponse			"error response"
-//	@Router			/rooms	[get]
+//	@Param			ListRequest	query		request.ListRequest	true	"List Rooms Request"
+//	@Success		200			{array}		[]response.ListRoom	"success response"
+//	@Failure		400			{object}	ErrorResponse		"error response"
+//	@Failure		500			{object}	ErrorResponse		"error response"
+//	@Router			/rooms		[get]
 func (rc *RoomController) ListRooms(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI domain.ListRequest
+		reqURI request.ListRequest
 	)
 	if err := ctx.ShouldBindQuery(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -56,16 +57,16 @@ func (rc *RoomController) ListRooms(ctx *gin.Context) {
 //	@Description	Get Room
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			room_id				path		string					true	"Rooms API wildcard"
-//	@Success		200					{object}	domain.GetRoomResponse	"success response"
-//	@Failure		400					{object}	ErrorResponse			"error response"
-//	@Failure		403	{object}	ErrorResponse				"error response"
-//	@Failure		500					{object}	ErrorResponse			"error response"
-//	@Router			/rooms/{room_id}																																[get]
+//	@Param			room_id				path		string			true	"Rooms API wildcard"
+//	@Success		200					{object}	response.Room	"success response"
+//	@Failure		400					{object}	ErrorResponse	"error response"
+//	@Failure		403					{object}	ErrorResponse	"error response"
+//	@Failure		500					{object}	ErrorResponse	"error response"
+//	@Router			/rooms/{room_id}	[get]
 func (rc *RoomController) GetRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var request domain.RoomsRequestWildCard
+	var request request.RoomsWildCard
 	if err := ctx.ShouldBindUri(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -92,22 +93,22 @@ func (rc *RoomController) GetRoom(ctx *gin.Context) {
 //	@Description	Create Rooms
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			CreateRoomRequestBody	body		domain.CreateRoomRequestBody	true	"create Room Request Body"
-//	@Success		200						{object}	domain.GetRoomResponse			"success response"
-//	@Failure		400						{object}	ErrorResponse					"error response"
-//	@Failure		403						{object}	ErrorResponse					"error response"
-//	@Failure		500						{object}	ErrorResponse					"error response"
-//	@Router			/rooms																																																																						[post]
+//	@Param			CreateRoomRequest	body		request.CreateRoom	true	"create Room Request Body"
+//	@Success		200					{object}	response.Room		"success response"
+//	@Failure		400					{object}	ErrorResponse		"error response"
+//	@Failure		403					{object}	ErrorResponse		"error response"
+//	@Failure		500					{object}	ErrorResponse		"error response"
+//	@Router			/rooms																																																																															[post]
 func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqBody domain.CreateRoomRequestBody
+	var reqBody request.CreateRoom
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	response, err := rc.RoomUsecase.CreateRoom(ctx, domain.CreateRoomParam{
+	response, err := rc.RoomUsecase.CreateRoom(ctx, params.CreateRoom{
 		Title:       reqBody.Title,
 		Description: reqBody.Description,
 		HackathonID: reqBody.HackathonID,
@@ -134,19 +135,19 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 //	@Description	update Room
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			room_id					path		string							true	"Rooms API wildcard"
-//	@Param			UpdateRoomRequestBody	body		domain.UpdateRoomRequestBody	true	"update Room Request body"
-//	@Success		200						{object}	domain.GetRoomResponse			"success response"
-//	@Failure		400						{object}	ErrorResponse					"error response"
-//	@Failure		403						{object}	ErrorResponse					"error response"
-//	@Failure		500						{object}	ErrorResponse					"error response"
-//	@Router			/rooms/{room_id}	[put]
+//	@Param			room_id					path		string				true	"Rooms API wildcard"
+//	@Param			UpdateRoomRequestBody	body		request.UpdateRoom	true	"update Room Request body"
+//	@Success		200						{object}	response.Room		"success response"
+//	@Failure		400						{object}	ErrorResponse		"error response"
+//	@Failure		403						{object}	ErrorResponse		"error response"
+//	@Failure		500						{object}	ErrorResponse		"error response"
+//	@Router			/rooms/{room_id}		[put]
 func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  domain.RoomsRequestWildCard
-		reqBody domain.UpdateRoomRequestBody
+		reqURI  request.RoomsWildCard
+		reqBody request.UpdateRoom
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -162,7 +163,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 	fmt.Println(reqBody)
 
-	response, err := rc.RoomUsecase.UpdateRoom(ctx, domain.UpdateRoomParam{
+	response, err := rc.RoomUsecase.UpdateRoom(ctx, params.UpdateRoom{
 		RoomID:      reqURI.RoomID,
 		Title:       reqBody.Title,
 		Description: reqBody.Description,
@@ -201,7 +202,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI domain.RoomsRequestWildCard
+		reqURI request.RoomsWildCard
 	)
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -210,7 +211,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
-	if err := rc.RoomUsecase.DeleteRoom(ctx, domain.DeleteRoomParam{
+	if err := rc.RoomUsecase.DeleteRoom(ctx, params.DeleteRoom{
 		OwnerEmail: payload.Email,
 		RoomID:     reqURI.RoomID,
 	}); err != nil {
@@ -233,19 +234,19 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 //	@Description	Add Account In Rooms
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			room_id						path		string								true	"Rooms API wildcard"
-//	@Param			AddAccountInRoomRequestBody	body		domain.AddAccountInRoomRequestBody	true	"add account in room Request body"
-//	@Success		200							{object}	SuccessResponse						"success response"
-//	@Failure		400							{object}	ErrorResponse						"error response"
-//	@Failure		403							{object}	ErrorResponse						"error response"
-//	@Failure		500							{object}	ErrorResponse						"error response"
-//	@Router			/rooms/{room_id}			[post]
+//	@Param			room_id						path		string						true	"Rooms API wildcard"
+//	@Param			AddAccountInRoomRequestBody	body		request.AddAccountInRoom	true	"add account in room Request body"
+//	@Success		200							{object}	SuccessResponse				"success response"
+//	@Failure		400							{object}	ErrorResponse				"error response"
+//	@Failure		403							{object}	ErrorResponse				"error response"
+//	@Failure		500							{object}	ErrorResponse				"error response"
+//	@Router			/rooms/{room_id}													[post]
 func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI  domain.RoomsRequestWildCard
-		reqBody domain.AddAccountInRoomRequestBody
+		reqURI  request.RoomsWildCard
+		reqBody request.AddAccountInRoom
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -258,7 +259,7 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 		return
 	}
 
-	if err := rc.RoomUsecase.AddAccountInRoom(ctx, domain.AddAccountInRoomParam{
+	if err := rc.RoomUsecase.AddAccountInRoom(ctx, params.AddAccountInRoom{
 		AccountID: reqBody.AccountID,
 		RoomID:    reqURI.RoomID,
 	}); err != nil {
@@ -282,19 +283,19 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 //	@Description	Remove Account In Rooms
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			room_id						path		string			true	"Rooms API wildcard"
-//	@Param			RemoveAccountInRoom			query		domain.RemoveAccountInRoomRequest		true	"Remove Account In Room Request"
-//	@Success		200							{object}	SuccessResponse	"success response"
-//	@Failure		400							{object}	ErrorResponse	"error response"
-//	@Failure		403							{object}	ErrorResponse	"error response"
-//	@Failure		500							{object}	ErrorResponse	"error response"
+//	@Param			room_id						path		string						true	"Rooms API wildcard"
+//	@Param			RemoveAccountInRoom			query		request.RemoveAccountInRoom	true	"Remove Account In Room Request"
+//	@Success		200							{object}	SuccessResponse				"success response"
+//	@Failure		400							{object}	ErrorResponse				"error response"
+//	@Failure		403							{object}	ErrorResponse				"error response"
+//	@Failure		500							{object}	ErrorResponse				"error response"
 //	@Router			/rooms/{room_id}/members	[delete]
 func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqURI   domain.RoomsRequestWildCard
-		reqQuery domain.RemoveAccountInRoomRequest
+		reqURI   request.RoomsWildCard
+		reqQuery request.RemoveAccountInRoom
 	)
 
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
@@ -308,7 +309,7 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
-	if err := rc.RoomUsecase.DeleteRoomAccount(ctx, domain.DeleteRoomAccount{
+	if err := rc.RoomUsecase.DeleteRoomAccount(ctx, params.DeleteRoomAccount{
 		RoomID:    reqURI.RoomID,
 		Email:     payload.Email,
 		AccountID: reqQuery.AccountID,
@@ -325,19 +326,19 @@ func (rc *RoomController) RemoveAccountInRoom(ctx *gin.Context) {
 //	@Description	Add Chat Room
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			room_id						path		string						true	"Rooms API wildcard"
-//	@Param			AddChatRequestBody			body		domain.AddChatRequestBody	true	"add chat Room Request body"
-//	@Success		200							{object}	SuccessResponse				"success response"
-//	@Failure		400							{object}	ErrorResponse				"error response"
-//	@Failure		403							{object}	ErrorResponse				"error response"
-//	@Failure		500							{object}	ErrorResponse				"error response"
+//	@Param			room_id						path		string			true	"Rooms API wildcard"
+//	@Param			AddChatRequest				body		request.AddChat	true	"add chat Room Request body"
+//	@Success		200							{object}	SuccessResponse	"success response"
+//	@Failure		400							{object}	ErrorResponse	"error response"
+//	@Failure		403							{object}	ErrorResponse	"error response"
+//	@Failure		500							{object}	ErrorResponse	"error response"
 //	@Router			/rooms/{room_id}/addchat	[post]
 func (rc *RoomController) AddChat(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqtURI domain.RoomsRequestWildCard
-		reqBody domain.AddChatRequestBody
+		reqtURI request.RoomsWildCard
+		reqBody request.AddChat
 	)
 
 	if err := ctx.ShouldBindUri(&reqtURI); err != nil {
@@ -350,7 +351,7 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 		return
 	}
 
-	if err := rc.RoomUsecase.AddChat(ctx, domain.AddChatParams{
+	if err := rc.RoomUsecase.AddChat(ctx, params.AddChat{
 		RoomID:    reqtURI.RoomID,
 		AccountID: reqBody.AccountID,
 		Message:   reqBody.Message,
@@ -374,19 +375,19 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 //	@Description	CloseRoom
 //	@Tags			Rooms
 //	@Produce		json
-//	@Param			room_id						path		string						true	"Rooms API wildcard"
-//	@Param			CloseRoomRequest			body		domain.CloseRoomRequest		true	"Close Room Request body"
-//	@Success		200							{object}	SuccessResponse				"success response"
-//	@Failure		400							{object}	ErrorResponse				"error response"
-//	@Failure		403							{object}	ErrorResponse				"error response"
-//	@Failure		500							{object}	ErrorResponse				"error response"
+//	@Param			room_id						path		string				true	"Rooms API wildcard"
+//	@Param			CloseRoomRequest			body		request.CloseRoom	true	"Close Room Request body"
+//	@Success		200							{object}	SuccessResponse		"success response"
+//	@Failure		400							{object}	ErrorResponse		"error response"
+//	@Failure		403							{object}	ErrorResponse		"error response"
+//	@Failure		500							{object}	ErrorResponse		"error response"
 //	@Router			/rooms/{room_id}/members	[post]
 func (rc *RoomController) CloseRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqtURI domain.RoomsRequestWildCard
-		reqBody domain.CloseRoomRequest
+		reqtURI request.RoomsWildCard
+		reqBody request.CloseRoom
 	)
 
 	if err := ctx.ShouldBindUri(&reqtURI); err != nil {
@@ -399,7 +400,7 @@ func (rc *RoomController) CloseRoom(ctx *gin.Context) {
 		return
 	}
 
-	if err := rc.RoomUsecase.CloseRoom(ctx, domain.CloseRoomParams{
+	if err := rc.RoomUsecase.CloseRoom(ctx, params.CloseRoom{
 		RoomID:    reqtURI.RoomID,
 		AccountID: reqBody.AccountID,
 	}); err != nil {

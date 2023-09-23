@@ -6,14 +6,14 @@ import (
 	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/stretchr/testify/require"
 )
 
-func randomHachathon(t *testing.T) (domain.CreateHackathonParams, repository.Hackathon) {
-	arg := domain.CreateHackathonParams{
+func randomHachathon(t *testing.T) (params.CreateHackathon, repository.Hackathon) {
+	arg := params.CreateHackathon{
 		Hackathon: repository.CreateHackathonsParams{
 			Name:        util.RandomString(10),
 			Icon:        dbutil.ToSqlNullString(util.RandomString(10)),

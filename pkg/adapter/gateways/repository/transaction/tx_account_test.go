@@ -5,14 +5,14 @@ import (
 	"testing"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
 	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/stretchr/testify/require"
 )
 
-func randomAccount(t *testing.T) (domain.CreateAccountParams, repository.Account) {
-	arg := domain.CreateAccountParams{
+func randomAccount(t *testing.T) (params.CreateAccount, repository.Account) {
+	arg := params.CreateAccount{
 		AccountInfo: repository.CreateAccountsParams{
 			AccountID:       util.RandomString(10),
 			Email:           util.RandomEmail(),
@@ -64,7 +64,7 @@ func TestCreateAccountTx(t *testing.T) {
 func TestUpdateAccountTx(t *testing.T) {
 	_, account := randomAccount(t)
 
-	arg := domain.UpdateAccountParam{
+	arg := params.UpdateAccount{
 		AccountInfo: repository.Account{
 			AccountID:       account.AccountID,
 			Email:           account.Email,

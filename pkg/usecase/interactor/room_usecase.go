@@ -7,7 +7,9 @@ import (
 	"github.com/google/uuid"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/response"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 
@@ -23,11 +25,11 @@ func NewRoomUsercase(store transaction.Store, timeout time.Duration) inputport.R
 	}
 }
 
-func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRequest) ([]domain.ListRoomResponse, error) {
+func (ru *roomUsecase) ListRooms(ctx context.Context, query request.ListRequest) ([]response.ListRoom, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	var result []domain.ListRoomResponse
+	var result []response.ListRoom
 
 	rooms, err := ru.store.ListRooms(ctx, repository.ListRoomsParams{Limit: query.PageSize, Offset: (query.PageID - 1) * query.PageSize})
 	if err != nil {
@@ -48,15 +50,15 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRequest) 
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, domain.ListRoomResponse{
-			Rooms: domain.ListRoomRoomInfo{
+		result = append(result, response.ListRoom{
+			Rooms: response.ListRoomRoomInfo{
 				RoomID:      room.RoomID,
 				Title:       room.Title,
 				MemberLimit: room.MemberLimit,
 				IsClosing:   room.IsClosing.Bool,
 				CreatedAt:   room.CreateAt,
 			},
-			Hackathon: domain.ListRoomHackathonInfo{
+			Hackathon: response.ListRoomHackathonInfo{
 				HackathonID:   hackathon.HackathonID,
 				HackathonName: hackathon.Name,
 				Icon:          hackathon.Icon.String,
@@ -70,7 +72,7 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query domain.ListRequest) 
 	return result, nil
 }
 
-func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.GetRoomResponse, err error) {
+func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result response.Room, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -94,7 +96,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 		return
 	}
 
-	result = parseRoomResponse(result, room, domain.RoomHackathonInfo{
+	result = parseRoomResponse(result, room, response.RoomHackathonInfo{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon.String,
@@ -107,7 +109,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result domain.Ge
 	return
 }
 
-func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomParam) (result domain.GetRoomResponse, err error) {
+func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoom) (result response.Room, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -133,7 +135,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 		return
 	}
 
-	result = parseRoomResponse(result, room, domain.RoomHackathonInfo{
+	result = parseRoomResponse(result, room, response.RoomHackathonInfo{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon.String,
@@ -147,7 +149,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body domain.CreateRoomPar
 	return
 }
 
-func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomParam) (result domain.GetRoomResponse, err error) {
+func (ru *roomUsecase) UpdateRoom(ctx context.Context, body params.UpdateRoom) (result response.Room, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -170,7 +172,7 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomPar
 		return
 	}
 
-	result = parseRoomResponse(result, room, domain.RoomHackathonInfo{
+	result = parseRoomResponse(result, room, response.RoomHackathonInfo{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon.String,
@@ -183,21 +185,21 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body domain.UpdateRoomPar
 	return
 }
 
-func (ru *roomUsecase) DeleteRoom(ctx context.Context, query domain.DeleteRoomParam) error {
+func (ru *roomUsecase) DeleteRoom(ctx context.Context, query params.DeleteRoom) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	return ru.store.DeleteRoomTx(ctx, query)
 }
 
-func (ru *roomUsecase) AddAccountInRoom(ctx context.Context, query domain.AddAccountInRoomParam) error {
+func (ru *roomUsecase) AddAccountInRoom(ctx context.Context, query params.AddAccountInRoom) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	return ru.store.AddAccountInRoom(ctx, query)
 }
 
-func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) error {
+func (ru *roomUsecase) AddChat(ctx context.Context, body params.AddChat) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -205,7 +207,7 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) e
 	if err != nil {
 		return err
 	}
-	_, err = ru.store.CreateSubCollection(ctx, domain.WriteFireStoreParam{
+	_, err = ru.store.CreateSubCollection(ctx, params.WriteFireStore{
 		RoomID:  body.RoomID,
 		Index:   data + 1,
 		UID:     body.AccountID,
@@ -215,7 +217,7 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body domain.AddChatParams) e
 	return err
 }
 
-func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.DeleteRoomAccount) error {
+func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body params.DeleteRoomAccount) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -226,17 +228,17 @@ func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body domain.Delete
 
 }
 
-func (ru *roomUsecase) CloseRoom(ctx context.Context, body domain.CloseRoomParams) error {
+func (ru *roomUsecase) CloseRoom(ctx context.Context, body params.CloseRoom) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	return ru.store.CloseRoom(ctx, body)
 }
 
-func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room repository.Room) ([]domain.RoomTechTags, []domain.RoomFramework, error) {
+func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room repository.Room) ([]response.RoomTechTags, []response.RoomFramework, error) {
 	var (
-		roomTechTags   []domain.RoomTechTags
-		roomFrameworks []domain.RoomFramework
+		roomTechTags   []response.RoomTechTags
+		roomFrameworks []response.RoomFramework
 	)
 	accounts, err := store.GetRoomsAccountsByID(ctx, room.RoomID)
 	if err != nil {
@@ -272,13 +274,13 @@ func stackTagAndFrameworks(ctx context.Context, store transaction.Store, room re
 	return roomTechTags, roomFrameworks, nil
 }
 
-func margeTechTagArray(roomTechTags []domain.RoomTechTags, techtag repository.TechTag) []domain.RoomTechTags {
+func margeTechTagArray(roomTechTags []response.RoomTechTags, techtag repository.TechTag) []response.RoomTechTags {
 	for _, roomTechTag := range roomTechTags {
 		if roomTechTag.TechTag == techtag {
 			roomTechTag.Count++
 		}
 	}
-	roomTechTags = append(roomTechTags, domain.RoomTechTags{
+	roomTechTags = append(roomTechTags, response.RoomTechTags{
 		TechTag: techtag,
 		Count:   1,
 	})
@@ -286,13 +288,13 @@ func margeTechTagArray(roomTechTags []domain.RoomTechTags, techtag repository.Te
 	return roomTechTags
 }
 
-func margeFrameworkArray(roomFramework []domain.RoomFramework, framework repository.Framework) []domain.RoomFramework {
+func margeFrameworkArray(roomFramework []response.RoomFramework, framework repository.Framework) []response.RoomFramework {
 	for _, roomFramework := range roomFramework {
 		if roomFramework.Framework == framework {
 			roomFramework.Count++
 		}
 	}
-	roomFramework = append(roomFramework, domain.RoomFramework{
+	roomFramework = append(roomFramework, response.RoomFramework{
 		Framework: framework,
 		Count:     1,
 	})
@@ -300,8 +302,8 @@ func margeFrameworkArray(roomFramework []domain.RoomFramework, framework reposit
 	return roomFramework
 }
 
-func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, hackathon domain.RoomHackathonInfo) domain.GetRoomResponse {
-	return domain.GetRoomResponse{
+func parseRoomResponse(resp response.Room, room repository.Room, hackathon response.RoomHackathonInfo) response.Room {
+	return response.Room{
 		RoomID:      room.RoomID,
 		Title:       room.Title,
 		Description: room.Description,
@@ -309,11 +311,11 @@ func parseRoomResponse(response domain.GetRoomResponse, room repository.Room, ha
 		IsDelete:    room.IsDelete,
 		Hackathon:   hackathon,
 		IsClosing:   room.IsClosing.Bool,
-		NowMember:   response.NowMember,
+		NowMember:   resp.NowMember,
 	}
 }
 
-func getRoomMember(ctx context.Context, store transaction.Store, accountID string) (result []domain.NowRoomAccounts, err error) {
+func getRoomMember(ctx context.Context, store transaction.Store, accountID string) (result []response.NowRoomAccounts, err error) {
 	accounts, err := store.GetRoomsAccountsByID(ctx, accountID)
 	if err != nil {
 		return
@@ -335,7 +337,7 @@ func getRoomMember(ctx context.Context, store transaction.Store, accountID strin
 			return nil, err
 		}
 
-		result = append(result, domain.NowRoomAccounts{
+		result = append(result, response.NowRoomAccounts{
 			AccountID:  user.AccountID,
 			Username:   user.Username,
 			Icon:       user.Icon.String,

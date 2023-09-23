@@ -8,7 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
@@ -25,16 +26,16 @@ type PastWorkController struct {
 //	@Description	Create a past work from the requested body
 //	@Tags			PastWorks
 //	@Produce		json
-//	@Param			CreatePastWorkRequest	body		domain.PastWorkRequestBody	true	"Create PastWork Request"
-//	@Success		200						{object}	domain.PastWorkResponse		"create success response"
-//	@Failure		400						{object}	ErrorResponse				"bad request response"
-//	@Failure		500						{object}	ErrorResponse				"server error response"
-//	@Router			/pastworks	[post]
+//	@Param			CreatePastWorkRequest	body		request.PastWork	true	"Create PastWork Request"
+//	@Success		200						{object}	response.PastWork	"create success response"
+//	@Failure		400						{object}	ErrorResponse		"bad request response"
+//	@Failure		500						{object}	ErrorResponse		"server error response"
+//	@Router			/pastworks				[post]
 func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody    domain.PastWorkRequestBody
+		reqBody    request.PastWork
 		image      []byte
 		tags       []int32
 		frameworks []int32
@@ -83,7 +84,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		}
 	}
 
-	response, err := pc.PastWorkUsecase.CreatePastWork(ctx, domain.CreatePastWorkParams{
+	response, err := pc.PastWorkUsecase.CreatePastWork(ctx, params.CreatePastWork{
 		Name:               reqBody.Name,
 		ExplanatoryText:    reqBody.ExplanatoryText,
 		PastWorkTags:       tags,
@@ -104,14 +105,14 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 //	@Tags			PastWorks
 //	@Produce		json
 //	@Param			opus				path		string	true	"PastWorks API wildcard"
-//	@Success		200					{object}	domain.PastWorkResponse
+//	@Success		200					{object}	response.PastWork
 //	@Failure		400					{object}	ErrorResponse	"error response"
 //	@Failure		500					{object}	ErrorResponse	"error response"
 //	@Router			/pastworks/{opus}	[get]
 func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqURI domain.PastWorksRequestWildCard
+	var reqURI request.PastWorksWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -130,15 +131,15 @@ func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 //	@Description	List PastWork
 //	@Tags			PastWorks
 //	@Produce		json
-//	@Param			ListRequest	query		domain.ListRequest	true	"List PastWork Request"
-//	@Success		200			{array}		domain.ListPastWorkResponse
+//	@Param			ListRequest	query		request.ListRequest	true	"List PastWork Request"
+//	@Success		200			{array}		response.ListPastWork
 //	@Failure		400			{object}	ErrorResponse	"error response"
 //	@Failure		500			{object}	ErrorResponse	"error response"
 //	@Router			/pastworks	[get]
 func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqQuery domain.ListRequest
+	var reqQuery request.ListRequest
 
 	if err := ctx.ShouldBindQuery(&reqQuery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -159,18 +160,18 @@ func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 //	@Description	Update PastWork
 //	@Tags			PastWorks
 //	@Produce		json
-//	@Param			opus					path		string						true	"PastWorks API wildcard"
-//	@Param			UpdatePastWorkRequest	body		domain.PastWorkRequestBody	true	"Update PastWork Request"
-//	@Success		200						{object}	domain.PastWorkResponse
+//	@Param			opus					path		string				true	"PastWorks API wildcard"
+//	@Param			UpdatePastWorkRequest	body		request.PastWork	true	"Update PastWork Request"
+//	@Success		200						{object}	response.PastWork
 //	@Failure		400						{object}	ErrorResponse	"error response"
 //	@Failure		500						{object}	ErrorResponse	"error response"
-//	@Router			/pastworks/{opus}	[put]
+//	@Router			/pastworks/{opus}		[put]
 func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
 	var (
-		reqBody    domain.PastWorkRequestBody
-		reqURI     domain.PastWorksRequestWildCard
+		reqBody    request.PastWork
+		reqURI     request.PastWorksWildCard
 		tags       []int32
 		frameworks []int32
 		err        error
@@ -201,7 +202,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 		}
 	}
 
-	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, domain.UpdatePastWorkParams{
+	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, params.UpdatePastWork{
 		Opus:               reqURI.Opus,
 		Name:               reqBody.Name,
 		ExplanatoryText:    reqBody.ExplanatoryText,
@@ -230,7 +231,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 func (pc *PastWorkController) DeletePastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
-	var reqURI domain.PastWorksRequestWildCard
+	var reqURI request.PastWorksWildCard
 	if err := ctx.ShouldBindUri(&reqURI); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

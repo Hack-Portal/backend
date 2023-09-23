@@ -4,10 +4,10 @@ import (
 	"context"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
 )
 
-func (store *SQLStore) CreateHackathonTx(ctx context.Context, args domain.CreateHackathonParams) (repository.Hackathon, error) {
+func (store *SQLStore) CreateHackathonTx(ctx context.Context, args params.CreateHackathon) (repository.Hackathon, error) {
 	var hackathon repository.Hackathon
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		var err error

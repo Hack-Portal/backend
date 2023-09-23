@@ -8,7 +8,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/storage"
 	"github.com/gofrs/uuid/v5"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
 	"google.golang.org/api/iterator"
 )
 
@@ -23,7 +23,7 @@ type Chat struct {
 	CreatedAt time.Time
 }
 
-func (store *SQLStore) CreateSubCollection(ctx context.Context, arg domain.WriteFireStoreParam) (*firestore.WriteResult, error) {
+func (store *SQLStore) CreateSubCollection(ctx context.Context, arg params.WriteFireStore) (*firestore.WriteResult, error) {
 	client, err := store.App.Firestore(ctx)
 	if err != nil {
 		return nil, err

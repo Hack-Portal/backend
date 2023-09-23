@@ -6,7 +6,7 @@ import (
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain"
+	"github.com/hackhack-Geek-vol6/backend/pkg/domain/response"
 	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 )
 
@@ -22,7 +22,7 @@ func NewFollowUsercase(store transaction.Store, timeout time.Duration) inputport
 	}
 }
 
-func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.CreateFollowsParams) (result domain.FollowResponse, err error) {
+func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.CreateFollowsParams) (result response.Follow, err error) {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 
@@ -35,7 +35,7 @@ func (fu *followUsecase) CreateFollow(ctx context.Context, body repository.Creat
 	if err != nil {
 		return
 	}
-	result = domain.FollowResponse{AccountID: account.AccountID, Username: account.Username, Icon: account.Icon.String}
+	result = response.Follow{AccountID: account.AccountID, Username: account.Username, Icon: account.Icon.String}
 	return
 }
 
@@ -46,7 +46,7 @@ func (fu *followUsecase) RemoveFollow(ctx context.Context, body repository.Delet
 	return fu.store.DeleteFollows(ctx, body)
 }
 
-func (fu *followUsecase) GetFollowByID(ctx context.Context, ID string, mode bool) (result []domain.FollowResponse, err error) {
+func (fu *followUsecase) GetFollowByID(ctx context.Context, ID string, mode bool) (result []response.Follow, err error) {
 	ctx, cancel := context.WithTimeout(ctx, fu.contextTimeout)
 	defer cancel()
 
@@ -69,7 +69,7 @@ func (fu *followUsecase) GetFollowByID(ctx context.Context, ID string, mode bool
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, domain.FollowResponse{
+		result = append(result, response.Follow{
 			AccountID: account.AccountID,
 			Username:  account.Username,
 			Icon:      account.Icon.String,
