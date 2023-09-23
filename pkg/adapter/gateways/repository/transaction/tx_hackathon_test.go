@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func randomHachathon(t *testing.T) (params.CreateHackathonParams, repository.Hackathon) {
-	arg := params.CreateHackathonParams{
+func randomHachathon(t *testing.T) (params.CreateHackathon, repository.Hackathon) {
+	arg := params.CreateHackathon{
 		Hackathon: repository.CreateHackathonsParams{
 			Name:        util.RandomString(10),
 			Icon:        dbutil.ToSqlNullString(util.RandomString(10)),

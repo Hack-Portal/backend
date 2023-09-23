@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
@@ -137,7 +136,7 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	return
 }
 
-func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateAccount, image []byte, email string) (result response.AccountResponse, err error) {
+func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateAccount, image []byte) (result response.AccountResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	// 画像が空やないときに処理する
@@ -149,28 +148,9 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateA
 			return
 		}
 	}
+	body.AccountInfo.Icon = dbutil.ToSqlNullString(imageURL)
 
-	account, err := au.store.CreateAccountTx(ctx, params.CreateAccountParams{
-		AccountInfo: repository.CreateAccountsParams{
-			AccountID: body.ReqBody.AccountID,
-			Username:  body.ReqBody.Username,
-			Email:     email,
-			Icon: sql.NullString{
-				String: imageURL,
-				Valid:  true,
-			},
-			ExplanatoryText: sql.NullString{
-				String: body.ReqBody.ExplanatoryText,
-				Valid:  true,
-			},
-			LocateID:   body.ReqBody.LocateID,
-			Rate:       0,
-			ShowLocate: body.ReqBody.ShowLocate,
-			ShowRate:   body.ReqBody.ShowRate,
-		},
-		AccountTechTag:      body.TechTags,
-		AccountFrameworkTag: body.Frameworks,
-	})
+	account, err := au.store.CreateAccountTx(ctx, body)
 	if err != nil {
 		return
 	}
@@ -193,7 +173,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateA
 	return
 }
 
-func (au *accountUsecase) UpdateAccount(ctx context.Context, body params.UpdateAccountParams, image []byte) (result response.AccountResponse, err error) {
+func (au *accountUsecase) UpdateAccount(ctx context.Context, body params.UpdateAccount, image []byte) (result response.AccountResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 

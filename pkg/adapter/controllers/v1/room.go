@@ -108,7 +108,7 @@ func (rc *RoomController) CreateRoom(ctx *gin.Context) {
 		return
 	}
 
-	response, err := rc.RoomUsecase.CreateRoom(ctx, params.CreateRoomParams{
+	response, err := rc.RoomUsecase.CreateRoom(ctx, params.CreateRoom{
 		Title:       reqBody.Title,
 		Description: reqBody.Description,
 		HackathonID: reqBody.HackathonID,
@@ -163,7 +163,7 @@ func (rc *RoomController) UpdateRoom(ctx *gin.Context) {
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 	fmt.Println(reqBody)
 
-	response, err := rc.RoomUsecase.UpdateRoom(ctx, params.UpdateRoomParams{
+	response, err := rc.RoomUsecase.UpdateRoom(ctx, params.UpdateRoom{
 		RoomID:      reqURI.RoomID,
 		Title:       reqBody.Title,
 		Description: reqBody.Description,
@@ -211,7 +211,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
-	if err := rc.RoomUsecase.DeleteRoom(ctx, params.DeleteRoomParams{
+	if err := rc.RoomUsecase.DeleteRoom(ctx, params.DeleteRoom{
 		OwnerEmail: payload.Email,
 		RoomID:     reqURI.RoomID,
 	}); err != nil {
@@ -259,7 +259,7 @@ func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 		return
 	}
 
-	if err := rc.RoomUsecase.AddAccountInRoom(ctx, params.AddAccountInRoomParams{
+	if err := rc.RoomUsecase.AddAccountInRoom(ctx, params.AddAccountInRoom{
 		AccountID: reqBody.AccountID,
 		RoomID:    reqURI.RoomID,
 	}); err != nil {
@@ -351,7 +351,7 @@ func (rc *RoomController) AddChat(ctx *gin.Context) {
 		return
 	}
 
-	if err := rc.RoomUsecase.AddChat(ctx, params.AddChatParams{
+	if err := rc.RoomUsecase.AddChat(ctx, params.AddChat{
 		RoomID:    reqtURI.RoomID,
 		AccountID: reqBody.AccountID,
 		Message:   reqBody.Message,
@@ -400,7 +400,7 @@ func (rc *RoomController) CloseRoom(ctx *gin.Context) {
 		return
 	}
 
-	if err := rc.RoomUsecase.CloseRoom(ctx, params.CloseRoomParams{
+	if err := rc.RoomUsecase.CloseRoom(ctx, params.CloseRoom{
 		RoomID:    reqtURI.RoomID,
 		AccountID: reqBody.AccountID,
 	}); err != nil {

@@ -16,7 +16,7 @@ func TestCreatePastWorkTx(t *testing.T) {
 		accountID = append(accountID, account.AccountID)
 	}
 
-	arg := params.CreatePastWorkParams{
+	arg := params.CreatePastWork{
 		Name:            util.RandomString(10),
 		ThumbnailImage:  util.RandomString(10),
 		ExplanatoryText: util.RandomString(10),

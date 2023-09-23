@@ -109,7 +109,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result response.
 	return
 }
 
-func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoomParams) (result response.GetRoomResponse, err error) {
+func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoom) (result response.GetRoomResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -149,7 +149,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoomPar
 	return
 }
 
-func (ru *roomUsecase) UpdateRoom(ctx context.Context, body params.UpdateRoomParams) (result response.GetRoomResponse, err error) {
+func (ru *roomUsecase) UpdateRoom(ctx context.Context, body params.UpdateRoom) (result response.GetRoomResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -185,21 +185,21 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body params.UpdateRoomPar
 	return
 }
 
-func (ru *roomUsecase) DeleteRoom(ctx context.Context, query params.DeleteRoomParams) error {
+func (ru *roomUsecase) DeleteRoom(ctx context.Context, query params.DeleteRoom) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	return ru.store.DeleteRoomTx(ctx, query)
 }
 
-func (ru *roomUsecase) AddAccountInRoom(ctx context.Context, query params.AddAccountInRoomParams) error {
+func (ru *roomUsecase) AddAccountInRoom(ctx context.Context, query params.AddAccountInRoom) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
 	return ru.store.AddAccountInRoom(ctx, query)
 }
 
-func (ru *roomUsecase) AddChat(ctx context.Context, body params.AddChatParams) error {
+func (ru *roomUsecase) AddChat(ctx context.Context, body params.AddChat) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -207,7 +207,7 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body params.AddChatParams) e
 	if err != nil {
 		return err
 	}
-	_, err = ru.store.CreateSubCollection(ctx, params.WriteFireStoreParams{
+	_, err = ru.store.CreateSubCollection(ctx, params.WriteFireStore{
 		RoomID:  body.RoomID,
 		Index:   data + 1,
 		UID:     body.AccountID,
@@ -228,7 +228,7 @@ func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body params.Delete
 
 }
 
-func (ru *roomUsecase) CloseRoom(ctx context.Context, body params.CloseRoomParams) error {
+func (ru *roomUsecase) CloseRoom(ctx context.Context, body params.CloseRoom) error {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 

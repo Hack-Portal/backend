@@ -98,10 +98,18 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	payload := ctx.MustGet(middleware.AuthorizationClaimsKey).(*jwt.FireBaseCustomToken)
 
 	response, err := ac.AccountUsecase.CreateAccount(ctx, params.CreateAccount{
-		ReqBody:    reqBody,
-		TechTags:   tags,
-		Frameworks: frameworks,
-	}, image, payload.Email)
+		AccountInfo: repository.CreateAccountsParams{
+			AccountID:       reqBody.AccountID,
+			Email:           payload.Email,
+			Username:        reqBody.Username,
+			LocateID:        reqBody.LocateID,
+			ExplanatoryText: dbutil.ToSqlNullString(reqBody.ExplanatoryText),
+			ShowLocate:      reqBody.ShowLocate,
+			ShowRate:        reqBody.ShowRate,
+		},
+		AccountTechTag:      tags,
+		AccountFrameworkTag: frameworks,
+	}, image)
 
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
@@ -240,7 +248,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 
 	response, err := ac.AccountUsecase.UpdateAccount(
 		ctx,
-		params.UpdateAccountParams{
+		params.UpdateAccount{
 			AccountInfo: repository.Account{
 				AccountID: reqURI.AccountID,
 				Username:  reqBody.Username,

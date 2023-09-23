@@ -10,10 +10,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func randomRoom(t *testing.T) (params.CreateRoomParams, repository.Account, repository.Room) {
+func randomRoom(t *testing.T) (params.CreateRoom, repository.Account, repository.Room) {
 	_, hackathon := randomHachathon(t)
 	_, account := randomAccount(t)
-	arg := params.CreateRoomParams{
+	arg := params.CreateRoom{
 		RoomID:      util.RandomString(10),
 		Title:       util.RandomString(10),
 		Description: util.RandomString(10),
@@ -57,12 +57,12 @@ func TestUpdateRoomTx(t *testing.T) {
 
 	testCases := []struct {
 		name        string
-		arg         params.UpdateRoomParams
-		checkResult func(t *testing.T, arg params.UpdateRoomParams, room repository.Room, err error)
+		arg         params.UpdateRoom
+		checkResult func(t *testing.T, arg params.UpdateRoom, room repository.Room, err error)
 	}{
 		{
 			name: "success",
-			arg: params.UpdateRoomParams{
+			arg: params.UpdateRoom{
 				RoomID:      room.RoomID,
 				Title:       util.RandomString(10),
 				Description: util.RandomString(10),
@@ -70,7 +70,7 @@ func TestUpdateRoomTx(t *testing.T) {
 				MemberLimit: int32(util.Random(5)) + 1,
 				OwnerEmail:  owner.Email,
 			},
-			checkResult: func(t *testing.T, arg params.UpdateRoomParams, room repository.Room, err error) {
+			checkResult: func(t *testing.T, arg params.UpdateRoom, room repository.Room, err error) {
 				require.NoError(t, err)
 				require.NotEmpty(t, room)
 
@@ -85,7 +85,7 @@ func TestUpdateRoomTx(t *testing.T) {
 			},
 		}, {
 			name: "fail not owner",
-			arg: params.UpdateRoomParams{
+			arg: params.UpdateRoom{
 				RoomID:      room.RoomID,
 				Title:       util.RandomString(10),
 				Description: util.RandomString(10),
@@ -93,17 +93,17 @@ func TestUpdateRoomTx(t *testing.T) {
 				MemberLimit: int32(util.Random(5)) + 1,
 				OwnerEmail:  account.Email,
 			},
-			checkResult: func(t *testing.T, arg params.UpdateRoomParams, room repository.Room, err error) {
+			checkResult: func(t *testing.T, arg params.UpdateRoom, room repository.Room, err error) {
 				require.Error(t, err)
 			},
 		}, {
 			name: "success - close room",
-			arg: params.UpdateRoomParams{
+			arg: params.UpdateRoom{
 				RoomID:     room.RoomID,
 				IsClosing:  true,
 				OwnerEmail: owner.Email,
 			},
-			checkResult: func(t *testing.T, arg params.UpdateRoomParams, room repository.Room, err error) {
+			checkResult: func(t *testing.T, arg params.UpdateRoom, room repository.Room, err error) {
 				require.NoError(t, err)
 				require.NotEmpty(t, room)
 
@@ -123,7 +123,7 @@ func TestUpdateRoomTx(t *testing.T) {
 func TestDeleteRoomTx(t *testing.T) {
 	_, owner, room := randomRoom(t)
 
-	arg := params.DeleteRoomParams{
+	arg := params.DeleteRoom{
 		OwnerEmail: owner.Email,
 		RoomID:     room.RoomID,
 	}
@@ -137,12 +137,12 @@ func TestAddAccountInRoom(t *testing.T) {
 
 	testCases := []struct {
 		name        string
-		arg         params.AddAccountInRoomParams
+		arg         params.AddAccountInRoom
 		checkResult func(t *testing.T, err error)
 	}{
 		{
 			name: "success",
-			arg: params.AddAccountInRoomParams{
+			arg: params.AddAccountInRoom{
 				AccountID: account.AccountID,
 				RoomID:    room.RoomID,
 			},
@@ -152,7 +152,7 @@ func TestAddAccountInRoom(t *testing.T) {
 		},
 		{
 			name: "fail duplicate account",
-			arg: params.AddAccountInRoomParams{
+			arg: params.AddAccountInRoom{
 				AccountID: owner.AccountID,
 				RoomID:    room.RoomID,
 			},

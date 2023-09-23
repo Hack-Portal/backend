@@ -1,6 +1,6 @@
 package params
 
-type CreatePastWorkParams struct {
+type CreatePastWork struct {
 	Name               string   `json:"name"`
 	ThumbnailImage     string   `json:"thumbnail_image"`
 	ExplanatoryText    string   `json:"explanatory_text"`
@@ -9,7 +9,7 @@ type CreatePastWorkParams struct {
 	AccountPastWorks   []string `json:"account_past_works"`
 }
 
-type UpdatePastWorkParams struct {
+type UpdatePastWork struct {
 	Opus               int32    `form:"opus"`
 	Name               string   `form:"name"`
 	ExplanatoryText    string   `form:"explanatory_text"`

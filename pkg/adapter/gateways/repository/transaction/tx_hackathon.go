@@ -7,7 +7,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
 )
 
-func (store *SQLStore) CreateHackathonTx(ctx context.Context, args params.CreateHackathonParams) (repository.Hackathon, error) {
+func (store *SQLStore) CreateHackathonTx(ctx context.Context, args params.CreateHackathon) (repository.Hackathon, error) {
 	var hackathon repository.Hackathon
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		var err error

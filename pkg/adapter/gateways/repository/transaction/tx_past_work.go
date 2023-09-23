@@ -63,7 +63,7 @@ func compPastWork(request repository.UpdatePastWorksByIDParams, latest repositor
 	return
 }
 
-func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg params.CreatePastWorkParams) (repository.PastWork, error) {
+func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg params.CreatePastWork) (repository.PastWork, error) {
 	var pastwork repository.PastWork
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		var err error
@@ -92,7 +92,7 @@ func (store *SQLStore) CreatePastWorkTx(ctx context.Context, arg params.CreatePa
 	return pastwork, err
 }
 
-func (store *SQLStore) UpdatePastWorkTx(ctx context.Context, arg params.UpdatePastWorkParams) (repository.PastWork, error) {
+func (store *SQLStore) UpdatePastWorkTx(ctx context.Context, arg params.UpdatePastWork) (repository.PastWork, error) {
 	var pastwork repository.PastWork
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		latest, err := q.GetPastWorksByOpus(ctx, arg.Opus)

@@ -2,7 +2,7 @@ package params
 
 import "time"
 
-type CreateRoomParams struct {
+type CreateRoom struct {
 	RoomID      string `json:"room_id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -12,7 +12,7 @@ type CreateRoomParams struct {
 	IncludeRate bool   `json:"include_rate"`
 }
 
-type UpdateRoomParams struct {
+type UpdateRoom struct {
 	RoomID      string `json:"room_id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -22,23 +22,23 @@ type UpdateRoomParams struct {
 	OwnerEmail  string `json:"owner_email"`
 }
 
-type DeleteRoomParams struct {
+type DeleteRoom struct {
 	OwnerEmail string `json:"owner_email"`
 	RoomID     string `json:"room_id"`
 }
 
-type AddAccountInRoomParams struct {
+type AddAccountInRoom struct {
 	AccountID string `json:"account_id"`
 	RoomID    string `json:"room_id"`
 }
 
-type AddChatParams struct {
+type AddChat struct {
 	RoomID    string `json:"room_id"`
 	AccountID string `json:"account_id"`
 	Message   string `json:"message"`
 }
 
-type WriteFireStoreParams struct {
+type WriteFireStore struct {
 	RoomID  string `json:"room_id"`
 	Index   int    `json:"index"`
 	UID     string `json:"uid"`
@@ -57,7 +57,7 @@ type DeleteRoomAccount struct {
 	AccountID string `json:"account_id"`
 }
 
-type CloseRoomParams struct {
+type CloseRoom struct {
 	RoomID    string
 	AccountID []string
 }

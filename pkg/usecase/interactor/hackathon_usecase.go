@@ -38,7 +38,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.Cr
 		}
 	}
 
-	hackathon, err := hu.store.CreateHackathonTx(ctx, params.CreateHackathonParams{
+	hackathon, err := hu.store.CreateHackathonTx(ctx, params.CreateHackathon{
 		Hackathon: repository.CreateHackathonsParams{
 			Name: body.Name,
 			Icon: sql.NullString{

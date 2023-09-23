@@ -24,7 +24,7 @@ func NewPastWorkUsercase(store transaction.Store, timeout time.Duration) inputpo
 	}
 }
 
-func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg params.CreatePastWorkParams, image []byte) (result response.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg params.CreatePastWork, image []byte) (result response.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 	// 画像が空でないときに処理する
@@ -35,7 +35,7 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg params.Create
 			return response.PastWorkResponse{}, err
 		}
 	}
-	pastWork, err := pu.store.CreatePastWorkTx(ctx, params.CreatePastWorkParams{
+	pastWork, err := pu.store.CreatePastWorkTx(ctx, params.CreatePastWork{
 		Name:               arg.Name,
 		ThumbnailImage:     imageURL,
 		ExplanatoryText:    arg.ExplanatoryText,
@@ -153,7 +153,7 @@ func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query request.ListR
 	return
 }
 
-func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body params.UpdatePastWorkParams) (result response.PastWorkResponse, err error) {
+func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body params.UpdatePastWork) (result response.PastWorkResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
 	defer cancel()
 

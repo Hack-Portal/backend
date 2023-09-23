@@ -19,27 +19,27 @@ const (
 type Store interface {
 	repository.Querier
 	// Account Tx
-	CreateAccountTx(ctx context.Context, args params.CreateAccountParams) (repository.Account, error)
-	UpdateAccountTx(ctx context.Context, args params.UpdateAccountParams) (repository.Account, error)
+	CreateAccountTx(ctx context.Context, args params.CreateAccount) (repository.Account, error)
+	UpdateAccountTx(ctx context.Context, args params.UpdateAccount) (repository.Account, error)
 	// Room Tx
-	CreateRoomTx(ctx context.Context, args params.CreateRoomParams) (repository.Room, error)
-	UpdateRoomTx(ctx context.Context, body params.UpdateRoomParams) (repository.Room, error)
-	DeleteRoomTx(ctx context.Context, args params.DeleteRoomParams) error
-	AddAccountInRoom(ctx context.Context, args params.AddAccountInRoomParams) error
-	CloseRoom(ctx context.Context, args params.CloseRoomParams) error
+	CreateRoomTx(ctx context.Context, args params.CreateRoom) (repository.Room, error)
+	UpdateRoomTx(ctx context.Context, body params.UpdateRoom) (repository.Room, error)
+	DeleteRoomTx(ctx context.Context, args params.DeleteRoom) error
+	AddAccountInRoom(ctx context.Context, args params.AddAccountInRoom) error
+	CloseRoom(ctx context.Context, args params.CloseRoom) error
 	// Hackathon Tx
-	CreateHackathonTx(ctx context.Context, args params.CreateHackathonParams) (repository.Hackathon, error)
+	CreateHackathonTx(ctx context.Context, args params.CreateHackathon) (repository.Hackathon, error)
 
 	// PastWork Tx
-	CreatePastWorkTx(ctx context.Context, arg params.CreatePastWorkParams) (repository.PastWork, error)
-	UpdatePastWorkTx(ctx context.Context, arg params.UpdatePastWorkParams) (repository.PastWork, error)
+	CreatePastWorkTx(ctx context.Context, arg params.CreatePastWork) (repository.PastWork, error)
+	UpdatePastWorkTx(ctx context.Context, arg params.UpdatePastWork) (repository.PastWork, error)
 
 	// Rate Entities Tx
 	CreateRateEntityTx(ctx context.Context, arg repository.CreateRateEntitiesParams) error
 
 	// Firebase
 	InitChatRoom(ctx context.Context, roomID string) (*firestore.WriteResult, error)
-	CreateSubCollection(ctx context.Context, arg params.WriteFireStoreParams) (*firestore.WriteResult, error)
+	CreateSubCollection(ctx context.Context, arg params.WriteFireStore) (*firestore.WriteResult, error)
 	ReadDocsByRoomID(ctx context.Context, roomID string) (int, error)
 	UploadImage(ctx context.Context, file []byte) (string, string, error)
 	DeleteImage(ctx context.Context, file string) error

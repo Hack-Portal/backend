@@ -11,8 +11,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func randomAccount(t *testing.T) (params.CreateAccountParams, repository.Account) {
-	arg := params.CreateAccountParams{
+func randomAccount(t *testing.T) (params.CreateAccount, repository.Account) {
+	arg := params.CreateAccount{
 		AccountInfo: repository.CreateAccountsParams{
 			AccountID:       util.RandomString(10),
 			Email:           util.RandomEmail(),
@@ -64,7 +64,7 @@ func TestCreateAccountTx(t *testing.T) {
 func TestUpdateAccountTx(t *testing.T) {
 	_, account := randomAccount(t)
 
-	arg := params.UpdateAccountParams{
+	arg := params.UpdateAccount{
 		AccountInfo: repository.Account{
 			AccountID:       account.AccountID,
 			Email:           account.Email,

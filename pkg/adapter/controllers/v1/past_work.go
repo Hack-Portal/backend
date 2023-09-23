@@ -84,7 +84,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		}
 	}
 
-	response, err := pc.PastWorkUsecase.CreatePastWork(ctx, params.CreatePastWorkParams{
+	response, err := pc.PastWorkUsecase.CreatePastWork(ctx, params.CreatePastWork{
 		Name:               reqBody.Name,
 		ExplanatoryText:    reqBody.ExplanatoryText,
 		PastWorkTags:       tags,
@@ -202,7 +202,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 		}
 	}
 
-	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, params.UpdatePastWorkParams{
+	response, err := pc.PastWorkUsecase.UpdatePastWork(ctx, params.UpdatePastWork{
 		Opus:               reqURI.Opus,
 		Name:               reqBody.Name,
 		ExplanatoryText:    reqBody.ExplanatoryText,

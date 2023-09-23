@@ -11,7 +11,7 @@ import (
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 )
 
-func compRoom(request params.UpdateRoomParams, latest repository.Room) (result repository.UpdateRoomsByIDParams, err error) {
+func compRoom(request params.UpdateRoom, latest repository.Room) (result repository.UpdateRoomsByIDParams, err error) {
 	result = repository.UpdateRoomsByIDParams{
 		HackathonID: latest.HackathonID,
 		Title:       latest.Title,
@@ -61,7 +61,7 @@ func checkDuplication(members []repository.GetRoomsAccountsByIDRow, id string) b
 	return false
 }
 
-func (store *SQLStore) CreateRoomTx(ctx context.Context, args params.CreateRoomParams) (repository.Room, error) {
+func (store *SQLStore) CreateRoomTx(ctx context.Context, args params.CreateRoom) (repository.Room, error) {
 	var room repository.Room
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		var err error
@@ -91,7 +91,7 @@ func (store *SQLStore) CreateRoomTx(ctx context.Context, args params.CreateRoomP
 	return room, err
 }
 
-func (store *SQLStore) UpdateRoomTx(ctx context.Context, body params.UpdateRoomParams) (repository.Room, error) {
+func (store *SQLStore) UpdateRoomTx(ctx context.Context, body params.UpdateRoom) (repository.Room, error) {
 	var room repository.Room
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 		latest, err := q.GetRoomsByID(ctx, body.RoomID)
@@ -127,7 +127,7 @@ func (store *SQLStore) UpdateRoomTx(ctx context.Context, body params.UpdateRoomP
 	return room, err
 }
 
-func (store *SQLStore) DeleteRoomTx(ctx context.Context, args params.DeleteRoomParams) error {
+func (store *SQLStore) DeleteRoomTx(ctx context.Context, args params.DeleteRoom) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
 		owner, err := q.GetAccountsByEmail(ctx, args.OwnerEmail)
@@ -154,7 +154,7 @@ func (store *SQLStore) DeleteRoomTx(ctx context.Context, args params.DeleteRoomP
 	return err
 }
 
-func (store *SQLStore) AddAccountInRoom(ctx context.Context, args params.AddAccountInRoomParams) error {
+func (store *SQLStore) AddAccountInRoom(ctx context.Context, args params.AddAccountInRoom) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
 		rooms, err := q.GetRoomsByID(ctx, args.RoomID)
@@ -189,7 +189,7 @@ func (store *SQLStore) AddAccountInRoom(ctx context.Context, args params.AddAcco
 	return err
 }
 
-func (store *SQLStore) CloseRoom(ctx context.Context, args params.CloseRoomParams) error {
+func (store *SQLStore) CloseRoom(ctx context.Context, args params.CloseRoom) error {
 	err := store.execTx(ctx, func(q *repository.Queries) error {
 
 		rooms, err := q.GetRoomsByID(ctx, args.RoomID)

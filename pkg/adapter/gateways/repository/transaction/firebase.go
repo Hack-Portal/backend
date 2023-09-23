@@ -23,7 +23,7 @@ type Chat struct {
 	CreatedAt time.Time
 }
 
-func (store *SQLStore) CreateSubCollection(ctx context.Context, arg params.WriteFireStoreParams) (*firestore.WriteResult, error) {
+func (store *SQLStore) CreateSubCollection(ctx context.Context, arg params.WriteFireStore) (*firestore.WriteResult, error) {
 	client, err := store.App.Firestore(ctx)
 	if err != nil {
 		return nil, err
