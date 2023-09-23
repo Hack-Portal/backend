@@ -70,11 +70,11 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 //	@Tags			Rate
 //	@Produce		json
 //	@Param			account_id						path		string						true	"Account ID"
-//	@Param			ListRequest						query		domain.ListRequest			true	"List Rate Params"
-//	@Success		200								{array}		domain.AccountRateResponse	"success response"
+//	@Param			ListRequest						query		request.ListRequest			true	"List Rate Params"
+//	@Success		200								{array}		repository.RateEntity	"success response"
 //	@Failure		400								{object}	ErrorResponse				"error response"
 //	@Failure		500								{object}	ErrorResponse				"error response"
-//	@Router			/accounts/{account_id}/rate 																				[get]
+//	@Router			/accounts/{account_id}/rate	[get]
 func (rc *RateController) ListRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -108,8 +108,8 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 //	@Description	List Account Rate
 //	@Tags			Rate
 //	@Produce		json
-//	@Param			ListRequest	query		domain.ListRequest			true	"List Rate Params"
-//	@Success		200			{array}		domain.AccountRateResponse	"success response"
+//	@Param			ListRequest	query		request.ListRequest			true	"List Rate Params"
+//	@Success		200			{array}		response.AccountRate	"success response"
 //	@Failure		400			{object}	ErrorResponse				"error response"
 //	@Failure		500			{object}	ErrorResponse				"error response"
 //	@Router			/rate 																							[get]

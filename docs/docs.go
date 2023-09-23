@@ -10,7 +10,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "https://seaffood.com/api",
+        "termsOfService": "https://api-test.seafood-dev.com",
         "contact": {
             "name": "murasame",
             "url": "https://twitter.com/fresh_salmon256",
@@ -257,12 +257,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "403": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -528,6 +522,128 @@ const docTemplate = `{
         },
         "/frameworks": {
             "get": {
+                "description": "Get Frameworks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Frameworks"
+                ],
+                "summary": "Get Frameworks",
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.Framework"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/hackathons": {
+            "get": {
+                "description": "List Hackathon",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "List Hackathon",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "name": "expired",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.ListHackathons"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Register a hackathon from given parameters",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Create Hackathon",
+                "parameters": [
+                    {
+                        "description": "create hackathon Request Body",
+                        "name": "CreateHackathonRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateHackathon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.Hackathon"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/hackathons/{hackathon_id}": {
+            "get": {
                 "description": "Get Hackathon",
                 "produces": [
                     "application/json"
@@ -549,10 +665,16 @@ const docTemplate = `{
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.HackathonResponses"
+                            "$ref": "#/definitions/response.Hackathon"
                         }
                     },
                     "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
                         "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
@@ -579,29 +701,20 @@ const docTemplate = `{
                 "summary": "Create new like",
                 "parameters": [
                     {
-                        "type": "boolean",
-                        "name": "expired",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "page_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "page_size",
-                        "in": "query"
+                        "description": "Create Like Request Body",
+                        "name": "CreateLikeRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateLike"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "create success response",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/response.ListHackathons"
-                            }
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
@@ -631,20 +744,31 @@ const docTemplate = `{
                 "summary": "Get likes",
                 "parameters": [
                     {
-                        "description": "create hackathon Request Body",
-                        "name": "CreateHackathonRequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.CreateHackathon"
-                        }
+                        "type": "string",
+                        "description": "account_id",
+                        "name": "account_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/response.Hackathon"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.Like"
+                            }
                         }
                     },
                     "400": {
@@ -677,29 +801,23 @@ const docTemplate = `{
                         "name": "account_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "opus",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "delete success response",
                         "schema": {
-                            "$ref": "#/definitions/response.Hackathon"
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "bad request response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "error response",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "error response",
                         "schema": {
                             "$ref": "#/definitions/controller.ErrorResponse"
                         }
@@ -1151,11 +1269,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "update role for an account in a room Request body",
-                        "name": "RoomAccountRoleByIDRequestBody",
+                        "name": "RoomAccountRoleByID",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.UpdateRoomAccountRoleRequestBody"
+                            "$ref": "#/definitions/request.RoomAccountRole"
                         }
                     }
                 ],
@@ -1203,7 +1321,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RoomAccountRoleByIDRequestBody"
+                            "$ref": "#/definitions/request.RoomAccountRole"
                         }
                     }
                 ],
@@ -1684,6 +1802,23 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.Like": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "is_delete": {
+                    "type": "boolean"
+                },
+                "opus": {
+                    "type": "integer"
+                }
+            }
+        },
         "repository.Locate": {
             "type": "object",
             "properties": {
@@ -1853,6 +1988,17 @@ const docTemplate = `{
                 }
             }
         },
+        "request.CreateLike": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "opus": {
+                    "type": "integer"
+                }
+            }
+        },
         "request.CreateRate": {
             "type": "object",
             "properties": {
@@ -1905,6 +2051,20 @@ const docTemplate = `{
                 },
                 "past_work_tags": {
                     "type": "string"
+                }
+            }
+        },
+        "request.RoomAccountRole": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -2247,12 +2407,6 @@ const docTemplate = `{
                         "$ref": "#/definitions/repository.Role"
                     }
                 },
-                "roles": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/repository.Role"
-                    }
-                },
                 "tech_tags": {
                     "type": "array",
                     "items": {
@@ -2417,8 +2571,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "https://seaffood.com",
-	BasePath:         "/api/v1",
+	Host:             "https://api-test.seafood-dev.com",
+	BasePath:         "/v1",
 	Schemes:          []string{},
 	Title:            "Hack Hack Backend API",
 	Description:      "HackPortal Backend API serice",

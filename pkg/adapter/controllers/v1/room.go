@@ -424,7 +424,7 @@ func (rc *RoomController) CloseRoom(ctx *gin.Context) {
 //	@Tags			Rooms
 //	@Produce		json
 //	@Param			rooms_account_id						path		string						true	"Rooms API wildcard"
-//	@Param			RoomAccountRoleByIDRequestBody			body		domain.RoomAccountRoleByIDRequestBody true "add role for an account in a room Request body"
+//	@Param			RoomAccountRoleByIDRequestBody			body		request.RoomAccountRole true "add role for an account in a room Request body"
 //	@Success		200										{object}	SuccessResponse				"success response"
 //	@Failure		400										{object}	ErrorResponse				"error response"
 //	@Failure		500										{object}	ErrorResponse				"error response"
@@ -466,7 +466,7 @@ func (rc *RoomController) AddRoomAccountRole(ctx *gin.Context) {
 //	@Tags			Rooms
 //	@Produce		json
 //	@Param			rooms_account_id						path		string						true	"Rooms API wildcard"
-//	@Param			RoomAccountRoleByIDRequestBody			body		domain.UpdateRoomAccountRoleRequestBody true "update role for an account in a room Request body"
+//	@Param			RoomAccountRoleByID			body		request.RoomAccountRole true "update role for an account in a room Request body"
 //	@Success		200										{object}	SuccessResponse				"success response"
 //	@Failure		400										{object}	ErrorResponse				"error response"
 //	@Failure		500										{object}	ErrorResponse				"error response"

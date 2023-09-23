@@ -22,8 +22,8 @@ type LikeController struct {
 //	@Description	Create a like from the specified Account ID and hackathon ID
 //	@Tags			Like
 //	@Produce		json
-//	@Param			CreateLikeRequest	body		domain.CreateLikeRequest	true	"Create Like Request Body"
-//	@Success		200					{object}	domain.LikeResponse			"create success response"
+//	@Param			CreateLikeRequest	body		request.CreateLike	true	"Create Like Request Body"
+//	@Success		200					{object}	SuccessResponse			"create success response"
 //	@Failure		400					{object}	ErrorResponse				"bad request response"
 //	@Failure		500					{object}	ErrorResponse				"server error response"
 //	@Router			/like	[post]
@@ -52,8 +52,8 @@ func (lc *LikeController) CreateLike(ctx *gin.Context) {
 //	@Tags			Like
 //	@Produce		json
 //	@Param			account_id			path		string				true	"Delete Like Request Body"
-//	@Param			opus				query		int32				true	"opus"
-//	@Success		200					{object}	domain.LikeResponse	"delete success response"
+//	@Param			opus				query		request.RemoveLike				true	"opus"
+//	@Success		200					{object}	SuccessResponse	"delete success response"
 //	@Failure		400					{object}	ErrorResponse		"bad request response"
 //	@Failure		500					{object}	ErrorResponse		"server error response"
 //	@Router			/like/{account_id} 	[delete]
@@ -85,8 +85,8 @@ func (lc *LikeController) RemoveLike(ctx *gin.Context) {
 //	@Tags			Like
 //	@Produce		json
 //	@Param			account_id			path		string				true	"account_id"
-//	@Param			ListRequest			formData	domain.ListRequest	true	"Like Request Body"
-//	@Success		200					{array}		domain.LikeResponse	"success response"
+//	@Param			ListRequest			formData	request.ListRequest	true	"Like Request Body"
+//	@Success		200					{array}		repository.Like	"success response"
 //	@Failure		400					{object}	ErrorResponse		"bad request response"
 //	@Failure		500					{object}	ErrorResponse		"server error response"
 //	@Router			/like/{account_id} 	[get]
