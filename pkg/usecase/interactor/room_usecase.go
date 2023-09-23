@@ -25,11 +25,11 @@ func NewRoomUsercase(store transaction.Store, timeout time.Duration) inputport.R
 	}
 }
 
-func (ru *roomUsecase) ListRooms(ctx context.Context, query request.ListRequest) ([]response.ListRoomResponse, error) {
+func (ru *roomUsecase) ListRooms(ctx context.Context, query request.ListRequest) ([]response.ListRoom, error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
-	var result []response.ListRoomResponse
+	var result []response.ListRoom
 
 	rooms, err := ru.store.ListRooms(ctx, repository.ListRoomsParams{Limit: query.PageSize, Offset: (query.PageID - 1) * query.PageSize})
 	if err != nil {
@@ -50,7 +50,7 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query request.ListRequest)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, response.ListRoomResponse{
+		result = append(result, response.ListRoom{
 			Rooms: response.ListRoomRoomInfo{
 				RoomID:      room.RoomID,
 				Title:       room.Title,
@@ -72,7 +72,7 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query request.ListRequest)
 	return result, nil
 }
 
-func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result response.GetRoomResponse, err error) {
+func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result response.Room, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -109,7 +109,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result response.
 	return
 }
 
-func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoom) (result response.GetRoomResponse, err error) {
+func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoom) (result response.Room, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -149,7 +149,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoom) (
 	return
 }
 
-func (ru *roomUsecase) UpdateRoom(ctx context.Context, body params.UpdateRoom) (result response.GetRoomResponse, err error) {
+func (ru *roomUsecase) UpdateRoom(ctx context.Context, body params.UpdateRoom) (result response.Room, err error) {
 	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
 	defer cancel()
 
@@ -302,8 +302,8 @@ func margeFrameworkArray(roomFramework []response.RoomFramework, framework repos
 	return roomFramework
 }
 
-func parseRoomResponse(resp response.GetRoomResponse, room repository.Room, hackathon response.RoomHackathonInfo) response.GetRoomResponse {
-	return response.GetRoomResponse{
+func parseRoomResponse(resp response.Room, room repository.Room, hackathon response.RoomHackathonInfo) response.Room {
+	return response.Room{
 		RoomID:      room.RoomID,
 		Title:       room.Title,
 		Description: room.Description,

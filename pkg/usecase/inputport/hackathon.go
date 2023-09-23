@@ -8,7 +8,7 @@ import (
 )
 
 type HackathonUsecase interface {
-	CreateHackathon(ctx context.Context, body request.CreateHackathon, image []byte) (result response.HackathonResponses, err error)
-	GetHackathon(ctx context.Context, id int32) (result response.HackathonResponses, err error)
-	ListHackathons(ctx context.Context, query request.ListHackathons) (result []response.ListHackathonsResponses, err error)
+	CreateHackathon(ctx context.Context, body request.CreateHackathon, image []byte) (result response.Hackathon, err error)
+	GetHackathon(ctx context.Context, id int32) (result response.Hackathon, err error)
+	ListHackathons(ctx context.Context, query request.ListHackathons) (result []response.ListHackathons, err error)
 }

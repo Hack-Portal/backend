@@ -8,7 +8,7 @@ import (
 )
 
 type FollowUsecase interface {
-	CreateFollow(ctx context.Context, body repository.CreateFollowsParams) (result response.FollowResponse, err error)
+	CreateFollow(ctx context.Context, body repository.CreateFollowsParams) (result response.Follow, err error)
 	RemoveFollow(ctx context.Context, body repository.DeleteFollowsParams) error
-	GetFollowByID(ctx context.Context, ID string, mode bool) (result []response.FollowResponse, err error)
+	GetFollowByID(ctx context.Context, ID string, mode bool) (result []response.Follow, err error)
 }

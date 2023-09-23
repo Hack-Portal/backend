@@ -6,7 +6,7 @@ import (
 	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 )
 
-type HackathonResponses struct {
+type Hackathon struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Name        string    `json:"name"`
 	Icon        string    `json:"icon"`
@@ -19,7 +19,7 @@ type HackathonResponses struct {
 	StatusTags []repository.StatusTag `json:"status_tags"`
 }
 
-type ListHackathonsResponses struct {
+type ListHackathons struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Name        string    `json:"name"`
 	Icon        string    `json:"icon"`

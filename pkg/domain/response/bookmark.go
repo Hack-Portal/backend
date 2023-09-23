@@ -2,7 +2,7 @@ package response
 
 import "time"
 
-type BookmarkResponse struct {
+type Bookmark struct {
 	HackathonID int32     `json:"hackathon_id"`
 	Name        string    `json:"name"`
 	Icon        string    `json:"icon"`

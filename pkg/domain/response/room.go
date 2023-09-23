@@ -50,7 +50,7 @@ type NowRoomAccounts struct {
 	Frameworks []repository.Framework `json:"frameworks"`
 }
 
-type ListRoomResponse struct {
+type ListRoom struct {
 	Rooms             ListRoomRoomInfo      `json:"rooms"`
 	Hackathon         ListRoomHackathonInfo `json:"hackathon"`
 	NowMember         []NowRoomAccounts     `json:"now_member"`
@@ -58,7 +58,7 @@ type ListRoomResponse struct {
 	MembersFrameworks []RoomFramework       `json:"members_frameworks"`
 }
 
-type GetRoomResponse struct {
+type Room struct {
 	RoomID      string            `json:"room_id"`
 	Title       string            `json:"title"`
 	Description string            `json:"description"`

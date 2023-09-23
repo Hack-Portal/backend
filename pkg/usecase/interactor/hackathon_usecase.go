@@ -25,7 +25,7 @@ func NewHackathonUsercase(store transaction.Store, timeout time.Duration) inputp
 	}
 }
 
-func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.CreateHackathon, image []byte) (result response.HackathonResponses, err error) {
+func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.CreateHackathon, image []byte) (result response.Hackathon, err error) {
 	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
 	defer cancel()
 
@@ -34,7 +34,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.Cr
 		var err error
 		_, imageURL, err = hu.store.UploadImage(ctx, image)
 		if err != nil {
-			return response.HackathonResponses{}, err
+			return response.Hackathon{}, err
 		}
 	}
 
@@ -62,7 +62,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.Cr
 		return
 	}
 
-	result = response.HackathonResponses{
+	result = response.Hackathon{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon.String,
@@ -76,7 +76,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.Cr
 	return
 }
 
-func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.ListHackathons) (result []response.ListHackathonsResponses, err error) {
+func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.ListHackathons) (result []response.ListHackathons, err error) {
 	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
 	defer cancel()
 
@@ -112,7 +112,7 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.Li
 			tags = append(tags, tag)
 		}
 
-		result = append(result, response.ListHackathonsResponses{
+		result = append(result, response.ListHackathons{
 			HackathonID: hackathon.HackathonID,
 			Icon:        hackathon.Icon.String,
 			Name:        hackathon.Name,
@@ -127,13 +127,13 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.Li
 	return
 }
 
-func (hu *hackathonUsecase) GetHackathon(ctx context.Context, id int32) (result response.HackathonResponses, err error) {
+func (hu *hackathonUsecase) GetHackathon(ctx context.Context, id int32) (result response.Hackathon, err error) {
 	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
 	defer cancel()
 
 	hackathon, err := hu.store.GetHackathonByID(ctx, id)
 	if err != nil {
-		return response.HackathonResponses{}, err
+		return response.Hackathon{}, err
 	}
 
 	statusTags, err := hu.store.ListHackathonStatusTagsByID(ctx, hackathon.HackathonID)
@@ -145,12 +145,12 @@ func (hu *hackathonUsecase) GetHackathon(ctx context.Context, id int32) (result 
 	for _, statusTag := range statusTags {
 		tag, err := hu.store.GetStatusTagsByTag(ctx, statusTag.StatusID)
 		if err != nil {
-			return response.HackathonResponses{}, err
+			return response.Hackathon{}, err
 		}
 		tags = append(tags, tag)
 	}
 
-	result = response.HackathonResponses{
+	result = response.Hackathon{
 		HackathonID: hackathon.HackathonID,
 		Name:        hackathon.Name,
 		Icon:        hackathon.Icon.String,

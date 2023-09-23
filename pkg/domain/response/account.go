@@ -2,7 +2,7 @@ package response
 
 import repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 
-type AccountResponse struct {
+type Account struct {
 	AccountID       string `json:"account_id"`
 	Username        string `json:"username"`
 	Icon            string `json:"icon"`
@@ -21,14 +21,14 @@ type AccountResponse struct {
 	Frameworks []repository.Framework `json:"frameworks"`
 }
 
-type AccountRateResponse struct {
+type AccountRate struct {
 	AccountID string `json:"account_id"`
 	Username  string `json:"username"`
 	Icon      string `json:"icon"`
 	Rate      int32  `json:"rate"`
 }
 
-type GetJoinRoomResponse struct {
+type GetJoinRoom struct {
 	RoomID string `json:"room_id"`
 	Title  string `json:"title"`
 }

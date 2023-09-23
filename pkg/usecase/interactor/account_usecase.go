@@ -25,7 +25,7 @@ func NewAccountUsercase(store transaction.Store, timeout time.Duration) inputpor
 	}
 }
 
-func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *jwt.FireBaseCustomToken) (result response.AccountResponse, err error) {
+func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *jwt.FireBaseCustomToken) (result response.Account, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	account, err := au.store.GetAccountsByID(ctx, id)
@@ -95,7 +95,7 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *
 	return
 }
 
-func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (result response.AccountResponse, err error) {
+func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (result response.Account, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -136,7 +136,7 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 	return
 }
 
-func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateAccount, image []byte) (result response.AccountResponse, err error) {
+func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateAccount, image []byte) (result response.Account, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	// 画像が空やないときに処理する
@@ -173,7 +173,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateA
 	return
 }
 
-func (au *accountUsecase) UpdateAccount(ctx context.Context, body params.UpdateAccount, image []byte) (result response.AccountResponse, err error) {
+func (au *accountUsecase) UpdateAccount(ctx context.Context, body params.UpdateAccount, image []byte) (result response.Account, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -219,7 +219,7 @@ func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
 	return err
 }
 
-func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (result []response.GetJoinRoomResponse, err error) {
+func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (result []response.GetJoinRoom, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -232,7 +232,7 @@ func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (re
 	}
 
 	for _, room := range rooms {
-		result = append(result, response.GetJoinRoomResponse{
+		result = append(result, response.GetJoinRoom{
 			RoomID: room.RoomID,
 			Title:  room.Title.String,
 		})
@@ -240,8 +240,8 @@ func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (re
 	return
 }
 
-func parseAccountResponse(account repository.Account, locate string, techTags []repository.TechTag, frameworks []repository.Framework) response.AccountResponse {
-	return response.AccountResponse{
+func parseAccountResponse(account repository.Account, locate string, techTags []repository.TechTag, frameworks []repository.Framework) response.Account {
+	return response.Account{
 		AccountID:       account.AccountID,
 		Username:        account.Username,
 		Icon:            account.Icon.String,

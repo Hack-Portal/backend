@@ -50,7 +50,7 @@ func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query reque
 	return rates, nil
 }
 
-func (au *rateUsecase) ListAccountRate(ctx context.Context, args request.ListRequest) (result []response.AccountRateResponse, err error) {
+func (au *rateUsecase) ListAccountRate(ctx context.Context, args request.ListRequest) (result []response.AccountRate, err error) {
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 
@@ -65,9 +65,9 @@ func (au *rateUsecase) ListAccountRate(ctx context.Context, args request.ListReq
 	return parseAccountRateResponse(accounts), nil
 }
 
-func parseAccountRateResponse(accounts []repository.Account) (result []response.AccountRateResponse) {
+func parseAccountRateResponse(accounts []repository.Account) (result []response.AccountRate) {
 	for _, account := range accounts {
-		result = append(result, response.AccountRateResponse{
+		result = append(result, response.AccountRate{
 			AccountID: account.AccountID,
 			Username:  account.Username,
 			Icon:      account.Icon.String,
