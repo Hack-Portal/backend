@@ -122,7 +122,7 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 //	@Tags			Hackathon
 //	@Produce		json
 //	@Param			ListHackathonsParams	query		request.ListHackathons		true	"List hackathon Request queries"
-//	@Success		200						{array}		[]response.ListHackathons	"success response"
+//	@Success		200						{array}		response.ListHackathons	"success response"
 //	@Failure		400						{object}	ErrorResponse				"error response"
 //	@Failure		500						{object}	ErrorResponse				"error response"
 //	@Router			/hackathons				[get]

@@ -326,7 +326,7 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 //	@Description	Get Join Room
 //	@Tags			Accounts
 //	@Produce		json
-//	@Success		200								{array}		[]response.GetJoinRoom	"success response"
+//	@Success		200								{array}		response.GetJoinRoom	"success response"
 //	@Failure		400								{object}	ErrorResponse			"error response"
 //	@Failure		403								{object}	ErrorResponse			"error response"
 //	@Failure		500								{object}	ErrorResponse			"error response"

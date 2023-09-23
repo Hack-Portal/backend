@@ -656,9 +656,7 @@ paths:
           description: success response
           schema:
             items:
-              items:
-                $ref: '#/definitions/repository.RateEntity'
-              type: array
+              $ref: '#/definitions/repository.RateEntity'
             type: array
         "400":
           description: error response
@@ -712,9 +710,7 @@ paths:
           description: success response
           schema:
             items:
-              items:
-                $ref: '#/definitions/response.GetJoinRoom'
-              type: array
+              $ref: '#/definitions/response.GetJoinRoom'
             type: array
         "400":
           description: error response
@@ -880,9 +876,7 @@ paths:
           description: success response
           schema:
             items:
-              items:
-                $ref: '#/definitions/response.ListHackathons'
-              type: array
+              $ref: '#/definitions/response.ListHackathons'
             type: array
         "400":
           description: error response
@@ -989,9 +983,7 @@ paths:
           description: OK
           schema:
             items:
-              items:
-                $ref: '#/definitions/response.ListPastWork'
-              type: array
+              $ref: '#/definitions/response.ListPastWork'
             type: array
         "400":
           description: error response
@@ -1133,9 +1125,7 @@ paths:
           description: success response
           schema:
             items:
-              items:
-                $ref: '#/definitions/response.AccountRate'
-              type: array
+              $ref: '#/definitions/response.AccountRate'
             type: array
         "400":
           description: error response

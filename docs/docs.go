@@ -252,10 +252,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/repository.RateEntity"
-                                }
+                                "$ref": "#/definitions/repository.RateEntity"
                             }
                         }
                     },
@@ -337,10 +334,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/response.GetJoinRoom"
-                                }
+                                "$ref": "#/definitions/response.GetJoinRoom"
                             }
                         }
                     },
@@ -594,10 +588,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/response.ListHackathons"
-                                }
+                                "$ref": "#/definitions/response.ListHackathons"
                             }
                         }
                     },
@@ -761,10 +752,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/response.ListPastWork"
-                                }
+                                "$ref": "#/definitions/response.ListPastWork"
                             }
                         }
                     },
@@ -980,10 +968,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/response.AccountRate"
-                                }
+                                "$ref": "#/definitions/response.AccountRate"
                             }
                         }
                     },

@@ -71,7 +71,7 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			account_id					path		string					true	"Account ID"
 //	@Param			ListRequest					query		request.ListRequest		true	"List Rate Params"
-//	@Success		200							{array}		[]repository.RateEntity	"success response"
+//	@Success		200							{array}		repository.RateEntity	"success response"
 //	@Failure		400							{object}	ErrorResponse			"error response"
 //	@Failure		403							{object}	ErrorResponse			"error response"
 //	@Failure		500							{object}	ErrorResponse			"error response"
@@ -110,7 +110,7 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 //	@Tags			Rate
 //	@Produce		json
 //	@Param			ListRequest	query		request.ListRequest		true	"List Rate Params"
-//	@Success		200			{array}		[]response.AccountRate	"success response"
+//	@Success		200			{array}		response.AccountRate	"success response"
 //	@Failure		400			{object}	ErrorResponse			"error response"
 //	@Failure		500			{object}	ErrorResponse			"error response"
 //	@Router			/rate		[get]

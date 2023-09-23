@@ -132,7 +132,7 @@ func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 //	@Tags			PastWorks
 //	@Produce		json
 //	@Param			ListRequest	query		request.ListRequest	true	"List PastWork Request"
-//	@Success		200			{array}		[]response.ListPastWork
+//	@Success		200			{array}		response.ListPastWork
 //	@Failure		400			{object}	ErrorResponse	"error response"
 //	@Failure		500			{object}	ErrorResponse	"error response"
 //	@Router			/pastworks	[get]
