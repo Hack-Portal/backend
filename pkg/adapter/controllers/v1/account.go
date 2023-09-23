@@ -36,11 +36,11 @@ type AccountController struct {
 //	@Accept			multipart/form-data
 //	@Tags			Accounts
 //	@Produce		json
-//	@Param			CreateAccountRequest	body		request.CreateAccountRequest	true	"Create Account Request"
-//	@Success		200						{object}	response.AccountResponses		"create success response"
-//	@Failure		400						{object}	ErrorResponse					"bad request response"
-//	@Failure		500						{object}	ErrorResponse					"server error response"
-//	@Router			/accounts	[post]
+//	@Param			CreateAccountRequest	body		request.CreateAccount	true	"Create Account Request"
+//	@Success		200						{object}	response.Account		"create success response"
+//	@Failure		400						{object}	ErrorResponse			"bad request response"
+//	@Failure		500						{object}	ErrorResponse			"server error response"
+//	@Router			/accounts				[post]
 func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -133,10 +133,10 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 //	@Tags			Accounts
 //	@Produce		json
 //	@Param			account_id				path		string				true	"Accounts API wildcard"
-//	@Success		200						{object}	response.AccountResponses	"Get success response"
-//	@Failure		400						{object}	ErrorResponse				"bad request response"
-//	@Failure		403						{object}	ErrorResponse				"error response"
-//	@Failure		500						{object}	ErrorResponse				"server error response"
+//	@Success		200						{object}	response.Account	"Get success response"
+//	@Failure		400						{object}	ErrorResponse		"bad request response"
+//	@Failure		403						{object}	ErrorResponse		"error response"
+//	@Failure		500						{object}	ErrorResponse		"server error response"
 //	@Router			/accounts/{account_id}	[get]
 func (ac *AccountController) GetAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
@@ -180,12 +180,12 @@ func (ac *AccountController) GetAccount(ctx *gin.Context) {
 //	@Description	Update account info from requested body
 //	@Tags			Accounts
 //	@Produce		json
-//	@Param			account_id				path		string							true	"Accounts API wildcard"
-//	@Param			UpdateAccountRequest	body		request.UpdateAccountRequest	true	"Update Account Request Body"
-//	@Success		200						{object}	response.AccountResponses				"Update success response"
-//	@Failure		400						{object}	ErrorResponse							"bad request response"
-//	@Failure		403						{object}	ErrorResponse							"error response"
-//	@Failure		500						{object}	ErrorResponse							"server error response"
+//	@Param			account_id				path		string					true	"Accounts API wildcard"
+//	@Param			UpdateAccountRequest	body		request.UpdateAccount	true	"Update Account Request Body"
+//	@Success		200						{object}	response.Account		"Update success response"
+//	@Failure		400						{object}	ErrorResponse			"bad request response"
+//	@Failure		403						{object}	ErrorResponse			"error response"
+//	@Failure		500						{object}	ErrorResponse			"server error response"
 //	@Router			/accounts/{account_id} [put]
 func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
@@ -322,15 +322,15 @@ func (ac *AccountController) DeleteAccount(ctx *gin.Context) {
 
 // GetJoinRoom	godoc
 //
-// @Summary		Get Join Room
-// @Description	Get Join Room
-// @Tags			Accounts
-// @Produce		json
-// @Success		200	{array}		response.GetJoinRoomResponse	"success response"
-// @Failure		400	{object}	ErrorResponse				"error response"
-// @Failure		403	{object}	ErrorResponse				"error response"
-// @Failure		500	{object}	ErrorResponse				"error response"
-// @Router			/accounts/{account_id}/rooms	[get]
+//	@Summary		Get Join Room
+//	@Description	Get Join Room
+//	@Tags			Accounts
+//	@Produce		json
+//	@Success		200								{array}		[]response.GetJoinRoom	"success response"
+//	@Failure		400								{object}	ErrorResponse			"error response"
+//	@Failure		403								{object}	ErrorResponse			"error response"
+//	@Failure		500								{object}	ErrorResponse			"error response"
+//	@Router			/accounts/{account_id}/rooms	[get]
 func (ac *AccountController) GetJoinRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()

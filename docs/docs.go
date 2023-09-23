@@ -45,7 +45,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateAccountRequest"
+                            "$ref": "#/definitions/request.CreateAccount"
                         }
                     }
                 ],
@@ -53,7 +53,7 @@ const docTemplate = `{
                     "200": {
                         "description": "create success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.AccountResponses"
+                            "$ref": "#/definitions/response.Account"
                         }
                     },
                     "400": {
@@ -94,7 +94,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Get success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.AccountResponses"
+                            "$ref": "#/definitions/response.Account"
                         }
                     },
                     "400": {
@@ -140,7 +140,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.UpdateAccountRequest"
+                            "$ref": "#/definitions/request.UpdateAccount"
                         }
                     }
                 ],
@@ -148,7 +148,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Update success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.AccountResponses"
+                            "$ref": "#/definitions/response.Account"
                         }
                     },
                     "400": {
@@ -252,7 +252,10 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.AccountRateResponse"
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/repository.RateEntity"
+                                }
                             }
                         }
                     },
@@ -288,11 +291,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Create Rate Request Body",
-                        "name": "CreateRateRequestBody",
+                        "name": "CreateRateRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateRateRequestBody"
+                            "$ref": "#/definitions/request.CreateRate"
                         }
                     }
                 ],
@@ -334,7 +337,10 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.GetJoinRoomResponse"
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/response.GetJoinRoom"
+                                }
                             }
                         }
                     },
@@ -399,7 +405,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.FollowResponse"
+                                "$ref": "#/definitions/response.Follow"
                             }
                         }
                     },
@@ -442,11 +448,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "create Follow Request Body",
-                        "name": "CreateFollowRequestBody",
+                        "name": "CreateFollowRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateFollowRequestBody"
+                            "$ref": "#/definitions/request.CreateFollow"
                         }
                     }
                 ],
@@ -456,7 +462,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.FollowResponse"
+                                "$ref": "#/definitions/response.Follow"
                             }
                         }
                     },
@@ -588,7 +594,10 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.HackathonResponses"
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/response.ListHackathons"
+                                }
                             }
                         }
                     },
@@ -622,7 +631,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateHackathonRequestBody"
+                            "$ref": "#/definitions/request.CreateHackathon"
                         }
                     }
                 ],
@@ -630,7 +639,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.HackathonResponses"
+                            "$ref": "#/definitions/response.Hackathon"
                         }
                     },
                     "400": {
@@ -671,7 +680,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.HackathonResponses"
+                            "$ref": "#/definitions/response.Hackathon"
                         }
                     },
                     "400": {
@@ -752,7 +761,10 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.ListPastWorkResponse"
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/response.ListPastWork"
+                                }
                             }
                         }
                     },
@@ -786,7 +798,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.PastWorkRequestBody"
+                            "$ref": "#/definitions/request.PastWork"
                         }
                     }
                 ],
@@ -794,7 +806,7 @@ const docTemplate = `{
                     "200": {
                         "description": "create success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.PastWorkResponse"
+                            "$ref": "#/definitions/response.PastWork"
                         }
                     },
                     "400": {
@@ -835,7 +847,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.PastWorkResponse"
+                            "$ref": "#/definitions/response.PastWork"
                         }
                     },
                     "400": {
@@ -875,7 +887,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.PastWorkRequestBody"
+                            "$ref": "#/definitions/request.PastWork"
                         }
                     }
                 ],
@@ -883,7 +895,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.PastWorkResponse"
+                            "$ref": "#/definitions/response.PastWork"
                         }
                     },
                     "400": {
@@ -968,7 +980,10 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.AccountRateResponse"
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/response.AccountRate"
+                                }
                             }
                         }
                     },
@@ -1015,7 +1030,10 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.ListRoomResponse"
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/response.ListRoom"
+                                }
                             }
                         }
                     },
@@ -1045,11 +1063,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "create Room Request Body",
-                        "name": "CreateRoomRequestBody",
+                        "name": "CreateRoomRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateRoomRequestBody"
+                            "$ref": "#/definitions/request.CreateRoom"
                         }
                     }
                 ],
@@ -1057,7 +1075,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.GetRoomResponse"
+                            "$ref": "#/definitions/response.Room"
                         }
                     },
                     "400": {
@@ -1104,7 +1122,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.GetRoomResponse"
+                            "$ref": "#/definitions/response.Room"
                         }
                     },
                     "400": {
@@ -1150,7 +1168,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.UpdateRoomRequestBody"
+                            "$ref": "#/definitions/request.UpdateRoom"
                         }
                     }
                 ],
@@ -1158,7 +1176,61 @@ const docTemplate = `{
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.GetRoomResponse"
+                            "$ref": "#/definitions/response.Room"
+                        }
+                    },
+                    "400": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add Account In Rooms",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Add Account In Rooms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Rooms API wildcard",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "add account in room Request body",
+                        "name": "AddAccountInRoomRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.AddAccountInRoom"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1247,11 +1319,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "add chat Room Request body",
-                        "name": "AddChatRequestBody",
+                        "name": "AddChatRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.AddChatRequestBody"
+                            "$ref": "#/definitions/request.AddChat"
                         }
                     }
                 ],
@@ -1259,7 +1331,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success response",
                         "schema": {
-                            "$ref": "#/definitions/domain.GetRoomResponse"
+                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1285,14 +1357,14 @@ const docTemplate = `{
         },
         "/rooms/{room_id}/members": {
             "post": {
-                "description": "Add Account In Rooms",
+                "description": "CloseRoom",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Rooms"
                 ],
-                "summary": "Add Account In Rooms",
+                "summary": "CloseRoom",
                 "parameters": [
                     {
                         "type": "string",
@@ -1302,12 +1374,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "add account in room Request body",
-                        "name": "AddAccountInRoomRequestBody",
+                        "description": "Close Room Request body",
+                        "name": "CloseRoomRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.AddAccountInRoomRequestBody"
+                            "$ref": "#/definitions/request.CloseRoom"
                         }
                     }
                 ],
@@ -1465,24 +1537,303 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.AccountRateResponse": {
+        "repository.Framework": {
+            "type": "object",
+            "properties": {
+                "framework": {
+                    "type": "string"
+                },
+                "framework_id": {
+                    "type": "integer"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "tech_tag_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "repository.Locate": {
+            "type": "object",
+            "properties": {
+                "locate_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "repository.RateEntity": {
             "type": "object",
             "properties": {
                 "account_id": {
                     "type": "string"
                 },
-                "icon": {
+                "create_at": {
                     "type": "string"
                 },
                 "rate": {
                     "type": "integer"
+                }
+            }
+        },
+        "repository.Role": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "repository.StatusTag": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "status_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "repository.TechTag": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "tech_tag_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.AddAccountInRoom": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.AddChat": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "message"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.CloseRoom": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "request.CreateAccount": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "locate_id",
+                "username"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "string"
+                },
+                "locate_id": {
+                    "type": "integer"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"
                 }
             }
         },
-        "domain.AccountResponses": {
+        "request.CreateFollow": {
+            "type": "object",
+            "required": [
+                "to_account_id"
+            ],
+            "properties": {
+                "to_account_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.CreateHackathon": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "expired": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.CreateRate": {
+            "type": "object",
+            "properties": {
+                "rate": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.CreateRoom": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "description",
+                "hackathon_id",
+                "member_limit",
+                "title"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.PastWork": {
+            "type": "object",
+            "properties": {
+                "account_past_works": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "past_work_frameworks": {
+                    "type": "string"
+                },
+                "past_work_tags": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UpdateAccount": {
+            "type": "object",
+            "properties": {
+                "discord_link": {
+                    "type": "string"
+                },
+                "explanatory_text": {
+                    "type": "string"
+                },
+                "frameworks": {
+                    "type": "string"
+                },
+                "github_link": {
+                    "type": "string"
+                },
+                "locate_id": {
+                    "type": "integer"
+                },
+                "show_locate": {
+                    "type": "boolean"
+                },
+                "show_rate": {
+                    "type": "boolean"
+                },
+                "tech_tags": {
+                    "type": "string"
+                },
+                "twitter_link": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UpdateRoom": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "hackathonID": {
+                    "type": "integer"
+                },
+                "is_closing": {
+                    "type": "boolean"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Account": {
             "type": "object",
             "properties": {
                 "account_id": {
@@ -1535,139 +1886,24 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.AddAccountInRoomRequestBody": {
+        "response.AccountRate": {
             "type": "object",
             "properties": {
                 "account_id": {
                     "type": "string"
-                }
-            }
-        },
-        "domain.AddChatRequestBody": {
-            "type": "object",
-            "required": [
-                "account_id",
-                "message"
-            ],
-            "properties": {
-                "account_id": {
+                },
+                "icon": {
                     "type": "string"
                 },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.CreateAccountRequest": {
-            "type": "object",
-            "required": [
-                "account_id",
-                "locate_id",
-                "username"
-            ],
-            "properties": {
-                "account_id": {
-                    "type": "string"
-                },
-                "explanatory_text": {
-                    "type": "string"
-                },
-                "frameworks": {
-                    "type": "string"
-                },
-                "locate_id": {
+                "rate": {
                     "type": "integer"
-                },
-                "show_locate": {
-                    "type": "boolean"
-                },
-                "show_rate": {
-                    "type": "boolean"
-                },
-                "tech_tags": {
-                    "type": "string"
                 },
                 "username": {
                     "type": "string"
                 }
             }
         },
-        "domain.CreateFollowRequestBody": {
-            "type": "object",
-            "required": [
-                "to_account_id"
-            ],
-            "properties": {
-                "to_account_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.CreateHackathonRequestBody": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "expired": {
-                    "type": "string"
-                },
-                "link": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "status_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "term": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.CreateRateRequestBody": {
-            "type": "object",
-            "properties": {
-                "rate": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.CreateRoomRequestBody": {
-            "type": "object",
-            "required": [
-                "account_id",
-                "description",
-                "hackathon_id",
-                "member_limit",
-                "title"
-            ],
-            "properties": {
-                "account_id": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "hackathon_id": {
-                    "type": "integer"
-                },
-                "member_limit": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.FollowResponse": {
+        "response.Follow": {
             "type": "object",
             "properties": {
                 "account_id": {
@@ -1681,7 +1917,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.GetJoinRoomResponse": {
+        "response.GetJoinRoom": {
             "type": "object",
             "properties": {
                 "room_id": {
@@ -1692,39 +1928,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.GetRoomResponse": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "hackathon": {
-                    "$ref": "#/definitions/domain.RoomHackathonInfo"
-                },
-                "is_closing": {
-                    "type": "boolean"
-                },
-                "is_status": {
-                    "type": "boolean"
-                },
-                "member_limit": {
-                    "type": "integer"
-                },
-                "now_member": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/domain.NowRoomAccounts"
-                    }
-                },
-                "room_id": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.HackathonResponses": {
+        "response.Hackathon": {
             "type": "object",
             "properties": {
                 "description": {
@@ -1759,7 +1963,39 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ListPastWorkResponse": {
+        "response.ListHackathons": {
+            "type": "object",
+            "properties": {
+                "expired": {
+                    "type": "string"
+                },
+                "hackathon_id": {
+                    "type": "integer"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.StatusTag"
+                    }
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.ListPastWork": {
             "type": "object",
             "properties": {
                 "explanatory_text": {
@@ -1774,7 +2010,7 @@ const docTemplate = `{
                 "members": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/domain.PastWorkMembers"
+                        "$ref": "#/definitions/response.PastWorkMembers"
                     }
                 },
                 "name": {
@@ -1791,7 +2027,36 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ListRoomHackathonInfo": {
+        "response.ListRoom": {
+            "type": "object",
+            "properties": {
+                "hackathon": {
+                    "$ref": "#/definitions/response.ListRoomHackathonInfo"
+                },
+                "members_frameworks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.RoomFramework"
+                    }
+                },
+                "members_tech_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.RoomTechTags"
+                    }
+                },
+                "now_member": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.NowRoomAccounts"
+                    }
+                },
+                "rooms": {
+                    "$ref": "#/definitions/response.ListRoomRoomInfo"
+                }
+            }
+        },
+        "response.ListRoomHackathonInfo": {
             "type": "object",
             "properties": {
                 "expired": {
@@ -1808,36 +2073,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ListRoomResponse": {
-            "type": "object",
-            "properties": {
-                "hackathon": {
-                    "$ref": "#/definitions/domain.ListRoomHackathonInfo"
-                },
-                "members_frameworks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/domain.RoomFramework"
-                    }
-                },
-                "members_tech_tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/domain.RoomTechTags"
-                    }
-                },
-                "now_member": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/domain.NowRoomAccounts"
-                    }
-                },
-                "rooms": {
-                    "$ref": "#/definitions/domain.ListRoomRoomInfo"
-                }
-            }
-        },
-        "domain.ListRoomRoomInfo": {
+        "response.ListRoomRoomInfo": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1857,7 +2093,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.NowRoomAccounts": {
+        "response.NowRoomAccounts": {
             "type": "object",
             "properties": {
                 "account_id": {
@@ -1892,41 +2128,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.PastWorkMembers": {
-            "type": "object",
-            "properties": {
-                "account_id": {
-                    "type": "string"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.PastWorkRequestBody": {
-            "type": "object",
-            "properties": {
-                "account_past_works": {
-                    "type": "string"
-                },
-                "explanatory_text": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "past_work_frameworks": {
-                    "type": "string"
-                },
-                "past_work_tags": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.PastWorkResponse": {
+        "response.PastWork": {
             "type": "object",
             "properties": {
                 "award_data_id": {
@@ -1950,7 +2152,7 @@ const docTemplate = `{
                 "members": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/domain.PastWorkMembers"
+                        "$ref": "#/definitions/response.PastWorkMembers"
                     }
                 },
                 "name": {
@@ -1973,7 +2175,53 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.RoomFramework": {
+        "response.PastWorkMembers": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Room": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "hackathon": {
+                    "$ref": "#/definitions/response.RoomHackathonInfo"
+                },
+                "is_closing": {
+                    "type": "boolean"
+                },
+                "is_status": {
+                    "type": "boolean"
+                },
+                "member_limit": {
+                    "type": "integer"
+                },
+                "now_member": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.NowRoomAccounts"
+                    }
+                },
+                "room_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.RoomFramework": {
             "type": "object",
             "properties": {
                 "count": {
@@ -1984,7 +2232,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.RoomHackathonInfo": {
+        "response.RoomHackathonInfo": {
             "type": "object",
             "properties": {
                 "expired": {
@@ -2016,7 +2264,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.RoomTechTags": {
+        "response.RoomTechTags": {
             "type": "object",
             "properties": {
                 "count": {
@@ -2024,125 +2272,6 @@ const docTemplate = `{
                 },
                 "tech_tag": {
                     "$ref": "#/definitions/repository.TechTag"
-                }
-            }
-        },
-        "domain.UpdateAccountRequest": {
-            "type": "object",
-            "properties": {
-                "discord_link": {
-                    "type": "string"
-                },
-                "explanatory_text": {
-                    "type": "string"
-                },
-                "frameworks": {
-                    "type": "string"
-                },
-                "github_link": {
-                    "type": "string"
-                },
-                "locate_id": {
-                    "type": "integer"
-                },
-                "show_locate": {
-                    "type": "boolean"
-                },
-                "show_rate": {
-                    "type": "boolean"
-                },
-                "tech_tags": {
-                    "type": "string"
-                },
-                "twitter_link": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.UpdateRoomRequestBody": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "hackathonID": {
-                    "type": "integer"
-                },
-                "is_closing": {
-                    "type": "boolean"
-                },
-                "member_limit": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "repository.Framework": {
-            "type": "object",
-            "properties": {
-                "framework": {
-                    "type": "string"
-                },
-                "framework_id": {
-                    "type": "integer"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "tech_tag_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "repository.Locate": {
-            "type": "object",
-            "properties": {
-                "locate_id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "repository.Role": {
-            "type": "object",
-            "properties": {
-                "role": {
-                    "type": "string"
-                },
-                "role_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "repository.StatusTag": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "string"
-                },
-                "status_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "repository.TechTag": {
-            "type": "object",
-            "properties": {
-                "icon": {
-                    "type": "string"
-                },
-                "language": {
-                    "type": "string"
-                },
-                "tech_tag_id": {
-                    "type": "integer"
                 }
             }
         }

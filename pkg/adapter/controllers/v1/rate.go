@@ -24,10 +24,10 @@ type RateController struct {
 //	@Description	Create Rate for User
 //	@Tags			Rate
 //	@Produce		json
-//	@Param			CreateRateRequestBody			body		domain.CreateRateRequestBody	true	"Create Rate Request Body"
-//	@Success		200								{object}	SuccessResponse					"success response"
-//	@Failure		400								{object}	ErrorResponse					"error response"
-//	@Failure		500								{object}	ErrorResponse					"error response"
+//	@Param			CreateRateRequest			body		request.CreateRate	true	"Create Rate Request Body"
+//	@Success		200							{object}	SuccessResponse		"success response"
+//	@Failure		400							{object}	ErrorResponse		"error response"
+//	@Failure		500							{object}	ErrorResponse		"error response"
 //	@Router			/accounts/{account_id}/rate	[post]
 func (rc *RateController) CreateRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
@@ -69,12 +69,12 @@ func (rc *RateController) CreateRate(ctx *gin.Context) {
 //	@Description	List Rate for User
 //	@Tags			Rate
 //	@Produce		json
-//	@Param			account_id						path		string						true	"Account ID"
-//	@Param			ListRequest						query		domain.ListRequest			true	"List Rate Params"
-//	@Success		200								{array}		domain.AccountRateResponse	"success response"
-//	@Failure		400								{object}	ErrorResponse				"error response"
-//	@Failure		403								{object}	ErrorResponse				"error response"
-//	@Failure		500								{object}	ErrorResponse				"error response"
+//	@Param			account_id					path		string					true	"Account ID"
+//	@Param			ListRequest					query		request.ListRequest		true	"List Rate Params"
+//	@Success		200							{array}		[]repository.RateEntity	"success response"
+//	@Failure		400							{object}	ErrorResponse			"error response"
+//	@Failure		403							{object}	ErrorResponse			"error response"
+//	@Failure		500							{object}	ErrorResponse			"error response"
 //	@Router			/accounts/{account_id}/rate	[get]
 func (rc *RateController) ListRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
@@ -109,11 +109,11 @@ func (rc *RateController) ListRate(ctx *gin.Context) {
 //	@Description	List Account Rate
 //	@Tags			Rate
 //	@Produce		json
-//	@Param			ListRequest	query		domain.ListRequest			true	"List Rate Params"
-//	@Success		200			{array}		domain.AccountRateResponse	"success response"
-//	@Failure		400			{object}	ErrorResponse				"error response"
-//	@Failure		500			{object}	ErrorResponse				"error response"
-//	@Router			/rate	[get]
+//	@Param			ListRequest	query		request.ListRequest		true	"List Rate Params"
+//	@Success		200			{array}		[]response.AccountRate	"success response"
+//	@Failure		400			{object}	ErrorResponse			"error response"
+//	@Failure		500			{object}	ErrorResponse			"error response"
+//	@Router			/rate		[get]
 func (rc *RateController) ListAccountRate(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()

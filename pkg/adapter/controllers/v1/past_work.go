@@ -26,11 +26,11 @@ type PastWorkController struct {
 //	@Description	Create a past work from the requested body
 //	@Tags			PastWorks
 //	@Produce		json
-//	@Param			CreatePastWorkRequest	body		domain.PastWorkRequestBody	true	"Create PastWork Request"
-//	@Success		200						{object}	domain.PastWorkResponse		"create success response"
-//	@Failure		400						{object}	ErrorResponse				"bad request response"
-//	@Failure		500						{object}	ErrorResponse				"server error response"
-//	@Router			/pastworks	[post]
+//	@Param			CreatePastWorkRequest	body		request.PastWork	true	"Create PastWork Request"
+//	@Success		200						{object}	response.PastWork	"create success response"
+//	@Failure		400						{object}	ErrorResponse		"bad request response"
+//	@Failure		500						{object}	ErrorResponse		"server error response"
+//	@Router			/pastworks				[post]
 func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -105,7 +105,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 //	@Tags			PastWorks
 //	@Produce		json
 //	@Param			opus				path		string	true	"PastWorks API wildcard"
-//	@Success		200					{object}	domain.PastWorkResponse
+//	@Success		200					{object}	response.PastWork
 //	@Failure		400					{object}	ErrorResponse	"error response"
 //	@Failure		500					{object}	ErrorResponse	"error response"
 //	@Router			/pastworks/{opus}	[get]
@@ -131,8 +131,8 @@ func (pc *PastWorkController) GetPastWork(ctx *gin.Context) {
 //	@Description	List PastWork
 //	@Tags			PastWorks
 //	@Produce		json
-//	@Param			ListRequest	query		domain.ListRequest	true	"List PastWork Request"
-//	@Success		200			{array}		domain.ListPastWorkResponse
+//	@Param			ListRequest	query		request.ListRequest	true	"List PastWork Request"
+//	@Success		200			{array}		[]response.ListPastWork
 //	@Failure		400			{object}	ErrorResponse	"error response"
 //	@Failure		500			{object}	ErrorResponse	"error response"
 //	@Router			/pastworks	[get]
@@ -160,12 +160,12 @@ func (pc *PastWorkController) ListPastWork(ctx *gin.Context) {
 //	@Description	Update PastWork
 //	@Tags			PastWorks
 //	@Produce		json
-//	@Param			opus					path		string						true	"PastWorks API wildcard"
-//	@Param			UpdatePastWorkRequest	body		domain.PastWorkRequestBody	true	"Update PastWork Request"
-//	@Success		200						{object}	domain.PastWorkResponse
+//	@Param			opus					path		string				true	"PastWorks API wildcard"
+//	@Param			UpdatePastWorkRequest	body		request.PastWork	true	"Update PastWork Request"
+//	@Success		200						{object}	response.PastWork
 //	@Failure		400						{object}	ErrorResponse	"error response"
 //	@Failure		500						{object}	ErrorResponse	"error response"
-//	@Router			/pastworks/{opus}	[put]
+//	@Router			/pastworks/{opus}		[put]
 func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()

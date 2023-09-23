@@ -25,11 +25,11 @@ type HackathonController struct {
 //	@Description	Register a hackathon from given parameters
 //	@Tags			Hackathon
 //	@Produce		json
-//	@Param			CreateHackathonRequestBody	body		domain.CreateHackathonRequestBody	true	"create hackathon Request Body"
-//	@Success		200							{object}	domain.HackathonResponses			"success response"
-//	@Failure		400							{object}	ErrorResponse						"error response"
-//	@Failure		500							{object}	ErrorResponse						"error response"
-//	@Router			/hackathons																																																																											[post]
+//	@Param			CreateHackathonRequestBody	body		request.CreateHackathon	true	"create hackathon Request Body"
+//	@Success		200							{object}	response.Hackathon		"success response"
+//	@Failure		400							{object}	ErrorResponse			"error response"
+//	@Failure		500							{object}	ErrorResponse			"error response"
+//	@Router			/hackathons																																																																																						[post]
 func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
@@ -81,11 +81,11 @@ func (hc *HackathonController) CreateHackathon(ctx *gin.Context) {
 //	@Description	Get Hackathon
 //	@Tags			Hackathon
 //	@Produce		json
-//	@Param			hackathon_id				path		string						true	"Hackathons API wildcard"
-//	@Success		200							{object}	domain.HackathonResponses	"success response"
-//	@Failure		400							{object}	ErrorResponse				"error response"
-//	@Failure		403							{object}	ErrorResponse				"error response"
-//	@Failure		500							{object}	ErrorResponse				"error response"
+//	@Param			hackathon_id				path		string				true	"Hackathons API wildcard"
+//	@Success		200							{object}	response.Hackathon	"success response"
+//	@Failure		400							{object}	ErrorResponse		"error response"
+//	@Failure		403							{object}	ErrorResponse		"error response"
+//	@Failure		500							{object}	ErrorResponse		"error response"
 //	@Router			/hackathons/{hackathon_id}	[get]
 func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
@@ -121,11 +121,11 @@ func (hc *HackathonController) GetHackathon(ctx *gin.Context) {
 //	@Description	List Hackathon
 //	@Tags			Hackathon
 //	@Produce		json
-//	@Param			ListHackathonsParams	query		domain.ListHackathonsParams	true	"List hackathon Request queries"
-//	@Success		200						{array}		domain.HackathonResponses	"success response"
+//	@Param			ListHackathonsParams	query		request.ListHackathons		true	"List hackathon Request queries"
+//	@Success		200						{array}		[]response.ListHackathons	"success response"
 //	@Failure		400						{object}	ErrorResponse				"error response"
 //	@Failure		500						{object}	ErrorResponse				"error response"
-//	@Router			/hackathons	[get]
+//	@Router			/hackathons				[get]
 func (hc *HackathonController) ListHackathons(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
