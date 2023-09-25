@@ -1,12 +1,15 @@
 package usecase
 
 import (
+	"context"
 	"log"
 
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain/entity"
 )
@@ -91,9 +94,14 @@ func (manager *BrokerManager) unregisterClient(client *entity.Client, broker *en
 
 func (manager *BrokerManager) broadcastToClients(message *entity.ChatEvent, broker *entity.Broker) {
 	message.Timestamp = time.Now()
-	msg, err := manager.DB.SaveMessage(message)
+	msg, err := manager.store.CreateChat(context.Background(), repository.CreateChatParams{
+		ChatID:    uuid.New().String(),
+		RoomID:    message.RoomID,
+		AccountID: message.UserID,
+		Message:   message.Message,
+	})
 	if err != nil {
-		log.Print("message not sent: " + msg.Hex())
+		log.Print("message not sent: ", msg)
 
 	}
 	broker.Mutex.Lock()

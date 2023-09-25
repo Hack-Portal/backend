@@ -10,10 +10,9 @@ import (
 )
 
 const createLikes = `-- name: CreateLikes :one
-INSERT INTO
-    likes(opus, account_id)
-VALUES
-    ($1, $2) RETURNING opus, account_id, create_at, is_delete
+INSERT INTO likes(opus, account_id)
+VALUES ($1, $2)
+RETURNING opus, account_id, create_at, is_delete
 `
 
 type CreateLikesParams struct {
@@ -33,41 +32,28 @@ func (q *Queries) CreateLikes(ctx context.Context, arg CreateLikesParams) (Like,
 	return i, err
 }
 
-const deleteLikesByID = `-- name: DeleteLikesByID :one
-UPDATE
-    likes
-SET
-    is_delete = $3
-WHERE
-    account_id = $1
-    AND opus = $2 RETURNING opus, account_id, create_at, is_delete
+const deleteLikesByID = `-- name: DeleteLikesByID :exec
+DELETE FROM likes
+WHERE opus = $1
+    AND account_id = $2
 `
 
 type DeleteLikesByIDParams struct {
-	AccountID string `json:"account_id"`
 	Opus      int32  `json:"opus"`
-	IsDelete  bool   `json:"is_delete"`
+	AccountID string `json:"account_id"`
 }
 
-func (q *Queries) DeleteLikesByID(ctx context.Context, arg DeleteLikesByIDParams) (Like, error) {
-	row := q.db.QueryRowContext(ctx, deleteLikesByID, arg.AccountID, arg.Opus, arg.IsDelete)
-	var i Like
-	err := row.Scan(
-		&i.Opus,
-		&i.AccountID,
-		&i.CreateAt,
-		&i.IsDelete,
-	)
-	return i, err
+func (q *Queries) DeleteLikesByID(ctx context.Context, arg DeleteLikesByIDParams) error {
+	_, err := q.db.ExecContext(ctx, deleteLikesByID, arg.Opus, arg.AccountID)
+	return err
 }
 
 const getLikeStatusByID = `-- name: GetLikeStatusByID :one
-SELECT
-    opus, account_id, create_at, is_delete
-FROM
-    likes
-WHERE
-    opus = $1 AND account_id = $2 AND is_delete = false
+SELECT opus, account_id, create_at, is_delete
+FROM likes
+WHERE opus = $1
+    AND account_id = $2
+    AND is_delete = false
 `
 
 type GetLikeStatusByIDParams struct {
@@ -88,12 +74,10 @@ func (q *Queries) GetLikeStatusByID(ctx context.Context, arg GetLikeStatusByIDPa
 }
 
 const getListCountByOpus = `-- name: GetListCountByOpus :one
-SELECT
-    count(*)
-FROM
-    likes
-WHERE
-    opus = $1 AND is_delete = false
+SELECT count(*)
+FROM likes
+WHERE opus = $1
+    AND is_delete = false
 `
 
 func (q *Queries) GetListCountByOpus(ctx context.Context, opus int32) (int64, error) {
@@ -104,12 +88,10 @@ func (q *Queries) GetListCountByOpus(ctx context.Context, opus int32) (int64, er
 }
 
 const listLikesByID = `-- name: ListLikesByID :many
-SELECT
-    opus, account_id, create_at, is_delete
-FROM
-    likes
-WHERE
-    account_id = $1 AND is_delete = false
+SELECT opus, account_id, create_at, is_delete
+FROM likes
+WHERE account_id = $1
+    AND is_delete = false
 `
 
 func (q *Queries) ListLikesByID(ctx context.Context, accountID string) ([]Like, error) {

@@ -157,6 +157,14 @@ type Room struct {
 	IsClosing   sql.NullBool `json:"is_closing"`
 }
 
+type RoomChat struct {
+	ChatID    string    `json:"chat_id"`
+	RoomID    string    `json:"room_id"`
+	AccountID string    `json:"account_id"`
+	Message   string    `json:"message"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type RoomsAccount struct {
 	RoomsAccountID int32     `json:"rooms_account_id"`
 	AccountID      string    `json:"account_id"`

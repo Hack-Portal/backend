@@ -15,6 +15,7 @@ type Querier interface {
 	CreateAccountPastWorks(ctx context.Context, arg CreateAccountPastWorksParams) (AccountPastWork, error)
 	CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTag, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
+	CreateChat(ctx context.Context, arg CreateChatParams) (RoomChat, error)
 	CreateFollows(ctx context.Context, arg CreateFollowsParams) (Follow, error)
 	CreateFrameworks(ctx context.Context, arg CreateFrameworksParams) (Framework, error)
 	CreateHackathonStatusTags(ctx context.Context, arg CreateHackathonStatusTagsParams) (HackathonStatusTag, error)
@@ -39,7 +40,7 @@ type Querier interface {
 	DeleteFrameworksByID(ctx context.Context, frameworkID int32) error
 	DeleteHackathonByID(ctx context.Context, hackathonID int32) error
 	DeleteHackathonStatusTagsByID(ctx context.Context, hackathonID int32) error
-	DeleteLikesByID(ctx context.Context, arg DeleteLikesByIDParams) (Like, error)
+	DeleteLikesByID(ctx context.Context, arg DeleteLikesByIDParams) error
 	DeletePastWorkFrameworksByOpus(ctx context.Context, opus int32) error
 	DeletePastWorkTagsByOpus(ctx context.Context, opus int32) error
 	DeletePastWorksByID(ctx context.Context, arg DeletePastWorksByIDParams) (PastWork, error)
@@ -66,6 +67,7 @@ type Querier interface {
 	ListAccountPastWorksByOpus(ctx context.Context, opus int32) ([]AccountPastWork, error)
 	ListAccountTagsByUserID(ctx context.Context, accountID string) ([]ListAccountTagsByUserIDRow, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error)
+	ListChat(ctx context.Context, arg ListChatParams) ([]RoomChat, error)
 	ListFollowsByFromUserID(ctx context.Context, fromAccountID string) ([]Follow, error)
 	ListFollowsByToUserID(ctx context.Context, toAccountID string) ([]Follow, error)
 	ListFrameworks(ctx context.Context) ([]Framework, error)

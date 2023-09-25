@@ -40,6 +40,5 @@ func (lu *likeUsecase) RemoveLike(ctx context.Context, accountID string, opus in
 	ctx, cancel := context.WithTimeout(ctx, lu.contextTimeout)
 	defer cancel()
 
-	_, err := lu.store.DeleteLikesByID(ctx, repository.DeleteLikesByIDParams{AccountID: accountID, Opus: opus, IsDelete: true})
-	return err
+	return lu.store.DeleteLikesByID(ctx, repository.DeleteLikesByIDParams{AccountID: accountID, Opus: opus})
 }

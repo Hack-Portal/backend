@@ -18,7 +18,7 @@ INSERT INTO past_works (
     explanatory_text,
     award_data_id
   )
-VALUES ($1, $2, $3,$4)
+VALUES ($1, $2, $3, $4)
 RETURNING opus, name, thumbnail_image, explanatory_text, award_data_id, create_at, update_at, is_delete
 `
 
@@ -145,10 +145,10 @@ func (q *Queries) ListPastWorks(ctx context.Context, arg ListPastWorksParams) ([
 const updatePastWorksByID = `-- name: UpdatePastWorksByID :one
 UPDATE past_works
 SET name = $1,
-    thumbnail_image = $2,
-    explanatory_text = $3,
-    award_data_id = $4,
-    update_at = $5
+  thumbnail_image = $2,
+  explanatory_text = $3,
+  award_data_id = $4,
+  update_at = $5
 WHERE opus = $6
 RETURNING opus, name, thumbnail_image, explanatory_text, award_data_id, create_at, update_at, is_delete
 `
