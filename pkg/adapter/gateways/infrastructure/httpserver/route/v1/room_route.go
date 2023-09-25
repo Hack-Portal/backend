@@ -10,9 +10,14 @@ import (
 	usecase "github.com/hackhack-Geek-vol6/backend/pkg/usecase/interactor"
 )
 
-func NewRoomRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes) {
+func NewRoomRouter(env *bootstrap.Env, timeout time.Duration, store transaction.Store, group gin.IRoutes, publicGroup gin.IRoutes) {
 	roomController := controller.RoomController{
 		RoomUsecase: usecase.NewRoomUsercase(store, timeout),
+		Env:         env,
+	}
+
+	chatController := controller.ChatController{
+		Chatusecase: usecase.NewWsServer(store),
 		Env:         env,
 	}
 
@@ -29,6 +34,7 @@ func NewRoomRouter(env *bootstrap.Env, timeout time.Duration, store transaction.
 	group.DELETE("/rooms/:room_id/members", roomController.RemoveAccountInRoom)
 
 	group.POST("/rooms/:room_id/addchat", roomController.AddChat)
+	publicGroup.GET("/chats/:room_id/:account_id/", chatController.ChatConnect)
 
 	group.POST("/rooms/:room_id/roles", roomController.AddRoomAccountRole)
 	group.PUT("/rooms/:room_id/roles", roomController.UpdateRoomAccountRole)

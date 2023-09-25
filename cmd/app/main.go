@@ -68,9 +68,9 @@ func main() {
 	timeout := time.Duration(times) * time.Second
 
 	gin.SetMode(gin.ReleaseMode)
-	gin := gin.New()
+	gin := gin.Default()
 
 	route.Setup(&env, timeout, store, gin, logger)
 
-	gin.Run(env.ServerPort)
+	log.Println(gin.Run(env.ServerPort))
 }

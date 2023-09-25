@@ -32,7 +32,7 @@ const (
 // a slow client or a client that closed after `range Clients` started.
 const patience time.Duration = time.Second * 1
 
-type BrokerManager struct {
+type brokerManager struct {
 	Brokers map[*entity.Broker]bool
 	store   transaction.Store
 }
@@ -41,8 +41,15 @@ type clientManager struct {
 	client *entity.Client
 }
 
+func NewBrokerManager(store transaction.Store) *brokerManager {
+	return &brokerManager{
+		Brokers: make(map[*entity.Broker]bool),
+		store:   store,
+	}
+}
+
 // runs broker accepting various requests
-func (manager *BrokerManager) RunBroker(broker *entity.Broker) {
+func (manager *brokerManager) RunBroker(broker *entity.Broker) {
 	for {
 		select {
 		case client := <-broker.Join:
@@ -58,7 +65,7 @@ func (manager *BrokerManager) RunBroker(broker *entity.Broker) {
 	}
 }
 
-func (manager *BrokerManager) registerClient(client *entity.Client, broker *entity.Broker) {
+func (manager *brokerManager) registerClient(client *entity.Client, broker *entity.Broker) {
 	broker.Mutex.Lock()
 	broker.Clients[client] = true
 	broker.Mutex.Unlock()
@@ -73,7 +80,7 @@ func (manager *BrokerManager) registerClient(client *entity.Client, broker *enti
 
 }
 
-func (manager *BrokerManager) unregisterClient(client *entity.Client, broker *entity.Broker) {
+func (manager *brokerManager) unregisterClient(client *entity.Client, broker *entity.Broker) {
 	broker.Mutex.Lock()
 	if _, ok := broker.Clients[client]; ok {
 		delete(broker.Clients, client)
@@ -92,7 +99,7 @@ func (manager *BrokerManager) unregisterClient(client *entity.Client, broker *en
 
 }
 
-func (manager *BrokerManager) broadcastToClients(message *entity.ChatEvent, broker *entity.Broker) {
+func (manager *brokerManager) broadcastToClients(message *entity.ChatEvent, broker *entity.Broker) {
 	message.Timestamp = time.Now()
 	msg, err := manager.store.CreateChat(context.Background(), repository.CreateChatParams{
 		ChatID:    uuid.New().String(),

@@ -38,5 +38,5 @@ func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, g
 	NewPastWorkRouter(env, timeout, store, protectRouter, publicRouter)
 	NewFollowRouter(env, timeout, store, protectRouter)
 	NewRateRouter(env, timeout, store, protectRouter, publicRouter)
-	NewRoomRouter(env, timeout, store, protectRouter)
+	NewRoomRouter(env, timeout, store, protectRouter, publicRouter)
 }

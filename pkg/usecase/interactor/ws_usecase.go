@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/domain/entity"
 )
 
@@ -21,7 +22,13 @@ var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize,
 	}}
 
 type WsServer struct {
-	Manager *BrokerManager
+	Manager *brokerManager
+}
+
+func NewWsServer(store transaction.Store) *WsServer {
+	return &WsServer{
+		Manager: NewBrokerManager(store),
+	}
 }
 
 func (server *WsServer) findBrokerbyRoomID(ID string) *entity.Broker {
@@ -67,5 +74,5 @@ func (server *WsServer) ServeWs(w http.ResponseWriter, req *http.Request, roomId
 	broker.Join <- client
 	defer func() { broker.Leave <- client }()
 	go clientManager.clientWrite()
-	clientManager.clientRead()
+	go clientManager.clientRead()
 }

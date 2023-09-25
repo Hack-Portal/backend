@@ -41,3 +41,8 @@ type RoomAccountRole struct {
 type CloseRoom struct {
 	AccountID []string `json:"account_id"`
 }
+
+type ChatRoom struct {
+	AccountID string `uri:"account_id"`
+	RoomID    string `uri:"room_id"`
+}
