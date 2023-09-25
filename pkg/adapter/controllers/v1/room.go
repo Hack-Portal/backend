@@ -240,7 +240,7 @@ func (rc *RoomController) DeleteRoom(ctx *gin.Context) {
 //	@Failure		400							{object}	ErrorResponse				"error response"
 //	@Failure		403							{object}	ErrorResponse				"error response"
 //	@Failure		500							{object}	ErrorResponse				"error response"
-//	@Router			/rooms/{room_id}													[post]
+//	@Router			/rooms/{room_id}/members													[post]
 func (rc *RoomController) AddAccountInRoom(ctx *gin.Context) {
 	txn := nrgin.Transaction(ctx)
 	defer txn.End()
