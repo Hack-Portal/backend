@@ -11,6 +11,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
+	"go.uber.org/zap"
 )
 
 func setupCors(router *gin.Engine) {
@@ -20,9 +21,9 @@ func setupCors(router *gin.Engine) {
 	router.Use(cors.New(config))
 }
 
-func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine) {
+func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine, logger *zap.Logger) {
 	setupCors(gin)
-	gin.Use(nrgin.Middleware(apm.NewApm(env)))
+	gin.Use(middleware.Logger(logger), nrgin.Middleware(apm.NewApm(env)))
 
 	publicRouter := gin.Group("/v1").Use(middleware.CheckJWT())
 	// All Public APIs
