@@ -8,6 +8,7 @@ import (
 	_ "github.com/hackhack-Geek-vol6/backend/docs"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/apm"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/ws"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
@@ -21,7 +22,7 @@ func setupCors(router *gin.Engine) {
 	router.Use(cors.New(config))
 }
 
-func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine, logger *zap.Logger) {
+func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, gin *gin.Engine, logger *zap.Logger, hub *ws.Hub) {
 	setupCors(gin)
 	gin.Use(middleware.Logger(logger), nrgin.Middleware(apm.NewApm(env)))
 
@@ -38,5 +39,5 @@ func Setup(env *bootstrap.Env, timeout time.Duration, store transaction.Store, g
 	NewPastWorkRouter(env, timeout, store, protectRouter, publicRouter)
 	NewFollowRouter(env, timeout, store, protectRouter)
 	NewRateRouter(env, timeout, store, protectRouter, publicRouter)
-	NewRoomRouter(env, timeout, store, protectRouter, publicRouter)
+	NewRoomRouter(env, timeout, store, hub, protectRouter, publicRouter)
 }

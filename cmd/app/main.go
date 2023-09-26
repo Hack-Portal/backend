@@ -10,6 +10,7 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/route/v1"
+	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/ws"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
 	_ "github.com/lib/pq"
@@ -65,12 +66,15 @@ func main() {
 		log.Fatal("invalid timeout :", err, env.ContextTimeout)
 	}
 
+	hub := ws.NewHub()
+	go hub.Run()
+
 	timeout := time.Duration(times) * time.Second
 
 	gin.SetMode(gin.ReleaseMode)
 	gin := gin.Default()
 
-	route.Setup(&env, timeout, store, gin, logger)
+	route.Setup(&env, timeout, store, gin, logger, hub)
 
 	log.Println(gin.Run(env.ServerPort))
 }
