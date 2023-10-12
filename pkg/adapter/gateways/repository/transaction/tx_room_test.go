@@ -166,3 +166,76 @@ func TestAddAccountInRoom(t *testing.T) {
 		tc.checkResult(t, store.AddAccountInRoom(context.Background(), tc.arg))
 	}
 }
+
+func TestCloseRoom(t *testing.T) {
+	// アカウントを6つくらい生成する
+	var accountID []string
+	_, owner, room := randomRoom(t)
+	for i := 0; i < 6; i++ {
+		_, account := randomAccount(t)
+		accountID = append(accountID, account.AccountID)
+	}
+
+	arg := params.CloseRoom{
+		RoomID:    room.RoomID,
+		AccountID: account.AccountID,
+	}
+
+	require.NoError(t, store.CloseRoom(context.Background(), arg))
+}
+
+func TestAddRoomAccountRoleByID(t *testing.T) {
+	_, owner, room := randomRoom(t)
+	_, account := randomAccount(t)
+	// Roleを追加する
+	arg := params.RoomAccountRole{
+		RoomID:    room.RoomID,
+		AccountID: account.AccountID,
+	}
+	testCases := []struct {
+		name        string
+		arg         params.RoomAccountRole
+		checkResult func(t *testing.T, err error)
+	}{
+		{
+			name: "success",
+			arg: params.RoomAccountRole{
+				AccountID: account.AccountID,
+				RoomID:    room.RoomID,
+				RoleID:    []int32{1, 2},
+			},
+			checkResult: func(t *testing.T, err error) {
+				require.NoError(t, err)
+			},
+		},
+		{
+			name: "fail duplicate account",
+			arg: params.RoomAccountRole{
+				AccountID: owner.AccountID,
+				RoomID:    room.RoomID,
+				RoleID:    []int32{1, 2},
+			},
+			checkResult: func(t *testing.T, err error) {
+				require.Error(t, err)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc.checkResult(t, store.AddRoomAccountRoleByID(context.Background(), tc.arg))
+	}
+	require.NoError(t, store.AddRoomAccountRoleByID(context.Background(), arg))
+}
+
+func TestUpdateRoomsAccountRoleByID(t *testing.T) {
+	_, owner, room := randomRoom(t)
+	_, account := randomAccount(t)
+
+	arg := params.UpdateRoomsAccountRoleByID{
+		AccountID: account.AccountID,
+		RoomID:    room.RoomID,
+		IsOwner:   true,
+	}
+
+	require.NoError(t, store.UpdateRoomsAccountRoleByID(context.Background(), arg))
+}
