@@ -18,4 +18,8 @@ func LoadEnv(l logger.Logger) {
 	if err := env.Parse(&config.NewRelic); err != nil {
 		l.Panic(err)
 	}
+
+	if err := env.Parse(&config.Firebase); err != nil {
+		l.Panic(err)
+	}
 }

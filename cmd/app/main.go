@@ -2,19 +2,13 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"log"
-	"strconv"
-	"time"
 
 	firebase "firebase.google.com/go"
-	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/route/v1"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/ws"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
-	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/postgres"
+	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	_ "github.com/lib/pq"
-	"go.uber.org/zap"
 	"google.golang.org/api/option"
 )
 
@@ -30,51 +24,30 @@ import (
 //	@license.name	No-license
 //	@license.url	No-license
 
-//	@host		https://api-test.seafood-dev.com
-//	@BasePath	/v1
-
+// @host		https://api-test.seafood-dev.com
+// @BasePath	/v1
 func main() {
-	env := bootstrap.LoadEnvConfig(".")
-	db, err := sql.Open(env.DBDriver, env.DBSource)
-	if err != nil {
-		log.Fatal("cannot connect to db", err)
-	}
-	if err := db.Ping(); err != nil {
-		log.Println("cannot ping to db", err)
-	}
+	l := logger.NewLogger(logger.DEBUG)
+	config.LoadEnv(l)
 
-	logger, err := zap.NewProduction()
+	pool, err := postgres.NewConnection(l).Connection()
 	if err != nil {
-		log.Fatal(err)
+		l.Panicf("database connection error :%v", err)
 	}
-
-	defer logger.Sync()
+	defer pool.Close()
 
 	firebaseconfig := &firebase.Config{
-		StorageBucket: "hack-portal-2.appspot.com",
+		StorageBucket: config.Config.Firebase.StorageBucket,
 	}
 
 	serviceAccount := option.WithCredentialsFile("./serviceAccount.json")
 	app, err := firebase.NewApp(context.Background(), firebaseconfig, serviceAccount)
 	if err != nil {
-		log.Fatal("cerviceAccount Load error :", err)
+		l.Panicf("firebase connection error :%v", err)
 	}
 
-	store := transaction.NewStore(db, app)
-	times, err := strconv.Atoi(env.ContextTimeout)
-	if err != nil {
-		log.Fatal("invalid timeout :", err, env.ContextTimeout)
-	}
+	store := repository.NewStore(pool)
 
-	hub := ws.NewHub()
-	go hub.Run()
+	// 以下サーバー起動設定
 
-	timeout := time.Duration(times) * time.Second
-
-	gin.SetMode(gin.ReleaseMode)
-	gin := gin.Default()
-
-	route.Setup(&env, timeout, store, gin, logger, hub)
-
-	log.Println(gin.Run(env.ServerPort))
 }

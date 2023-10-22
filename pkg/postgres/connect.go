@@ -8,19 +8,19 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Connection interface {
-	Connection() (*pgx.Conn, error)
-	Close(ctx context.Context) error
+	Connection() (*pgxpool.Pool, error)
+	Close(ctx context.Context)
 }
 
 type connection struct {
 	connectError error
 	connecting   bool
 	status       Status
-	conn         *pgx.Conn
+	conn         *pgxpool.Pool
 	logger       logger.Logger
 }
 
@@ -28,7 +28,7 @@ func NewConnection(l logger.Logger) Connection {
 	return &connection{logger: l}
 }
 
-func (c *connection) Connection() (*pgx.Conn, error) {
+func (c *connection) Connection() (*pgxpool.Pool, error) {
 	c.updateDBStatus()
 
 	if c.status != READY {
@@ -60,8 +60,8 @@ func (c *connection) connect() {
 		config.Config.Postgres.SSLMode,
 	)
 
-	pgxConnect := func() (*pgx.Conn, error) {
-		return pgx.Connect(ctx, dbUrl)
+	pgxConnect := func() (*pgxpool.Pool, error) {
+		return pgxpool.New(ctx, dbUrl)
 	}
 	sleep := func() {
 		time.Sleep(time.Duration(config.Config.Postgres.ConnectWaitTime) * time.Second)
@@ -119,28 +119,22 @@ func (c *connection) updateDBStatus() {
 		c.logger.Errorf("failed to ping database: %v", err)
 		c.status = ERROR
 
-		if err = c.Close(context.Background()); err == nil {
-			c.status = NOT_READY
-		}
+		c.Close(context.Background())
 	} else {
 		c.status = READY
 	}
 }
 
-func (c *connection) Close(ctx context.Context) error {
+func (c *connection) Close(ctx context.Context) {
 	c.logger.Info("closing mongo db connection")
 
 	if c.isConnNil() {
 		c.logger.Debug("no connection to close")
-		return nil
+		return
 	}
 
-	err := c.conn.Close(ctx)
-	if err != nil {
-		c.logger.Errorf("failed to close connection: %v", err)
-	}
+	c.conn.Close()
 
 	c.status = DISCONNECTED
 	c.conn = nil
-	return err
 }

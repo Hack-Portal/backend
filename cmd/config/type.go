@@ -25,4 +25,8 @@ type config struct {
 		LicenceKey string `env:"NEWRELIC_LICENCE_KEY" envDefault:""`
 		AppName    string `env:"NEWRELIC_APP_NAME" envDefault:""`
 	}
+
+	Firebase struct {
+		StorageBucket string `env:"FIREBASE_STORAGE_BUCKET" envDefault:""`
+	}
 }
