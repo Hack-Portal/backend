@@ -26,6 +26,7 @@ func NewAccountUsercase(store transaction.Store, timeout time.Duration) inputpor
 }
 
 func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *jwt.FireBaseCustomToken) (result response.Account, err error) {
+
 	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
 	defer cancel()
 	account, err := au.store.GetAccountsByID(ctx, id)

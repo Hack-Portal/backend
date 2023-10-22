@@ -96,6 +96,13 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.Li
 		return
 	}
 
+	hackathonIDs := make([]int32, len(hackathons))
+	for i, hackathon := range hackathons {
+		hackathonIDs[i] = hackathon.HackathonID
+	}
+
+	statusTags, err := hu.store.ListHackathonStatusTagsByIDs(ctx, hackathonIDs)
+
 	for _, hackathon := range hackathons {
 		var tags []repository.StatusTag
 
