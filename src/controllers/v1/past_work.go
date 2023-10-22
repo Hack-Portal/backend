@@ -6,12 +6,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
-	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
+	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
+	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 

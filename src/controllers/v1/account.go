@@ -10,16 +10,16 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/middleware"
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain/request"
-	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
-	dbutil "github.com/hackhack-Geek-vol6/backend/pkg/util/db"
 	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
 	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
+	"github.com/hackhack-Geek-vol6/backend/pkg/util/transaction"
+	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
+	"github.com/hackhack-Geek-vol6/backend/src/infrastructure/middleware"
+	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/lib/pq"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
@@ -252,7 +252,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 			AccountInfo: repository.Account{
 				AccountID: reqURI.AccountID,
 				Username:  reqBody.Username,
-				ExplanatoryText: sql.NullString{
+				ExplanatoryText: pgtype.Text{
 					String: reqBody.ExplanatoryText,
 					Valid:  true,
 				},

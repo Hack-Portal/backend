@@ -3,7 +3,7 @@ package response
 import (
 	"time"
 
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
+	"github.com/hackhack-Geek-vol6/backend/src/repository"
 )
 
 type ListRoomRoomInfo struct {

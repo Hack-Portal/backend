@@ -3,9 +3,9 @@ package inputport
 import (
 	"context"
 
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain/params"
-	"github.com/hackhack-Geek-vol6/backend/pkg/domain/response"
-	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
+	"github.com/hackhack-Geek-vol6/backend/pkg/jwt"
+	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
+	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
 )
 
 type AccountUsecase interface {

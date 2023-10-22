@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/usecase/inputport"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 

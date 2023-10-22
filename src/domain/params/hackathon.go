@@ -1,8 +1,6 @@
 package params
 
-import (
-	repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
-)
+import "github.com/hackhack-Geek-vol6/backend/src/repository"
 
 type CreateHackathon struct {
 	Hackathon  repository.CreateHackathonsParams

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
+	"github.com/hackhack-Geek-vol6/backend/pkg/jwt"
 )
 
 const (

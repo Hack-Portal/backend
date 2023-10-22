@@ -14,16 +14,6 @@ type bodyLogWriter struct {
 	body *bytes.Buffer
 }
 
-func (w bodyLogWriter) write(b []byte) (int, error) {
-	w.body.Write(b)
-	return w.ResponseWriter.Write(b)
-}
-
-func (w bodyLogWriter) writeString(s string) (int, error) {
-	w.body.WriteString(s)
-	return w.ResponseWriter.WriteString(s)
-}
-
 type AccessLog struct {
 	Request      string `json:"request"`
 	Response     string `json:"response"`

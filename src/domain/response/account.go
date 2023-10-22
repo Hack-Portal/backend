@@ -1,6 +1,6 @@
 package response
 
-import repository "github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/datasource"
+import "github.com/hackhack-Geek-vol6/backend/src/repository"
 
 type Account struct {
 	AccountID       string `json:"account_id"`
