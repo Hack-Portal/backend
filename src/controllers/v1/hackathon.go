@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
@@ -16,7 +16,7 @@ import (
 
 type HackathonController struct {
 	HackathonUsecase inputport.HackathonUsecase
-	Env              *bootstrap.Env
+	l                logger.Logger
 }
 
 // CreateHackathon	godoc

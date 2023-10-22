@@ -10,23 +10,21 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
-	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
-	"github.com/hackhack-Geek-vol6/backend/pkg/util/transaction"
+	"github.com/hackhack-Geek-vol6/backend/pkg/jwt"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/infrastructure/middleware"
 	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/lib/pq"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type AccountController struct {
 	AccountUsecase inputport.AccountUsecase
-	Env            *bootstrap.Env
+	l              logger.Logger
 }
 
 // CreateAccount	godoc
@@ -80,7 +78,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 	if len(reqBody.TechTags) != 0 {
-		tags, err = util.StringToArrayInt32(reqBody.TechTags)
+		tags, err = utils.StringToArrayInt32(reqBody.TechTags)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
 			return
@@ -88,7 +86,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 	}
 
 	if len(reqBody.Frameworks) != 0 {
-		frameworks, err = util.StringToArrayInt32(reqBody.Frameworks)
+		frameworks, err = utils.StringToArrayInt32(reqBody.Frameworks)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
 			return
@@ -103,7 +101,7 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 			Email:           payload.Email,
 			Username:        reqBody.Username,
 			LocateID:        reqBody.LocateID,
-			ExplanatoryText: dbutil.ToSqlNullString(reqBody.ExplanatoryText),
+			ExplanatoryText: utils.ToPgText(reqBody.ExplanatoryText),
 			ShowLocate:      reqBody.ShowLocate,
 			ShowRate:        reqBody.ShowRate,
 		},
@@ -113,13 +111,6 @@ func (ac *AccountController) CreateAccount(ctx *gin.Context) {
 
 	if err != nil {
 		// すでに登録されている場合と参照エラーの処理
-		if pqErr, ok := err.(*pq.Error); ok {
-			switch pqErr.Code.Name() {
-			case transaction.ForeignKeyViolation, transaction.UniqueViolation:
-				ctx.JSON(http.StatusForbidden, errorResponse(err))
-				return
-			}
-		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -231,7 +222,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	}
 
 	if len(reqBody.TechTags) != 0 {
-		tags, err = util.StringToArrayInt32(reqBody.TechTags)
+		tags, err = utils.StringToArrayInt32(reqBody.TechTags)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
 			return
@@ -239,7 +230,7 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 	}
 
 	if len(reqBody.Frameworks) != 0 {
-		frameworks, err = util.StringToArrayInt32(reqBody.Frameworks)
+		frameworks, err = utils.StringToArrayInt32(reqBody.Frameworks)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
 			return
@@ -259,9 +250,9 @@ func (ac *AccountController) UpdateAccount(ctx *gin.Context) {
 				LocateID:    reqBody.LocateID,
 				ShowLocate:  reqBody.ShowLocate,
 				ShowRate:    reqBody.ShowRate,
-				TwitterLink: dbutil.ToSqlNullString(reqBody.TwitterLink),
-				GithubLink:  dbutil.ToSqlNullString(reqBody.GithubLink),
-				DiscordLink: dbutil.ToSqlNullString(reqBody.DiscordLink),
+				TwitterLink: utils.ToPgText(reqBody.TwitterLink),
+				GithubLink:  utils.ToPgText(reqBody.GithubLink),
+				DiscordLink: utils.ToPgText(reqBody.DiscordLink),
 			},
 			AccountTechTag:      tags,
 			AccountFrameworkTag: frameworks,

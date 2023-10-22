@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	"github.com/hackhack-Geek-vol6/backend/pkg/util/jwt"
+	"github.com/hackhack-Geek-vol6/backend/pkg/jwt"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/infrastructure/middleware"
@@ -18,7 +18,7 @@ import (
 
 type RoomController struct {
 	RoomUsecase inputport.RoomUsecase
-	Env         *bootstrap.Env
+	l           logger.Logger
 }
 
 // ListRooms	godoc

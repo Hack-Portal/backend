@@ -4,14 +4,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type EtcController struct {
 	EtcUsecase inputport.EtcUsecase
-	Env        *bootstrap.Env
+	l          logger.Logger
 }
 
 // ListFrameworks	godoc

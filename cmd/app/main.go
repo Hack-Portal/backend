@@ -36,12 +36,10 @@ func main() {
 	}
 	defer pool.Close()
 
-	firebaseconfig := &firebase.Config{
-		StorageBucket: config.Config.Firebase.StorageBucket,
-	}
-
 	serviceAccount := option.WithCredentialsFile("./serviceAccount.json")
-	app, err := firebase.NewApp(context.Background(), firebaseconfig, serviceAccount)
+	app, err := firebase.NewApp(context.Background(), &firebase.Config{
+		StorageBucket: config.Config.Firebase.StorageBucket,
+	}, serviceAccount)
 	if err != nil {
 		l.Panicf("firebase connection error :%v", err)
 	}

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	util "github.com/hackhack-Geek-vol6/backend/pkg/util/etc"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/repository"
@@ -17,7 +17,7 @@ import (
 
 type PastWorkController struct {
 	PastWorkUsecase inputport.PastworkUsecase
-	Env             *bootstrap.Env
+	l               logger.Logger
 }
 
 // CreatePastWork	godoc
@@ -69,7 +69,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		image = icon.Bytes()
 	}
 	if len(reqBody.PastWorkTags) != 0 {
-		tags, err = util.StringToArrayInt32(reqBody.PastWorkTags)
+		tags, err = utils.StringToArrayInt32(reqBody.PastWorkTags)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
 			return
@@ -77,7 +77,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 	}
 
 	if len(reqBody.PastWorkFrameworks) != 0 {
-		frameworks, err = util.StringToArrayInt32(reqBody.PastWorkFrameworks)
+		frameworks, err = utils.StringToArrayInt32(reqBody.PastWorkFrameworks)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
 			return
@@ -89,7 +89,7 @@ func (pc *PastWorkController) CreatePastWork(ctx *gin.Context) {
 		ExplanatoryText:    reqBody.ExplanatoryText,
 		PastWorkTags:       tags,
 		PastWorkFrameworks: frameworks,
-		AccountPastWorks:   util.StringToArray(reqBody.AccountPastWorks),
+		AccountPastWorks:   utils.StringToArray(reqBody.AccountPastWorks),
 	}, image)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -187,7 +187,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	}
 
 	if len(reqBody.PastWorkTags) != 0 {
-		tags, err = util.StringToArrayInt32(reqBody.PastWorkTags)
+		tags, err = utils.StringToArrayInt32(reqBody.PastWorkTags)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
 			return
@@ -195,7 +195,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 	}
 
 	if len(reqBody.PastWorkFrameworks) != 0 {
-		frameworks, err = util.StringToArrayInt32(reqBody.PastWorkFrameworks)
+		frameworks, err = utils.StringToArrayInt32(reqBody.PastWorkFrameworks)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
 			return
@@ -208,7 +208,7 @@ func (pc *PastWorkController) UpdatePastWork(ctx *gin.Context) {
 		ExplanatoryText:    reqBody.ExplanatoryText,
 		PastWorkTags:       tags,
 		PastWorkFrameworks: frameworks,
-		AccountPastWorks:   util.StringToArray(reqBody.AccountPastWorks),
+		AccountPastWorks:   utils.StringToArray(reqBody.AccountPastWorks),
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
