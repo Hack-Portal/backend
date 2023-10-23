@@ -21,5 +21,3 @@ func NewStore(connPool *pgxpool.Pool) Store {
 		Queries:  repository.New(connPool),
 	}
 }
-
-func BeginTx()
