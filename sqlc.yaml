@@ -1,12 +1,12 @@
 version: "2"
 sql:
 - schema: "cmd/migrations"
-  queries: "src/repository/datasource"
+  queries: "pkg/repository/datasource"
   engine: "postgresql"
   gen:
     go: 
       package: "repository"
-      out: "src/repository"
+      out: "pkg/repository"
       sql_package: "pgx/v5"
       emit_json_tags: true
       emit_interface: true

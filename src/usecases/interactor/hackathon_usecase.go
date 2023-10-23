@@ -2,12 +2,12 @@ package usecase
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
@@ -44,15 +44,12 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.Cr
 
 	hackathon, err := hu.store.CreateHackathonTx(ctx, params.CreateHackathon{
 		Hackathon: repository.CreateHackathonsParams{
-			Name: body.Name,
-			Icon: sql.NullString{
-				String: imageURL,
-				Valid:  true,
-			},
+			Name:        body.Name,
+			Icon:        utils.ToPgText(imageURL),
 			Description: body.Description,
 			Link:        body.Link,
-			Expired:     body.Expired,
-			StartDate:   body.StartDate,
+			Expired:     utils.ToPgDate(body.Expired),
+			StartDate:   utils.ToPgDate(body.StartDate),
 			Term:        body.Term,
 		},
 		StatusTags: body.StatusTags,
@@ -92,7 +89,7 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.Li
 	}
 
 	hackathons, err := hu.store.ListHackathons(ctx, repository.ListHackathonsParams{
-		Expired: expired,
+		Expired: utils.ToPgDate(expired),
 		Limit:   query.PageSize,
 		Offset:  (query.PageID - 1) * query.PageSize,
 	})
