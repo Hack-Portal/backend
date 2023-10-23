@@ -11,25 +11,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createAccountTags = `-- name: CreateAccountTags :one
-INSERT INTO
-    account_tags (account_id, tech_tag_id)
-VALUES
-($1, $2) RETURNING account_id, tech_tag_id
-`
-
-type CreateAccountTagsParams struct {
-	AccountID string `json:"account_id"`
-	TechTagID int32  `json:"tech_tag_id"`
-}
-
-func (q *Queries) CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTag, error) {
-	row := q.db.QueryRow(ctx, createAccountTags, arg.AccountID, arg.TechTagID)
-	var i AccountTag
-	err := row.Scan(&i.AccountID, &i.TechTagID)
-	return i, err
-}
-
 const deleteAccountTagsByUserID = `-- name: DeleteAccountTagsByUserID :exec
 DELETE FROM
     account_tags

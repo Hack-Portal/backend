@@ -13,7 +13,6 @@ type Querier interface {
 	CloseRoomByID(ctx context.Context, roomID string) (Room, error)
 	CreateAccountFrameworks(ctx context.Context, arg CreateAccountFrameworksParams) (AccountFramework, error)
 	CreateAccountPastWorks(ctx context.Context, arg CreateAccountPastWorksParams) (AccountPastWork, error)
-	CreateAccountTags(ctx context.Context, arg CreateAccountTagsParams) (AccountTag, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
 	CreateChat(ctx context.Context, arg CreateChatParams) (RoomChat, error)
 	CreateFollows(ctx context.Context, arg CreateFollowsParams) (Follow, error)

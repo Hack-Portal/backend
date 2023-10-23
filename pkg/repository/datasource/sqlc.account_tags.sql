@@ -1,9 +1,3 @@
--- name: CreateAccountTags :one
-INSERT INTO
-    account_tags (account_id, tech_tag_id)
-VALUES
-($1, $2) RETURNING *;
-
 -- name: ListAccountTagsByUserID :many
 SELECT
     tech_tags.tech_tag_id,
