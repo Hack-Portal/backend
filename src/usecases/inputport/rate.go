@@ -3,9 +3,9 @@ package inputport
 import (
 	"context"
 
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
 )
 
 type RateUsecase interface {

@@ -7,8 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/transaction"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 
@@ -20,7 +21,7 @@ type RateController struct {
 	l           logger.Logger
 }
 
-func NewRateController(store repository.SQLStore, l logger.Logger) *RateController {
+func NewRateController(store transaction.SQLStore, l logger.Logger) *RateController {
 	return &RateController{
 		RateUsecase: usecase.NewRateUsercase(store, l),
 		l:           l,

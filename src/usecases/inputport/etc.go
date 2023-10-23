@@ -3,7 +3,7 @@ package inputport
 import (
 	"context"
 
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 )
 
 type EtcUsecase interface {

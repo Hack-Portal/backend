@@ -8,10 +8,10 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/jwt"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	"github.com/jackc/pgx/v5/pgtype"
 )

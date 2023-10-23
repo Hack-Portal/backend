@@ -8,8 +8,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/transaction"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
@@ -20,7 +21,7 @@ type FollowController struct {
 	l             logger.Logger
 }
 
-func NewFollowController(store repository.SQLStore, l logger.Logger) *FollowController {
+func NewFollowController(store transaction.SQLStore, l logger.Logger) *FollowController {
 	return &FollowController{
 		FollowUsecase: usecase.NewFollowUsercase(store, l),
 		l:             l,

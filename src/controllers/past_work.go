@@ -7,10 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/transaction"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
@@ -21,7 +22,7 @@ type PastWorkController struct {
 	l               logger.Logger
 }
 
-func NewPastWorkController(store repository.SQLStore, l logger.Logger) *PastWorkController {
+func NewPastWorkController(store transaction.SQLStore, l logger.Logger) *PastWorkController {
 	return &PastWorkController{
 		PastWorkUsecase: usecase.NewPastWorkUsercase(store, l),
 		l:               l,

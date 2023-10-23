@@ -7,7 +7,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/pkg/postgres"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/transaction"
 	_ "github.com/lib/pq"
 	"google.golang.org/api/option"
 )
@@ -44,7 +44,7 @@ func main() {
 		l.Panicf("firebase connection error :%v", err)
 	}
 
-	store := repository.NewStore(pool)
+	store := transaction.NewStore(pool)
 
 	// 以下サーバー起動設定
 

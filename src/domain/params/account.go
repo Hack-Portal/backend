@@ -1,6 +1,6 @@
 package params
 
-import "github.com/hackhack-Geek-vol6/backend/src/repository"
+import "github.com/hackhack-Geek-vol6/backend/pkg/repository"
 
 type CreateAccount struct {
 	AccountInfo         repository.CreateAccountsParams

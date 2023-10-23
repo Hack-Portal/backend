@@ -12,11 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/jwt"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/repository"
 	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/infrastructure/middleware"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/transaction"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -28,7 +29,7 @@ type AccountController struct {
 	l              logger.Logger
 }
 
-func NewAccountController(store repository.SQLStore, l logger.Logger) *AccountController {
+func NewAccountController(store transaction.SQLStore, l logger.Logger) *AccountController {
 	return &AccountController{
 		AccountUsecase: usecase.NewAccountUsercase(store, l),
 		l:              l,

@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/transaction"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
@@ -21,7 +21,7 @@ type HackathonController struct {
 	l                logger.Logger
 }
 
-func NewHackathonController(store repository.SQLStore, l logger.Logger) *HackathonController {
+func NewHackathonController(store transaction.SQLStore, l logger.Logger) *HackathonController {
 	return &HackathonController{
 		HackathonUsecase: usecase.NewHackathonUsercase(store, l),
 		l:                l,

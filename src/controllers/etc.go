@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
-	"github.com/hackhack-Geek-vol6/backend/src/repository"
+	"github.com/hackhack-Geek-vol6/backend/src/transaction"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
 	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
@@ -16,7 +16,7 @@ type EtcController struct {
 	l          logger.Logger
 }
 
-func NewEtcController(store repository.SQLStore, l logger.Logger) *EtcController {
+func NewEtcController(store transaction.SQLStore, l logger.Logger) *EtcController {
 	return &EtcController{
 		EtcUsecase: usecase.NewEtcUsercase(store, l),
 		l:          l,
