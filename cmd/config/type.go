@@ -6,6 +6,7 @@ type config struct {
 	Server struct {
 		Addr            string `env:"SERVER_ADDR" envDefault:"localhost:8080"`
 		ShutdownTimeout int    `env:"SERVER_SHUTDOWN_TIMEOUT" envDefault:"10"`
+		ContextTimeout  int    `env:"SERVER_CONTEXT_TIMEOUT" envDefault:"5"`
 	}
 
 	Postgres struct {

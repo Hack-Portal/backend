@@ -18,6 +18,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/src/infrastructure/middleware"
 	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
@@ -25,6 +26,13 @@ import (
 type AccountController struct {
 	AccountUsecase inputport.AccountUsecase
 	l              logger.Logger
+}
+
+func NewAccountController(store repository.SQLStore, l logger.Logger) *AccountController {
+	return &AccountController{
+		AccountUsecase: usecase.NewAccountUsercase(store, l),
+		l:              l,
+	}
 }
 
 // CreateAccount	godoc

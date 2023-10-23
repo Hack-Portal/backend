@@ -12,13 +12,22 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/infrastructure/middleware"
+	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type RoomController struct {
 	RoomUsecase inputport.RoomUsecase
 	l           logger.Logger
+}
+
+func NewRoomController(store repository.SQLStore, l logger.Logger) *RoomController {
+	return &RoomController{
+		RoomUsecase: usecase.NewRoomUsercase(store, l),
+		l:           l,
+	}
 }
 
 // ListRooms	godoc

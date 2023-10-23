@@ -4,29 +4,35 @@ import (
 	"context"
 	"time"
 
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
 	"github.com/hackhack-Geek-vol6/backend/pkg/jwt"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
 	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type accountUsecase struct {
-	store          transaction.Store
-	contextTimeout time.Duration
+	store   transaction.store
+	l       logger.Logger
+	timeout time.Duration
 }
 
-func NewAccountUsercase(store transaction.Store, timeout time.Duration) inputport.AccountUsecase {
+func NewAccountUsercase(store transaction.Store, l logger.Logger) inputport.AccountUsecase {
 	return &accountUsecase{
-		store:          store,
-		contextTimeout: timeout,
+		store:   store,
+		l:       l,
+		timeout: time.Duration(config.Config.Server.ContextTimeout),
 	}
 }
 
 func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *jwt.FireBaseCustomToken) (result response.Account, err error) {
 
-	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, au.timeout)
 	defer cancel()
 	account, err := au.store.GetAccountsByID(ctx, id)
 	if err != nil {
@@ -96,7 +102,7 @@ func (au *accountUsecase) GetAccountByID(ctx context.Context, id string, token *
 }
 
 func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (result response.Account, err error) {
-	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, au.timeout)
 	defer cancel()
 
 	account, err := au.store.GetAccountsByEmail(ctx, email)
@@ -137,7 +143,7 @@ func (au *accountUsecase) GetAccountByEmail(ctx context.Context, email string) (
 }
 
 func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateAccount, image []byte) (result response.Account, err error) {
-	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, au.timeout)
 	defer cancel()
 	// 画像が空やないときに処理する
 
@@ -148,7 +154,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateA
 			return
 		}
 	}
-	body.AccountInfo.Icon = dbutil.ToSqlNullString(imageURL)
+	body.AccountInfo.Icon = utils.ToPgText(imageURL)
 
 	account, err := au.store.CreateAccountTx(ctx, body)
 	if err != nil {
@@ -174,7 +180,7 @@ func (au *accountUsecase) CreateAccount(ctx context.Context, body params.CreateA
 }
 
 func (au *accountUsecase) UpdateAccount(ctx context.Context, body params.UpdateAccount, image []byte) (result response.Account, err error) {
-	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, au.timeout)
 	defer cancel()
 
 	var imageURL string
@@ -185,7 +191,7 @@ func (au *accountUsecase) UpdateAccount(ctx context.Context, body params.UpdateA
 		}
 	}
 
-	body.AccountInfo.Icon = dbutil.ToSqlNullString(imageURL)
+	body.AccountInfo.Icon = utils.ToPgText(imageURL)
 
 	account, err := au.store.UpdateAccountTx(ctx, body)
 	if err != nil {
@@ -213,19 +219,19 @@ func (au *accountUsecase) UpdateAccount(ctx context.Context, body params.UpdateA
 }
 
 func (au *accountUsecase) DeleteAccount(ctx context.Context, id string) error {
-	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, au.timeout)
 	defer cancel()
 	_, err := au.store.DeleteAccounts(ctx, id)
 	return err
 }
 
 func (au *accountUsecase) GetJoinRoom(ctx context.Context, accountID string) (result []response.GetJoinRoom, err error) {
-	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, au.timeout)
 	defer cancel()
 
 	rooms, err := au.store.ListJoinRoomByID(ctx, repository.ListJoinRoomByIDParams{
 		AccountID: accountID,
-		Expired:   time.Now().Add(-time.Hour * 24 * 30),
+		Expired:   pgtype.Date{Time: time.Now().Add(-time.Hour * 24 * 30), InfinityModifier: pgtype.NegativeInfinity, Valid: true},
 	})
 	if err != nil {
 		return

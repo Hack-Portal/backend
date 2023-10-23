@@ -4,7 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
 	"github.com/hackhack-Geek-vol6/backend/src/repository"
@@ -12,19 +14,21 @@ import (
 )
 
 type rateUsecase struct {
-	store          transaction.Store
-	contextTimeout time.Duration
+	store   transaction.Store
+	l       logger.Logger
+	timeout time.Duration
 }
 
-func NewRateUsercase(store transaction.Store, timeout time.Duration) inputport.RateUsecase {
+func NewRateUsercase(store transaction.Store, l logger.Logger) inputport.RateUsecase {
 	return &rateUsecase{
-		store:          store,
-		contextTimeout: timeout,
+		store:   store,
+		l:       l,
+		timeout: time.Duration(config.Config.Server.ContextTimeout),
 	}
 }
 
 func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.CreateRateEntitiesParams) error {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	if err := ru.store.CreateRateEntityTx(ctx, body); err != nil {
@@ -35,7 +39,7 @@ func (ru *rateUsecase) CreateRateEntry(ctx context.Context, body repository.Crea
 }
 
 func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query request.ListRequest) ([]repository.RateEntity, error) {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	rates, err := ru.store.ListRateEntities(ctx, repository.ListRateEntitiesParams{
@@ -50,7 +54,7 @@ func (ru *rateUsecase) ListRateEntry(ctx context.Context, id string, query reque
 }
 
 func (au *rateUsecase) ListAccountRate(ctx context.Context, args request.ListRequest) (result []response.AccountRate, err error) {
-	ctx, cancel := context.WithTimeout(ctx, au.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, au.timeout)
 	defer cancel()
 
 	accounts, err := au.store.ListAccounts(ctx, repository.ListAccountsParams{

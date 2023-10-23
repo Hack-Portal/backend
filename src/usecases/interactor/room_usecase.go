@@ -5,7 +5,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
@@ -14,19 +16,21 @@ import (
 )
 
 type roomUsecase struct {
-	store          transaction.Store
-	contextTimeout time.Duration
+	store   transaction.Store
+	l       logger.Logger
+	timeout time.Duration
 }
 
-func NewRoomUsercase(store transaction.Store, timeout time.Duration) inputport.RoomUsecase {
+func NewRoomUsercase(store transaction.Store, l logger.Logger) inputport.RoomUsecase {
 	return &roomUsecase{
-		store:          store,
-		contextTimeout: timeout,
+		store:   store,
+		l:       l,
+		timeout: time.Duration(config.Config.Server.ContextTimeout),
 	}
 }
 
 func (ru *roomUsecase) ListRooms(ctx context.Context, query request.ListRequest) ([]response.ListRoom, error) {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	var result []response.ListRoom
@@ -73,7 +77,7 @@ func (ru *roomUsecase) ListRooms(ctx context.Context, query request.ListRequest)
 }
 
 func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result response.Room, err error) {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	room, err := ru.store.GetRoomsByID(ctx, id)
@@ -110,7 +114,7 @@ func (ru *roomUsecase) GetRoom(ctx context.Context, id string) (result response.
 }
 
 func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoom) (result response.Room, err error) {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	body.RoomID = uuid.New().String()
@@ -150,7 +154,7 @@ func (ru *roomUsecase) CreateRoom(ctx context.Context, body params.CreateRoom) (
 }
 
 func (ru *roomUsecase) UpdateRoom(ctx context.Context, body params.UpdateRoom) (result response.Room, err error) {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	room, err := ru.store.UpdateRoomTx(ctx, body)
@@ -186,21 +190,21 @@ func (ru *roomUsecase) UpdateRoom(ctx context.Context, body params.UpdateRoom) (
 }
 
 func (ru *roomUsecase) DeleteRoom(ctx context.Context, query params.DeleteRoom) error {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	return ru.store.DeleteRoomTx(ctx, query)
 }
 
 func (ru *roomUsecase) AddAccountInRoom(ctx context.Context, query params.AddAccountInRoom) error {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	return ru.store.AddAccountInRoom(ctx, query)
 }
 
 func (ru *roomUsecase) AddChat(ctx context.Context, body params.AddChat) error {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	data, err := ru.store.ReadDocsByRoomID(ctx, body.RoomID)
@@ -218,7 +222,7 @@ func (ru *roomUsecase) AddChat(ctx context.Context, body params.AddChat) error {
 }
 
 func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body params.DeleteRoomAccount) error {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	return ru.store.DeleteRoomsAccountsByID(ctx, repository.DeleteRoomsAccountsByIDParams{
@@ -229,21 +233,21 @@ func (ru *roomUsecase) DeleteRoomAccount(ctx context.Context, body params.Delete
 }
 
 func (ru *roomUsecase) CloseRoom(ctx context.Context, body params.CloseRoom) error {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	return ru.store.CloseRoom(ctx, body)
 }
 
 func (ru *roomUsecase) AddRoomAccountRole(ctx context.Context, body params.RoomAccountRole) error {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	return ru.store.AddRoomAccountRoleByID(ctx, body)
 }
 
 func (ru *roomUsecase) UpdateRoomAccountRole(ctx context.Context, body params.RoomAccountRole) (err error) {
-	ctx, cancel := context.WithTimeout(ctx, ru.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ru.timeout)
 	defer cancel()
 
 	return ru.store.UpdateRoomsAccountRoleByID(ctx, body)

@@ -4,7 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
@@ -13,19 +15,21 @@ import (
 )
 
 type pastWorkUsecase struct {
-	store          transaction.Store
-	contextTimeout time.Duration
+	store   transaction.Store
+	l       logger.Logger
+	timeout time.Duration
 }
 
-func NewPastWorkUsercase(store transaction.Store, timeout time.Duration) inputport.PastworkUsecase {
+func NewPastWorkUsercase(store transaction.Store, l logger.Logger) inputport.PastworkUsecase {
 	return &pastWorkUsecase{
-		store:          store,
-		contextTimeout: timeout,
+		store:   store,
+		l:       l,
+		timeout: time.Duration(config.Config.Server.ContextTimeout),
 	}
 }
 
 func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg params.CreatePastWork, image []byte) (result response.PastWork, err error) {
-	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, pu.timeout)
 	defer cancel()
 	// 画像が空でないときに処理する
 	var imageURL string
@@ -78,7 +82,7 @@ func (pu *pastWorkUsecase) CreatePastWork(ctx context.Context, arg params.Create
 }
 
 func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result response.PastWork, err error) {
-	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, pu.timeout)
 	defer cancel()
 
 	pastWork, err := pu.store.GetPastWorksByOpus(ctx, opus)
@@ -117,7 +121,7 @@ func (pu *pastWorkUsecase) GetPastWork(ctx context.Context, opus int32) (result 
 }
 
 func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query request.ListRequest) (result []response.ListPastWork, err error) {
-	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, pu.timeout)
 	defer cancel()
 
 	pastWorks, err := pu.store.ListPastWorks(ctx, repository.ListPastWorksParams{Limit: query.PageSize, Offset: (query.PageID - 1) * query.PageSize})
@@ -154,7 +158,7 @@ func (pu *pastWorkUsecase) ListPastWork(ctx context.Context, query request.ListR
 }
 
 func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body params.UpdatePastWork) (result response.PastWork, err error) {
-	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, pu.timeout)
 	defer cancel()
 
 	pastWork, err := pu.store.UpdatePastWorkTx(ctx, body)
@@ -193,7 +197,7 @@ func (pu *pastWorkUsecase) UpdatePastWork(ctx context.Context, body params.Updat
 }
 
 func (pu *pastWorkUsecase) DeletePastWork(ctx context.Context, args repository.DeletePastWorksByIDParams) error {
-	ctx, cancel := context.WithTimeout(ctx, pu.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, pu.timeout)
 	defer cancel()
 
 	_, err := pu.store.DeletePastWorksByID(ctx, args)

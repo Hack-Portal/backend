@@ -10,6 +10,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
@@ -17,6 +18,13 @@ import (
 type RateController struct {
 	RateUsecase inputport.RateUsecase
 	l           logger.Logger
+}
+
+func NewRateController(store repository.SQLStore, l logger.Logger) *RateController {
+	return &RateController{
+		RateUsecase: usecase.NewRateUsercase(store, l),
+		l:           l,
+	}
 }
 
 // CreateRate	godoc

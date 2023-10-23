@@ -12,12 +12,20 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type PastWorkController struct {
 	PastWorkUsecase inputport.PastworkUsecase
 	l               logger.Logger
+}
+
+func NewPastWorkController(store repository.SQLStore, l logger.Logger) *PastWorkController {
+	return &PastWorkController{
+		PastWorkUsecase: usecase.NewPastWorkUsercase(store, l),
+		l:               l,
+	}
 }
 
 // CreatePastWork	godoc

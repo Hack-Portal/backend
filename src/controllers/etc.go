@@ -5,13 +5,37 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/src/repository"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	usecase "github.com/hackhack-Geek-vol6/backend/src/usecases/interactor"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 type EtcController struct {
 	EtcUsecase inputport.EtcUsecase
 	l          logger.Logger
+}
+
+func NewEtcController(store repository.SQLStore, l logger.Logger) *EtcController {
+	return &EtcController{
+		EtcUsecase: usecase.NewEtcUsercase(store, l),
+		l:          l,
+	}
+}
+
+// Health	godoc
+//
+//	@Summary		Health Check
+//	@Description	Health Check
+//	@Tags			Health
+//	@Produce		json
+//	@Success		200			{object}	HealthResponse	"success response"
+//	@Failure		500			{object}	ErrorResponse		"error response"
+//	@Router			/health		[get]
+func (ec *EtcController) Health(ctx *gin.Context) {
+	txn := nrgin.Transaction(ctx)
+	defer txn.End()
+	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
 // ListFrameworks	godoc

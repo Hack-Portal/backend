@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/params"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/request"
 	"github.com/hackhack-Geek-vol6/backend/src/domain/response"
@@ -14,19 +16,21 @@ import (
 )
 
 type hackathonUsecase struct {
-	store          transaction.Store
-	contextTimeout time.Duration
+	store   transaction.Store
+	l       logger.Logger
+	timeout time.Duration
 }
 
-func NewHackathonUsercase(store transaction.Store, timeout time.Duration) inputport.HackathonUsecase {
+func NewHackathonUsercase(store transaction.Store, l logger.Logger) inputport.HackathonUsecase {
 	return &hackathonUsecase{
-		store:          store,
-		contextTimeout: timeout,
+		store:   store,
+		l:       l,
+		timeout: time.Duration(config.Config.Server.ContextTimeout),
 	}
 }
 
 func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.CreateHackathon, image []byte) (result response.Hackathon, err error) {
-	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, hu.timeout)
 	defer cancel()
 
 	var imageURL string
@@ -77,7 +81,7 @@ func (hu *hackathonUsecase) CreateHackathon(ctx context.Context, body request.Cr
 }
 
 func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.ListHackathons) (result []response.ListHackathons, err error) {
-	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, hu.timeout)
 	defer cancel()
 
 	var expired time.Time
@@ -135,7 +139,7 @@ func (hu *hackathonUsecase) ListHackathons(ctx context.Context, query request.Li
 }
 
 func (hu *hackathonUsecase) GetHackathon(ctx context.Context, id int32) (result response.Hackathon, err error) {
-	ctx, cancel := context.WithTimeout(ctx, hu.contextTimeout)
+	ctx, cancel := context.WithTimeout(ctx, hu.timeout)
 	defer cancel()
 
 	hackathon, err := hu.store.GetHackathonByID(ctx, id)
