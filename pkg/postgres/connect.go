@@ -2,17 +2,17 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"time"
 
 	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Connection interface {
-	Connection() (*pgxpool.Pool, error)
+	Connection() (*sql.DB, error)
 	Close(ctx context.Context)
 }
 
@@ -20,7 +20,7 @@ type connection struct {
 	connectError error
 	connecting   bool
 	status       Status
-	conn         *pgxpool.Pool
+	conn         *sql.DB
 	logger       logger.Logger
 }
 
@@ -28,7 +28,7 @@ func NewConnection(l logger.Logger) Connection {
 	return &connection{logger: l}
 }
 
-func (c *connection) Connection() (*pgxpool.Pool, error) {
+func (c *connection) Connection() (*sql.DB, error) {
 	c.updateDBStatus()
 
 	if c.status != READY {
@@ -49,8 +49,6 @@ func (c *connection) tryConnect() {
 
 func (c *connection) connect() {
 	c.connecting = true
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(config.Config.Postgres.ConnectTimeout)*time.Second)
-	defer cancel()
 	dbUrl := fmt.Sprintf("postgresql://%s:%d/%s?user=%s&password=%s&sslmode=%s",
 		config.Config.Postgres.Host,
 		config.Config.Postgres.Port,
@@ -60,8 +58,8 @@ func (c *connection) connect() {
 		config.Config.Postgres.SSLMode,
 	)
 
-	pgxConnect := func() (*pgxpool.Pool, error) {
-		return pgxpool.New(ctx, dbUrl)
+	dbConnect := func() (*sql.DB, error) {
+		return sql.Open("postgres", dbUrl)
 	}
 	sleep := func() {
 		time.Sleep(time.Duration(config.Config.Postgres.ConnectWaitTime) * time.Second)
@@ -69,7 +67,7 @@ func (c *connection) connect() {
 
 	if config.Config.Postgres.ConnectAttempts == 0 {
 		for c.status != READY {
-			c.conn, c.connectError = pgxConnect()
+			c.conn, c.connectError = dbConnect()
 			c.updateDBStatus()
 
 			if c.status != READY {
@@ -81,7 +79,7 @@ func (c *connection) connect() {
 		var err error
 
 		for i := 0; i < config.Config.Postgres.ConnectAttempts; i++ {
-			c.conn, err = pgxConnect()
+			c.conn, err = dbConnect()
 			c.updateDBStatus()
 
 			if c.status != READY {
@@ -115,7 +113,7 @@ func (c *connection) updateDBStatus() {
 		return
 	}
 
-	if err := c.conn.Ping(context.Background()); err != nil {
+	if err := c.conn.Ping(); err != nil {
 		c.logger.Errorf("failed to ping database: %v", err)
 		c.status = ERROR
 
