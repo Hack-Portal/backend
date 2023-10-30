@@ -1,10 +1,9 @@
 package presenters
 
 import (
-	"temp/src/entities"
-	"temp/src/usecase/output"
-
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/src/entities"
+	"github.com/hackhack-Geek-vol6/backend/src/usecase/output"
 )
 
 type hackathonPresenter struct {

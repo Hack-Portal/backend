@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"temp/cmd/config"
-	"temp/pkg/logger"
-	"temp/src/driver/db"
-	"temp/src/infrastructures/server"
 	"time"
+
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/src/driver/db"
+	"github.com/hackhack-Geek-vol6/backend/src/infrastructures/server"
 )
 
 func main() {

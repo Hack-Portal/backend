@@ -1,10 +1,9 @@
 package v1
 
 import (
-	"temp/pkg/logger"
-
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 	"gorm.io/gorm"
 )
 

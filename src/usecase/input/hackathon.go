@@ -1,8 +1,8 @@
 package input
 
 import (
-	"temp/src/entities"
-	"temp/src/entities/request"
+	"github.com/hackhack-Geek-vol6/backend/src/entities"
+	"github.com/hackhack-Geek-vol6/backend/src/entities/request"
 )
 
 type HackathonInputPort interface {

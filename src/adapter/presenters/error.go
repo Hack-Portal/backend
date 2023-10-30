@@ -2,9 +2,9 @@ package presenters
 
 import (
 	"net/http"
-	"temp/src/usecase/output"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/src/usecase/output"
 )
 
 type errorPresenter struct {

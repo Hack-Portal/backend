@@ -1,10 +1,10 @@
 package v1
 
 import (
-	"temp/src/adapter/controllers"
-	"temp/src/adapter/gateways"
-	"temp/src/adapter/presenters"
-	"temp/src/usecase"
+	"github.com/hackhack-Geek-vol6/backend/src/adapter/controllers"
+	"github.com/hackhack-Geek-vol6/backend/src/adapter/gateways"
+	"github.com/hackhack-Geek-vol6/backend/src/adapter/presenters"
+	"github.com/hackhack-Geek-vol6/backend/src/usecase"
 )
 
 func (g *ginRouter) hackathonRouter() {

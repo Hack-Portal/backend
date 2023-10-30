@@ -2,14 +2,14 @@ package gateways
 
 import (
 	"context"
-	"temp/src/entities"
-	"temp/src/entities/param"
-	"temp/src/entities/request"
-	"temp/src/usecase"
 	"time"
 
 	"cloud.google.com/go/storage"
 	firebase "firebase.google.com/go"
+	"github.com/hackhack-Geek-vol6/backend/src/entities"
+	"github.com/hackhack-Geek-vol6/backend/src/entities/param"
+	"github.com/hackhack-Geek-vol6/backend/src/entities/request"
+	"github.com/hackhack-Geek-vol6/backend/src/usecase"
 	"gorm.io/gorm"
 )
 

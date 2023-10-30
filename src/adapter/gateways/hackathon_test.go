@@ -1,12 +1,12 @@
 package gateways
 
 import (
-	"temp/src/entities"
-	"temp/src/entities/param"
 	"testing"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/hackhack-Geek-vol6/backend/src/entities"
+	"github.com/hackhack-Geek-vol6/backend/src/entities/param"
 	"github.com/stretchr/testify/require"
 )
 

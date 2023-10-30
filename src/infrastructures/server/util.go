@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"temp/cmd/config"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 )
 
 func RunWithGracefulStop(router any) {

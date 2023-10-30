@@ -1,9 +1,8 @@
 package config
 
 import (
-	"temp/pkg/logger"
-
 	"github.com/caarlos0/env"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
 )
 
 func LoadEnv(l logger.Logger) {

@@ -3,12 +3,12 @@ package gateways
 import (
 	"context"
 	"log"
-	"temp/cmd/config"
-	"temp/pkg/logger"
-	"temp/src/driver/db"
 	"testing"
 
 	firebase "firebase.google.com/go"
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/src/driver/db"
 	"gorm.io/gorm"
 )
 

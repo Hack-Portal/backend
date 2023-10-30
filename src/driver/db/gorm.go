@@ -3,11 +3,11 @@ package db
 import (
 	"context"
 	"fmt"
-	"temp/cmd/config"
-	"temp/pkg/logger"
-	"temp/pkg/utils"
 	"time"
 
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

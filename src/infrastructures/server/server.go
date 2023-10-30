@@ -1,10 +1,9 @@
 package server
 
 import (
-	"temp/pkg/logger"
-	v1router "temp/src/infrastructures/router/v1"
-
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/pkg/logger"
+	v1router "github.com/hackhack-Geek-vol6/backend/src/infrastructures/router/v1"
 	"gorm.io/gorm"
 )
 

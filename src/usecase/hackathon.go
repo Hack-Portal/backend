@@ -1,15 +1,15 @@
 package usecase
 
 import (
-	"temp/pkg/utils"
-	"temp/src/entities"
-	"temp/src/entities/param"
-	"temp/src/entities/request"
-	"temp/src/usecase/input"
-	"temp/src/usecase/output"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
+	"github.com/hackhack-Geek-vol6/backend/src/entities"
+	"github.com/hackhack-Geek-vol6/backend/src/entities/param"
+	"github.com/hackhack-Geek-vol6/backend/src/entities/request"
+	"github.com/hackhack-Geek-vol6/backend/src/usecase/input"
+	"github.com/hackhack-Geek-vol6/backend/src/usecase/output"
 )
 
 type HackathonPort interface {

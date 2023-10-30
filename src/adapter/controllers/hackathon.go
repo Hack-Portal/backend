@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"strconv"
-	"temp/src/entities/request"
-	"temp/src/usecase/input"
-	"temp/src/usecase/output"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/src/entities/request"
+	"github.com/hackhack-Geek-vol6/backend/src/usecase/input"
+	"github.com/hackhack-Geek-vol6/backend/src/usecase/output"
 )
 
 type hackathonController struct {

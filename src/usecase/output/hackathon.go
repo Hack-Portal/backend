@@ -1,6 +1,6 @@
 package output
 
-import "temp/src/entities"
+import "github.com/hackhack-Geek-vol6/backend/src/entities"
 
 type HackathonOutputPort interface {
 	RenderCreate() error
