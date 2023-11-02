@@ -1,6 +1,6 @@
 package dai
 
 type FirebaseRepository interface {
-	UploadFile([]byte) (string, error)
-	DeleteFile() error
+	UploadFile(string, []byte) (string, error)
+	DeleteFile(string) error
 }
