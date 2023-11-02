@@ -5,19 +5,19 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/input"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/outputport"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputboundary"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/outputboundary"
 )
 
 // ここでいうControllerとは、任意の構造にデータをバインドし、Usecase Interactorに渡すことを指す
 
 type hackathonController struct {
-	Interactor inputport.HackathonInputPort
+	Interactor inputboundary.HackathonInputPort
 }
 
-func NewHackathonController(out outputport.HackathonOutputPort, repository dai.HackathonRepository) *hackathonController {
+func NewHackathonController(out outputboundary.HackathonOutputPort, repository dai.HackathonRepository) *hackathonController {
 	return &hackathonController{
-		Interactor: usecases.NewHackathonInterface(out, repository),
+		Interactor: usecases.NewHackathonInteractor(out, repository),
 	}
 }
 

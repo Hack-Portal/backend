@@ -1,4 +1,4 @@
-package outputport
+package outputboundary
 
 // ここでは主にPresenterを汎化している
 

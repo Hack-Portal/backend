@@ -8,19 +8,19 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/input"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/params"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/outputport"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputboundary"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/outputboundary"
 )
 
 // ここではUsecase Interactorを実装する
 
 type HackathonInteractor struct {
-	HackathonOutput     outputport.HackathonOutputPort
+	HackathonOutput     outputboundary.HackathonOutputPort
 	HackathonRepository dai.HackathonRepository
 	Firebase            dai.FirebaseRepository
 }
 
-func NewHackathonInterface(output outputport.HackathonOutputPort, repository dai.HackathonRepository) inputport.HackathonInputPort {
+func NewHackathonInteractor(output outputboundary.HackathonOutputPort, repository dai.HackathonRepository) inputboundary.HackathonInputPort {
 	return &HackathonInteractor{
 		HackathonOutput:     output,
 		HackathonRepository: repository,

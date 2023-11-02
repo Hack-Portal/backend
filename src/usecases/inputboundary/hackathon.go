@@ -1,4 +1,4 @@
-package inputport
+package inputboundary
 
 import "github.com/hackhack-Geek-vol6/backend/src/datastructs/input"
 
