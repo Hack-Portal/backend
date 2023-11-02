@@ -1,0 +1,70 @@
+name: ci for aspida Generate types from OpenAPI Docs to the frontend
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "docs/**"
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # setup npm version 18
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      # install swagger-typescript-api
+      - name: Install swagger-typescript-api
+        run: npm i swagger-typescript-api
+
+      - name: Generate type from OpenAPI Docs
+        run: npx swagger-typescript-api -p ./docs/swagger.yaml --output $HOME/api/generated
+
+      - name: Checkout another repo
+        uses: actions/checkout@v3
+        with:
+          repository: Hack-Hack-geek-Vol10/frontend
+          token: ${{ secrets.GH_PAT }}
+          ref: develop
+
+      # switch repository to frontend
+      - name: copy generated types to frontend
+        run: |
+          git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
+          git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
+
+          git switch -c ft/swag
+
+          mkdir -p ./api/generated
+          cp -r $HOME/api/generated/* ./api/generated
+
+          git add .
+          git commit -m "Updated by GitHub Actions"
+          git push origin ft/swag
+
+      - name: create Pull Request to frontend
+        run: |
+          gh pr create \
+            --title ":robot: generated openAPI schema[bot]" \
+            --body ":robot: generated openAPI schema[bot]" \
+            --repo Hack-Hack-geek-Vol10/frontend \
+            --base develop \
+            --head ft/swag \
+            --reviewer "${{ github.event.head_commit.committer.username || github.triggering_actor }}"
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
