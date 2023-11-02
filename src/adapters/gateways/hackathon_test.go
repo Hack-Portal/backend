@@ -1,35 +1,13 @@
 package gateways
 
 import (
-	"context"
-	"log"
-	"os"
 	"testing"
 	"time"
 
-	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/params"
-	"github.com/hackhack-Geek-vol6/backend/src/drivers/postgres"
-	"gorm.io/gorm"
 )
-
-var db *gorm.DB
-
-func TestMain(m *testing.M) {
-	config.LoadEnv()
-	conn := postgres.NewConnection()
-	defer conn.Close(context.Background())
-
-	dbconn, err := conn.Connection()
-	if err != nil {
-		log.Fatalf("failed to connect database: %v", err)
-	}
-
-	db = dbconn
-	os.Exit(m.Run())
-}
 
 func TestCreate(t *testing.T) {
 	hg := NewHackathonGateway(db)
