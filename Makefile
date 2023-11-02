@@ -25,9 +25,6 @@ migratedown:
 migratedown1:
 	migrate -path cmd/migrations -database "postgresql://root:postgres@localhost:5432/hackhack?sslmode=disable" -verbose down 1
 
-sqlc:
-	sqlc generate
-
 serverRun:
 	go run ./cmd/app/main.go
 
@@ -35,6 +32,6 @@ makeSwagger:
 	swag init -g ./cmd/app/main.go
 	
 test:
-	go test -coverpkg=./...  ./...
+		go test -coverpkg=./...  ./...
 	
 .PHONY: postgresRun postgresStart postgresStop resetDB installmigrate migrateup migrateup1 migratedown migratedown1 sqlc serverRun test makeSwagger
