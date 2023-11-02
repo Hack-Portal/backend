@@ -10,7 +10,7 @@ import (
 // TODO:ここもどのようにするか考える
 type HackathonRepository interface {
 	Create(params.HackathonCreate) error
-	ReadAll(params.HackathonReadAll) ([]entities.Hackathon, error)
+	ReadAll(params.HackathonReadAll) ([]entities.Hackathon, []entities.HackathonStatus, error)
 	Update()
 	Delete()
 }

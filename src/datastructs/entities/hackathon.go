@@ -17,6 +17,12 @@ type Hackathon struct {
 	IsDelete    bool      `json:"is_delete"`
 }
 
+type HackathonStatus struct {
+	HackathonID string `json:"hackathon_id"`
+	StatusID    int32  `json:"status_id"`
+	Status      string `json:"status"`
+}
+
 type HackathonStatusTag struct {
 	HackathonID string `json:"hackathon_id"`
 	StatusID    int32  `json:"status_id"`

@@ -1,13 +1,13 @@
 package gateways
 
 import (
-	"log"
 	"testing"
 	"time"
 
 	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/params"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
 )
 
 func TestCreate(t *testing.T) {
@@ -49,8 +49,36 @@ func TestCreate(t *testing.T) {
 	}
 }
 
+func addTestData(hg dai.HackathonRepository, t *testing.T) params.HackathonCreate {
+	arg := params.HackathonCreate{
+		Hackathon: entities.Hackathon{
+			HackathonID: utils.NewUUID(),
+			Name:        utils.RandomString(10),
+			Icon:        utils.RandomString(10),
+			Link:        utils.RandomString(10),
+			StartDate:   time.Now(),
+			Term:        1,
+			Expired:     time.Now().Add(time.Duration(5 * time.Minute)),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			IsDelete:    false,
+		},
+		Statuses: utils.RandomIntArr(2, utils.RandomInt(2)),
+	}
+	if err := hg.Create(arg); err != nil {
+		t.Fatalf("Cannnot Create Hackathon :%v", err)
+	}
+	return arg
+}
+
 func TestReadAll(t *testing.T) {
 	hg := NewHackathonGateway(db)
+
+	var hackathons []params.HackathonCreate
+
+	for i := 0; i < 6; i++ {
+		hackathons = append(hackathons, addTestData(hg, t))
+	}
 
 	testCases := []struct {
 		name    string
@@ -80,11 +108,11 @@ func TestReadAll(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			hackatons, err := hg.ReadAll(tc.arg)
+			hackatons, _, err := hg.ReadAll(tc.arg)
 			if err != tc.err {
 				t.Fatalf("got: %v, want: %v", err, tc.err)
 			}
-			log.Println(hackatons)
+			
 			if len(hackatons) != tc.wantLen {
 				t.Fatalf("got: %v, want: %v", len(hackatons), tc.wantLen)
 			}
