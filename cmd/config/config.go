@@ -23,5 +23,6 @@ func LoadEnv() {
 	if err := env.Parse(&config.Firebase); err != nil {
 		log.Fatalf("env load error: %v", err)
 	}
+
 	Config = config
 }

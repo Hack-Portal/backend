@@ -30,6 +30,6 @@ type config struct {
 	}
 
 	Firebase struct {
-		StorageBucket string `env:"FIREBASE_STORAGE_BUCKET" envDefault:""`
+		StorageBucket string `env:"FIREBASE_STORAGE_BUCKET" envDefault:"hack-portal-7c3d8.appspot.com"`
 	}
 }
