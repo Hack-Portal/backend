@@ -1,10 +1,9 @@
 package gateways
 
 import (
-	"temp/src/datastructs/entities"
-	"temp/src/datastructs/params"
-	"temp/src/usecases/dai"
-
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/params"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
 	"gorm.io/gorm"
 )
 

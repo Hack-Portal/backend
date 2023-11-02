@@ -1,8 +1,9 @@
 package output
 
 import (
-	"temp/src/datastructs/entities"
 	"time"
+
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
 )
 
 // ここでは、返す構造体を定義する

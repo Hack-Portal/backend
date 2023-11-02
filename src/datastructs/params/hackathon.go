@@ -1,6 +1,6 @@
 package params
 
-import "temp/src/datastructs/entities"
+import "github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
 
 // ここでは、gatewaysで扱う構造体を定義する
 

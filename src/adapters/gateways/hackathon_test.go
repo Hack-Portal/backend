@@ -4,14 +4,14 @@ import (
 	"context"
 	"log"
 	"os"
-	"temp/cmd/config"
-	"temp/pkg/utils"
-	"temp/src/datastructs/entities"
-	"temp/src/datastructs/params"
-	"temp/src/drivers/postgres"
 	"testing"
 	"time"
 
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/params"
+	"github.com/hackhack-Geek-vol6/backend/src/drivers/postgres"
 	"gorm.io/gorm"
 )
 

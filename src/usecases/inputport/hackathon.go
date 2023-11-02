@@ -1,6 +1,6 @@
 package inputport
 
-import "temp/src/datastructs/input"
+import "github.com/hackhack-Geek-vol6/backend/src/datastructs/input"
 
 // ここでは主にUsecase Interactorを汎化している
 

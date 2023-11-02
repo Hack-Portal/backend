@@ -1,13 +1,12 @@
 package controllers
 
 import (
-	"temp/src/datastructs/input"
-	"temp/src/usecases"
-	"temp/src/usecases/dai"
-	"temp/src/usecases/inputport"
-	"temp/src/usecases/outputport"
-
 	"github.com/gin-gonic/gin"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/input"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/outputport"
 )
 
 // ここでいうControllerとは、任意の構造にデータをバインドし、Usecase Interactorに渡すことを指す

@@ -1,14 +1,15 @@
 package usecases
 
 import (
-	"temp/pkg/utils"
-	"temp/src/datastructs/entities"
-	"temp/src/datastructs/input"
-	"temp/src/datastructs/params"
-	"temp/src/usecases/dai"
-	"temp/src/usecases/inputport"
-	"temp/src/usecases/outputport"
 	"time"
+
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/input"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/params"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputport"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/outputport"
 )
 
 // ここではUsecase Interactorを実装する

@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"temp/cmd/config"
-	"temp/pkg/utils"
-
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

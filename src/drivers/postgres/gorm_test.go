@@ -3,8 +3,9 @@ package postgres
 import (
 	"context"
 	"os"
-	"temp/cmd/config"
 	"testing"
+
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
 )
 
 func TestMain(m *testing.M) {
