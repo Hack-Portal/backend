@@ -28,12 +28,15 @@ func NewHackathonInterface(output outputport.HackathonOutputPort, repository dai
 }
 
 func (hi *HackathonInteractor) Create(arg input.HackathonCreate, icon []byte) {
-	image, err := hi.Firebase.UploadFile(icon)
+	hackathonID := utils.NewUUID()
+
+	image, err := hi.Firebase.UploadFile(hackathonID, icon)
 	if err != nil {
 		hi.HackathonOutput.Create(err)
 		return
 	}
-	param := deformationHackathonCreate(arg, image)
+
+	param := deformationHackathonCreate(hackathonID, arg, image)
 	param.Statuses, err = utils.StrToIntArr(arg.StatusTags)
 	if err != nil {
 		hi.HackathonOutput.Create(err)
@@ -52,10 +55,10 @@ func (hi *HackathonInteractor) Read()   {}
 func (hi *HackathonInteractor) Update() {}
 func (hi *HackathonInteractor) Delete() {}
 
-func deformationHackathonCreate(arg input.HackathonCreate, icon string) params.HackathonCreate {
+func deformationHackathonCreate(hackathonID string, arg input.HackathonCreate, icon string) params.HackathonCreate {
 	return params.HackathonCreate{
 		Hackathon: entities.Hackathon{
-			HackathonID: utils.NewUUID(),
+			HackathonID: hackathonID,
 			Name:        arg.Name,
 			Icon:        icon,
 			StartDate:   arg.StartDate,
