@@ -19,7 +19,6 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	config.LoadEnv()
 	conn := postgres.NewConnection()
 	defer conn.Close(context.Background())
 

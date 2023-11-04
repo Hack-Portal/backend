@@ -6,7 +6,7 @@ import (
 	"github.com/caarlos0/env"
 )
 
-func LoadEnv() {
+func init() {
 	config := &config{}
 	if err := env.Parse(&config.Server); err != nil {
 		log.Fatalf("env load error: %v", err)
