@@ -4,8 +4,10 @@ import (
 	"time"
 
 	"github.com/hackhack-Geek-vol6/backend/pkg/utils"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/cerror"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/input"
+	"github.com/hackhack-Geek-vol6/backend/src/datastructs/output"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/params"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputboundary"
@@ -20,35 +22,37 @@ type HackathonInteractor struct {
 	Firebase            dai.FirebaseRepository
 }
 
-func NewHackathonInteractor(output outputboundary.HackathonOutputPort, repository dai.HackathonRepository) inputboundary.HackathonInputPort {
+func NewHackathonInteractor(output outputboundary.HackathonOutputPort, repository dai.HackathonRepository, firebase dai.FirebaseRepository) inputboundary.HackathonInputPort {
 	return &HackathonInteractor{
 		HackathonOutput:     output,
 		HackathonRepository: repository,
+		Firebase:            firebase,
 	}
 }
 
-func (hi *HackathonInteractor) Create(arg input.HackathonCreate, icon []byte) {
+func (hi *HackathonInteractor) Create(arg input.HackathonCreate, icon []byte) (int, *output.CreateHackathon) {
 	hackathonID := utils.NewUUID()
+
+	if icon == nil {
+		return hi.HackathonOutput.Create(cerror.ImageNotFound)
+	}
 
 	image, err := hi.Firebase.UploadFile(hackathonID, icon)
 	if err != nil {
-		hi.HackathonOutput.Create(err)
-		return
+		return hi.HackathonOutput.Create(err)
 	}
 
 	param := deformationHackathonCreate(hackathonID, arg, image)
 	param.Statuses, err = utils.StrToIntArr(arg.StatusTags)
 	if err != nil {
-		hi.HackathonOutput.Create(err)
-		return
+		return hi.HackathonOutput.Create(err)
 	}
 
 	if err = hi.HackathonRepository.Create(param); err != nil {
-		hi.HackathonOutput.Create(err)
-		return
+		return hi.HackathonOutput.Create(err)
 	}
 
-	hi.HackathonOutput.Create(nil)
+	return hi.HackathonOutput.Create(nil)
 }
 
 func (hi *HackathonInteractor) Read()   {}
