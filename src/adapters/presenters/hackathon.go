@@ -5,13 +5,13 @@ import (
 
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/cerror"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/output"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/outputboundary"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/ports"
 )
 
 type HackathonPresenter struct {
 }
 
-func NewHackathonOutputBoundary() outputboundary.HackathonOutputPort {
+func NewHackathonOutputBoundary() ports.HackathonOutputBoundary {
 	return &HackathonPresenter{}
 }
 

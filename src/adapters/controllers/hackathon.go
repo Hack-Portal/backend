@@ -6,17 +6,16 @@ import (
 	_ "github.com/hackhack-Geek-vol6/backend/src/datastructs/output"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases"
 	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/inputboundary"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/outputboundary"
+	"github.com/hackhack-Geek-vol6/backend/src/usecases/ports"
 )
 
 // ここでいうControllerとは、任意の構造にデータをバインドし、Usecase Interactorに渡すことを指す
 
 type hackathonController struct {
-	Interactor inputboundary.HackathonInputPort
+	Interactor ports.HackathonInputBoundary
 }
 
-func NewHackathonController(out outputboundary.HackathonOutputPort, repository dai.HackathonRepository, firebase dai.FirebaseRepository) *hackathonController {
+func NewHackathonController(out ports.HackathonOutputBoundary, repository dai.HackathonRepository, firebase dai.FirebaseRepository) *hackathonController {
 	return &hackathonController{
 		Interactor: usecases.NewHackathonInteractor(out, repository, firebase),
 	}
