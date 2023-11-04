@@ -1,7 +1,6 @@
 package gateways
 
 import (
-	"log"
 	"time"
 
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
@@ -49,7 +48,6 @@ func (h *HackathonGateway) ReadAll(arg params.HackathonReadAll) ([]entities.Hack
 		statusTags []entities.HackathonStatus
 		err        error
 	)
-	log.Println(arg)
 
 	if len(arg.SortTag) == 0 {
 		err = h.store.Where("hackathons.expired > ? AND hackathons.is_delete = ?", time.Now().AddDate(0, -1, 0), false).
@@ -59,7 +57,7 @@ func (h *HackathonGateway) ReadAll(arg params.HackathonReadAll) ([]entities.Hack
 			Error
 	} else {
 		err = h.store.Joins("JOIN hackathon_status_tags ON hackathons.hackathon_id = hackathon_status_tags.hackathon_id AND hackathon_status_tags.status_id IN ?", arg.SortTag).
-			Where("hackathons.expired > ? AND hackathons.is_delete = ?", time.Now(), false).
+			Where("hackathons.expired > ? AND hackathons.is_delete = ?", time.Now().AddDate(0, -1, 0), false).
 			Limit(arg.Limit).
 			Offset(arg.Offset).
 			Find(&hackathons).
