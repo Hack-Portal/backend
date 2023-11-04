@@ -1,0 +1,16 @@
+basePath: /v1
+host: https://api.seafood-dev.com
+info:
+  contact:
+    email: oogiriminister@gmail.com
+    name: murasame29
+    url: https://twitter.com/fresh_salmon256
+  description: Hack Hack Backend API serice
+  license:
+    name: No-license
+    url: No-license
+  termsOfService: https://api.seafood-dev.com
+  title: Hack Hack Backend API
+  version: 0.1.0
+paths: {}
+swagger: "2.0"

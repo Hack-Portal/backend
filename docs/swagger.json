@@ -1,0 +1,21 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Hack Hack Backend API serice",
+        "title": "Hack Hack Backend API",
+        "termsOfService": "https://api.seafood-dev.com",
+        "contact": {
+            "name": "murasame29",
+            "url": "https://twitter.com/fresh_salmon256",
+            "email": "oogiriminister@gmail.com"
+        },
+        "license": {
+            "name": "No-license",
+            "url": "No-license"
+        },
+        "version": "0.1.0"
+    },
+    "host": "https://api.seafood-dev.com",
+    "basePath": "/v1",
+    "paths": {}
+}
