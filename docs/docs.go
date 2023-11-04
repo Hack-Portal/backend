@@ -16,20 +16,90 @@ const docTemplate = `{
             "email": "oogiriminister@gmail.com"
         },
         "license": {
-            "name": "No-license",
-            "url": "No-license"
+            "name": "No-license"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/hackathons": {
+            "post": {
+                "description": "Register a hackathon from given parameters",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Create Hackathon",
+                "parameters": [
+                    {
+                        "description": "create hackathon Request Body",
+                        "name": "CreateHackathonRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/input.HackathonCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/output.CreateHackathon"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "input.HackathonCreate": {
+            "type": "object",
+            "properties": {
+                "expired": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "string"
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
+        "output.CreateHackathon": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1.0",
-	Host:             "https://api.seafood-dev.com",
+	Host:             "api.seafood-dev.com",
 	BasePath:         "/v1",
 	Schemes:          []string{},
 	Title:            "Hack Hack Backend API",

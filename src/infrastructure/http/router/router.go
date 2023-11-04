@@ -17,7 +17,9 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		e:  gin.Default(),
 		db: db,
 	}
+
 	r.hackathonRouter()
+	r.swagRouter()
 
 	return r.e
 }

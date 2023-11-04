@@ -10,12 +10,82 @@
             "email": "oogiriminister@gmail.com"
         },
         "license": {
-            "name": "No-license",
-            "url": "No-license"
+            "name": "No-license"
         },
         "version": "0.1.0"
     },
-    "host": "https://api.seafood-dev.com",
+    "host": "api.seafood-dev.com",
     "basePath": "/v1",
-    "paths": {}
+    "paths": {
+        "/hackathons": {
+            "post": {
+                "description": "Register a hackathon from given parameters",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Create Hackathon",
+                "parameters": [
+                    {
+                        "description": "create hackathon Request Body",
+                        "name": "CreateHackathonRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/input.HackathonCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/output.CreateHackathon"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "input.HackathonCreate": {
+            "type": "object",
+            "properties": {
+                "expired": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "string"
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
+        "output.CreateHackathon": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }

@@ -17,9 +17,8 @@ import (
 //	@contact.email		oogiriminister@gmail.com
 
 //	@license.name			No-license
-//	@license.url			No-license
 
-// @host							https://api.seafood-dev.com
+// @host							api.seafood-dev.com
 // @BasePath					/v1
 func main() {
 	conn := postgres.NewConnection()
