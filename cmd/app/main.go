@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/hackhack-Geek-vol6/backend/src/drivers/firebase"
 	"github.com/hackhack-Geek-vol6/backend/src/drivers/postgres"
 	"github.com/hackhack-Geek-vol6/backend/src/infrastructure/server"
 )
@@ -29,6 +30,10 @@ func main() {
 		panic(err)
 	}
 
-	server.NewGinServer(dbconn).Run()
+	app, err := firebase.FbApp("../../serviceAccount.json")
+	if err != nil {
+		panic(err)
+	}
 
+	server.NewGinServer(dbconn, app).Run()
 }

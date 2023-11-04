@@ -12,10 +12,11 @@ type ginRouter struct {
 	app *firebase.App
 }
 
-func NewRouter(db *gorm.DB) *gin.Engine {
+func NewRouter(db *gorm.DB, app *firebase.App) *gin.Engine {
 	r := &ginRouter{
-		e:  gin.Default(),
-		db: db,
+		e:   gin.Default(),
+		db:  db,
+		app: app,
 	}
 
 	r.hackathonRouter()
