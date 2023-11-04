@@ -15,18 +15,33 @@ type hackathonController struct {
 	Interactor inputboundary.HackathonInputPort
 }
 
-func NewHackathonController(out outputboundary.HackathonOutputPort, repository dai.HackathonRepository) *hackathonController {
+func NewHackathonController(out outputboundary.HackathonOutputPort, repository dai.HackathonRepository, firebase dai.FirebaseRepository) *hackathonController {
 	return &hackathonController{
-		Interactor: usecases.NewHackathonInteractor(out, repository),
+		Interactor: usecases.NewHackathonInteractor(out, repository, firebase),
 	}
 }
 
 func (hc *hackathonController) Create(ctx *gin.Context) {
 	var reqBody input.HackathonCreate
-
 	ctx.BindJSON(&reqBody)
 
 	image, _ := CheckFile(ctx.Request)
 
-	hc.Interactor.Create(reqBody, image)
+	ctx.JSON(hc.Interactor.Create(reqBody, image))
+}
+
+func (hc *hackathonController) ReadAll(ctx *gin.Context) {
+
+}
+
+func (hc *hackathonController) Update(ctx *gin.Context) {
+
+}
+
+func (hc *hackathonController) DeleteAll(ctx *gin.Context) {
+
+}
+
+func (hc *hackathonController) Delete(ctx *gin.Context) {
+
 }
