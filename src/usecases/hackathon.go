@@ -59,7 +59,11 @@ func (hi *HackathonInteractor) Create(arg input.HackathonCreate, icon []byte) (i
 }
 
 func (hi *HackathonInteractor) ReadAll(arg input.HackathonReadAll) (int, []*output.ReadAllHackathon) {
-	hackathons, statuses, err := hi.HackathonRepository.ReadAll(params.HackathonReadAll{})
+	hackathons, statuses, err := hi.HackathonRepository.ReadAll(params.HackathonReadAll{
+		Limit:   arg.PageSize,
+		Offset:  (arg.PageID - 1) * arg.PageSize,
+		SortTag: arg.SortTag,
+	})
 	if err != nil {
 		hi.Output.ReadAll(nil, nil, err)
 	}

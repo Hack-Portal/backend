@@ -1,6 +1,7 @@
 package gateways
 
 import (
+	"log"
 	"time"
 
 	"github.com/hackhack-Geek-vol6/backend/src/datastructs/entities"
@@ -48,9 +49,10 @@ func (h *HackathonGateway) ReadAll(arg params.HackathonReadAll) ([]entities.Hack
 		statusTags []entities.HackathonStatus
 		err        error
 	)
+	log.Println(arg)
 
 	if len(arg.SortTag) == 0 {
-		err = h.store.Where("hackathons.expired > ? AND hackathons.is_delete = ?", time.Now(), false).
+		err = h.store.Where("hackathons.expired > ? AND hackathons.is_delete = ?", time.Now().AddDate(0, -1, 0), false).
 			Limit(arg.Limit).
 			Offset(arg.Offset).
 			Find(&hackathons).
@@ -73,7 +75,8 @@ func (h *HackathonGateway) ReadAll(arg params.HackathonReadAll) ([]entities.Hack
 		hackathonIDs = append(hackathonIDs, hackathon.HackathonID)
 	}
 
-	rows, err := h.store.Joins("JOIN status_tags ON hackathon_status_tags.status_id = status_tags.status_id").
+	rows, err := h.store.Table("hackathon_status_tags").
+		Joins("JOIN status_tags ON hackathon_status_tags.status_id = status_tags.status_id").
 		Where("hackathon_status_tags.hackathon_id IN ?", hackathonIDs).
 		Select("hackathon_status_tags.hackathon_id,status_tags.status_id,status_tags.status").
 		Rows()
@@ -91,5 +94,6 @@ func (h *HackathonGateway) ReadAll(arg params.HackathonReadAll) ([]entities.Hack
 
 	return hackathons, statusTags, nil
 }
+
 func (h *HackathonGateway) Update() {}
 func (h *HackathonGateway) Delete() {}

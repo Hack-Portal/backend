@@ -39,7 +39,7 @@ func (m *MockHackathonRepository) Create(arg params.HackathonCreate) error {
 	return nil
 }
 
-func (m *MockHackathonRepository) ReadAll(params.HackathonReadAll) ([]entities.Hackathon, []entities.HackathonStatus, error) {
+func (m *MockHackathonRepository) ReadAll(arg params.HackathonReadAll) ([]entities.Hackathon, []entities.HackathonStatus, error) {
 	return nil, nil, nil
 }
 
