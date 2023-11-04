@@ -58,7 +58,14 @@ func (hi *HackathonInteractor) Create(arg input.HackathonCreate, icon []byte) (i
 	return hi.Output.Create(nil)
 }
 
-func (hi *HackathonInteractor) Read()   {}
+func (hi *HackathonInteractor) ReadAll(arg input.HackathonReadAll) (int, []*output.ReadAllHackathon) {
+	hackathons, statuses, err := hi.HackathonRepository.ReadAll(params.HackathonReadAll{})
+	if err != nil {
+		hi.Output.ReadAll(nil, nil, err)
+	}
+
+	return hi.Output.ReadAll(hackathons, statuses, nil)
+}
 func (hi *HackathonInteractor) Update() {}
 func (hi *HackathonInteractor) Delete() {}
 

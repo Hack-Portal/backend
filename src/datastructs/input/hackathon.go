@@ -14,6 +14,11 @@ type HackathonCreate struct {
 	StatusTags string    `form:"status_tags"`
 }
 
-type HackathonRead struct{}
+type HackathonReadAll struct {
+	PageSize int     `form:"page_size"`
+	PageID   int     `form:"page_id"`
+	SortTag  []int32 `form:"size_tag[]"`
+}
+
 type HackathonUpdate struct{}
 type HackathonDelete struct{}

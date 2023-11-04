@@ -42,7 +42,10 @@ func (hc *hackathonController) Create(ctx *gin.Context) {
 }
 
 func (hc *hackathonController) ReadAll(ctx *gin.Context) {
+	var reqQuery input.HackathonReadAll
+	ctx.BindQuery(&reqQuery)
 
+	ctx.JSON(hc.Interactor.ReadAll(reqQuery))
 }
 
 func (hc *hackathonController) Update(ctx *gin.Context) {
