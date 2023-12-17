@@ -18,15 +18,20 @@ type echoServer struct {
 func NewEchoServer(db *gorm.DB, logger *slog.Logger) *echo.Echo {
 	router := &echoServer{
 		engine: echo.New(),
+		db:     db,
 	}
 
 	router.setupMiddleware()
 
 	router.v1 = router.engine.Group("/v1")
+	router.StatusTag()
 	// TODO: setup routing
 	// router.Proposal()
 	// router.Hackathon()
-	// router.StatusTag()
+
+	router.engine.GET("/health", func(c echo.Context) error {
+		return c.String(200, "OK")
+	})
 
 	return router.engine
 }
