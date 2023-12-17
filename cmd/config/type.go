@@ -12,9 +12,9 @@ type config struct {
 	Database struct {
 		Host     string `env:"DB_HOST" envDefault:"localhost"`
 		Port     int    `env:"DB_PORT" envDefault:"5432"`
-		User     string `env:"DB_USER" envDefault:"root"`
+		User     string `env:"DB_USER" envDefault:"postgres"`
 		Password string `env:"DB_PASSWORD" envDefault:"postgres"`
-		DBName   string `env:"DB_NAME" envDefault:"hackhack"`
+		DBName   string `env:"DB_NAME" envDefault:"hackportal"`
 		SSLMode  string `env:"DB_SSLMODE" envDefault:"disable"`
 		TimeZone string `env:"DB_TIMEZONE" envDefault:"Asia/Tokyo"`
 
