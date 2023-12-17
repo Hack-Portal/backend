@@ -30,7 +30,10 @@ func (s *StatusTagPresenter) PresentCreateStatusTag(ctx context.Context, out *po
 		}
 	}
 
-	return http.StatusCreated, out.Response
+	return http.StatusCreated, &response.StatusTag{
+		ID:     out.Response.StatusID,
+		Status: out.Response.Status,
+	}
 }
 
 func (s *StatusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out *ports.OutputFindAllStatusTagData) (int, []*response.StatusTag) {
@@ -44,7 +47,15 @@ func (s *StatusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out *p
 		}
 	}
 
-	return http.StatusOK, out.Response
+	var resp []*response.StatusTag
+	for _, statusTag := range out.Response {
+		resp = append(resp, &response.StatusTag{
+			ID:     statusTag.StatusID,
+			Status: statusTag.Status,
+		})
+	}
+
+	return http.StatusOK, resp
 }
 
 func (s *StatusTagPresenter) PresentFindByIdStatusTag(ctx context.Context, out *ports.OutputFindByIdStatusTagData) (int, *response.StatusTag) {
@@ -59,7 +70,10 @@ func (s *StatusTagPresenter) PresentFindByIdStatusTag(ctx context.Context, out *
 		}
 	}
 
-	return http.StatusOK, out.Response
+	return http.StatusOK, &response.StatusTag{
+		ID:     out.Response.StatusID,
+		Status: out.Response.Status,
+	}
 }
 
 func (s *StatusTagPresenter) PresentUpdateStatusTag(ctx context.Context, out *ports.OutputUpdateStatusTagData) (int, *response.StatusTag) {
@@ -74,5 +88,8 @@ func (s *StatusTagPresenter) PresentUpdateStatusTag(ctx context.Context, out *po
 		}
 	}
 
-	return http.StatusOK, out.Response
+	return http.StatusOK, &response.StatusTag{
+		ID:     out.Response.StatusID,
+		Status: out.Response.Status,
+	}
 }
