@@ -9,11 +9,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type migration struct {
-	db *migrate.Migrate
-}
-
-func NewPostgresMigrate(db *sql.DB, file string, arg *postgres.Config) (*migration, error) {
+func NewPostgresMigrate(db *sql.DB, file string, arg *postgres.Config) (*migrate.Migrate, error) {
+	if arg == nil {
+		arg = &postgres.Config{}
+	}
 	driver, err := postgres.WithInstance(db, arg)
 	if err != nil {
 		return nil, err
@@ -25,15 +24,5 @@ func NewPostgresMigrate(db *sql.DB, file string, arg *postgres.Config) (*migrati
 		driver,
 	)
 
-	return &migration{
-		db: m,
-	}, nil
-}
-
-func (m *migration) Up() error {
-	return m.db.Up()
-}
-
-func (m *migration) Down() error {
-	return m.db.Down()
+	return m, err
 }

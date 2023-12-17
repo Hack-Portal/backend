@@ -30,7 +30,7 @@ CREATE TABLE "proposal_hackathons" (
   "expired" date NOT NULL,
   "start_date" date NOT NULL,
   "term" int NOT NULL,
-  "created_at" timestamptz NOT NULL
+  "created_at" timestamptz NOT NULL,
   "deleted_at" timestamptz
 );
 
