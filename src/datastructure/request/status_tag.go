@@ -9,6 +9,6 @@ type GetStatusTagByID struct {
 }
 
 type UpdateStatusTag struct {
-	ID int64 `json:"id"`
-	CreateStatusTag
+	ID     int64  `json:"id"`
+	Status string `json:"status"`
 }
