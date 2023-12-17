@@ -5,10 +5,10 @@ type CreateStatusTag struct {
 }
 
 type GetStatusTagByID struct {
-	ID int64 `json:"id"`
+	ID int64 `param:"id" json:"id"`
 }
 
 type UpdateStatusTag struct {
-	ID     int64  `json:"id"`
+	ID     int64  `param:"id" json:"id"`
 	Status string `json:"status"`
 }
