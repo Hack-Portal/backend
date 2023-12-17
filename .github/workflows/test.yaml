@@ -21,9 +21,8 @@ jobs:
           go mod tidy
 
       - name: Run postgres16-latest
-        uses: docker://postgres:16
-        with:
-          args: -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=hackportal -p 5432:5432
-  
+        run: |
+          docker run --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=hackportal -d postgres:16
+
       - name: Run go test
         run: make test
