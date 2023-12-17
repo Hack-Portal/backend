@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/hackhack-Geek-vol6/backend/cmd/migrations"
 	"github.com/hackhack-Geek-vol6/backend/src/frameworks/db/gorm"
 	"github.com/hackhack-Geek-vol6/backend/src/frameworks/echo"
 	"github.com/hackhack-Geek-vol6/backend/src/server"
@@ -51,6 +52,7 @@ func main() {
 		logger,
 	)
 
+	// open db connection
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	dbconn, err := db.Connection()
@@ -60,6 +62,23 @@ func main() {
 		return
 	}
 
+	// get sql.DB to use in migrations
+	sqldb, err := dbconn.DB()
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed to get sql.DB: %v", err))
+		return
+	}
+
+	// migrate
+	m, err := migrations.NewPostgresMigrate(sqldb, "file://cmd/migrations", nil)
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed create migrate instance: %v", err))
+		return
+	}
+	// migrate up
+	m.Up()
+
+	// start server
 	handler := echo.NewEchoServer(
 		dbconn,
 		logger,
