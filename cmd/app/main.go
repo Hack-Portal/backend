@@ -1,6 +1,14 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"log/slog"
+	"os"
+	"time"
+
+	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/hackhack-Geek-vol6/backend/src/frameworks/db/gorm"
 	"github.com/hackhack-Geek-vol6/backend/src/frameworks/echo"
 	"github.com/hackhack-Geek-vol6/backend/src/server"
 )
@@ -19,6 +27,42 @@ import (
 // @host							api.seafood-dev.com
 // @BasePath					/v1
 func main() {
-	handler := echo.NewEchoServer()
+	logger := slog.New(slog.NewJSONHandler(
+		os.Stdout,
+		&slog.HandlerOptions{
+			AddSource: true,
+			Level:     slog.LevelDebug,
+		},
+	))
+
+	db := gorm.NewGormConnection(
+		fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=%s TimeZone=%s",
+			config.Config.Database.Host,
+			config.Config.Database.Port,
+			config.Config.Database.User,
+			config.Config.Database.DBName,
+			config.Config.Database.Password,
+			config.Config.Database.SSLMode,
+			config.Config.Database.TimeZone,
+		),
+		config.Config.Database.ConnectAttempts,
+		config.Config.Database.ConnectWaitTime,
+		config.Config.Database.ConnectBlocks,
+		logger,
+	)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	dbconn, err := db.Connection()
+	defer db.Close(ctx)
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed to connect database: %v", err))
+		return
+	}
+
+	handler := echo.NewEchoServer(
+		dbconn,
+		logger,
+	)
 	server.New().Run(handler)
 }
