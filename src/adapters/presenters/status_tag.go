@@ -20,7 +20,6 @@ func NewStatusTagPresenter() ports.StatusTagOutputBoundary {
 }
 
 func (s *StatusTagPresenter) PresentCreateStatusTag(ctx context.Context, out *ports.OutputCraeteStatusTagData) (int, *response.StatusTag) {
-	s.logger.Debug("present create status tag", slog.Any("presenter:", out))
 	if out.Error != nil {
 		switch out.Error {
 		case hperror.ErrFieldRequired:
@@ -37,7 +36,6 @@ func (s *StatusTagPresenter) PresentCreateStatusTag(ctx context.Context, out *po
 }
 
 func (s *StatusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out *ports.OutputFindAllStatusTagData) (int, []*response.StatusTag) {
-	s.logger.Debug("present find all status tag", slog.Any("presenter:", out))
 	if out.Error != nil {
 		switch out.Error {
 		case gorm.ErrRecordNotFound:
@@ -59,7 +57,6 @@ func (s *StatusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out *p
 }
 
 func (s *StatusTagPresenter) PresentFindByIdStatusTag(ctx context.Context, out *ports.OutputFindByIdStatusTagData) (int, *response.StatusTag) {
-	s.logger.Debug("present find by id status tag", slog.Any("presenter:", out))
 	if out.Error != nil {
 		switch out.Error {
 		case gorm.ErrRecordNotFound:
@@ -77,10 +74,11 @@ func (s *StatusTagPresenter) PresentFindByIdStatusTag(ctx context.Context, out *
 }
 
 func (s *StatusTagPresenter) PresentUpdateStatusTag(ctx context.Context, out *ports.OutputUpdateStatusTagData) (int, *response.StatusTag) {
-	s.logger.Debug("present update status tag", slog.Any("presenter:", out))
 	if out.Error != nil {
 		switch out.Error {
 		case gorm.ErrRecordNotFound:
+			return http.StatusBadRequest, nil
+		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil
 		default:
 			// TODO: ここにエラーの種類を追加していく
