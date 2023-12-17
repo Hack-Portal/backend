@@ -3,6 +3,7 @@ package ports
 import (
 	"context"
 
+	"github.com/hackhack-Geek-vol6/backend/src/datastructure/models"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructure/request"
 	"github.com/hackhack-Geek-vol6/backend/src/datastructure/response"
 )
@@ -28,20 +29,19 @@ type StatusTagOutputBoundary interface {
 
 type OutputCraeteStatusTagData struct {
 	Error    error
-	Response *response.StatusTag
+	Response *models.StatusTag
 }
 
 type OutputFindAllStatusTagData struct {
 	Error    error
-	Response []*response.StatusTag
+	Response []*models.StatusTag
 }
 
 type OutputFindByIdStatusTagData struct {
 	Error    error
-	Response *response.StatusTag
+	Response *models.StatusTag
 }
-
 type OutputUpdateStatusTagData struct {
 	Error    error
-	Response *response.StatusTag
+	Response *models.StatusTag
 }
