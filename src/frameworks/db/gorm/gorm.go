@@ -107,7 +107,7 @@ func (c *gormDatabaseConnection) connect() {
 			c.updateDBStatus()
 
 			if c.status != db.READY {
-				c.logger.Warn("unable to connect to database: %v. retrying after %d seconds", c.connectError, c.connectWaitTimeSeconds)
+				c.logger.Warn(fmt.Sprintf("unable to connect to database: %v. retrying after %d seconds", c.connectError, c.connectWaitTimeSeconds))
 				sleep(c.connectWaitTimeSeconds)
 			}
 		}
@@ -120,7 +120,7 @@ func (c *gormDatabaseConnection) connect() {
 			c.updateDBStatus()
 
 			if c.status != db.READY {
-				c.logger.Warn("unable to connect to database: %v", err)
+				c.logger.Warn(fmt.Sprintf("unable to connect to database: %v", err))
 
 				if i < c.connectAttempts-1 {
 					sleep(c.connectWaitTimeSeconds)
@@ -132,7 +132,7 @@ func (c *gormDatabaseConnection) connect() {
 		}
 
 		if c.isConnNil() {
-			c.logger.Error("failed to connect to database in %d tries: %v", c.connectAttempts, err)
+			c.logger.Error(fmt.Sprintf("failed to connect to database in %d tries: %v", c.connectAttempts, err))
 			c.connectError = err
 		}
 	}
@@ -155,7 +155,7 @@ func (c *gormDatabaseConnection) updateDBStatus() {
 
 	sqlDB, err := c.conn.DB()
 	if err != nil {
-		c.logger.Error("failed to get generic SQL database: %v", err)
+		c.logger.Error(fmt.Sprintf("failed to get generic SQL database: %v", err))
 		c.status = db.ERROR
 
 		if err = c.Close(context.Background()); err == nil {
@@ -165,7 +165,7 @@ func (c *gormDatabaseConnection) updateDBStatus() {
 	}
 
 	if err := sqlDB.PingContext(context.Background()); err != nil {
-		c.logger.Error("failed to ping database: %v", err)
+		c.logger.Error(fmt.Sprintf("failed to ping database: %v", err))
 		c.status = db.ERROR
 
 		if err = c.Close(context.Background()); err == nil {
@@ -187,13 +187,13 @@ func (c *gormDatabaseConnection) Close(ctx context.Context) error {
 
 	sqlDB, err := c.conn.DB()
 	if err != nil {
-		c.logger.Error("failed to get generic SQL database: %v", err)
+		c.logger.Error(fmt.Sprintf("failed to get generic SQL database: %v", err))
 		c.status = db.ERROR
 	}
 
 	err = sqlDB.Close()
 	if err != nil {
-		c.logger.Error("failed to close connection: %v", err)
+		c.logger.Error(fmt.Sprintf("failed to close connection: %v", err))
 	}
 
 	c.status = db.DISCONNECTED
