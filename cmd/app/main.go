@@ -14,6 +14,10 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/src/server"
 )
 
+func init() {
+	config.LoadEnv()
+}
+
 //	@title						Hack Hack Backend API
 //	@version					0.1.0
 //	@description			Hack Hack Backend API serice

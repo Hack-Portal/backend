@@ -10,27 +10,18 @@ type config struct {
 	}
 
 	Database struct {
-		Host     string `env:"PSQL_HOST" envDefault:"localhost"`
-		Port     int    `env:"PSQL_PORT" envDefault:"5432"`
-		User     string `env:"PSQL_USER" envDefault:"root"`
-		Password string `env:"PSQL_PASSWORD" envDefault:"postgres"`
-		DBName   string `env:"PSQL_DBNAME" envDefault:"hackhack"`
-		SSLMode  string `env:"PSQL_SSLMODE" envDefault:"disable"`
-		TimeZone string `env:"PSQL_TIMEZONE" envDefault:"Asia/Tokyo"`
+		Host     string `env:"DB_HOST" envDefault:"localhost"`
+		Port     int    `env:"DB_PORT" envDefault:"5432"`
+		User     string `env:"DB_USER" envDefault:"root"`
+		Password string `env:"DB_PASSWORD" envDefault:"postgres"`
+		DBName   string `env:"DB_NAME" envDefault:"hackhack"`
+		SSLMode  string `env:"DB_SSLMODE" envDefault:"disable"`
+		TimeZone string `env:"DB_TIMEZONE" envDefault:"Asia/Tokyo"`
 
-		ConnectTimeout  int  `env:"PSQL_CONNECT_TIMEOUT" envDefault:"10"`
-		ConnectWaitTime int  `env:"PSQL_CONNECT_WAIT_TIME" envDefault:"10"`
-		ConnectAttempts int  `env:"PSQL_CONNECT_ATTEMPTS" envDefault:"3"`
-		ConnectBlocks   bool `env:"PSQL_CONNECT_BLOCKS" envDefault:"false"`
-		CloseTimeout    int  `env:"PSQL_CLOSE_TIMEOUT" envDefault:"10"`
-	}
-
-	NewRelic struct {
-		LicenceKey string `env:"NEWRELIC_LICENCE_KEY" envDefault:""`
-		AppName    string `env:"NEWRELIC_APP_NAME" envDefault:""`
-	}
-
-	Firebase struct {
-		StorageBucket string `env:"FIREBASE_STORAGE_BUCKET" envDefault:"hack-portal-7c3d8.appspot.com"`
+		ConnectTimeout  int  `env:"DB_CONNECT_TIMEOUT" envDefault:"10"`
+		ConnectWaitTime int  `env:"DB_CONNECT_WAIT_TIME" envDefault:"10"`
+		ConnectAttempts int  `env:"DB_CONNECT_ATTEMPTS" envDefault:"3"`
+		ConnectBlocks   bool `env:"DB_CONNECT_BLOCKS" envDefault:"false"`
+		CloseTimeout    int  `env:"DB_CLOSE_TIMEOUT" envDefault:"10"`
 	}
 }
