@@ -1,12 +1,20 @@
 package echo
 
-import "github.com/labstack/echo/v4"
+import (
+	"log/slog"
+
+	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
+)
 
 type echoServer struct {
 	engine *echo.Echo
+
+	db     *gorm.DB
+	logger *slog.Logger
 }
 
-func NewEchoServer() *echo.Echo {
+func NewEchoServer(db *gorm.DB, logger *slog.Logger) *echo.Echo {
 	router := &echoServer{
 		engine: echo.New(),
 	}
