@@ -9,6 +9,7 @@ import (
 
 type echoServer struct {
 	engine *echo.Echo
+	v1     *echo.Group
 
 	db     *gorm.DB
 	logger *slog.Logger
@@ -21,6 +22,7 @@ func NewEchoServer(db *gorm.DB, logger *slog.Logger) *echo.Echo {
 
 	router.setupMiddleware()
 
+	router.v1 = router.engine.Group("/v1")
 	// TODO: setup routing
 	// router.Proposal()
 	// router.Hackathon()
