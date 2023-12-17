@@ -5,9 +5,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/hperror"
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/response"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/ports"
+	"github.com/Hack-Portal/backend/src/datastructure/hperror"
+	"github.com/Hack-Portal/backend/src/datastructure/response"
+	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"gorm.io/gorm"
 )
 

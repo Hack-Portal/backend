@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hackhack-Geek-vol6/backend/src/adapters/gateways"
-	"github.com/hackhack-Geek-vol6/backend/src/adapters/presenters"
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/request"
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/response"
+	"github.com/Hack-Portal/backend/src/adapters/gateways"
+	"github.com/Hack-Portal/backend/src/adapters/presenters"
+	"github.com/Hack-Portal/backend/src/datastructure/request"
+	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/stretchr/testify/require"
 )
 

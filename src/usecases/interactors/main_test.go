@@ -5,10 +5,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/Hack-Portal/backend/cmd/config"
+	"github.com/Hack-Portal/backend/cmd/migrations"
+	gormComm "github.com/Hack-Portal/backend/src/frameworks/db/gorm"
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/hackhack-Geek-vol6/backend/cmd/config"
-	"github.com/hackhack-Geek-vol6/backend/cmd/migrations"
-	gormComm "github.com/hackhack-Geek-vol6/backend/src/frameworks/db/gorm"
 	"github.com/murasame29/db-conn/sqldb/postgres"
 	"gorm.io/gorm"
 )

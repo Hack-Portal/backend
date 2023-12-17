@@ -3,7 +3,7 @@ package dai
 import (
 	"context"
 
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/models"
+	"github.com/Hack-Portal/backend/src/datastructure/models"
 )
 
 type StatusTagDai interface {

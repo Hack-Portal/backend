@@ -3,8 +3,8 @@ package gateways
 import (
 	"context"
 
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/models"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
+	"github.com/Hack-Portal/backend/src/datastructure/models"
+	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"gorm.io/gorm"
 )
 

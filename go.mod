@@ -1,4 +1,4 @@
-module github.com/hackhack-Geek-vol6/backend
+module github.com/Hack-Portal/backend
 
 go 1.21.4
 

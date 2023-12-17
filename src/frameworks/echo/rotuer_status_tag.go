@@ -1,10 +1,10 @@
 package echo
 
 import (
-	"github.com/hackhack-Geek-vol6/backend/src/adapters/controllers"
-	"github.com/hackhack-Geek-vol6/backend/src/adapters/gateways"
-	"github.com/hackhack-Geek-vol6/backend/src/adapters/presenters"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/interactors"
+	"github.com/Hack-Portal/backend/src/adapters/controllers"
+	"github.com/Hack-Portal/backend/src/adapters/gateways"
+	"github.com/Hack-Portal/backend/src/adapters/presenters"
+	"github.com/Hack-Portal/backend/src/usecases/interactors"
 )
 
 func (es *echoServer) StatusTag() {

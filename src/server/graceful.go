@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/hackhack-Geek-vol6/backend/cmd/config"
+	"github.com/Hack-Portal/backend/cmd/config"
 )
 
 const (
