@@ -7,11 +7,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/hackhack-Geek-vol6/backend/cmd/config"
-	"github.com/hackhack-Geek-vol6/backend/cmd/migrations"
-	"github.com/hackhack-Geek-vol6/backend/src/frameworks/db/gorm"
-	"github.com/hackhack-Geek-vol6/backend/src/frameworks/echo"
-	"github.com/hackhack-Geek-vol6/backend/src/server"
+	"github.com/Hack-Portal/backend/cmd/config"
+	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/src/frameworks/db/gorm"
+	"github.com/Hack-Portal/backend/src/frameworks/echo"
+	"github.com/Hack-Portal/backend/src/server"
 	"github.com/murasame29/db-conn/sqldb/postgres"
 )
 

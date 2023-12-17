@@ -3,12 +3,12 @@ package interactors
 import (
 	"context"
 
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/hperror"
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/models"
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/request"
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/response"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/dai"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/ports"
+	"github.com/Hack-Portal/backend/src/datastructure/hperror"
+	"github.com/Hack-Portal/backend/src/datastructure/models"
+	"github.com/Hack-Portal/backend/src/datastructure/request"
+	"github.com/Hack-Portal/backend/src/datastructure/response"
+	"github.com/Hack-Portal/backend/src/usecases/dai"
+	"github.com/Hack-Portal/backend/src/usecases/ports"
 )
 
 type StatusTagInteractor struct {

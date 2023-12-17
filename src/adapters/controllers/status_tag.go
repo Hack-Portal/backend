@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/hackhack-Geek-vol6/backend/src/datastructure/request"
-	"github.com/hackhack-Geek-vol6/backend/src/usecases/ports"
+	"github.com/Hack-Portal/backend/src/datastructure/request"
+	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/labstack/echo/v4"
 )
 
