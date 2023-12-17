@@ -12,6 +12,7 @@ import (
 	"github.com/hackhack-Geek-vol6/backend/src/frameworks/db/gorm"
 	"github.com/hackhack-Geek-vol6/backend/src/frameworks/echo"
 	"github.com/hackhack-Geek-vol6/backend/src/server"
+	"github.com/murasame29/db-conn/sqldb/postgres"
 )
 
 func init() {
@@ -40,41 +41,39 @@ func main() {
 		},
 	))
 
-	db := gorm.NewGormConnection(
-		fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=%s TimeZone=%s",
-			config.Config.Database.Host,
-			config.Config.Database.Port,
-			config.Config.Database.User,
-			config.Config.Database.DBName,
-			config.Config.Database.Password,
-			config.Config.Database.SSLMode,
-			config.Config.Database.TimeZone,
-		),
+	postgresConn := postgres.NewConnection(
+		config.Config.Database.User,
+		config.Config.Database.Password,
+		config.Config.Database.Host,
+		config.Config.Database.Port,
+		config.Config.Database.DBName,
+		config.Config.Database.SSLMode,
 		config.Config.Database.ConnectAttempts,
 		config.Config.Database.ConnectWaitTime,
 		config.Config.Database.ConnectBlocks,
-		logger,
 	)
 
-	// open db connection
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	dbconn, err := db.Connection()
-	defer db.Close(ctx)
+	sqlDB, err := postgresConn.Connection()
 	if err != nil {
 		logger.Error(fmt.Sprintf("failed to connect database: %v", err))
 		return
 	}
 
-	// get sql.DB to use in migrations
-	sqldb, err := dbconn.DB()
+	// open db connection
+
+	gorm := gorm.New()
+	dbconn, err := gorm.Connection(sqlDB)
 	if err != nil {
-		logger.Error(fmt.Sprintf("failed to get sql.DB: %v", err))
+		logger.Error(fmt.Sprintf("failed to connect database: %v", err))
 		return
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	defer gorm.Close(ctx)
+
 	// migrate
-	m, err := migrations.NewPostgresMigrate(sqldb, "file://cmd/migrations", nil)
+	m, err := migrations.NewPostgresMigrate(sqlDB, "file://cmd/migrations", nil)
 	if err != nil {
 		logger.Error(fmt.Sprintf("failed create migrate instance: %v", err))
 		return
