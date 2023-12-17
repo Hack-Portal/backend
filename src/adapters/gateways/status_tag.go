@@ -24,7 +24,14 @@ func (stg *StatusTagGateway) Create(ctx context.Context, statusTag *models.Statu
 		return 0, result.Error
 	}
 
-	return statusTag.StatusID, nil
+	// get last insert id from psql
+	var statusTagID int64
+	err = stg.db.Raw("SELECT currval(pg_get_serial_sequence('status_tags', 'status_id'))").Scan(&statusTagID).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return statusTagID, nil
 }
 
 func (stg *StatusTagGateway) FindAll(ctx context.Context) (statusTags []*models.StatusTag, err error) {
