@@ -33,7 +33,14 @@ func runWithGracefulShutdown(handler http.Handler) {
 
 	<-q
 	log.Println("shutting down server...")
-	ctx, cancel := context.WithTimeout(context.Background(), ShutdownTimeout)
+	var timeout time.Duration
+	if config.Config.Server.ShutdownTimeout == 0 {
+		timeout = ShutdownTimeout
+	} else {
+		timeout = time.Duration(config.Config.Server.ShutdownTimeout) * time.Second
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
