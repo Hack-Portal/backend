@@ -9,7 +9,7 @@ import (
 
 type StatusTagInputBoundary interface {
 	CreateStatusTag(ctx context.Context, in *request.CreateStatusTag) (int, *response.StatusTag)
-	FindAllStatusTag(ctx context.Context) (int, *response.StatusTag)
+	FindAllStatusTag(ctx context.Context) (int, []*response.StatusTag)
 	FindByIdStatusTag(ctx context.Context, in *request.GetStatusTagByID) (int, *response.StatusTag)
 	UpdateStatusTag(ctx context.Context, in *request.UpdateStatusTag) (int, *response.StatusTag)
 	// TODO: Deleteする際にすでに割り当てられているStatusTagがある場合の一貫性をどうするかを検討する必要があるため保留
@@ -18,30 +18,30 @@ type StatusTagInputBoundary interface {
 
 type StatusTagOutputBoundary interface {
 	PresentCreateStatusTag(ctx context.Context, out *OutputCraeteStatusTagData) (int, *response.StatusTag)
-	PresentFindAllStatusTag(ctx context.Context, out *OutputFindAllStatusTagData) (int, *response.StatusTag)
+	PresentFindAllStatusTag(ctx context.Context, out *OutputFindAllStatusTagData) (int, []*response.StatusTag)
 	PresentFindByIdStatusTag(ctx context.Context, out *OutputFindByIdStatusTagData) (int, *response.StatusTag)
-	PresentUpdateStatusTag(ctx context.Context, out OutputUpdateStatusTagData) (int, *response.StatusTag)
+	PresentUpdateStatusTag(ctx context.Context, out *OutputUpdateStatusTagData) (int, *response.StatusTag)
 
 	// TODO: Deleteする際にすでに割り当てられているStatusTagがある場合の一貫性をどうするかを検討する必要があるため保留
 	// PresentDeleteStatusTag(ctx context.Context, out *outputDeleteStatusTagData) (int, *response.StatusTagResponse)
 }
 
 type OutputCraeteStatusTagData struct {
-	err      error
+	Error    error
 	Response *response.StatusTag
 }
 
 type OutputFindAllStatusTagData struct {
-	err      error
+	Error    error
 	Response []*response.StatusTag
 }
 
 type OutputFindByIdStatusTagData struct {
-	err      error
+	Error    error
 	Response *response.StatusTag
 }
 
 type OutputUpdateStatusTagData struct {
-	err      error
+	Error    error
 	Response *response.StatusTag
 }
