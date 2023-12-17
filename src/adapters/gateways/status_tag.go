@@ -19,12 +19,12 @@ func NewStatusTagGateway(db *gorm.DB) dai.StatusTagDai {
 }
 
 func (stg *StatusTagGateway) Create(ctx context.Context, statusTag *models.StatusTag) (id int64, err error) {
-	result := stg.db.Create(statusTag)
+	result := stg.db.Select("status").Create(&statusTag)
 	if result.Error != nil {
 		return 0, result.Error
 	}
 
-	return statusTag.ID, nil
+	return statusTag.StatusID, nil
 }
 
 func (stg *StatusTagGateway) FindAll(ctx context.Context) (statusTags []*models.StatusTag, err error) {
@@ -46,10 +46,13 @@ func (stg *StatusTagGateway) FindById(ctx context.Context, id int64) (statusTag 
 }
 
 func (stg *StatusTagGateway) Update(ctx context.Context, statusTag *models.StatusTag) (id int64, err error) {
-	result := stg.db.Save(statusTag)
+	result := stg.db.Model(statusTag).Where("status_id = ?", statusTag.StatusID).Updates(statusTag)
 	if result.Error != nil {
 		return 0, result.Error
 	}
+	if result.RowsAffected == 0 {
+		return 0, gorm.ErrRecordNotFound
+	}
 
-	return statusTag.ID, nil
+	return statusTag.StatusID, nil
 }
