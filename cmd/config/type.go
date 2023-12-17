@@ -9,13 +9,14 @@ type config struct {
 		ContextTimeout  int    `env:"SERVER_CONTEXT_TIMEOUT" envDefault:"10"`
 	}
 
-	Cockroach struct {
+	Database struct {
 		Host     string `env:"PSQL_HOST" envDefault:"localhost"`
 		Port     int    `env:"PSQL_PORT" envDefault:"5432"`
 		User     string `env:"PSQL_USER" envDefault:"root"`
 		Password string `env:"PSQL_PASSWORD" envDefault:"postgres"`
 		DBName   string `env:"PSQL_DBNAME" envDefault:"hackhack"`
 		SSLMode  string `env:"PSQL_SSLMODE" envDefault:"disable"`
+		TimeZone string `env:"PSQL_TIMEZONE" envDefault:"Asia/Tokyo"`
 
 		ConnectTimeout  int  `env:"PSQL_CONNECT_TIMEOUT" envDefault:"10"`
 		ConnectWaitTime int  `env:"PSQL_CONNECT_WAIT_TIME" envDefault:"10"`
