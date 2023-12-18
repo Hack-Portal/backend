@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -17,7 +18,7 @@ const (
 
 func runWithGracefulShutdown(handler http.Handler) {
 	srv := &http.Server{
-		Addr:    config.Config.Server.Addr,
+		Addr:    fmt.Sprintf(":%s", config.Config.Server.Addr),
 		Handler: handler,
 	}
 
