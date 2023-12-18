@@ -2,65 +2,89 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"log"
-	"strconv"
+	"fmt"
+	"log/slog"
+	"os"
 	"time"
 
-	firebase "firebase.google.com/go"
-	"github.com/gin-gonic/gin"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/infrastructure/httpserver/route/v1"
-	"github.com/hackhack-Geek-vol6/backend/pkg/adapter/gateways/repository/transaction"
-	"github.com/hackhack-Geek-vol6/backend/pkg/bootstrap"
-	_ "github.com/lib/pq"
-	"google.golang.org/api/option"
+	"github.com/Hack-Portal/backend/cmd/config"
+	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/src/frameworks/db/gorm"
+	"github.com/Hack-Portal/backend/src/frameworks/echo"
+	"github.com/Hack-Portal/backend/src/server"
+	"github.com/murasame29/db-conn/sqldb/postgres"
 )
 
-//	@title			Hack Hack Backend API
-//	@version		1.0
-//	@description	HackPortal Backend API serice
-//	@termsOfService	https://seaffood.com/api
+func init() {
+	config.LoadEnv()
+}
 
-//	@contact.name	murasame
-//	@contact.url	https://twitter.com/fresh_salmon256
-//	@contact.email	oogiriminister@gmail.com
+//	@title						Hack-Portal Backend API
+//	@version					0.1.0
+//	@description			Hack-Portal Backend API serice
+//	@termsOfService	　https://hc-dev.seafood-dev.com
 
-//	@license.name	No-license
-//	@license.url	No-license
+//	@contact.name			murasame29
+//	@contact.url			https://twitter.com/fresh_salmon256
+//	@contact.email		oogiriminister@gmail.com
 
-//	@host		https://seaffood.com
-//	@BasePath	/api/v1
+//	@license.name			No-license
 
+// @host							https://hc-dev.seafood-dev.com
+// @BasePath					/v1
 func main() {
-	env := bootstrap.LoadEnvConfig(".")
-	db, err := sql.Open(env.DBDriver, env.DBSource)
+	logger := slog.New(slog.NewJSONHandler(
+		os.Stdout,
+		&slog.HandlerOptions{
+			AddSource: true,
+			Level:     slog.LevelDebug,
+		},
+	))
+
+	postgresConn := postgres.NewConnection(
+		config.Config.Database.User,
+		config.Config.Database.Password,
+		config.Config.Database.Host,
+		config.Config.Database.Port,
+		config.Config.Database.DBName,
+		config.Config.Database.SSLMode,
+		config.Config.Database.ConnectAttempts,
+		config.Config.Database.ConnectWaitTime,
+		config.Config.Database.ConnectBlocks,
+	)
+
+	sqlDB, err := postgresConn.Connection()
 	if err != nil {
-		log.Fatal("cannot connect to db", err)
+		logger.Error(fmt.Sprintf("failed to connect database: %v", err))
+		return
 	}
 
-	firebaseconfig := &firebase.Config{
-		StorageBucket: "hack-portal-2.appspot.com",
-	}
+	// open db connection
 
-	serviceAccount := option.WithCredentialsFile("./serviceAccount.json")
-	app, err := firebase.NewApp(context.Background(), firebaseconfig, serviceAccount)
+	gorm := gorm.New()
+	dbconn, err := gorm.Connection(sqlDB)
 	if err != nil {
-		log.Fatal("cerviceAccount Load error :", err)
+		logger.Error(fmt.Sprintf("failed to connect database: %v", err))
+		return
 	}
 
-	store := transaction.NewStore(db, app)
-	times, err := strconv.Atoi(env.ContextTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	defer gorm.Close(ctx)
+
+	// migrate
+	m, err := migrations.NewPostgresMigrate(sqlDB, "file://cmd/migrations", nil)
 	if err != nil {
-		log.Fatal("invalid timeout :", err, env.ContextTimeout)
+		logger.Error(fmt.Sprintf("failed create migrate instance: %v", err))
+		return
 	}
+	// migrate up
+	m.Up()
 
-	timeout := time.Duration(times) * time.Second
-
-	gin.SetMode(gin.ReleaseMode)
-	gin.DisableConsoleColor()
-	gin := gin.Default()
-
-	route.Setup(&env, timeout, store, gin)
-
-	gin.Run(env.ServerPort)
+	// start server
+	handler := echo.NewEchoServer(
+		dbconn,
+		logger,
+	)
+	server.New().Run(handler)
 }

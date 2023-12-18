@@ -1,14 +1,39 @@
-FROM golang:1.20-alpine3.17 AS builder
+FROM golang:1.21.4 AS builder
 WORKDIR /app
 COPY . .
 RUN go build -o main ./cmd/app/main.go
 
-FROM alpine:3.17
+FROM ubuntu:latest
 WORKDIR /app
+COPY --from=builder /app/cmd/migrations ./cmd/migrations
 COPY --from=builder /app/main .
-COPY app.env .
-COPY serviceAccount.json .
 
+# Server Settings
+ENV SERVER_ADDR=8080
+ENV SERVER_SHUTDOWN_TIMEOUT=5
+ENV SERVER_READ_TIMEOUT=5
+
+# Database Connection Settings
+ENV DB_HOST=
+ENV DB_PORT=5432
+ENV DB_USER=
+ENV DB_PASSWORD=
+ENV DB_NAME=
+ENV DB_SSLMODE=disable
+ENV DB_TIMEZONE=Asia/Tokyo
+ENV DB_CONNECT_TIMEOUT=10
+ENV DB_CONNECT_WAIT_TIME=10
+ENV DB_CONNECT_ATTEMPTS=3
+ENV DB_CONNECT_BLOCKS=false
+ENV DB_CLOSE_TIMEOUT=5
+
+# NewRelic Settings
+ENV NEW_RELIC_LICENSE_KEY=
+ENV NEW_RELIC_APP_NAME=
+ENV NEW_RELIC_CODE_LEVEL_METRICS_ENABLED=
+ENV NEW_RELIC_LABELS=
+ENV NEW_RELIC_LOG_LEVEL=
+ENV NEW_RELIC_LOG_ENABLED=
 
 EXPOSE 8080
 CMD [ "/app/main"]

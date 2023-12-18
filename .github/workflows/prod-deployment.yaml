@@ -1,0 +1,54 @@
+name: build and deployment
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  issues: write
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
+jobs:
+  copy-registries:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
+
+      - name: Checkout another repo
+        uses: actions/checkout@v3
+        with:
+          repository: Hack-Portal/k8s-config
+          token: ${{ secrets.GH_PAT }}
+          ref: main
+
+      - name: Copy registries
+        run: |
+          cd config/stage
+          images = $(yq '.spec.template.spec.containers[0].image =' 'deployment.yaml')
+          echo $images
+          cd ../product
+          yq -i '.spec.template.spec.containers[0].image = "${images}"' 'deployment.yaml'    
+      - name: push repository
+        run: |
+          git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
+          git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
+
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git add .; \
+            git commit -m "GitHub Action Push"; \
+            git push origin master; \
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}

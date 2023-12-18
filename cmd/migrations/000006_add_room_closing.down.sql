@@ -1,1 +1,0 @@
-ALTER TABLE rooms DROP is_closing,
