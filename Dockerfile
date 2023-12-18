@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN go build -o main ./cmd/app/main.go
 
-FROM alpine:3.17
+FROM ubuntu:latest
 WORKDIR /app
 COPY --from=builder /app/main .
 
