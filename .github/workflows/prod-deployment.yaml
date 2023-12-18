@@ -31,7 +31,7 @@ jobs:
         with:
           repository: Hack-Portal/k8s-config
           token: ${{ secrets.GH_PAT }}
-          ref: main
+          ref: master
 
       - name: Copy registries
         run: |
