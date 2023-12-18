@@ -5,6 +5,7 @@ RUN go build -o main ./cmd/app/main.go
 
 FROM ubuntu:latest
 WORKDIR /app
+COPY --from=builder /app/cmd/migrations ./cmd/migrations
 COPY --from=builder /app/main .
 
 # Server Settings
@@ -25,8 +26,8 @@ ENV DB_CONNECT_WAIT_TIME=10
 ENV DB_CONNECT_ATTEMPTS=3
 ENV DB_CONNECT_BLOCKS=false
 ENV DB_CLOSE_TIMEOUT=5
-# NewRelic Settings
 
+# NewRelic Settings
 ENV NEW_RELIC_LICENSE_KEY=
 ENV NEW_RELIC_APP_NAME=
 ENV NEW_RELIC_CODE_LEVEL_METRICS_ENABLED=
