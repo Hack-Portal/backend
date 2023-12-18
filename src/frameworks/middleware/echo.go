@@ -6,7 +6,6 @@ import (
 
 type EchoMiddleware interface {
 	Auth() echo.MiddlewareFunc
-	Cors() echo.MiddlewareFunc
 	AccessLog() echo.MiddlewareFunc
 }
 
@@ -15,14 +14,6 @@ func NewEchoMiddleware() EchoMiddleware {
 }
 
 func (m *middleware) Auth() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			panic("implement me")
-		}
-	}
-}
-
-func (m *middleware) Cors() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			panic("implement me")
