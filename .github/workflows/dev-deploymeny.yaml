@@ -32,7 +32,7 @@ jobs:
 
       - name: push to harbor registry
         run: |
-          docker push ${{ secrets.HARBOR_REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+          docker push ${{ secrets.HARBOR_REGISTRY }}/hack-portal:${{ github.sha }}
 
   deploy:
     needs: build
@@ -53,7 +53,7 @@ jobs:
       - name: change manifest file
         run: |
           cd config/stage
-          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY }}/${{ github.repository }}:${{ github.sha }}"' 'deployment.yaml'
+          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY }}/hack-portal:${{ github.sha }}"' 'deployment.yaml'
 
       - name: push repository
         run: |
