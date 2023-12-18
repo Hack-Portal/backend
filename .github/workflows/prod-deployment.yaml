@@ -29,7 +29,7 @@ jobs:
       - name: Checkout another repo
         uses: actions/checkout@v3
         with:
-          repository: ${{ secrets.K8S_CONFIG_REPO }}
+          repository: Hack-Portal/k8s-config
           token: ${{ secrets.GH_PAT }}
           ref: main
 
@@ -48,7 +48,7 @@ jobs:
           if (git diff --shortstat | grep '[0-9]'); then \
             git add .; \
             git commit -m "GitHub Action Push"; \
-            git push origin main; \
+            git push origin master; \
           fi
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
