@@ -1,0 +1,71 @@
+name: build and change manifest
+
+on:
+  push:
+    branches:
+      - develop
+
+permissions:
+  actions: write
+  deployments: write
+  issues: write
+  packages: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      
+      - name: build docker image
+        run: |
+          docker build -t ${{ secrets.HARBOR_REGISTRY }}/hack-portal:${{ github.sha }} .
+      
+      - name: login to harbor registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.HARBOR_REGISTRY }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: push to harbor registry
+        run: |
+          docker push ${{ secrets.HARBOR_REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
+      
+      - name: checkout k8s-config repository
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ secrets.K8S_CONFIG_REPO }}
+          token: ${{ secrets.GH_PAT }}
+          ref: main
+      
+      - name: change manifest file
+        run: |
+          cd config/stage
+          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY }}/${{ github.repository }}:${{ github.sha }}"' 'deployment.yaml'
+
+      - name: push repository
+        run: |
+          git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
+          git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
+
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git add .; \
+            git commit -m "GitHub Action Push"; \
+            git push origin main; \
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          
+
