@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 )
 
@@ -37,5 +38,11 @@ func NewEchoServer(db *gorm.DB, logger *slog.Logger) *echo.Echo {
 }
 
 func (es *echoServer) setupMiddleware() {
-
+	es.engine.Use(
+		echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
+			AllowOrigins: []string{"*"},
+			AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType},
+			AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+		}),
+	)
 }
