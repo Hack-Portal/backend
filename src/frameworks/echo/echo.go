@@ -45,4 +45,20 @@ func (es *echoServer) setupMiddleware() {
 			AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 		}),
 	)
+	es.engine.Use(
+		echoMiddleware.RequestLoggerWithConfig(
+			echoMiddleware.RequestLoggerConfig{
+				LogStatus:    true,
+				LogURI:       true,
+				LogLatency:   true,
+				LogProtocol:  true,
+				LogRemoteIP:  true,
+				LogMethod:    true,
+				LogURIPath:   true,
+				LogRoutePath: true,
+				LogUserAgent: true,
+				LogError:     true,
+			},
+		),
+	)
 }
