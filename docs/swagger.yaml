@@ -1,0 +1,139 @@
+basePath: /v1
+definitions:
+  request.CreateStatusTag:
+    properties:
+      status:
+        type: string
+    type: object
+  request.GetStatusTagByID:
+    properties:
+      id:
+        type: integer
+    type: object
+  request.UpdateStatusTag:
+    properties:
+      id:
+        type: integer
+      status:
+        type: string
+    type: object
+  response.StatusTag:
+    properties:
+      id:
+        type: integer
+      status:
+        type: string
+    type: object
+host: https://hc-dev.seafood-dev.com
+info:
+  contact:
+    email: oogiriminister@gmail.com
+    name: murasame29
+    url: https://twitter.com/fresh_salmon256
+  description: Hack-Portal Backend API serice
+  license:
+    name: No-license
+  termsOfService: https://hc-dev.seafood-dev.com
+  title: Hack-Portal Backend API
+  version: 0.1.0
+paths:
+  /status_tags:
+    get:
+      description: Get all StatusTag
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/response.StatusTag'
+            type: array
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Get all StatusTag
+      tags:
+      - StatusTag
+    post:
+      description: Create a new StatusTag
+      parameters:
+      - description: request body
+        in: body
+        name: CreateStatusTagRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateStatusTag'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.StatusTag'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Create a new StatusTag
+      tags:
+      - StatusTag
+  /status_tags/{id}:
+    get:
+      description: Get StatusTag by id
+      parameters:
+      - description: status tag id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request body
+        in: body
+        name: CreateStatusTagRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetStatusTagByID'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.StatusTag'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Get StatusTag by id
+      tags:
+      - StatusTag
+    put:
+      description: Update StatusTag by id
+      parameters:
+      - description: status tag id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request body
+        in: body
+        name: CreateStatusTagRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateStatusTag'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.StatusTag'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Update StatusTag by id
+      tags:
+      - StatusTag
+swagger: "2.0"
