@@ -14,8 +14,12 @@ import (
 var accessLink string
 
 func TestS3control(t *testing.T) {
-	t.Run("testUploadFile", testUploadFile)
-	t.Run("testDeleteFile", testDeleteFile)
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	} else {
+		t.Run("testUploadFile", testUploadFile)
+		t.Run("testDeleteFile", testDeleteFile)
+	}
 }
 
 func testUploadFile(t *testing.T) {
