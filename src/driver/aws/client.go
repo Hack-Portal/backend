@@ -25,8 +25,7 @@ func New() AwsConnect {
 func (a *awsConnect) newResolver() aws.EndpointResolverWithOptions {
 	return aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		return aws.Endpoint{
-			//URL: fmt.Sprintf("https://%s.%s", config.Config.Buckets.AccountID, config.Config.Buckets.EndPoint),
-			URL:               fmt.Sprintf("https://%s.r2.cloudflarestorage.com", config.Config.Buckets.AccountID),
+			URL:               fmt.Sprintf("https://%s.%s", config.Config.Buckets.AccountID, config.Config.Buckets.EndPoint),
 			HostnameImmutable: true,
 			Source:            aws.EndpointSourceCustom,
 		}, nil
