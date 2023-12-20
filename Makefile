@@ -14,6 +14,6 @@ initSwag:
 	swag init -g ./cmd/app/main.go
 	
 test:
-		go test -coverpkg=./...  ./...
+		go test ./... --cover
 	
 .PHONY: postgresRun postgresStart postgresStop serverRun initSwag test
