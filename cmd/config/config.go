@@ -15,5 +15,10 @@ func LoadEnv() {
 	if err := env.Parse(&config.Database); err != nil {
 		log.Fatalf("env load error: %v", err)
 	}
+
+	if err := env.Parse(&config.Buckets); err != nil {
+		log.Fatalf("env load error: %v", err)
+	}
+
 	Config = config
 }
