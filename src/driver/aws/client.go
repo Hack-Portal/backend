@@ -36,11 +36,12 @@ func (a *awsConnect) Connect(ctx context.Context) (*s3.Client, error) {
 	cfg, err := awsConfig.LoadDefaultConfig(
 		ctx,
 		awsConfig.WithEndpointResolverWithOptions(a.newResolver()),
-		awsConfig.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
-			config.Config.Buckets.AccessKeyId,
-			config.Config.Buckets.AccessKeySecret,
-			"",
-		)),
+		awsConfig.WithCredentialsProvider(
+			credentials.NewStaticCredentialsProvider(
+				config.Config.Buckets.AccessKeyId,
+				config.Config.Buckets.AccessKeySecret,
+				"",
+			)),
 		awsConfig.WithRegion("auto"),
 	)
 	if err != nil {
