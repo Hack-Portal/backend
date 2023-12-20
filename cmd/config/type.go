@@ -26,11 +26,10 @@ type config struct {
 	}
 
 	Buckets struct {
-		EndPoint        string `env:"BUCKETS_ENDPOINT" envDefault:"r2.cloudflarestorage.com"`
+		EndPoint        string `env:"BUCKETS_ENDPOINT" envDefault:""`
 		AccountID       string `env:"BUCKETS_ACCOUNT_ID" envDefault:""`
 		AccessKeyId     string `env:"BUCKETS_ACCESS_KEY_ID" envDefault:""`
 		AccessKeySecret string `env:"BUCKETS_ACCESS_KEY_SECRET" envDefault:""`
-		Bucket          string `env:"CLOUDFLARE_BUCKET" envDefault:"hack-portal"`
-		Region          string `env:"CLOUDFLARE_REGION" envDefault:"ap-northeast-1"`
+		Bucket          string `env:"CLOUDFLARE_BUCKET" envDefault:""`
 	}
 }
