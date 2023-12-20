@@ -26,7 +26,7 @@ var (
 func setup() {
 	var err error
 	// ENVを設定する
-	config.LoadEnv()
+	config.LoadEnv("../../../.env")
 
 	// DB接続する
 	postgresConn := postgres.NewConnection(
