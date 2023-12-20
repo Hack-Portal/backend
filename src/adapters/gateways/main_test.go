@@ -1,13 +1,16 @@
 package gateways
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/src/driver/aws"
 	gormComm "github.com/Hack-Portal/backend/src/frameworks/db/gorm"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/murasame29/db-conn/sqldb/postgres"
 	"gorm.io/gorm"
@@ -17,6 +20,7 @@ var (
 	db              gormComm.Connection
 	dbconn          *gorm.DB
 	migrateInstance *migrate.Migrate
+	client          *s3.Client
 )
 
 func setup() {
@@ -58,6 +62,14 @@ func setup() {
 	m.Up()
 
 	migrateInstance = m
+
+	// AWS S3に接続する
+
+	client, err = aws.New().Connect(context.TODO())
+	if err != nil {
+		fmt.Println("aws connection error :", err)
+		os.Exit(1)
+	}
 }
 
 func TestMain(m *testing.M) {
