@@ -24,4 +24,12 @@ type config struct {
 		ConnectBlocks   bool `env:"DB_CONNECT_BLOCKS" envDefault:"false"`
 		CloseTimeout    int  `env:"DB_CLOSE_TIMEOUT" envDefault:"10"`
 	}
+
+	Buckets struct {
+		EndPoint        string `env:"BUCKETS_ENDPOINT" envDefault:""`
+		AccountID       string `env:"BUCKETS_ACCOUNT_ID" envDefault:""`
+		AccessKeyId     string `env:"BUCKETS_ACCESS_KEY_ID" envDefault:""`
+		AccessKeySecret string `env:"BUCKETS_ACCESS_KEY_SECRET" envDefault:""`
+		Bucket          string `env:"CLOUDFLARE_BUCKET" envDefault:""`
+	}
 }

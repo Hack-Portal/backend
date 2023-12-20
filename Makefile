@@ -1,4 +1,4 @@
-postgresRun:
+rundb:
 	docker run --name hackportal-postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=hack_portal -d postgres:16
 
 postgresStart:
@@ -14,6 +14,6 @@ initSwag:
 	swag init -g ./cmd/app/main.go
 	
 test:
-		go test -coverpkg=./...  ./...
+		go test ./... --cover --short
 	
 .PHONY: postgresRun postgresStart postgresStop serverRun initSwag test
