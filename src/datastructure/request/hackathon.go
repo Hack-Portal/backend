@@ -3,9 +3,10 @@ package request
 import "time"
 
 type CreateHackathon struct {
-	Name      string    `json:"name" validate:"required"`
-	Link      string    `json:"link" validate:"required"`
-	Expired   time.Time `json:"expired" validate:"required"`
-	StartDate time.Time `json:"start_date" validate:"required"`
-	Term      int       `json:"term" validate:"required"`
+	Name      string    `form:"name" validate:"required"`
+	Link      string    `form:"link" validate:"required"`
+	Expired   time.Time `form:"expired" validate:"required"`
+	StartDate time.Time `form:"start_date" validate:"required"`
+	Term      int       `form:"term" validate:"required"`
+	Statuses  []int64   `form:"statuses[]"`
 }

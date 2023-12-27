@@ -1,9 +1,8 @@
 package gateways
 
 import (
-	"bytes"
 	"context"
-	"io"
+	"fmt"
 	"net/http"
 	"os"
 	"testing"
@@ -18,11 +17,15 @@ func TestS3control(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	} else {
 		t.Run("testUploadFile", testUploadFile)
+		t.Run("testGetPresignedObjectURL", testGetPresignedObjectURL)
 		t.Run("testDeleteFile", testDeleteFile)
 	}
 }
 
 func testUploadFile(t *testing.T) {
+	if client == nil {
+		t.Fatal("client is nil")
+	}
 	file, err := os.ReadFile("test.jpg")
 	if err != nil {
 		t.Error("file open error", err)
@@ -32,50 +35,47 @@ func testUploadFile(t *testing.T) {
 		t.Fatal("file is empty")
 	}
 
-	t.Log("file size:", len(file))
-
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client)
-	accessLink, err = fs.UploadFile(context.Background(), file, "test.jpg")
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, 1)
+	key, err := fs.UploadFile(context.Background(), file, "test.jpg")
 	if err != nil {
 		t.Error("upload file error", err)
 	}
-	t.Log(accessLink)
 
-	// check file
+	if key == fmt.Sprintf("%s/%s", hackathonPrefix, "test.jpg") {
+		t.Log("upload file success")
+	} else {
+		t.Error("upload file error")
+	}
+}
 
-	req, err := http.NewRequest("GET", accessLink, nil)
+func testGetPresignedObjectURL(t *testing.T) {
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, 1)
+	url, err := fs.GetPresignedObjectURL(context.Background(), "test.jpg")
 	if err != nil {
-		t.Error("request error", err)
+		t.Error("get presigned url error", err)
 	}
 
-	res, err := http.DefaultClient.Do(req)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		t.Error("request error", err)
+		t.Error("get presigned url error", err)
 	}
 
-	if res.StatusCode != http.StatusOK {
-		t.Error("request error", err)
-	}
-
-	// テスト通るのかわからん
-
-	defer res.Body.Close()
-	data, err := io.ReadAll(res.Body)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
-		t.Error("read error", err)
+		t.Error("get presigned url error", err)
 	}
+	t.Log(resp.StatusCode)
 
-	if len(data) == 0 {
-		t.Error("data is empty")
-	}
-
-	if bytes.Compare(data, file) != 0 {
-		t.Error("data is not same")
+	if resp.StatusCode == http.StatusOK {
+		t.Log("get presigned url success")
+	} else {
+		t.Error("get presigned url error")
 	}
 }
 
 func testDeleteFile(t *testing.T) {
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client)
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, 1)
 	err := fs.DeleteFile(context.Background(), "test.jpg")
 	if err != nil {
 		t.Error("delete file error", err)

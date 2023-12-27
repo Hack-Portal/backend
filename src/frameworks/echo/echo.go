@@ -3,6 +3,7 @@ package echo
 import (
 	"log/slog"
 
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
@@ -13,12 +14,14 @@ type echoServer struct {
 	v1     *echo.Group
 
 	db     *gorm.DB
+	client *s3.Client
 	logger *slog.Logger
 }
 
-func NewEchoServer(db *gorm.DB, logger *slog.Logger) *echo.Echo {
+func NewEchoServer(db *gorm.DB, client *s3.Client, logger *slog.Logger) *echo.Echo {
 	router := &echoServer{
 		engine: echo.New(),
+		client: client,
 		db:     db,
 	}
 
@@ -26,6 +29,7 @@ func NewEchoServer(db *gorm.DB, logger *slog.Logger) *echo.Echo {
 
 	router.v1 = router.engine.Group("/v1")
 	router.StatusTag()
+	router.Hackathon()
 	// TODO: setup routing
 	// router.Proposal()
 	// router.Hackathon()
@@ -58,6 +62,9 @@ func (es *echoServer) setupMiddleware() {
 				LogRoutePath: true,
 				LogUserAgent: true,
 				LogError:     true,
+				LogValuesFunc: func(c echo.Context, v echoMiddleware.RequestLoggerValues) error {
+					return nil
+				},
 			},
 		),
 	)

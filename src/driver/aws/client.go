@@ -4,28 +4,41 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	awsConfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 type awsConnect struct {
+	accountID       string
+	endpoint        string
+	accessKeyID     string
+	accessKeySecret string
 }
 
-type AwsConnect interface {
+type Connection interface {
 	Connect(ctx context.Context) (*s3.Client, error)
 }
 
-func New() AwsConnect {
-	return &awsConnect{}
+func New(
+	accountID,
+	endpoint,
+	accessKeyID,
+	accessKeySecret string,
+) Connection {
+	return &awsConnect{
+		accountID:       accountID,
+		endpoint:        endpoint,
+		accessKeyID:     accessKeyID,
+		accessKeySecret: accessKeySecret,
+	}
 }
 
 func (a *awsConnect) newResolver() aws.EndpointResolverWithOptions {
 	return aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		return aws.Endpoint{
-			URL:               fmt.Sprintf("https://%s.%s", config.Config.Buckets.AccountID, config.Config.Buckets.EndPoint),
+			URL:               fmt.Sprintf("https://%s.%s", a.accountID, a.endpoint),
 			HostnameImmutable: true,
 			Source:            aws.EndpointSourceCustom,
 		}, nil
@@ -33,16 +46,16 @@ func (a *awsConnect) newResolver() aws.EndpointResolverWithOptions {
 }
 
 func (a *awsConnect) Connect(ctx context.Context) (*s3.Client, error) {
-	cfg, err := awsConfig.LoadDefaultConfig(
+	cfg, err := config.LoadDefaultConfig(
 		ctx,
-		awsConfig.WithEndpointResolverWithOptions(a.newResolver()),
-		awsConfig.WithCredentialsProvider(
+		config.WithEndpointResolverWithOptions(a.newResolver()),
+		config.WithCredentialsProvider(
 			credentials.NewStaticCredentialsProvider(
-				config.Config.Buckets.AccessKeyId,
-				config.Config.Buckets.AccessKeySecret,
+				a.accessKeyID,
+				a.accessKeySecret,
 				"",
 			)),
-		awsConfig.WithRegion("auto"),
+		config.WithRegion("auto"),
 	)
 	if err != nil {
 		return nil, err

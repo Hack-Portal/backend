@@ -53,6 +53,7 @@ func setup() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
 	// テスト用のDBを作成する
 	m, err := migrations.NewPostgresMigrate(sqlDB, "file://../../../cmd/migrations", nil)
 	if err != nil {
@@ -65,7 +66,12 @@ func setup() {
 
 	// AWS S3に接続する
 
-	client, err = aws.New().Connect(context.TODO())
+	client, err = aws.New(
+		config.Config.Buckets.AccountID,
+		config.Config.Buckets.EndPoint,
+		config.Config.Buckets.AccessKeyId,
+		config.Config.Buckets.AccessKeySecret,
+	).Connect(context.Background())
 	if err != nil {
 		fmt.Println("aws connection error :", err)
 		os.Exit(1)

@@ -9,5 +9,5 @@ type CreateHackathon struct {
 	StartDate   string `json:"start_date"`
 	Term        int    `json:"term"`
 
-	StatusTags []StatusTag `json:"status_tags"`
+	StatusTags []*StatusTag `json:"status_tags"`
 }

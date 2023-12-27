@@ -43,3 +43,21 @@ type Hackathon struct {
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
 }
+
+/*
+CREATE TABLE "hackathon_status_tags" (
+  "hackathon_id" varchar NOT NULL,
+  "status_id" int NOT NULL
+);
+*/
+
+type HackathonStatusTag struct {
+	HackathonID string `json:"hackathon_id"`
+	StatusID    int64  `json:"status_id"`
+}
+
+type JoinedStatusTag struct {
+	HackathonID string `json:"hackathon_id"`
+	StatusID    int64  `json:"status_id"`
+	StatusTag   string `json:"status_tag"`
+}
