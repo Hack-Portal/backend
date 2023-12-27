@@ -21,6 +21,7 @@ func NewHackathonPresenter() ports.HackathonOutputBoundary {
 
 func (s *HackathonPresenter) PresentCreateHackathon(ctx context.Context, out *ports.OutputCreateHackathonData) (int, *response.CreateHackathon) {
 	if out.Error != nil {
+		log.Println(out.Error)
 		switch out.Error {
 		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil
