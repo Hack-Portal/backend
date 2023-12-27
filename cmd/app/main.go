@@ -61,7 +61,6 @@ func main() {
 	}
 
 	// open db connection
-
 	gorm := gorm.New()
 	dbconn, err := gorm.Connection(sqlDB)
 	if err != nil {

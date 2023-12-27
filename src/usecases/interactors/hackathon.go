@@ -87,15 +87,7 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		DeletedAt: nil,
-	}); err != nil {
-		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-			Error:    err,
-			Response: nil,
-		})
-	}
-
-	// ステータスを作成
-	if err := hi.HackathonStatus.Create(ctx, hackathonID, in.Statuses); err != nil {
+	}, in.Statuses); err != nil {
 		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
 			Error:    err,
 			Response: nil,

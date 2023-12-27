@@ -64,7 +64,7 @@ func testCreateHackathon(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			err := hg.Create(context.Background(), tc.arg)
+			err := hg.Create(context.Background(), tc.arg, []int64{1, 2, 3})
 			if err != nil {
 				if reflect.TypeOf(err) != reflect.TypeOf(tc.wantErr) {
 					t.Errorf("got %v, want %s", reflect.TypeOf(err), reflect.TypeOf(tc.wantErr))

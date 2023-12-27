@@ -16,12 +16,29 @@ func NewHackathonGateway(db *gorm.DB) dai.HackathonDai {
 	return &HackathonGateway{db: db}
 }
 
-func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackathon) error {
-	result := h.db.Create(hackathon)
-	if result.Error != nil {
-		return result.Error
+func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackathon, hackathonStatus []int64) error {
+	return h.db.Transaction(func(tx *gorm.DB) error {
+		result := h.db.Create(hackathon)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		return h.createStatusTag(ctx, hackathon.HackathonID, hackathonStatus)
+	})
+}
+
+func (h *HackathonGateway) createStatusTag(ctx context.Context, HackathonID string, hackathonStatus []int64) error {
+	var hackathonStatusTags []*models.HackathonStatusTag
+	for _, status := range hackathonStatus {
+		hackathonStatusTags = append(hackathonStatusTags, &models.HackathonStatusTag{
+			HackathonID: HackathonID,
+			StatusID:    status,
+		})
 	}
-	return nil
+
+	result := h.db.Model(&models.HackathonStatusTag{}).Create(hackathonStatusTags)
+
+	return result.Error
 }
 
 func (h *HackathonGateway) Find(ctx context.Context, hackathonID string) (*models.Hackathon, error) {

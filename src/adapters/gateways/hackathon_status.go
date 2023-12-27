@@ -16,20 +16,6 @@ func NewHackathonStatusGateway(db *gorm.DB) dai.HackathonStatusDai {
 	return &HackathonStatusGateway{db: db}
 }
 
-func (hs *HackathonStatusGateway) Create(ctx context.Context, HackathonID string, hackathonStatus []int64) error {
-	var hackathonStatusTags []*models.HackathonStatusTag
-	for _, status := range hackathonStatus {
-		hackathonStatusTags = append(hackathonStatusTags, &models.HackathonStatusTag{
-			HackathonID: HackathonID,
-			StatusID:    status,
-		})
-	}
-
-	result := hs.db.Model(&models.HackathonStatusTag{}).Create(hackathonStatusTags)
-
-	return result.Error
-}
-
 func (hs *HackathonStatusGateway) FindAll(ctx context.Context, HackathonID []string) ([]*models.JoinedStatusTag, error) {
 	var hackathonStatusTags []*models.JoinedStatusTag
 	result := hs.db.Model(&models.HackathonStatusTag{}).
