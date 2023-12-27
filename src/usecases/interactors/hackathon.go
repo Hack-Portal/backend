@@ -95,8 +95,7 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 	}
 
 	// ステータスを作成
-	statusTags, err := hi.craeteStatues(ctx, hackathonID, in.Statuses)
-	if err != nil {
+	if err := hi.HackathonStatus.Create(ctx, hackathonID, in.Statuses); err != nil {
 		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
 			Error:    err,
 			Response: nil,
@@ -105,31 +104,72 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 
 	// TODO:ハッカソンを取得？
 
+	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
+	if err != nil {
+		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
 	return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
 		Error: nil,
 		Response: &response.CreateHackathon{
 			HackathonID: hackathonID,
-			StatusTags:  statusTags,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired.Format("2006-01-02"),
+			StartDate:   hackathon.StartDate.Format("2006-01-02"),
+			Term:        hackathon.Term,
+
+			StatusTags: status,
 		},
 	})
 }
 
-func (hi *HackathonInteractor) craeteStatues(ctx context.Context, hackathonID string, statuses []int64) ([]*response.StatusTag, error) {
-	if err := hi.HackathonStatus.Create(ctx, hackathonID, statuses); err != nil {
-		return nil, err
-	}
-
-	result, err := hi.HackathonStatus.FindAll(ctx, []string{hackathonID})
+func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID string) (int, *response.GetHackathon) {
+	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
 	if err != nil {
-		return nil, err
-	}
-
-	var statusTags []*response.StatusTag
-	for _, status := range result {
-		statusTags = append(statusTags, &response.StatusTag{
-			ID:     status.StatusID,
-			Status: status.Status,
+		return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
+			Error:    err,
+			Response: nil,
 		})
 	}
-	return statusTags, nil
+
+	return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
+		Error: nil,
+		Response: &response.GetHackathon{
+			HackathonID: hackathonID,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired.Format("2006-01-02"),
+			StartDate:   hackathon.StartDate.Format("2006-01-02"),
+			Term:        hackathon.Term,
+
+			StatusTags: status,
+		},
+	})
+}
+
+func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID string) (*models.Hackathon, []*response.StatusTag, error) {
+	hackathon, err := hi.Hackathon.Find(ctx, hackathonID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	statuses, err := hi.HackathonStatus.FindAll(ctx, []string{hackathonID})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var status []*response.StatusTag
+	for _, s := range statuses {
+		status = append(status, &response.StatusTag{
+			ID:     s.StatusID,
+			Status: s.Status,
+		})
+	}
+	return hackathon, status, nil
 }
