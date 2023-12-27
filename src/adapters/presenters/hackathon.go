@@ -2,6 +2,7 @@ package presenters
 
 import (
 	"context"
+	"log"
 	"log/slog"
 	"net/http"
 
@@ -41,5 +42,19 @@ func (s *HackathonPresenter) PresentGetHackathon(ctx context.Context, out *ports
 		}
 	}
 
-	return http.StatusCreated, out.Response
+	return http.StatusOK, out.Response
+}
+
+func (s *HackathonPresenter) PresentListHackathon(ctx context.Context, out *ports.OutputListHackathonData) (int, []*response.GetHackathon) {
+	log.Println("out", out)
+	if out.Error != nil {
+		switch out.Error {
+		case hperror.ErrFieldRequired:
+			return http.StatusBadRequest, nil
+		default:
+			return http.StatusInternalServerError, nil
+		}
+	}
+
+	return http.StatusOK, out.Response
 }

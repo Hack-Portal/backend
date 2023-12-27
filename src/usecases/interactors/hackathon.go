@@ -135,6 +135,7 @@ func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID str
 			Response: nil,
 		})
 	}
+
 	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
 	if err != nil {
 		return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
@@ -156,6 +157,86 @@ func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID str
 
 			StatusTags: status,
 		},
+	})
+}
+
+func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSize int) (int, []*response.GetHackathon) {
+	if pageID <= 0 {
+		pageID = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	hackathons, err := hi.Hackathon.FindAll(ctx, pageSize, (pageID-1)*pageSize)
+	if err != nil {
+		log.Println("1")
+		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
+	var parallelGetPresignedObjectURLInput []dai.ParallelGetPresignedObjectURLInput
+	for _, hackathon := range hackathons {
+		parallelGetPresignedObjectURLInput = append(parallelGetPresignedObjectURLInput, dai.ParallelGetPresignedObjectURLInput{
+			HackathonID: hackathon.HackathonID,
+			Key:         hackathon.Icon,
+		})
+	}
+	icons, err := hi.FileStore.ParallelGetPresignedObjectURL(ctx, parallelGetPresignedObjectURLInput)
+	if err != nil {
+		log.Println("2")
+		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
+	for _, hackathon := range hackathons {
+		hackathon.Icon = icons[hackathon.HackathonID]
+	}
+
+	var hackathonIDs []string
+	for _, hackathon := range hackathons {
+		hackathonIDs = append(hackathonIDs, hackathon.HackathonID)
+	}
+
+	statuses, err := hi.HackathonStatus.FindAll(ctx, hackathonIDs)
+	if err != nil {
+		log.Println("3")
+		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
+	var statusMap = make(map[string][]*response.StatusTag)
+	for _, status := range statuses {
+		statusMap[status.HackathonID] = append(statusMap[status.HackathonID], &response.StatusTag{
+			ID:     status.StatusID,
+			Status: status.Status,
+		})
+	}
+
+	var responseHackathons []*response.GetHackathon
+	for _, hackathon := range hackathons {
+		responseHackathons = append(responseHackathons, &response.GetHackathon{
+			HackathonID: hackathon.HackathonID,
+			Name:        hackathon.Name,
+			Icon:        hackathon.Icon,
+			Link:        hackathon.Link,
+			Expired:     hackathon.Expired.Format("2006-01-02"),
+			StartDate:   hackathon.StartDate.Format("2006-01-02"),
+			Term:        hackathon.Term,
+
+			StatusTags: statusMap[hackathon.HackathonID],
+		})
+	}
+
+	return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
+		Error:    nil,
+		Response: responseHackathons,
 	})
 }
 

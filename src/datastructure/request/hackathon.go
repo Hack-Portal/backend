@@ -14,3 +14,8 @@ type CreateHackathon struct {
 type GetHackathon struct {
 	HackathonID string `param:"hackathon_id" validate:"required"`
 }
+
+type ListHackathon struct {
+	PageSize int `form:"page_size"`
+	PageID   int `form:"page_id"`
+}

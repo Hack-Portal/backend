@@ -11,11 +11,13 @@ import (
 type HackathonInputBoundary interface {
 	CreateHackathon(ctx context.Context, in *InputCreatehackathonData) (int, *response.CreateHackathon)
 	GetHackathon(ctx context.Context, hackathonID string) (int, *response.GetHackathon)
+	ListHackathon(ctx context.Context, pageID, pageSize int) (int, []*response.GetHackathon)
 }
 
 type HackathonOutputBoundary interface {
 	PresentCreateHackathon(ctx context.Context, out *OutputCreateHackathonData) (int, *response.CreateHackathon)
 	PresentGetHackathon(ctx context.Context, out *OutputGetHackathonData) (int, *response.GetHackathon)
+	PresentListHackathon(ctx context.Context, out *OutputListHackathonData) (int, []*response.GetHackathon)
 }
 
 type InputCreatehackathonData struct {
@@ -37,4 +39,9 @@ type OutputCreateHackathonData struct {
 type OutputGetHackathonData struct {
 	Error    error
 	Response *response.GetHackathon
+}
+
+type OutputListHackathonData struct {
+	Error    error
+	Response []*response.GetHackathon
 }

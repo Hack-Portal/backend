@@ -24,5 +24,6 @@ func (es *echoServer) Hackathon() {
 
 	// GetAllStatusTag
 	es.v1.POST("/hackathons", hc.CreateHackathon)
+	es.v1.GET("/hackathons", hc.ListHackathons)
 	es.v1.GET("/hackathons/:hackathon_id", hc.GetHackathon)
 }
