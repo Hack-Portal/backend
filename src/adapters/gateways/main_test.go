@@ -1,13 +1,16 @@
 package gateways
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/src/driver/aws"
 	gormComm "github.com/Hack-Portal/backend/src/frameworks/db/gorm"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/murasame29/db-conn/sqldb/postgres"
 	"gorm.io/gorm"
@@ -17,12 +20,13 @@ var (
 	db              gormComm.Connection
 	dbconn          *gorm.DB
 	migrateInstance *migrate.Migrate
+	client          *s3.Client
 )
 
 func setup() {
 	var err error
 	// ENVを設定する
-	config.LoadEnv()
+	config.LoadEnv("../../../.env")
 
 	// DB接続する
 	postgresConn := postgres.NewConnection(
@@ -49,6 +53,7 @@ func setup() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
 	// テスト用のDBを作成する
 	m, err := migrations.NewPostgresMigrate(sqlDB, "file://../../../cmd/migrations", nil)
 	if err != nil {
@@ -58,6 +63,19 @@ func setup() {
 	m.Up()
 
 	migrateInstance = m
+
+	// AWS S3に接続する
+
+	client, err = aws.New(
+		config.Config.Buckets.AccountID,
+		config.Config.Buckets.EndPoint,
+		config.Config.Buckets.AccessKeyId,
+		config.Config.Buckets.AccessKeySecret,
+	).Connect(context.Background())
+	if err != nil {
+		fmt.Println("aws connection error :", err)
+		os.Exit(1)
+	}
 }
 
 func TestMain(m *testing.M) {
