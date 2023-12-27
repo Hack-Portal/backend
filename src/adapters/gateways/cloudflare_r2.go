@@ -103,6 +103,7 @@ func (c *CloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input 
 		log.Println(i)
 		wg.Add(1)
 		go func(in dai.ParallelGetPresignedObjectURLInput) {
+			log.Println(in.Key)
 			defer wg.Done()
 			url, err := c.GetPresignedObjectURL(ctx, in.Key)
 			if err != nil {
