@@ -23,3 +23,21 @@ func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackath
 	}
 	return nil
 }
+
+func (h *HackathonGateway) Find(ctx context.Context, hackathonID string) (*models.Hackathon, error) {
+	var hackathon models.Hackathon
+	result := h.db.First(&hackathon, "hackathon_id = ?", hackathonID)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &hackathon, nil
+}
+
+func (h *HackathonGateway) FindAll(ctx context.Context, size, id int) ([]*models.Hackathon, error) {
+	var hackathons []*models.Hackathon
+	result := h.db.Limit(int(size)).Offset(id).Find(&hackathons)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return hackathons, nil
+}
