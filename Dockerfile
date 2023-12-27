@@ -5,6 +5,7 @@ RUN go build -o main ./cmd/app/main.go
 
 FROM ubuntu:latest
 WORKDIR /app
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app/cmd/migrations ./cmd/migrations
 COPY --from=builder /app/main .
 
