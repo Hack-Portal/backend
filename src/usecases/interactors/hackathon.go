@@ -186,7 +186,7 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSi
 	}
 
 	for _, hackathon := range hackathons {
-		log.Println(hackathon.HackathonID)
+		log.Println(hackathon.HackathonID, "\n", icons[hackathon.HackathonID])
 		hackathon.Icon = icons[hackathon.HackathonID]
 	}
 
