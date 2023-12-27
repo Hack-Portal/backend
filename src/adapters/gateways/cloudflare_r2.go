@@ -3,7 +3,6 @@ package gateways
 import (
 	"bytes"
 	"context"
-	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -99,15 +98,12 @@ func (c *CloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input 
 	)
 	defer close(ch)
 
-	for i, in := range input {
-		log.Println(i)
+	for _, in := range input {
 		wg.Add(1)
 		go func(in dai.ParallelGetPresignedObjectURLInput) {
-			log.Println(in.Key)
 			defer wg.Done()
 			url, err := c.GetPresignedObjectURL(ctx, in.Key)
 			if err != nil {
-				log.Println(err)
 				ch <- resultCh{
 					hackathonID: in.HackathonID,
 					url:         "",

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"time"
 
 	"github.com/Hack-Portal/backend/cmd/config"
@@ -162,7 +161,6 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSi
 
 	hackathons, err := hi.Hackathon.FindAll(ctx, pageSize, (pageID-1)*pageSize)
 	if err != nil {
-		log.Println("1")
 		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
 			Error:    err,
 			Response: nil,
@@ -178,16 +176,13 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSi
 	}
 	icons, err := hi.FileStore.ParallelGetPresignedObjectURL(ctx, parallelGetPresignedObjectURLInput)
 	if err != nil {
-		log.Println("2")
 		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
 			Error:    err,
 			Response: nil,
 		})
 	}
-	log.Println(icons)
 
 	for _, hackathon := range hackathons {
-		log.Println(hackathon.HackathonID, "\n", icons[hackathon.HackathonID])
 		hackathon.Icon = icons[hackathon.HackathonID]
 	}
 
@@ -198,7 +193,6 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSi
 
 	statuses, err := hi.HackathonStatus.FindAll(ctx, hackathonIDs)
 	if err != nil {
-		log.Println("3")
 		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
 			Error:    err,
 			Response: nil,

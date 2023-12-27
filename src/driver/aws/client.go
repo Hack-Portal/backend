@@ -3,7 +3,6 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -28,7 +27,6 @@ func New(
 	accessKeyID,
 	accessKeySecret string,
 ) Connection {
-	log.Println(accountID, endpoint, accessKeyID, accessKeySecret)
 	return &awsConnect{
 		accountID:       accountID,
 		endpoint:        endpoint,

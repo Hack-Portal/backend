@@ -2,7 +2,6 @@ package presenters
 
 import (
 	"context"
-	"log"
 	"log/slog"
 	"net/http"
 
@@ -21,7 +20,6 @@ func NewHackathonPresenter() ports.HackathonOutputBoundary {
 
 func (s *HackathonPresenter) PresentCreateHackathon(ctx context.Context, out *ports.OutputCreateHackathonData) (int, *response.CreateHackathon) {
 	if out.Error != nil {
-		log.Println(out.Error)
 		switch out.Error {
 		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil
@@ -47,7 +45,6 @@ func (s *HackathonPresenter) PresentGetHackathon(ctx context.Context, out *ports
 }
 
 func (s *HackathonPresenter) PresentListHackathon(ctx context.Context, out *ports.OutputListHackathonData) (int, []*response.GetHackathon) {
-	log.Println("out", out)
 	if out.Error != nil {
 		switch out.Error {
 		case hperror.ErrFieldRequired:
