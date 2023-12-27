@@ -31,7 +31,7 @@ func init() {
 
 //	@license.name			No-license
 
-// @host							https://hc-dev.seafood-dev.com
+// @host							api-dev.hack-portal.com
 // @BasePath					/v1
 func main() {
 	logger := slog.New(slog.NewJSONHandler(

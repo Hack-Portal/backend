@@ -23,6 +23,117 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/hackathons": {
+            "get": {
+                "description": "List Hackathons",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "List Hackathons",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.GetHackathon"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Hackathon",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Create Hackathon",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "CreateHackathonRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateHackathon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.CreateHackathon"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            }
+        },
+        "/hackathons/{hackathon_id}": {
+            "get": {
+                "description": "Get Hackathon",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Get Hackathon",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "request body",
+                        "name": "hackathon_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.GetHackathon"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            }
+        },
         "/status_tags": {
             "get": {
                 "description": "Get all StatusTag",
@@ -175,6 +286,39 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "request.CreateHackathon": {
+            "type": "object",
+            "required": [
+                "expired",
+                "link",
+                "name",
+                "start_date",
+                "term"
+            ],
+            "properties": {
+                "expired": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "statuses[]": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
         "request.CreateStatusTag": {
             "type": "object",
             "properties": {
@@ -202,6 +346,70 @@ const docTemplate = `{
                 }
             }
         },
+        "response.CreateHackathon": {
+            "type": "object",
+            "properties": {
+                "expired": {
+                    "type": "string"
+                },
+                "hackathon_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.StatusTag"
+                    }
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.GetHackathon": {
+            "type": "object",
+            "properties": {
+                "expired": {
+                    "type": "string"
+                },
+                "hackathon_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.StatusTag"
+                    }
+                },
+                "term": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.StatusTag": {
             "type": "object",
             "properties": {
@@ -219,7 +427,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1.0",
-	Host:             "https://hc-dev.seafood-dev.com",
+	Host:             "api-dev.hack-portal.com",
 	BasePath:         "/v1",
 	Schemes:          []string{},
 	Title:            "Hack-Portal Backend API",

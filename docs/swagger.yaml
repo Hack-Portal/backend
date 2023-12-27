@@ -1,5 +1,28 @@
 basePath: /v1
 definitions:
+  request.CreateHackathon:
+    properties:
+      expired:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      statuses[]:
+        items:
+          type: integer
+        type: array
+      term:
+        type: integer
+    required:
+    - expired
+    - link
+    - name
+    - start_date
+    - term
+    type: object
   request.CreateStatusTag:
     properties:
       status:
@@ -17,6 +40,48 @@ definitions:
       status:
         type: string
     type: object
+  response.CreateHackathon:
+    properties:
+      expired:
+        type: string
+      hackathon_id:
+        type: string
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      status_tags:
+        items:
+          $ref: '#/definitions/response.StatusTag'
+        type: array
+      term:
+        type: integer
+    type: object
+  response.GetHackathon:
+    properties:
+      expired:
+        type: string
+      hackathon_id:
+        type: string
+      icon:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      status_tags:
+        items:
+          $ref: '#/definitions/response.StatusTag'
+        type: array
+      term:
+        type: integer
+    type: object
   response.StatusTag:
     properties:
       id:
@@ -24,7 +89,7 @@ definitions:
       status:
         type: string
     type: object
-host: https://hc-dev.seafood-dev.com
+host: api-dev.hack-portal.com
 info:
   contact:
     email: oogiriminister@gmail.com
@@ -37,6 +102,78 @@ info:
   title: Hack-Portal Backend API
   version: 0.1.0
 paths:
+  /hackathons:
+    get:
+      description: List Hackathons
+      parameters:
+      - in: query
+        name: page_id
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            items:
+              $ref: '#/definitions/response.GetHackathon'
+            type: array
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: List Hackathons
+      tags:
+      - Hackathon
+    post:
+      description: Create Hackathon
+      parameters:
+      - description: request body
+        in: body
+        name: CreateHackathonRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateHackathon'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.CreateHackathon'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Create Hackathon
+      tags:
+      - Hackathon
+  /hackathons/{hackathon_id}:
+    get:
+      description: Get Hackathon
+      parameters:
+      - description: request body
+        in: path
+        name: hackathon_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.GetHackathon'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Get Hackathon
+      tags:
+      - Hackathon
   /status_tags:
     get:
       description: Get all StatusTag

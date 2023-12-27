@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 
 	"github.com/Hack-Portal/backend/src/datastructure/request"
+	_ "github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/labstack/echo/v4"
 )
@@ -19,6 +20,17 @@ func NewHackathonController(input ports.HackathonInputBoundary) *HackathonContro
 	}
 }
 
+// Hackathon		godoc
+//
+// @Summary			Create Hackathon
+// @Description	Create Hackathon
+// @Tags				Hackathon
+// @Produce			json
+// @Param				CreateHackathonRequest	body			request.CreateHackathon	true			"request body"
+// @Success			200											{object}	response.CreateHackathon					"success response"
+// @Failure			400											{object}	nil																"error response"
+// @Failure			500											{object}	nil																"error response"
+// @Router			/hackathons							[POST]
 func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 	var input request.CreateHackathon
 	if err := ctx.Bind(&input); err != nil {
@@ -54,6 +66,17 @@ func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 	}))
 }
 
+// Hackathon		godoc
+//
+// @Summary			Get Hackathon
+// @Description	Get Hackathon
+// @Tags				Hackathon
+// @Produce			json
+// @Param				hackathon_id						path			string									true			"request body"
+// @Success			200											{object}	response.GetHackathon							"success response"
+// @Failure			400											{object}	nil																"error response"
+// @Failure			500											{object}	nil																"error response"
+// @Router			/hackathons/{hackathon_id}				[GET]
 func (hc *HackathonController) GetHackathon(ctx echo.Context) error {
 	var input request.GetHackathon
 	if ctx.Bind(&input) != nil {
@@ -63,6 +86,17 @@ func (hc *HackathonController) GetHackathon(ctx echo.Context) error {
 	return ctx.JSON(hc.input.GetHackathon(ctx.Request().Context(), input.HackathonID))
 }
 
+// Hackathon		godoc
+//
+// @Summary			List Hackathons
+// @Description	List Hackathons
+// @Tags				Hackathon
+// @Produce			json
+// @Param				ListHackathonRequest		query			request.ListHackathon		true			"request query"
+// @Success			200											{array}	response.GetHackathon							"success response"
+// @Failure			400											{object}	nil																"error response"
+// @Failure			500											{object}	nil																"error response"
+// @Router			/hackathons							[GET]
 func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
 	var input request.ListHackathon
 	if ctx.Bind(&input) != nil {
