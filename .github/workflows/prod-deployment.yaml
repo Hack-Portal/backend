@@ -37,7 +37,6 @@ jobs:
         run: |
           cd config/stage
           images = $(yq '.spec.template.spec.containers[0].image =' 'deployment.yaml')
-          echo $images
           cd ../product
           yq -i '.spec.template.spec.containers[0].image = "${images}"' 'deployment.yaml'    
       - name: push repository
