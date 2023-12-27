@@ -3,7 +3,9 @@ package gateways
 import (
 	"bytes"
 	"context"
+	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/Hack-Portal/backend/src/usecases/dai"
@@ -82,4 +84,48 @@ func (c *CloudflareR2) DeleteFile(ctx context.Context, fileName string) error {
 		Key:    aws.String(fileName),
 	})
 	return err
+}
+
+func (c *CloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input []dai.ParallelGetPresignedObjectURLInput) (map[string]string, error) {
+	type resultCh struct {
+		hackathonID string
+		url         string
+	}
+
+	var (
+		output = make(map[string]string, len(input))
+		ch     = make(chan resultCh, len(input))
+		wg     sync.WaitGroup
+	)
+	defer close(ch)
+
+	for i, in := range input {
+		log.Println(i)
+		wg.Add(1)
+		go func(in dai.ParallelGetPresignedObjectURLInput) {
+			defer wg.Done()
+			url, err := c.GetPresignedObjectURL(ctx, in.Key)
+			if err != nil {
+				ch <- resultCh{
+					hackathonID: in.HackathonID,
+					url:         "",
+				}
+			} else {
+				ch <- resultCh{
+					hackathonID: in.HackathonID,
+					url:         url,
+				}
+			}
+		}(in)
+	}
+
+	go func() {
+		for r := range ch {
+			output[r.hackathonID] = r.url
+		}
+	}()
+
+	wg.Wait()
+
+	return output, nil
 }
