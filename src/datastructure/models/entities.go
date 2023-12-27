@@ -59,5 +59,5 @@ type HackathonStatusTag struct {
 type JoinedStatusTag struct {
 	HackathonID string `json:"hackathon_id"`
 	StatusID    int64  `json:"status_id"`
-	StatusTag   string `json:"status_tag"`
+	Status      string `json:"status"`
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"time"
 
 	"github.com/Hack-Portal/backend/cmd/config"
@@ -62,6 +63,7 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 		}
 
 		// 画像を保存してLinkを追加
+		log.Println("uploading image")
 		links, err := hi.FileStore.UploadFile(ctx, data, fmt.Sprintf("%s%s.%s", HACKATHON_IMAGE_DIR, hackathonID, in.ImageFile.Filename))
 		if err != nil {
 			return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
@@ -126,7 +128,7 @@ func (hi *HackathonInteractor) craeteStatues(ctx context.Context, hackathonID st
 	for _, status := range result {
 		statusTags = append(statusTags, &response.StatusTag{
 			ID:     status.StatusID,
-			Status: status.StatusTag,
+			Status: status.Status,
 		})
 	}
 	return statusTags, nil
