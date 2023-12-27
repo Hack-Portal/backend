@@ -121,7 +121,11 @@ func (c *CloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input 
 		}(in)
 	}
 
+	wg.Wait()
+
 	go func() {
+		wg.Add(1)
+		defer wg.Done()
 		for r := range ch {
 			output[r.hackathonID] = r.url
 		}
