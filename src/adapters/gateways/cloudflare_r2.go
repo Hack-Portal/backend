@@ -106,6 +106,7 @@ func (c *CloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input 
 			defer wg.Done()
 			url, err := c.GetPresignedObjectURL(ctx, in.Key)
 			if err != nil {
+				log.Println(err)
 				ch <- resultCh{
 					hackathonID: in.HackathonID,
 					url:         "",
