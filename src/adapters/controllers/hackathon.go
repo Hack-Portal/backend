@@ -53,3 +53,12 @@ func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 		Statuses:  input.Statuses,
 	}))
 }
+
+func (hc *HackathonController) GetHackathon(ctx echo.Context) error {
+	var input request.GetHackathon
+	if ctx.Bind(&input) != nil {
+		return echo.ErrBadRequest
+	}
+
+	return ctx.JSON(hc.input.GetHackathon(ctx.Request().Context(), input.HackathonID))
+}

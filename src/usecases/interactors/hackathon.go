@@ -159,6 +159,10 @@ func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID str
 		return nil, nil, err
 	}
 
+	icon, err := hi.FileStore.GetPresignedObjectURL(ctx, hackathon.Icon)
+
+	hackathon.Icon = icon
+
 	statuses, err := hi.HackathonStatus.FindAll(ctx, []string{hackathonID})
 	if err != nil {
 		return nil, nil, err

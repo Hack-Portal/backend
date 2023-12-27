@@ -10,3 +10,7 @@ type CreateHackathon struct {
 	Term      int       `form:"term" validate:"required"`
 	Statuses  []int64   `form:"statuses[]"`
 }
+
+type GetHackathon struct {
+	HackathonID string `param:"hackathon_id" validate:"required"`
+}

@@ -3,17 +3,12 @@ package gateways
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-)
-
-const (
-	hackathonPrefix = "hackathon"
 )
 
 type CloudflareR2 struct {
@@ -70,7 +65,6 @@ func (c *CloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (s
 }
 
 func (c *CloudflareR2) UploadFile(ctx context.Context, file []byte, key string) (string, error) {
-	objectKey := fmt.Sprintf("%s/%s", hackathonPrefix, key)
 	_, err := c.client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:        aws.String(c.bucket),
 		Key:           aws.String(key),
@@ -79,7 +73,7 @@ func (c *CloudflareR2) UploadFile(ctx context.Context, file []byte, key string) 
 		ContentType:   aws.String(checkContentType(file)),
 	})
 
-	return objectKey, err
+	return key, err
 }
 
 func (c *CloudflareR2) DeleteFile(ctx context.Context, fileName string) error {

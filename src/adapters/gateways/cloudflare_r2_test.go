@@ -41,7 +41,7 @@ func testUploadFile(t *testing.T) {
 		t.Error("upload file error", err)
 	}
 
-	if key == fmt.Sprintf("%s/%s", hackathonPrefix, "test.jpg") {
+	if key == fmt.Sprintf("%s/%s", "hackathon", "test.jpg") {
 		t.Log("upload file success")
 	} else {
 		t.Error("upload file error")
