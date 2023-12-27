@@ -30,3 +30,16 @@ func (s *HackathonPresenter) PresentCreateHackathon(ctx context.Context, out *po
 
 	return http.StatusCreated, out.Response
 }
+
+func (s *HackathonPresenter) PresentGetHackathon(ctx context.Context, out *ports.OutputGetHackathonData) (int, *response.GetHackathon) {
+	if out.Error != nil {
+		switch out.Error {
+		case hperror.ErrFieldRequired:
+			return http.StatusBadRequest, nil
+		default:
+			return http.StatusInternalServerError, nil
+		}
+	}
+
+	return http.StatusCreated, out.Response
+}
