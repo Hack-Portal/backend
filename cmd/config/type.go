@@ -8,7 +8,7 @@ type config struct {
 		ShutdownTimeout int    `env:"SERVER_SHUTDOWN_TIMEOUT" envDefault:"10"`
 		ContextTimeout  int    `env:"SERVER_CONTEXT_TIMEOUT" envDefault:"10"`
 
-		DefaultHackathonImage string `env:"SERVER_DEFAULT_HACKATHON_IMAGE" envDefault:"https://e4fa9209c88aac97b94a1000743846ec.r2.cloudflarestorage.com/hack-portal/hackathon/default.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=b552af962ee8bf7928c3bc83b047d775%2F20231222%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20231222T063445Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=de7e1b3782b4585ba85c521191742a5ab44033a3f308d70d06d60cc6640a1a2a"`
+		DefaultHackathonImage string `env:"SERVER_DEFAULT_HACKATHON_IMAGE" envDefault:""`
 	}
 
 	Database struct {
