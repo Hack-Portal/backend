@@ -129,6 +129,12 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 }
 
 func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID string) (int, *response.GetHackathon) {
+	if len(hackathonID) == 0 {
+		return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
+			Error:    fmt.Errorf("invalid hackathon id"),
+			Response: nil,
+		})
+	}
 	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
 	if err != nil {
 		return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
