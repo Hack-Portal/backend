@@ -18,6 +18,7 @@ import (
 
 func init() {
 	config.LoadEnv()
+	// config.LoadEnv("")
 }
 
 //	@title						Hack-Portal Backend API

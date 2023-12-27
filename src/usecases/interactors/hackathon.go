@@ -63,7 +63,6 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 		}
 
 		// 画像を保存してLinkを追加
-		log.Println("uploading image")
 		links, err := hi.FileStore.UploadFile(ctx, data, fmt.Sprintf("%s%s.%s", HACKATHON_IMAGE_DIR, hackathonID, in.ImageFile.Filename))
 		if err != nil {
 			return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
@@ -71,6 +70,7 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 				Response: nil,
 			})
 		}
+
 		imageLinks = links
 	}
 
