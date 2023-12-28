@@ -7,6 +7,7 @@ import (
 	_ "github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/labstack/echo/v4"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type HackathonController struct {
@@ -31,6 +32,8 @@ func NewHackathonController(input ports.HackathonInputBoundary) *HackathonContro
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons							[POST]
 func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
+	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("CreateHackathon").End()
+
 	var input request.CreateHackathon
 	if err := ctx.Bind(&input); err != nil {
 		return echo.ErrBadRequest
@@ -73,6 +76,8 @@ func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons/{hackathon_id}				[GET]
 func (hc *HackathonController) GetHackathon(ctx echo.Context) error {
+	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("GetHackathon").End()
+
 	var input request.GetHackathon
 	if ctx.Bind(&input) != nil {
 		return echo.ErrBadRequest
@@ -93,6 +98,8 @@ func (hc *HackathonController) GetHackathon(ctx echo.Context) error {
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons							[GET]
 func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
+	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("ListHackathons").End()
+
 	var input request.ListHackathon
 	if ctx.Bind(&input) != nil {
 		return echo.ErrBadRequest
@@ -116,6 +123,8 @@ func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons/{hackathon_id}				[DELETE]
 func (hc *HackathonController) DeleteHackathon(ctx echo.Context) error {
+	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("DeleteHackathon").End()
+
 	var input request.DeleteHackathon
 	if ctx.Bind(&input) != nil {
 		return echo.ErrBadRequest
