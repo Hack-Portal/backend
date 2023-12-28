@@ -10,6 +10,7 @@ import (
 	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/cmd/migrations"
 	"github.com/Hack-Portal/backend/src/driver/aws"
+	"github.com/Hack-Portal/backend/src/driver/newrelic"
 	"github.com/Hack-Portal/backend/src/frameworks/db/gorm"
 	"github.com/Hack-Portal/backend/src/frameworks/echo"
 	"github.com/Hack-Portal/backend/src/server"
@@ -89,10 +90,13 @@ func main() {
 		config.Config.Buckets.AccessKeySecret,
 	).Connect(context.Background())
 
+	app := newrelic.Setup()
+
 	// start server
 	handler := echo.NewEchoServer(
 		dbconn,
 		client,
+		app,
 		logger,
 	)
 
