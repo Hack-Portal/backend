@@ -58,3 +58,8 @@ func (h *HackathonGateway) FindAll(ctx context.Context, size, id int) ([]*models
 	}
 	return hackathons, nil
 }
+
+func (h *HackathonGateway) Delete(ctx context.Context, hackathonID string) error {
+	result := h.db.Delete(&models.Hackathon{}, "hackathon_id = ?", hackathonID)
+	return result.Error
+}

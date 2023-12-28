@@ -16,6 +16,6 @@ type GetHackathon struct {
 }
 
 type ListHackathon struct {
-	PageSize int `form:"page_size"`
-	PageID   int `form:"page_id"`
+	PageSize int `query:"page_size"`
+	PageID   int `query:"page_id"`
 }
