@@ -99,7 +99,7 @@ func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(hc.input.ListHackathon(ctx.Request().Context(),
-		input.PageSize,
 		input.PageID,
+		input.PageSize,
 	))
 }
