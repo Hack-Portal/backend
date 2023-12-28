@@ -10,6 +10,7 @@ import (
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type CloudflareR2 struct {
@@ -38,14 +39,9 @@ func checkContentType(file []byte) string {
 	return http.DetectContentType(file)
 }
 
-func (c *CloudflareR2) getObject(ctx context.Context, key string) (*s3.GetObjectOutput, error) {
-	return c.client.GetObject(ctx, &s3.GetObjectInput{
-		Bucket: aws.String(c.bucket),
-		Key:    aws.String(key),
-	})
-}
-
 func (c *CloudflareR2) ListObjects(ctx context.Context, key string) (*s3.ListObjectsV2Output, error) {
+	defer newrelic.FromContext(ctx).StartSegment("ListObjects-gateway").End()
+
 	return c.client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: aws.String(c.bucket),
 		Prefix: aws.String(key),
@@ -53,6 +49,8 @@ func (c *CloudflareR2) ListObjects(ctx context.Context, key string) (*s3.ListObj
 }
 
 func (c *CloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (string, error) {
+	defer newrelic.FromContext(ctx).StartSegment("GetPresignedObjectURL-gateway").End()
+
 	object, err := c.PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
 		Bucket:          aws.String(c.bucket),
 		Key:             aws.String(key),
@@ -66,6 +64,8 @@ func (c *CloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (s
 }
 
 func (c *CloudflareR2) UploadFile(ctx context.Context, file []byte, key string) (string, error) {
+	defer newrelic.FromContext(ctx).StartSegment("UploadFile-gateway").End()
+
 	_, err := c.client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:        aws.String(c.bucket),
 		Key:           aws.String(key),
@@ -78,6 +78,8 @@ func (c *CloudflareR2) UploadFile(ctx context.Context, file []byte, key string) 
 }
 
 func (c *CloudflareR2) DeleteFile(ctx context.Context, fileName string) error {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteFile-gateway").End()
+
 	_, err := c.client.DeleteObject(ctx, &s3.DeleteObjectInput{
 		Bucket: aws.String(c.bucket),
 		Key:    aws.String(fileName),
@@ -86,6 +88,8 @@ func (c *CloudflareR2) DeleteFile(ctx context.Context, fileName string) error {
 }
 
 func (c *CloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input []dai.ParallelGetPresignedObjectURLInput) (map[string]string, error) {
+	defer newrelic.FromContext(ctx).StartSegment("ParallelGetPresignedObjectURL-gateway").End()
+
 	type resultCh struct {
 		hackathonID string
 		url         string

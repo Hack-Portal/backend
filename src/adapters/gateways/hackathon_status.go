@@ -5,6 +5,7 @@ import (
 
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/gorm"
 )
 
@@ -17,6 +18,8 @@ func NewHackathonStatusGateway(db *gorm.DB) dai.HackathonStatusDai {
 }
 
 func (hs *HackathonStatusGateway) FindAll(ctx context.Context, HackathonID []string) ([]*models.JoinedStatusTag, error) {
+	defer newrelic.FromContext(ctx).StartSegment("FindAllHackathonStatus-gateway").End()
+
 	var hackathonStatusTags []*models.JoinedStatusTag
 	result := hs.db.Model(&models.HackathonStatusTag{}).
 		Joins("JOIN status_tags ON status_tags.status_id = hackathon_status_tags.status_id").
@@ -30,6 +33,8 @@ func (hs *HackathonStatusGateway) FindAll(ctx context.Context, HackathonID []str
 }
 
 func (hs *HackathonStatusGateway) Delete(ctx context.Context, HackathonID string) error {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathonStatus-gateway").End()
+
 	result := hs.db.Delete(&models.HackathonStatusTag{}).
 		Where("hackathon_id = ?", HackathonID)
 	return result.Error

@@ -5,6 +5,7 @@ import (
 
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/gorm"
 )
 
@@ -19,6 +20,8 @@ func NewStatusTagGateway(db *gorm.DB) dai.StatusTagDai {
 }
 
 func (stg *StatusTagGateway) Create(ctx context.Context, statusTag *models.StatusTag) (id int64, err error) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateStatusTag-gateway").End()
+
 	result := stg.db.Select("status").Create(&statusTag)
 	if result.Error != nil {
 		return 0, result.Error
@@ -35,6 +38,8 @@ func (stg *StatusTagGateway) Create(ctx context.Context, statusTag *models.Statu
 }
 
 func (stg *StatusTagGateway) FindAll(ctx context.Context) (statusTags []*models.StatusTag, err error) {
+	defer newrelic.FromContext(ctx).StartSegment("FindAllStatusTag-gateway").End()
+
 	result := stg.db.Find(&statusTags)
 	if result.Error != nil {
 		return nil, result.Error
@@ -44,6 +49,8 @@ func (stg *StatusTagGateway) FindAll(ctx context.Context) (statusTags []*models.
 }
 
 func (stg *StatusTagGateway) FindById(ctx context.Context, id int64) (statusTag *models.StatusTag, err error) {
+	defer newrelic.FromContext(ctx).StartSegment("FindByIdStatusTag-gateway").End()
+
 	result := stg.db.First(&statusTag, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -53,6 +60,8 @@ func (stg *StatusTagGateway) FindById(ctx context.Context, id int64) (statusTag 
 }
 
 func (stg *StatusTagGateway) Update(ctx context.Context, statusTag *models.StatusTag) (id int64, err error) {
+	defer newrelic.FromContext(ctx).StartSegment("UpdateStatusTag-gateway").End()
+
 	result := stg.db.Model(statusTag).Where("status_id = ?", statusTag.StatusID).Updates(statusTag)
 	if result.Error != nil {
 		return 0, result.Error

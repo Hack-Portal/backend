@@ -5,6 +5,7 @@ import (
 
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/gorm"
 )
 
@@ -17,6 +18,8 @@ func NewHackathonGateway(db *gorm.DB) dai.HackathonDai {
 }
 
 func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackathon, hackathonStatus []int64) error {
+	defer newrelic.FromContext(ctx).StartSegment("CreateHackathon-gateway").End()
+
 	return h.db.Transaction(func(tx *gorm.DB) error {
 		result := h.db.Create(hackathon)
 		if result.Error != nil {
@@ -28,6 +31,8 @@ func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackath
 }
 
 func (h *HackathonGateway) createStatusTag(ctx context.Context, HackathonID string, hackathonStatus []int64) error {
+	defer newrelic.FromContext(ctx).StartSegment("CreateHackathonStatus-gateway").End()
+
 	var hackathonStatusTags []*models.HackathonStatusTag
 	for _, status := range hackathonStatus {
 		hackathonStatusTags = append(hackathonStatusTags, &models.HackathonStatusTag{
@@ -42,6 +47,8 @@ func (h *HackathonGateway) createStatusTag(ctx context.Context, HackathonID stri
 }
 
 func (h *HackathonGateway) Find(ctx context.Context, hackathonID string) (*models.Hackathon, error) {
+	defer newrelic.FromContext(ctx).StartSegment("FindHackathon-gateway").End()
+
 	var hackathon models.Hackathon
 	result := h.db.First(&hackathon, "hackathon_id = ?", hackathonID)
 	if result.Error != nil {
@@ -51,6 +58,8 @@ func (h *HackathonGateway) Find(ctx context.Context, hackathonID string) (*model
 }
 
 func (h *HackathonGateway) FindAll(ctx context.Context, size, id int) ([]*models.Hackathon, error) {
+	defer newrelic.FromContext(ctx).StartSegment("FindAllHackathon-gateway").End()
+
 	var hackathons []*models.Hackathon
 	result := h.db.Limit(int(size)).Offset(id).Find(&hackathons)
 	if result.Error != nil {
@@ -60,6 +69,8 @@ func (h *HackathonGateway) FindAll(ctx context.Context, size, id int) ([]*models
 }
 
 func (h *HackathonGateway) Delete(ctx context.Context, hackathonID string) error {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathon-gateway").End()
+
 	result := h.db.Delete(&models.Hackathon{}, "hackathon_id = ?", hackathonID)
 	return result.Error
 }
