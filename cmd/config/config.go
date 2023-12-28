@@ -29,5 +29,9 @@ func LoadEnv(envPath ...string) {
 		log.Fatalf("env load error: %v", err)
 	}
 
+	if err := env.Parse(&config.NewRelic); err != nil {
+		log.Fatalf("env load error: %v", err)
+	}
+
 	Config = config
 }
