@@ -23,6 +23,7 @@ func Setup() (*newrelic.Application, error) {
 			cfg.ErrorCollector.IgnoreStatusCodes = []int{
 				http.StatusNotFound,
 			}
+
 		},
 	)
 	if err != nil {
