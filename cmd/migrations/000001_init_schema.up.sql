@@ -39,10 +39,10 @@ CREATE TABLE "proposal_hackathon_status_tags" (
   "status_id" int NOT NULL
 );
 
-ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
+ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id") ON DELETE CASCADE;
 
-ALTER TABLE "proposal_hackathon_status_tags" ADD FOREIGN KEY ("proposal_id") REFERENCES "proposal_hackathons" ("proposal_id");
+ALTER TABLE "proposal_hackathon_status_tags" ADD FOREIGN KEY ("proposal_id") REFERENCES "proposal_hackathons" ("proposal_id") ON DELETE CASCADE;
 
-ALTER TABLE "proposal_hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id");
+ALTER TABLE "proposal_hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id") ON DELETE CASCADE;
 
-ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id");
+ALTER TABLE "hackathon_status_tags" ADD FOREIGN KEY ("status_id") REFERENCES "status_tags" ("status_id") ON DELETE CASCADE;
