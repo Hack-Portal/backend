@@ -26,4 +26,5 @@ func (es *echoServer) Hackathon() {
 	es.v1.POST("/hackathons", hc.CreateHackathon)
 	es.v1.GET("/hackathons", hc.ListHackathons)
 	es.v1.GET("/hackathons/:hackathon_id", hc.GetHackathon)
+	es.v1.DELETE("/hackathons/:hackathon_id", hc.DeleteHackathon)
 }
