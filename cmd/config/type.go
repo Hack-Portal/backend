@@ -35,4 +35,9 @@ type config struct {
 		Bucket          string `env:"CLOUDFLARE_BUCKET" envDefault:""`
 		Expired         int    `env:"BUCKETS_EXPIRED" envDefault:"720"`
 	}
+
+	NewRelic struct {
+		AppName    string `env:"NEWRELIC_APPLICATION_NAME" envDefault:"hack-portal"`
+		LicenseKey string `env:"NEWRELIC_LICENSE_KEY" envDefault:""`
+	}
 }

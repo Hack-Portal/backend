@@ -90,7 +90,11 @@ func main() {
 		config.Config.Buckets.AccessKeySecret,
 	).Connect(context.Background())
 
-	app := newrelic.Setup()
+	app, err := newrelic.Setup()
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed to setup newrelic: %v", err))
+		return
+	}
 
 	// start server
 	handler := echo.NewEchoServer(
