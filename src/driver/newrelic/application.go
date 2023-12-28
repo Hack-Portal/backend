@@ -3,7 +3,6 @@ package newrelic
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/Hack-Portal/backend/cmd/config"
@@ -16,14 +15,11 @@ func Setup() (*newrelic.Application, error) {
 		newrelic.ConfigLicense(config.Config.NewRelic.LicenseKey),
 		newrelic.ConfigDistributedTracerEnabled(true),
 		newrelic.ConfigAppLogForwardingEnabled(true),
-		newrelic.ConfigDebugLogger(os.Stdout),
-
 		func(cfg *newrelic.Config) {
 			// 無視するステータスコードを設定
 			cfg.ErrorCollector.IgnoreStatusCodes = []int{
 				http.StatusNotFound,
 			}
-
 		},
 	)
 	if err != nil {

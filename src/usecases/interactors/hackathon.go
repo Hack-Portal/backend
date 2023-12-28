@@ -6,7 +6,6 @@ import (
 	"io"
 	"time"
 
-	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
@@ -42,7 +41,7 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 	// 画像があるときは画像を保存してLinkを追加
 	// 画像がないときは初期画像をLinkに追加
 	var (
-		imageLinks  string = config.Config.Server.DefaultHackathonImage
+		imageLinks  string
 		hackathonID string = uuid.New().String()
 	)
 
