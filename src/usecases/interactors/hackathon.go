@@ -12,6 +12,7 @@ import (
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/google/uuid"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 const (
@@ -36,6 +37,8 @@ func NewHackathonInteractor(hackathonDai dai.HackathonDai, HackathonStatus dai.H
 }
 
 func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.InputCreatehackathonData) (int, *response.CreateHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateHackathon-usecase").End()
+
 	// 画像があるときは画像を保存してLinkを追加
 	// 画像がないときは初期画像をLinkに追加
 	var (
@@ -93,8 +96,6 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 		})
 	}
 
-	// TODO:ハッカソンを取得？
-
 	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
 	if err != nil {
 		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
@@ -120,6 +121,8 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 }
 
 func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID string) (int, *response.GetHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("GetHackathon-usecase").End()
+
 	if len(hackathonID) == 0 {
 		return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
 			Error:    fmt.Errorf("invalid hackathon id"),
@@ -152,6 +155,8 @@ func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID str
 }
 
 func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSize int) (int, []*response.GetHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("ListHackathon-usecase").End()
+
 	if pageID <= 0 {
 		pageID = 1
 	}
@@ -229,6 +234,8 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSi
 }
 
 func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID string) (*models.Hackathon, []*response.StatusTag, error) {
+	defer newrelic.FromContext(ctx).StartSegment("getHackathon-usecase").End()
+
 	hackathon, err := hi.Hackathon.Find(ctx, hackathonID)
 	if err != nil {
 		return nil, nil, err
@@ -254,6 +261,8 @@ func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID str
 }
 
 func (hi *HackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID string) (int, *response.DeleteHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathon-usecase").End()
+
 	if len(hackathonID) == 0 {
 		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
 			Error:    fmt.Errorf("invalid hackathon id"),
