@@ -252,3 +252,24 @@ func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID str
 	}
 	return hackathon, status, nil
 }
+
+func (hi *HackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID string) (int, *response.DeleteHackathon) {
+	if len(hackathonID) == 0 {
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
+			Error:    fmt.Errorf("invalid hackathon id"),
+			Response: nil,
+		})
+	}
+
+	if err := hi.Hackathon.Delete(ctx, hackathonID); err != nil {
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
+	return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
+		Error:    nil,
+		Response: &response.DeleteHackathon{},
+	})
+}

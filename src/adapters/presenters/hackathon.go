@@ -56,3 +56,16 @@ func (s *HackathonPresenter) PresentListHackathon(ctx context.Context, out *port
 
 	return http.StatusOK, out.Response
 }
+
+func (s *HackathonPresenter) PresentDeleteHackathon(ctx context.Context, out *ports.OutputDeleteHackathonData) (int, *response.DeleteHackathon) {
+	if out.Error != nil {
+		switch out.Error {
+		case hperror.ErrFieldRequired:
+			return http.StatusBadRequest, nil
+		default:
+			return http.StatusInternalServerError, nil
+		}
+	}
+
+	return http.StatusOK, out.Response
+}

@@ -19,3 +19,7 @@ type ListHackathon struct {
 	PageSize int `query:"page_size"`
 	PageID   int `query:"page_id"`
 }
+
+type DeleteHackathon struct {
+	HackathonID string `param:"hackathon_id" validate:"required"`
+}

@@ -23,3 +23,6 @@ type GetHackathon struct {
 
 	StatusTags []*StatusTag `json:"status_tags"`
 }
+
+type DeleteHackathon struct {
+}

@@ -103,3 +103,23 @@ func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
 		input.PageSize,
 	))
 }
+
+// Hackathon		godoc
+//
+// @Summary			Delete Hackathons
+// @Description	Delete Hackathons
+// @Tags				Hackathon
+// @Produce			json
+// @Param				hackathon_id						path			string									true			"request body"
+// @Success			200											{object}	response.DeleteHackathon					"success response"
+// @Failure			400											{object}	nil																"error response"
+// @Failure			500											{object}	nil																"error response"
+// @Router			/hackathons/{hackathon_id}				[DELETE]
+func (hc *HackathonController) DeleteHackathon(ctx echo.Context) error {
+	var input request.DeleteHackathon
+	if ctx.Bind(&input) != nil {
+		return echo.ErrBadRequest
+	}
+
+	return ctx.JSON(hc.input.DeleteHackathon(ctx.Request().Context(), input.HackathonID))
+}
