@@ -15,5 +15,11 @@ initSwag:
 	
 test:
 		go test ./... --cover --short
-	
+
+migrateup:
+	migrate -path cmd/migrations -database "postgresql://postgres:postgres@localhost:5432/hack_portal?sslmode=disable" -verbose up	
+
+migratedown:
+	migrate -path cmd/migrations -database "postgresql://postgres:postgres@localhost:5432/hack_portal?sslmode=disable" -verbose down
+
 .PHONY: rundb dbstart postgresStop serverRun initSwag test
