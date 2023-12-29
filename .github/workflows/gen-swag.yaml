@@ -41,7 +41,7 @@ jobs:
         with:
           repository: Hack-Portal/frontend
           token: ${{ secrets.GH_PAT }}
-          ref: develop[
+          ref: develop
             
       - name: setup branches
         run: |
