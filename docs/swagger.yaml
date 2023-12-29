@@ -61,6 +61,8 @@ definitions:
       term:
         type: integer
     type: object
+  response.DeleteHackathon:
+    type: object
   response.GetHackathon:
     properties:
       expired:
@@ -106,12 +108,31 @@ paths:
     get:
       description: List Hackathons
       parameters:
+      - description: 期間が長いかどうか？
+        in: query
+        name: longTerm
+        type: boolean
+      - description: 締め切りが近いかどうか？
+        in: query
+        name: nearDeadline
+        type: boolean
+      - description: 新着かどうか？
+        in: query
+        name: new
+        type: boolean
       - in: query
-        name: page_id
+        name: pageID
         type: integer
       - in: query
-        name: page_size
+        name: pageSize
         type: integer
+      - collectionFormat: csv
+        description: タグ
+        in: query
+        items:
+          type: integer
+        name: tags
+        type: array
       produces:
       - application/json
       responses:
@@ -152,6 +173,28 @@ paths:
       tags:
       - Hackathon
   /hackathons/{hackathon_id}:
+    delete:
+      description: Delete Hackathons
+      parameters:
+      - description: request body
+        in: path
+        name: hackathon_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.DeleteHackathon'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Delete Hackathons
+      tags:
+      - Hackathon
     get:
       description: Get Hackathon
       parameters:

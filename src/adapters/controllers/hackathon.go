@@ -100,14 +100,17 @@ func (hc *HackathonController) GetHackathon(ctx echo.Context) error {
 func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
 	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("ListHackathons").End()
 
-	var input request.ListHackathon
+	var input request.ListHackathon = request.ListHackathon{
+		PageSize: 10,
+		PageID:   1,
+		New:      true,
+	}
 	if ctx.Bind(&input) != nil {
 		return echo.ErrBadRequest
 	}
 
 	return ctx.JSON(hc.input.ListHackathon(ctx.Request().Context(),
-		input.PageID,
-		input.PageSize,
+		input,
 	))
 }
 

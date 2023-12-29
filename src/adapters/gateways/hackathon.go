@@ -57,14 +57,34 @@ func (h *HackathonGateway) Find(ctx context.Context, hackathonID string) (*model
 	return &hackathon, nil
 }
 
-func (h *HackathonGateway) FindAll(ctx context.Context, size, id int) ([]*models.Hackathon, error) {
+func (h *HackathonGateway) FindAll(ctx context.Context, arg dai.FindAllParams) ([]*models.Hackathon, error) {
 	defer newrelic.FromContext(ctx).StartSegment("FindAllHackathon-gateway").End()
 
+	chain := h.db.Limit(arg.Limit).Offset(arg.Offset)
+
+	if len(arg.Tags) > 0 {
+		chain.Joins("JOIN hackathon_status_tags ON hackathons.hackathon_id = hackathon_status_tags.hackathon_id").
+			Where("hackathon_status_tags.status_id IN ?", arg.Tags)
+	}
+
+	if arg.New {
+		chain.Order("created_at DESC")
+	}
+
+	if arg.LongTerm {
+		chain.Order("term DESC")
+	}
+
+	if arg.NearDeadline {
+		chain.Order("expired ASC")
+	}
+
 	var hackathons []*models.Hackathon
-	result := h.db.Limit(int(size)).Offset(id).Find(&hackathons)
+	result := chain.Debug().Select("DISTINCT (hackathon_id)", "name", "icon", "link", "expired", "start_date", "term", "created_at").Find(&hackathons)
 	if result.Error != nil {
 		return nil, result.Error
 	}
+
 	return hackathons, nil
 }
 

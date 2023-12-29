@@ -18,6 +18,15 @@ type GetHackathon struct {
 type ListHackathon struct {
 	PageSize int `query:"page_size"`
 	PageID   int `query:"page_id"`
+
+	// タグ
+	Tags []int64 `query:"tags"`
+	// 新着かどうか？
+	New bool `query:"new"`
+	// 期間が長いかどうか？
+	LongTerm bool `query:"long_term"`
+	// 締め切りが近いかどうか？
+	NearDeadline bool `query:"near_deadline"`
 }
 
 type DeleteHackathon struct {

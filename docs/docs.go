@@ -35,13 +35,41 @@ const docTemplate = `{
                 "summary": "List Hackathons",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "name": "page_id",
+                        "type": "boolean",
+                        "description": "期間が長いかどうか？",
+                        "name": "longTerm",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "締め切りが近いかどうか？",
+                        "name": "nearDeadline",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "新着かどうか？",
+                        "name": "new",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "name": "page_size",
+                        "name": "pageID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "タグ",
+                        "name": "tags",
                         "in": "query"
                     }
                 ],
@@ -123,6 +151,39 @@ const docTemplate = `{
                         "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/response.GetHackathon"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete Hackathons",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hackathon"
+                ],
+                "summary": "Delete Hackathons",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "request body",
+                        "name": "hackathon_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.DeleteHackathon"
                         }
                     },
                     "400": {
@@ -377,6 +438,9 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        },
+        "response.DeleteHackathon": {
+            "type": "object"
         },
         "response.GetHackathon": {
             "type": "object",

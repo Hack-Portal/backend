@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Hack-Portal/backend/src/datastructure/models"
+	"github.com/Hack-Portal/backend/src/datastructure/request"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
@@ -153,17 +154,26 @@ func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID str
 	})
 }
 
-func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSize int) (int, []*response.GetHackathon) {
+func (hi *HackathonInteractor) ListHackathon(ctx context.Context, in request.ListHackathon) (int, []*response.GetHackathon) {
 	defer newrelic.FromContext(ctx).StartSegment("ListHackathon-usecase").End()
 
-	if pageID <= 0 {
-		pageID = 1
-	}
-	if pageSize <= 0 {
-		pageSize = 10
+	if in.PageSize <= 0 {
+		in.PageSize = 10
 	}
 
-	hackathons, err := hi.Hackathon.FindAll(ctx, pageSize, (pageID-1)*pageSize)
+	if in.PageID <= 0 {
+		in.PageID = 1
+	}
+
+	hackathons, err := hi.Hackathon.FindAll(ctx, dai.FindAllParams{
+		Limit:  in.PageSize,
+		Offset: (in.PageID - 1) * in.PageSize,
+
+		Tags:         in.Tags,
+		New:          in.New,
+		LongTerm:     in.LongTerm,
+		NearDeadline: in.NearDeadline,
+	})
 	if err != nil {
 		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
 			Error:    err,

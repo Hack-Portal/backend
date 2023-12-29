@@ -5,13 +5,14 @@ import (
 	"mime/multipart"
 	"time"
 
+	"github.com/Hack-Portal/backend/src/datastructure/request"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 )
 
 type HackathonInputBoundary interface {
 	CreateHackathon(ctx context.Context, in *InputCreatehackathonData) (int, *response.CreateHackathon)
 	GetHackathon(ctx context.Context, hackathonID string) (int, *response.GetHackathon)
-	ListHackathon(ctx context.Context, pageID, pageSize int) (int, []*response.GetHackathon)
+	ListHackathon(ctx context.Context, in request.ListHackathon) (int, []*response.GetHackathon)
 	DeleteHackathon(ctx context.Context, hackathonID string) (int, *response.DeleteHackathon)
 }
 
