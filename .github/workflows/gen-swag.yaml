@@ -34,7 +34,7 @@ jobs:
       - name: copy docs
         run: |
           mkdir $HOME/docs
-          cp -r docs/docs/swagger.json $HOME/docs/swagger.json
+          cp -r docs/swagger.json $HOME/docs/swagger.json
           
       - name: Checkout front repo
         uses: actions/checkout@v3
