@@ -11,8 +11,8 @@ import (
 func (es *echoServer) Hackathon() {
 	hc := controllers.NewHackathonController(
 		interactors.NewHackathonInteractor(
-			gateways.NewHackathonGateway(es.db),
-			gateways.NewHackathonStatusGateway(es.db),
+			gateways.NewHackathonGateway(es.db, es.redis),
+			gateways.NewHackathonStatusGateway(es.db, es.redis),
 			gateways.NewCloudflareR2(
 				config.Config.Buckets.Bucket,
 				es.client,

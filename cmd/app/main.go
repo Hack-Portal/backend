@@ -11,6 +11,7 @@ import (
 	"github.com/Hack-Portal/backend/cmd/migrations"
 	"github.com/Hack-Portal/backend/src/driver/aws"
 	"github.com/Hack-Portal/backend/src/driver/newrelic"
+	"github.com/Hack-Portal/backend/src/driver/redis"
 	"github.com/Hack-Portal/backend/src/frameworks/db/gorm"
 	"github.com/Hack-Portal/backend/src/frameworks/echo"
 	"github.com/Hack-Portal/backend/src/server"
@@ -96,10 +97,26 @@ func main() {
 		return
 	}
 
+	redisconn := redis.New(
+		fmt.Sprintf("%v:%v", config.Config.Redis.Host, config.Config.Redis.Port),
+		config.Config.Redis.Password,
+		&config.Config.Redis.ConnectTimeout,
+		&config.Config.Redis.ConnectAttempts,
+		&config.Config.Redis.ConnectWaitTime,
+	)
+	defer redisconn.Close()
+
+	redisConn, err := redisconn.Connect(config.Config.Redis.DB)
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed to connect redis: %v", err))
+		return
+	}
+
 	// start server
 	handler := echo.NewEchoServer(
 		dbconn,
 		client,
+		redisConn,
 		app,
 		logger,
 	)

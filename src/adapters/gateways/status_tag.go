@@ -2,20 +2,24 @@ package gateways
 
 import (
 	"context"
+	"time"
 
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type StatusTagGateway struct {
-	db *gorm.DB
+	db          *gorm.DB
+	cacheClient dai.Cache[[]*models.StatusTag]
 }
 
-func NewStatusTagGateway(db *gorm.DB) dai.StatusTagDai {
+func NewStatusTagGateway(db *gorm.DB, cache *redis.Client) dai.StatusTagDai {
 	return &StatusTagGateway{
-		db: db,
+		db:          db,
+		cacheClient: NewCache[[]*models.StatusTag](cache, time.Duration(30)*time.Minute),
 	}
 }
 
@@ -34,18 +38,21 @@ func (stg *StatusTagGateway) Create(ctx context.Context, statusTag *models.Statu
 		return 0, err
 	}
 
-	return statusTagID, nil
+	return statusTagID, stg.cacheClient.Reset(ctx, "status_tags")
 }
 
 func (stg *StatusTagGateway) FindAll(ctx context.Context) (statusTags []*models.StatusTag, err error) {
 	defer newrelic.FromContext(ctx).StartSegment("FindAllStatusTag-gateway").End()
 
-	result := stg.db.Find(&statusTags)
-	if result.Error != nil {
-		return nil, result.Error
-	}
+	tags, err := stg.cacheClient.Get(ctx, "status_tags", func(ctx context.Context) ([]*models.StatusTag, error) {
+		result := stg.db.Find(&statusTags)
+		if result.Error != nil {
+			return nil, result.Error
+		}
+		return statusTags, nil
+	})
 
-	return statusTags, nil
+	return tags, nil
 }
 
 func (stg *StatusTagGateway) FindById(ctx context.Context, id int64) (statusTag *models.StatusTag, err error) {
@@ -70,5 +77,5 @@ func (stg *StatusTagGateway) Update(ctx context.Context, statusTag *models.Statu
 		return 0, gorm.ErrRecordNotFound
 	}
 
-	return statusTag.StatusID, nil
+	return statusTag.StatusID, stg.cacheClient.Reset(ctx, "status_tags")
 }

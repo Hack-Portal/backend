@@ -8,6 +8,7 @@ import (
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/newrelic/go-agent/v3/integrations/nrecho-v4"
 	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
@@ -17,16 +18,18 @@ type echoServer struct {
 
 	app    *newrelic.Application
 	db     *gorm.DB
+	redis  *redis.Client
 	client *s3.Client
 	logger *slog.Logger
 }
 
-func NewEchoServer(db *gorm.DB, client *s3.Client, app *newrelic.Application, logger *slog.Logger) *echo.Echo {
+func NewEchoServer(db *gorm.DB, client *s3.Client, redis *redis.Client, app *newrelic.Application, logger *slog.Logger) *echo.Echo {
 	router := &echoServer{
 		engine: echo.New(),
 		app:    app,
 		client: client,
 		db:     db,
+		redis:  redis,
 	}
 
 	router.setupMiddleware()

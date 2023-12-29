@@ -3,6 +3,7 @@ package redis
 import (
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -77,6 +78,7 @@ func (rc *redisClient) Connect(db int) (*redis.Client, error) {
 	for i := 0; i < rc.connectAttempts; i++ {
 		_, err := rc.client.Ping(context.Background()).Result()
 		if err != nil {
+			log.Println("failed to connect redis: ", err)
 			sleep()
 			continue
 		}

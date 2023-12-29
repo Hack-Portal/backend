@@ -45,7 +45,7 @@ func testCreateStatusTag(t *testing.T) {
 			want:       nil,
 		},
 	}
-	si := NewStatusTagInteractor(gateways.NewStatusTagGateway(dbconn), presenters.NewStatusTagPresenter())
+	si := NewStatusTagInteractor(gateways.NewStatusTagGateway(dbconn, nil), presenters.NewStatusTagPresenter())
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			status, resp := si.CreateStatusTag(context.Background(), tc.input)
@@ -75,7 +75,7 @@ func testFindAllStatusTag(t *testing.T) {
 		},
 	}
 
-	si := NewStatusTagInteractor(gateways.NewStatusTagGateway(dbconn), presenters.NewStatusTagPresenter())
+	si := NewStatusTagInteractor(gateways.NewStatusTagGateway(dbconn, nil), presenters.NewStatusTagPresenter())
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			status, resp := si.FindAllStatusTag(context.Background())
@@ -115,7 +115,7 @@ func testFindByIdStatusTag(t *testing.T) {
 		},
 	}
 
-	si := NewStatusTagInteractor(gateways.NewStatusTagGateway(dbconn), presenters.NewStatusTagPresenter())
+	si := NewStatusTagInteractor(gateways.NewStatusTagGateway(dbconn, nil), presenters.NewStatusTagPresenter())
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			status, resp := si.FindByIdStatusTag(context.Background(), tc.input)
@@ -157,7 +157,7 @@ func testUpdateStatusTag(t *testing.T) {
 		},
 	}
 
-	si := NewStatusTagInteractor(gateways.NewStatusTagGateway(dbconn), presenters.NewStatusTagPresenter())
+	si := NewStatusTagInteractor(gateways.NewStatusTagGateway(dbconn, nil), presenters.NewStatusTagPresenter())
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			status, resp := si.UpdateStatusTag(context.Background(), tc.input)

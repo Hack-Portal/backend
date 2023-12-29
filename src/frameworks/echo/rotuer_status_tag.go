@@ -10,7 +10,7 @@ import (
 func (es *echoServer) StatusTag() {
 	sc := controllers.NewStatusTagController(
 		interactors.NewStatusTagInteractor(
-			gateways.NewStatusTagGateway(es.db),
+			gateways.NewStatusTagGateway(es.db, es.redis),
 			presenters.NewStatusTagPresenter(),
 		),
 	)
