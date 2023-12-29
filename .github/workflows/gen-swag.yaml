@@ -63,14 +63,15 @@ jobs:
           git add .
           git commit -m "feat: copy schema to frontend"
           git push origin ft/copy-schema${{github.sha}}
-          - name: create Pull Request to frontend
-          run: |
-            gh pr create \
-              --title ":robot: generated openAPI schema[bot]" \
-              --body ":robot: generated openAPI schema[bot]" \
-              --repo Hack-Portal/frontend \
-              --base develop \
-              --head ft/copy-schema${{github.sha}} \
-              --reviewer "${{ github.event.head_commit.committer.username || github.triggering_actor }}"
-          env:
-            GH_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: create Pull Request to frontend
+        run: |
+          gh pr create \
+            --title ":robot: generated openAPI schema[bot]" \
+            --body ":robot: generated openAPI schema[bot]" \
+            --repo Hack-Portal/frontend \
+            --base develop \
+            --head ft/copy-schema${{github.sha}} \
+            --reviewer "${{ github.event.head_commit.committer.username || github.triggering_actor }}"
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
