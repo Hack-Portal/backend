@@ -52,8 +52,7 @@ jobs:
 
       - name: copy docs
         run: |
-          mkdir $HOME/docs
-          cp -r docs/docs/swagger.json $HOME/docs/swagger.json
+          cp -r $HOME/docs/swagger.json .
 
       - name: generate aspida
         run: |
