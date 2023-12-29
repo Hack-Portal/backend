@@ -2,8 +2,12 @@ package echo
 
 import (
 	"log/slog"
+	"net/http"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/coocood/freecache"
+	cache "github.com/gitsight/go-echo-cache"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/newrelic/go-agent/v3/integrations/nrecho-v4"
@@ -59,4 +63,24 @@ func (es *echoServer) setupMiddleware() {
 			AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 		}),
 	)
+
+	// use cache memory size 150MB
+	cacheSize := freecache.NewCache(150 * 1024 * 1024)
+
+	// Use cache middleware
+	es.engine.Use(cache.New(
+		&cache.Config{
+			TTL:     10 * time.Minute,
+			Methods: []string{"GET"},
+			Refresh: func(r *http.Request) bool {
+				return func() bool {
+					if r.Method == "POST" || r.Method == "PUT" || r.Method == "DELETE" {
+						return true
+					}
+					return false
+				}()
+			},
+		},
+		cacheSize,
+	))
 }
