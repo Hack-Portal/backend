@@ -16,6 +16,7 @@ func (es *echoServer) Hackathon() {
 			gateways.NewCloudflareR2(
 				config.Config.Buckets.Bucket,
 				es.client,
+				es.redis,
 				config.Config.Buckets.Expired,
 			),
 			presenters.NewHackathonPresenter(),
