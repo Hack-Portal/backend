@@ -70,7 +70,7 @@ func (es *echoServer) setupMiddleware() {
 	// Use cache middleware
 	es.engine.Use(cache.New(
 		&cache.Config{
-			TTL:     10 * time.Minute,
+			TTL:     30 * time.Second,
 			Methods: []string{"GET"},
 			Refresh: func(r *http.Request) bool {
 				return func() bool {
