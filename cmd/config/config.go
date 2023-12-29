@@ -25,6 +25,10 @@ func LoadEnv(envPath ...string) {
 		log.Fatalf("env load error: %v", err)
 	}
 
+	if err := env.Parse(&config.Redis); err != nil {
+		log.Fatalf("env load error: %v", err)
+	}
+
 	if err := env.Parse(&config.Buckets); err != nil {
 		log.Fatalf("env load error: %v", err)
 	}

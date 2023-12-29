@@ -27,6 +27,17 @@ type config struct {
 		CloseTimeout    int  `env:"DB_CLOSE_TIMEOUT" envDefault:"10"`
 	}
 
+	Redis struct {
+		Host     string `env:"REDIS_HOST" envDefault:"localhost"`
+		Port     int    `env:"REDIS_PORT" envDefault:"6379"`
+		Password string `env:"REDIS_PASSWORD" envDefault:""`
+		DB       int    `env:"REDIS_DB" envDefault:"0"`
+
+		ConnectTimeout  int `env:"REDIS_CONNECT_TIMEOUT" envDefault:"10"`
+		ConnectWaitTime int `env:"REDIS_CONNECT_WAIT_TIME" envDefault:"10"`
+		ConnectAttempts int `env:"REDIS_CONNECT_ATTEMPTS" envDefault:"3"`
+	}
+
 	Buckets struct {
 		EndPoint        string `env:"BUCKETS_ENDPOINT" envDefault:""`
 		AccountID       string `env:"BUCKETS_ACCOUNT_ID" envDefault:""`
