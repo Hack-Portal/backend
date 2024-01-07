@@ -46,7 +46,7 @@ func RunTestServe(t *testing.T) http.Handler {
 	})
 
 	e.GET("/secret", func(c echo.Context) error {
-		if c.Get(IsGuest).(bool) {
+		if c.Get(RequestRoleID).(int) == AuthGuestID {
 			return echo.ErrUnauthorized
 		}
 		return c.String(200, "secret")

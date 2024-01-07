@@ -7,7 +7,6 @@ type Auth interface {
 }
 
 const (
-	IsGuest       = "is_guest"
 	RequestUserID = "request_user_id"
 	RequestRoleID = "request_role_id"
 )

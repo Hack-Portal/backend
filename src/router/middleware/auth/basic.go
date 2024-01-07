@@ -8,6 +8,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+const (
+	AuthGuestID int = 3
+)
+
 type basicAuth struct {
 	userRepo dai.UsersDai
 }
@@ -28,7 +32,7 @@ func (ba *basicAuth) basic(next echo.HandlerFunc) echo.HandlerFunc {
 		if !ok {
 			// TODO:ここでログを出力する
 			// 未認証ユーザ(guest)として扱う
-			c.Set(IsGuest, true)
+			c.Set(RequestRoleID, AuthGuestID)
 			return next(c)
 		}
 		user, err := ba.userRepo.FindById(c.Request().Context(), uid)
@@ -44,7 +48,6 @@ func (ba *basicAuth) basic(next echo.HandlerFunc) echo.HandlerFunc {
 			log.Println(err, user.Password, pass)
 			return echo.ErrUnauthorized
 		}
-		c.Set(IsGuest, false)
 		c.Set(RequestUserID, user.UserID)
 		c.Set(RequestRoleID, user.Role)
 
