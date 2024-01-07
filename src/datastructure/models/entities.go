@@ -79,15 +79,21 @@ CREATE TABLE "users" (
   "user_id" varchar PRIMARY KEY,
   "name" varchar NOT NULL,
   "password" varchar NOT NULL,
-  "role" varchar NOT NULL
+  "role" varchar NOT NULL,
+  "created_at" timestamptz NOT NULL,
+  "updated_at" timestamptz NOT NULL,
+  "deleted_at" timestamptz
 );
 */
 
 type User struct {
-	UserID   string `json:"user_id"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
-	Role     int64  `json:"role"`
+	UserID    string    `json:"user_id"`
+	Name      string    `json:"name"`
+	Password  string    `json:"password"`
+	Role      int64     `json:"role"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	DeletedAt time.Time `json:"deleted_at"`
 }
 
 /*
