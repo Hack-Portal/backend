@@ -42,6 +42,7 @@ func (r *router) setup() {
 		v1group := r.engine.Group("/v1")
 		v1group.Use(
 			middleware.AuthN(),
+			middleware.RBACPermission(),
 		)
 
 		v1.NewV1Router(v1group)
