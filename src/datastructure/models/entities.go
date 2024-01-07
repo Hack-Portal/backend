@@ -61,3 +61,43 @@ type JoinedStatusTag struct {
 	StatusID    int64  `json:"status_id"`
 	Status      string `json:"status"`
 }
+
+/*
+CREATE TABLE "applove_user" (
+  "hackathon_id" varchar NOT NULL,
+  "user_id" varchar NOT NULL
+);
+*/
+
+type ApploveUser struct {
+	HackathonID string `json:"hackathon_id"`
+	UserID      string `json:"user_id"`
+}
+
+/*
+CREATE TABLE "users" (
+  "user_id" varchar PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "password" varchar NOT NULL,
+  "role" varchar NOT NULL
+);
+*/
+
+type User struct {
+	UserID   string `json:"user_id"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
+}
+
+/*
+CREATE TABLE "roles" (
+  "role_id" serial PRIMARY KEY,
+  "role" varchar NOT NULL
+);
+*/
+
+type Role struct {
+	RoleID int64  `json:"role_id" gorm:"autoIncrement"`
+	Role   string `json:"role"`
+}
