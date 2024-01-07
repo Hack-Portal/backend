@@ -4,10 +4,10 @@ var Config *config
 
 type config struct {
 	Server struct {
-		Addr            string `env:"SERVER_ADDR" envDefault:"8080"`
-		ShutdownTimeout int    `env:"SERVER_SHUTDOWN_TIMEOUT" envDefault:"10"`
-		ContextTimeout  int    `env:"SERVER_CONTEXT_TIMEOUT" envDefault:"10"`
-
+		Addr                  string `env:"SERVER_ADDR" envDefault:"8080"`
+		ShutdownTimeout       int    `env:"SERVER_SHUTDOWN_TIMEOUT" envDefault:"10"`
+		ContextTimeout        int    `env:"SERVER_CONTEXT_TIMEOUT" envDefault:"10"`
+		Version               string `env:"SERVER_VERSION" envDefault:"0.1.0"`
 		DefaultHackathonImage string `env:"SERVER_DEFAULT_HACKATHON_IMAGE" envDefault:""`
 	}
 
