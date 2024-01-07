@@ -19,12 +19,6 @@ type config struct {
 		DBName   string `env:"DB_NAME" envDefault:"hack_portal"`
 		SSLMode  string `env:"DB_SSLMODE" envDefault:"disable"`
 		TimeZone string `env:"DB_TIMEZONE" envDefault:"Asia/Tokyo"`
-
-		ConnectTimeout  int  `env:"DB_CONNECT_TIMEOUT" envDefault:"10"`
-		ConnectWaitTime int  `env:"DB_CONNECT_WAIT_TIME" envDefault:"10"`
-		ConnectAttempts int  `env:"DB_CONNECT_ATTEMPTS" envDefault:"3"`
-		ConnectBlocks   bool `env:"DB_CONNECT_BLOCKS" envDefault:"false"`
-		CloseTimeout    int  `env:"DB_CLOSE_TIMEOUT" envDefault:"10"`
 	}
 
 	Redis struct {
