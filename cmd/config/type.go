@@ -38,7 +38,7 @@ type config struct {
 		AccessKeyId     string `env:"BUCKETS_ACCESS_KEY_ID" envDefault:""`
 		AccessKeySecret string `env:"BUCKETS_ACCESS_KEY_SECRET" envDefault:""`
 		Bucket          string `env:"CLOUDFLARE_BUCKET" envDefault:""`
-		Expired         int    `env:"BUCKETS_EXPIRED" envDefault:"720"`
+		Expired         int    `env:"BUCKETS_EXPIRED" envDefault:"30"`
 	}
 
 	NewRelic struct {
