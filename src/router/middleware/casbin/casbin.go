@@ -1,91 +1,109 @@
 package casbin
 
 import (
+	"encoding/json"
 	"log"
+	"os"
+	"strconv"
 
+	"github.com/Hack-Portal/backend/src/router/middleware/auth"
+	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/casbin/v2/model"
 	jsonadapter "github.com/casbin/json-adapter/v2"
 	"github.com/labstack/echo/v4"
 )
 
-func init() {
-	// ここでconfを読み込む
-
-}
-
-var casbinModel string = `
-[request_definition]
-r = sub, obj, act
-
-[policy_definition]
-p = sub, obj, act, eft
-
-[policy_effect]
-e = some(where (p.eft == allow)) && !some(where (p.eft == deny))
-
-[matchers]
-m = r.sub == p.sub && keyMatch2(r.obj, p.obj) && (r.act == p.act || p.act == "*")
-`
-
-var casbinPolicy []byte = []byte(`[{"PType":"p","V0":"guest","V1":"/v1/hackathons","V2":"GET", "V3":"allow"},{"PType":"p","V0":"guest","V1":"/v1/status_tags","V2":"GET", "V3":"allow"},{"PType":"p","V0":"hack-portal-operator","V1":"/v1/hackathons","V2":"GET", "V3":"allow"},{"PType":"p","V0":"hack-portal-operator","V1":"/v1/hackathons","V2":"POST", "V3":"allow"},{"PType":"p","V0":"hack-portal-operator","V1":"/v1/hackathons/*","V2":"PUT", "V3":"allow"},{"PType":"p","V0":"hack-portal-operator","V1":"/v1/status_tags","V2":"GET", "V3":"allow"},{"PType":"p","V0":"hack-portal-operator","V1":"/v1/status_tags","V2":"POST", "V3":"allow"},{"PType":"p","V0":"hack-portal-operator","V1":"/v1/status_tags/*","V2":"PUT", "V3":"allow"},{"PType":"p","V0":"admin","V1":"*","V2":"*", "V3":"allow"}]`)
+var casbinModel string
 
 const (
 	ErrDeny = "deny"
 )
 
-func Authorization() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
+func init() {
+	// ここでconfを読み込む
+	f, err := os.Open("casbin_model.conf")
+	if err != nil {
+		log.Fatal("casbin model file open error :", err)
+	}
+	defer f.Close()
+
+	stat, err := f.Stat()
+	if err != nil {
+		log.Fatal("casbin model file stat error :", err)
+	}
+
+	buf := make([]byte, stat.Size())
+	_, err = f.Read(buf)
+	if err != nil {
+		log.Fatal("casbin model file read error :", err)
+	}
+
+	casbinModel = string(buf)
+}
+
+type RBACPolicy interface {
+	RBACPermission() echo.MiddlewareFunc
+}
+
+type RBAC struct {
+	rbacRepo dai.RBACPolicyDai
+}
+
+func NewRBAC(repo dai.RBACPolicyDai) RBACPolicy {
+	return &RBAC{
+		rbacRepo: repo,
+	}
+}
+
+func (rbac *RBAC) RBACPermission() echo.MiddlewareFunc {
+	return rbac.rbacPermission
+}
+
+func (rbac *RBAC) rbacPermission(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		roleID, ok := c.Get(auth.RequestRoleID).(int)
+		if !ok {
+			return echo.ErrInternalServerError
+		}
+		policy, err := rbac.rbacRepo.FindRoleByRole(c.Request().Context(), roleID)
+		if err != nil {
+			return echo.ErrInternalServerError
+		}
+
+		data, err := json.Marshal(policy)
+		if err != nil {
+			return echo.ErrInternalServerError
+		}
+
 		m, err := model.NewModelFromString(casbinModel)
 		if err != nil {
-			log.Fatal("model from string error :", err)
+			return echo.ErrInternalServerError
 		}
+		a := jsonadapter.NewAdapter(&data)
 
-		a := jsonadapter.NewAdapter(&casbinPolicy)
 		e, err := casbin.NewEnforcer(m, a)
 		if err != nil {
-			log.Fatal("enforver error :", err)
+			return echo.ErrInternalServerError
 		}
 
-		return func(c echo.Context) error {
-			userRoles := []string{
-				"admin",
-				//"hack-portal-operator",
-				// "guest",
-			}
-
-			authorized := false
-			obj := c.Request().URL.Path
-			act := c.Request().Method
-
-			for _, sub := range userRoles {
-				allowed, reason, err := e.EnforceEx(sub, obj, act)
-				log.Println(allowed, reason, err)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				if allowed {
-					authorized = true
-					continue
-				}
-
-				if len(reason) == 0 {
-					log.Println(reason)
-					continue
-				}
-
-				if reason[3] == ErrDeny {
-					authorized = false
-					break
-				}
-			}
-
-			if !authorized {
-				return echo.ErrForbidden
-			}
-
-			return next(c)
+		if !rbac.checkPolicy(e, strconv.Itoa(roleID), c.Request().URL.Path, c.Request().Method) {
+			return echo.ErrUnauthorized
 		}
+
+		return next(c)
 	}
+}
+
+func (rbac *RBAC) checkPolicy(e *casbin.Enforcer, roleID, obj, act string) bool {
+	allowed, reason, err := e.EnforceEx(roleID, obj, act)
+	if err != nil {
+		return false
+	}
+
+	if len(reason) == 0 || reason[3] == ErrDeny {
+		return false
+	}
+
+	return allowed
 }
