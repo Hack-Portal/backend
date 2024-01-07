@@ -19,7 +19,7 @@ func NewUserGateway(db *gorm.DB) dai.UsersDai {
 }
 
 func (ug *UserGateway) Create(ctx context.Context, user *models.User) (id string, err error) {
-	result := ug.db.Create(user)
+	result := ug.db.Create(&user)
 	if result.Error != nil {
 		return "", result.Error
 	}
@@ -35,7 +35,7 @@ func (ug *UserGateway) FindAll(ctx context.Context) (users []*models.User, err e
 }
 
 func (ug *UserGateway) FindById(ctx context.Context, id string) (user *models.User, err error) {
-	result := ug.db.First(user, id)
+	result := ug.db.Model(&models.User{}).Where("user_id = ?", id).Scan(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -43,7 +43,7 @@ func (ug *UserGateway) FindById(ctx context.Context, id string) (user *models.Us
 }
 
 func (ug *UserGateway) Update(ctx context.Context, user *models.User) (id string, err error) {
-	result := ug.db.Save(user)
+	result := ug.db.Save(&user)
 	if result.Error != nil {
 		return "", result.Error
 	}
