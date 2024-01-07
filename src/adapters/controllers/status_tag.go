@@ -56,28 +56,6 @@ func (stc *StatusTagController) FindAllStatusTag(ctx echo.Context) error {
 
 // StatusTag		godoc
 //
-// @Summary			Get StatusTag by id
-// @Description	Get StatusTag by id
-// @Tags				StatusTag
-// @Produce			json
-// @Param				id											path			int												true		"status tag id"
-// @Param				CreateStatusTagRequest	body			request.GetStatusTagByID	true		"request body"
-// @Success			200											{object}	response.StatusTag								"success response"
-// @Failure			400											{object}	nil																"error response"
-// @Failure			500											{object}	nil																"error response"
-// @Router			/status_tags/{id}				[GET]
-func (stc *StatusTagController) FindByIdStatusTag(ctx echo.Context) error {
-	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("FindByIdStatusTag").End()
-	var req request.GetStatusTagByID
-	if err := ctx.Bind(&req); err != nil {
-		return echo.ErrBadRequest
-	}
-
-	return ctx.JSON(stc.inputPort.FindByIdStatusTag(ctx.Request().Context(), &req))
-}
-
-// StatusTag		godoc
-//
 // @Summary			Update StatusTag by id
 // @Description	Update StatusTag by id
 // @Tags				StatusTag
