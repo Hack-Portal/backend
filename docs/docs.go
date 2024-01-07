@@ -128,39 +128,6 @@ const docTemplate = `{
             }
         },
         "/hackathons/{hackathon_id}": {
-            "get": {
-                "description": "Get Hackathon",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hackathon"
-                ],
-                "summary": "Get Hackathon",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "request body",
-                        "name": "hackathon_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "$ref": "#/definitions/response.GetHackathon"
-                        }
-                    },
-                    "400": {
-                        "description": "error response"
-                    },
-                    "500": {
-                        "description": "error response"
-                    }
-                }
-            },
             "delete": {
                 "description": "Delete Hackathons",
                 "produces": [
@@ -260,48 +227,6 @@ const docTemplate = `{
             }
         },
         "/status_tags/{id}": {
-            "get": {
-                "description": "Get StatusTag by id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "StatusTag"
-                ],
-                "summary": "Get StatusTag by id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "status tag id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "request body",
-                        "name": "CreateStatusTagRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.GetStatusTagByID"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "$ref": "#/definitions/response.StatusTag"
-                        }
-                    },
-                    "400": {
-                        "description": "error response"
-                    },
-                    "500": {
-                        "description": "error response"
-                    }
-                }
-            },
             "put": {
                 "description": "Update StatusTag by id",
                 "produces": [
@@ -385,14 +310,6 @@ const docTemplate = `{
             "properties": {
                 "status": {
                     "type": "string"
-                }
-            }
-        },
-        "request.GetStatusTagByID": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
                 }
             }
         },
