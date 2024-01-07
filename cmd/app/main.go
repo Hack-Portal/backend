@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 
 	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/src/driver/aws"
 	"github.com/Hack-Portal/backend/src/router"
 	"github.com/Hack-Portal/backend/src/server"
 	"gorm.io/driver/postgres"
@@ -58,12 +60,15 @@ func main() {
 	// migrate up
 	m.Up()
 
-	// client, err := aws.New(
-	// 	config.Config.Buckets.AccountID,
-	// 	config.Config.Buckets.EndPoint,
-	// 	config.Config.Buckets.AccessKeyId,
-	// 	config.Config.Buckets.AccessKeySecret,
-	// ).Connect(context.Background())
+	client, err := aws.New(
+		config.Config.Buckets.AccountID,
+		config.Config.Buckets.EndPoint,
+		config.Config.Buckets.AccessKeyId,
+		config.Config.Buckets.AccessKeySecret,
+	).Connect(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// app, err := newrelic.Setup()
 	// if err != nil {
@@ -88,7 +93,9 @@ func main() {
 
 	// start server
 	handler := router.NewRouter(
-		*router.NewDebug(config.Config.Server.Version),
+		router.NewDebug(config.Config.Server.Version),
+		db,
+		client,
 	)
 
 	server.New().Run(handler)

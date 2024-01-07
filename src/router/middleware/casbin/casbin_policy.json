@@ -1,0 +1,11 @@
+[
+  {"PType":"p","V0":"guest","V1":"/v1/hackathons","V2":"GET", "V3":"allow"},
+  {"PType":"p","V0":"guest","V1":"/v1/status_tags","V2":"GET", "V3":"allow"},
+  {"PType":"p","V0":"hack-portal-operator","V1":"/v1/hackathons","V2":"GET", "V3":"allow"},
+  {"PType":"p","V0":"hack-portal-operator","V1":"/v1/hackathons","V2":"POST", "V3":"allow"},
+  {"PType":"p","V0":"hack-portal-operator","V1":"/v1/hackathons/*","V2":"PUT", "V3":"allow"},
+  {"PType":"p","V0":"hack-portal-operator","V1":"/v1/status_tags","V2":"GET", "V3":"allow"},
+  {"PType":"p","V0":"hack-portal-operator","V1":"/v1/status_tags","V2":"POST", "V3":"allow"},
+  {"PType":"p","V0":"hack-portal-operator","V1":"/v1/status_tags/*","V2":"PUT", "V3":"allow"},
+  {"PType":"p","V0":"admin","V1":"*","V2":"*", "V3":"allow"}
+]
