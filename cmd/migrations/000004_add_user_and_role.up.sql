@@ -19,12 +19,14 @@ CREATE TABLE "applove_user" (
 );
 
 CREATE TABLE "rbac_policies" (
+  "policy_id" int PRIMARY KEY,
   "p_type" varchar NOT NULL,
-  "v0" varchar NOT NULL,
+  "v0" int NOT NULL,
   "v1" varchar NOT NULL,
   "v2" varchar NOT NULL,
   "v3" varchar NOT NULL
 );
+
 
 CREATE INDEX ON "applove_user" ("hackathon_id");
 
@@ -51,3 +53,4 @@ ALTER TABLE "users" ADD FOREIGN KEY ("role") REFERENCES "roles" ("role_id");
 ALTER TABLE "applove_user" ADD FOREIGN KEY ("hackathon_id") REFERENCES "hackathons" ("hackathon_id");
 
 ALTER TABLE "applove_user" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
+ALTER TABLE "rbac_policies" ADD FOREIGN KEY ("v0") REFERENCES "roles" ("role_id");
