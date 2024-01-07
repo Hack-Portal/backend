@@ -17,7 +17,7 @@ func (es *echoServer) Hackathon() {
 				config.Config.Buckets.Bucket,
 				es.client,
 				es.redis,
-				config.Config.Buckets.Expired,
+				7200,
 			),
 			presenters.NewHackathonPresenter(),
 		),
