@@ -6,6 +6,7 @@ RUN go build -o main ./cmd/app/main.go
 FROM ubuntu:latest
 WORKDIR /app
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder casbin_model.conf .
 COPY --from=builder /app/cmd/migrations ./cmd/migrations
 COPY --from=builder /app/main .
 
@@ -22,11 +23,6 @@ ENV DB_PASSWORD=
 ENV DB_NAME=
 ENV DB_SSLMODE=disable
 ENV DB_TIMEZONE=Asia/Tokyo
-ENV DB_CONNECT_TIMEOUT=10
-ENV DB_CONNECT_WAIT_TIME=10
-ENV DB_CONNECT_ATTEMPTS=3
-ENV DB_CONNECT_BLOCKS=false
-ENV DB_CLOSE_TIMEOUT=5
 
 # NewRelic Settings
 ENV NEW_RELIC_LICENSE_KEY=
