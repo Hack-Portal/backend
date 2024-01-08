@@ -9,6 +9,7 @@ type config struct {
 		ContextTimeout        int    `env:"SERVER_CONTEXT_TIMEOUT" envDefault:"10"`
 		Version               string `env:"SERVER_VERSION" envDefault:"0.1.0"`
 		DefaultHackathonImage string `env:"SERVER_DEFAULT_HACKATHON_IMAGE" envDefault:""`
+		AdminInitPassword     string `env:"SERVER_ADMIN_INIT_PASSWORD" envDefault:"ptZmQNRfr8HSBrhGgzYvDSFRfaVktAbfh25KIA2hEywPPIx2hB"`
 	}
 
 	Database struct {
