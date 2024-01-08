@@ -35,7 +35,12 @@ jobs:
 
       - name: Copy registries
         run: |
-          yq -i '.spec.template.spec.containers[0].image = {yq '.spec.template.spec.containers[0].image' 'config/stage/deployment.yaml'}' 'config/product/deployment.yaml'
+          cd config/stage
+          images = $(yq '.spec.template.spec.containers[0].image =' 'deployment.yaml')
+          echo $images
+          cd ../product
+          yq -i '.spec.template.spec.containers[0].image = "${images}"' 'deployment.yaml'    
+
       - name: push repository
         run: |
           git config --global user.email "${{ secrets.EMAIL_GITHUB }}"

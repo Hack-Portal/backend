@@ -47,19 +47,27 @@ func main() {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
 		log.Println(dsn)
 		log.Fatal(err)
 	}
 
-	sqlDB, _ := db.DB()
+	if err := sqlDB.Ping(); err != nil {
+		log.Fatal(err)
+	}
 
 	// migrate
 	m, err := migrations.NewPostgresMigrate(sqlDB, "file://cmd/migrations", nil)
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
+
 	// migrate up
-	m.Up()
+	log.Println(m.Up())
 
 	client, err := aws.New(
 		config.Config.Buckets.AccountID,
