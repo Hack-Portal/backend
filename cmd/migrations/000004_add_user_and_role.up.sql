@@ -20,7 +20,7 @@ CREATE TABLE "applove_user" (
 );
 
 CREATE TABLE "rbac_policies" (
-  "policy_id" int PRIMARY KEY,
+  "policy_id" SERIAL PRIMARY KEY,
   "p_type" varchar NOT NULL,
   "v0" int NOT NULL,
   "v1" varchar NOT NULL,
