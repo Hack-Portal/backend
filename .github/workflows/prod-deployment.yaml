@@ -38,7 +38,7 @@ jobs:
           cd config/stage
           images=$(yq '.spec.template.spec.containers[0].image' 'deployment.yaml')
           cd ../product
-          yq -i '.spec.template.spec.containers[0].image = "${images}"' 'deployment.yaml'
+          yq -i '.spec.template.spec.containers[0].image = ${images}' 'deployment.yaml'
       - name: push repository
         run: |
           git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
