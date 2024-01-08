@@ -40,7 +40,7 @@ func (ba *basicAuth) basic(next echo.HandlerFunc) echo.HandlerFunc {
 			// TODO:ここでログを出力する
 			return echo.ErrInternalServerError
 		}
-		if user == nil {
+		if user == nil || !user.DeletedAt.IsZero() {
 			return echo.ErrUnauthorized
 		}
 
