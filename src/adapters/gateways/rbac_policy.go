@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/Hack-Portal/backend/src/datastructure/models"
+	"github.com/Hack-Portal/backend/src/datastructure/request"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"gorm.io/gorm"
 )
@@ -78,22 +79,40 @@ func (r *RbacPolicyGateway) FindRoleByPathAndMethod(ctx context.Context, path, m
 	return casbinPolicies, nil
 }
 
-func (r *RbacPolicyGateway) Create(ctx context.Context, policy []*models.RbacPolicy) ([]int64, error) {
+func (r *RbacPolicyGateway) Create(ctx context.Context, policy []*models.RbacPolicy) ([]int, error) {
 	if err := r.db.Create(&policy).Error; err != nil {
 		return nil, err
 	}
-	var ids []int64
+	var ids []int
 	for _, p := range policy {
 		ids = append(ids, p.PolicyID)
 	}
 	return ids, nil
 }
 
-func (r *RbacPolicyGateway) FindAll(ctx context.Context) ([]*models.RbacPolicy, error) {
+func (r *RbacPolicyGateway) FindAll(ctx context.Context, arg *request.ListRbacPolicies) ([]*models.RbacPolicy, error) {
 	var policies []*models.RbacPolicy
-	if err := r.db.Find(&policies).Error; err != nil {
+	db := r.db
+	if len(arg.Sub) > 0 {
+		db = db.Where("v0 IN (?)", arg.Sub)
+	}
+
+	if len(arg.Obj) > 0 {
+		db = db.Where("v1 IN (?)", arg.Obj)
+	}
+
+	if len(arg.Act) > 0 {
+		db = db.Where("v2 IN (?)", arg.Act)
+	}
+
+	if len(arg.Eft) > 0 {
+		db = db.Where("v3 IN (?)", arg.Eft)
+	}
+
+	if err := db.Find(&policies).Error; err != nil {
 		return nil, err
 	}
+
 	return policies, nil
 }
 
