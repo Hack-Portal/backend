@@ -44,10 +44,8 @@ func main() {
 		config.Config.Database.TimeZone,
 	)
 
-	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  dsn,
-		PreferSimpleProtocol: true,
-	}))
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
 	if err != nil {
 		log.Fatal(err)
 	}
