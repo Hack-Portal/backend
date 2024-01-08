@@ -1,0 +1,77 @@
+name: build and deployment
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "docs/**"
+
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  issues: write
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v1
+        name: Setup Node.js
+        with:
+          node-version: 18
+          
+      - uses: actions/checkout@v2
+        name: Checkout repository - backend 
+
+      - name: copy docs
+        run: |
+          mkdir $HOME/docs
+          cp -r docs/swagger.json $HOME/docs/swagger.json
+          
+      - name: Checkout front repo
+        uses: actions/checkout@v3
+        with:
+          repository: Hack-Portal/frontend
+          token: ${{ secrets.GH_PAT }}
+          ref: develop
+            
+      - name: setup branches
+        run: |
+          git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
+          git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
+
+          git switch -c ft/copy-schema${{github.sha}}
+
+      - name: copy docs
+        run: |
+          cp -r $HOME/docs/swagger.json .
+
+      - name: generate aspida
+        run: |
+          npx openapi2aspida -i swagger.json
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "feat: copy schema to frontend"
+          git push origin ft/copy-schema${{github.sha}}
+
+      - name: create Pull Request to frontend
+        run: |
+          gh pr create \
+            --title ":robot: generated openAPI schema[bot]" \
+            --body ":robot: generated openAPI schema[bot]" \
+            --repo Hack-Portal/frontend \
+            --base develop \
+            --head ft/copy-schema${{github.sha}} \
+            --reviewer "${{ github.event.head_commit.committer.username || github.triggering_actor }}"
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}

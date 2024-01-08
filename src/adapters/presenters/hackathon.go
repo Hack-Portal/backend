@@ -2,17 +2,15 @@ package presenters
 
 import (
 	"context"
-	"log"
-	"log/slog"
 	"net/http"
 
 	"github.com/Hack-Portal/backend/src/datastructure/hperror"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type HackathonPresenter struct {
-	logger *slog.Logger
 }
 
 func NewHackathonPresenter() ports.HackathonOutputBoundary {
@@ -20,6 +18,8 @@ func NewHackathonPresenter() ports.HackathonOutputBoundary {
 }
 
 func (s *HackathonPresenter) PresentCreateHackathon(ctx context.Context, out *ports.OutputCreateHackathonData) (int, *response.CreateHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("PresentCreateHackathon-presenter").End()
+
 	if out.Error != nil {
 		switch out.Error {
 		case hperror.ErrFieldRequired:
@@ -33,6 +33,8 @@ func (s *HackathonPresenter) PresentCreateHackathon(ctx context.Context, out *po
 }
 
 func (s *HackathonPresenter) PresentGetHackathon(ctx context.Context, out *ports.OutputGetHackathonData) (int, *response.GetHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("PresentGetHackathon-presenter").End()
+
 	if out.Error != nil {
 		switch out.Error {
 		case hperror.ErrFieldRequired:
@@ -46,7 +48,23 @@ func (s *HackathonPresenter) PresentGetHackathon(ctx context.Context, out *ports
 }
 
 func (s *HackathonPresenter) PresentListHackathon(ctx context.Context, out *ports.OutputListHackathonData) (int, []*response.GetHackathon) {
-	log.Println("out", out)
+	defer newrelic.FromContext(ctx).StartSegment("PresentListHackathon-presenter").End()
+
+	if out.Error != nil {
+		switch out.Error {
+		case hperror.ErrFieldRequired:
+			return http.StatusBadRequest, nil
+		default:
+			return http.StatusInternalServerError, nil
+		}
+	}
+
+	return http.StatusOK, out.Response
+}
+
+func (s *HackathonPresenter) PresentDeleteHackathon(ctx context.Context, out *ports.OutputDeleteHackathonData) (int, *response.DeleteHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("PresentDeleteHackathon-presenter").End()
+
 	if out.Error != nil {
 		switch out.Error {
 		case hperror.ErrFieldRequired:

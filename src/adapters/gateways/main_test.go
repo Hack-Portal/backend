@@ -12,7 +12,7 @@ import (
 	gormComm "github.com/Hack-Portal/backend/src/frameworks/db/gorm"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/murasame29/db-conn/sqldb/postgres"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -29,30 +29,25 @@ func setup() {
 	config.LoadEnv("../../../.env")
 
 	// DB接続する
-	postgresConn := postgres.NewConnection(
+	dsn := fmt.Sprintf("user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
 		config.Config.Database.User,
 		config.Config.Database.Password,
-		config.Config.Database.Host,
-		config.Config.Database.Port,
 		config.Config.Database.DBName,
+		config.Config.Database.Port,
 		config.Config.Database.SSLMode,
-		config.Config.Database.ConnectAttempts,
-		config.Config.Database.ConnectWaitTime,
-		config.Config.Database.ConnectBlocks,
+		config.Config.Database.TimeZone,
 	)
 
-	sqlDB, err := postgresConn.Connection()
+	dbconn, err = gorm.Open(postgres.New(postgres.Config{
+		DSN:                  dsn,
+		PreferSimpleProtocol: true,
+	}))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	db = gormComm.New()
-	dbconn, err = db.Connection(sqlDB)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	sqlDB, _ := dbconn.DB()
 
 	// テスト用のDBを作成する
 	m, err := migrations.NewPostgresMigrate(sqlDB, "file://../../../cmd/migrations", nil)

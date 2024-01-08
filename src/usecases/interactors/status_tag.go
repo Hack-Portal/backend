@@ -9,6 +9,7 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type StatusTagInteractor struct {
@@ -24,6 +25,8 @@ func NewStatusTagInteractor(statusTagRepo dai.StatusTagDai, output ports.StatusT
 }
 
 func (s *StatusTagInteractor) CreateStatusTag(ctx context.Context, in *request.CreateStatusTag) (int, *response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateStatusTag-usecase").End()
+
 	if in.Status == "" {
 		return s.Output.PresentCreateStatusTag(ctx, &ports.OutputCraeteStatusTagData{
 			Error:    hperror.ErrFieldRequired,
@@ -45,6 +48,8 @@ func (s *StatusTagInteractor) CreateStatusTag(ctx context.Context, in *request.C
 }
 
 func (s *StatusTagInteractor) FindAllStatusTag(ctx context.Context) (int, []*response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("FindAllStatusTag-usecase").End()
+
 	statusTags, err := s.StatusTagRepo.FindAll(ctx)
 	return s.Output.PresentFindAllStatusTag(ctx, &ports.OutputFindAllStatusTagData{
 		Error:    err,
@@ -53,6 +58,8 @@ func (s *StatusTagInteractor) FindAllStatusTag(ctx context.Context) (int, []*res
 }
 
 func (s *StatusTagInteractor) FindByIdStatusTag(ctx context.Context, in *request.GetStatusTagByID) (int, *response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("FindByIdStatusTag-usecase").End()
+
 	statusTag, err := s.StatusTagRepo.FindById(ctx, in.ID)
 	return s.Output.PresentFindByIdStatusTag(ctx, &ports.OutputFindByIdStatusTagData{
 		Error:    err,
@@ -61,6 +68,8 @@ func (s *StatusTagInteractor) FindByIdStatusTag(ctx context.Context, in *request
 }
 
 func (s *StatusTagInteractor) UpdateStatusTag(ctx context.Context, in *request.UpdateStatusTag) (int, *response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("UpdateStatusTag-usecase").End()
+
 	if in.Status == "" {
 		return s.Output.PresentUpdateStatusTag(ctx, &ports.OutputUpdateStatusTagData{
 			Error:    hperror.ErrFieldRequired,

@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"time"
 
-	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/src/datastructure/models"
+	"github.com/Hack-Portal/backend/src/datastructure/request"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/google/uuid"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 const (
@@ -37,10 +37,12 @@ func NewHackathonInteractor(hackathonDai dai.HackathonDai, HackathonStatus dai.H
 }
 
 func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.InputCreatehackathonData) (int, *response.CreateHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateHackathon-usecase").End()
+
 	// 画像があるときは画像を保存してLinkを追加
 	// 画像がないときは初期画像をLinkに追加
 	var (
-		imageLinks  string = config.Config.Server.DefaultHackathonImage
+		imageLinks  string
 		hackathonID string = uuid.New().String()
 	)
 
@@ -63,7 +65,6 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 		}
 
 		// 画像を保存してLinkを追加
-		log.Println("uploading image")
 		links, err := hi.FileStore.UploadFile(ctx, data, fmt.Sprintf("%s%s.%s", HACKATHON_IMAGE_DIR, hackathonID, in.ImageFile.Filename))
 		if err != nil {
 			return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
@@ -71,6 +72,7 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 				Response: nil,
 			})
 		}
+
 		imageLinks = links
 	}
 
@@ -87,22 +89,12 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		DeletedAt: nil,
-	}); err != nil {
+	}, in.Statuses); err != nil {
 		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
 			Error:    err,
 			Response: nil,
 		})
 	}
-
-	// ステータスを作成
-	if err := hi.HackathonStatus.Create(ctx, hackathonID, in.Statuses); err != nil {
-		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-			Error:    err,
-			Response: nil,
-		})
-	}
-
-	// TODO:ハッカソンを取得？
 
 	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
 	if err != nil {
@@ -129,6 +121,8 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 }
 
 func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID string) (int, *response.GetHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("GetHackathon-usecase").End()
+
 	if len(hackathonID) == 0 {
 		return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
 			Error:    fmt.Errorf("invalid hackathon id"),
@@ -160,17 +154,27 @@ func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID str
 	})
 }
 
-func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSize int) (int, []*response.GetHackathon) {
-	if pageID <= 0 {
-		pageID = 1
-	}
-	if pageSize <= 0 {
-		pageSize = 10
+func (hi *HackathonInteractor) ListHackathon(ctx context.Context, in request.ListHackathon) (int, []*response.GetHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("ListHackathon-usecase").End()
+
+	if in.PageSize <= 0 {
+		in.PageSize = 10
 	}
 
-	hackathons, err := hi.Hackathon.FindAll(ctx, pageSize, (pageID-1)*pageSize)
+	if in.PageID <= 0 {
+		in.PageID = 1
+	}
+
+	hackathons, err := hi.Hackathon.FindAll(ctx, dai.FindAllParams{
+		Limit:  in.PageSize,
+		Offset: (in.PageID - 1) * in.PageSize,
+
+		Tags:         in.Tags,
+		New:          in.New,
+		LongTerm:     in.LongTerm,
+		NearDeadline: in.NearDeadline,
+	})
 	if err != nil {
-		log.Println("1")
 		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
 			Error:    err,
 			Response: nil,
@@ -186,7 +190,6 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSi
 	}
 	icons, err := hi.FileStore.ParallelGetPresignedObjectURL(ctx, parallelGetPresignedObjectURLInput)
 	if err != nil {
-		log.Println("2")
 		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
 			Error:    err,
 			Response: nil,
@@ -204,7 +207,6 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSi
 
 	statuses, err := hi.HackathonStatus.FindAll(ctx, hackathonIDs)
 	if err != nil {
-		log.Println("3")
 		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
 			Error:    err,
 			Response: nil,
@@ -241,6 +243,8 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, pageID, pageSi
 }
 
 func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID string) (*models.Hackathon, []*response.StatusTag, error) {
+	defer newrelic.FromContext(ctx).StartSegment("getHackathon-usecase").End()
+
 	hackathon, err := hi.Hackathon.Find(ctx, hackathonID)
 	if err != nil {
 		return nil, nil, err
@@ -263,4 +267,27 @@ func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID str
 		})
 	}
 	return hackathon, status, nil
+}
+
+func (hi *HackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID string) (int, *response.DeleteHackathon) {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathon-usecase").End()
+
+	if len(hackathonID) == 0 {
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
+			Error:    fmt.Errorf("invalid hackathon id"),
+			Response: nil,
+		})
+	}
+
+	if err := hi.Hackathon.Delete(ctx, hackathonID); err != nil {
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
+	return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
+		Error:    nil,
+		Response: &response.DeleteHackathon{},
+	})
 }

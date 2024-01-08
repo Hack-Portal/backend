@@ -61,3 +61,82 @@ type JoinedStatusTag struct {
 	StatusID    int64  `json:"status_id"`
 	Status      string `json:"status"`
 }
+
+/*
+CREATE TABLE "applove_user" (
+  "hackathon_id" varchar NOT NULL,
+  "user_id" varchar NOT NULL
+);
+*/
+
+type ApploveUser struct {
+	HackathonID string `json:"hackathon_id"`
+	UserID      string `json:"user_id"`
+}
+
+/*
+CREATE TABLE "users" (
+  "user_id" varchar PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "password" varchar NOT NULL,
+  "role" varchar NOT NULL,
+  "created_at" timestamptz NOT NULL,
+  "updated_at" timestamptz NOT NULL,
+  "deleted_at" timestamptz
+);
+*/
+
+type User struct {
+	UserID    string    `json:"user_id"`
+	Name      string    `json:"name"`
+	Password  string    `json:"password"`
+	Role      int       `json:"role"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	DeletedAt time.Time `json:"deleted_at"`
+}
+
+const (
+	RoleAdmin = iota + 1
+	RoleHackPortalOperator
+)
+
+/*
+CREATE TABLE "roles" (
+  "role_id" serial PRIMARY KEY,
+  "role" varchar NOT NULL
+);
+*/
+
+type Role struct {
+	RoleID int64  `json:"role_id" gorm:"autoIncrement"`
+	Role   string `json:"role"`
+}
+
+/*
+CREATE TABLE "rbac_policies" (
+  "policy_id" int PRIMARY KEY,
+  "p_type" varchar NOT NULL,
+  "v0" varchar NOT NULL,
+  "v1" varchar NOT NULL,
+  "v2" varchar NOT NULL,
+  "v3" varchar NOT NULL
+);
+*/
+
+type RbacPolicy struct {
+	PolicyID int    `gorm:"primary_key;autoIncrement:true;unique" json:"policy_id"`
+	PType    string `json:"p_type"`
+	V0       int    `json:"v0"`
+	V1       string `json:"v1"`
+	V2       string `json:"v2"`
+	V3       string `json:"v3"`
+}
+
+type CasbinPolicy struct {
+	PType string `json:"PType"`
+	V0    string `json:"V0"`
+	V1    string `json:"V1"`
+	V2    string `json:"V2"`
+	V3    string `json:"V3"`
+}

@@ -2,17 +2,16 @@ package presenters
 
 import (
 	"context"
-	"log/slog"
 	"net/http"
 
 	"github.com/Hack-Portal/backend/src/datastructure/hperror"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/gorm"
 )
 
 type StatusTagPresenter struct {
-	logger *slog.Logger
 }
 
 func NewStatusTagPresenter() ports.StatusTagOutputBoundary {
@@ -20,6 +19,8 @@ func NewStatusTagPresenter() ports.StatusTagOutputBoundary {
 }
 
 func (s *StatusTagPresenter) PresentCreateStatusTag(ctx context.Context, out *ports.OutputCraeteStatusTagData) (int, *response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("PresentCreateStatusTag-presenter").End()
+
 	if out.Error != nil {
 		switch out.Error {
 		case hperror.ErrFieldRequired:
@@ -36,6 +37,8 @@ func (s *StatusTagPresenter) PresentCreateStatusTag(ctx context.Context, out *po
 }
 
 func (s *StatusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out *ports.OutputFindAllStatusTagData) (int, []*response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("PresentFindAllStatusTag-presenter").End()
+
 	if out.Error != nil {
 		switch out.Error {
 		case gorm.ErrRecordNotFound:
@@ -57,6 +60,8 @@ func (s *StatusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out *p
 }
 
 func (s *StatusTagPresenter) PresentFindByIdStatusTag(ctx context.Context, out *ports.OutputFindByIdStatusTagData) (int, *response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("PresentFindByIdStatusTag-presenter").End()
+
 	if out.Error != nil {
 		switch out.Error {
 		case gorm.ErrRecordNotFound:
@@ -74,6 +79,8 @@ func (s *StatusTagPresenter) PresentFindByIdStatusTag(ctx context.Context, out *
 }
 
 func (s *StatusTagPresenter) PresentUpdateStatusTag(ctx context.Context, out *ports.OutputUpdateStatusTagData) (int, *response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("PresentUpdateStatusTag-presenter").End()
+
 	if out.Error != nil {
 		switch out.Error {
 		case gorm.ErrRecordNotFound:

@@ -36,7 +36,7 @@ func testUploadFile(t *testing.T) {
 		t.Fatal("file is empty")
 	}
 
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, 1)
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil, 1)
 	key, err := fs.UploadFile(context.Background(), file, "test.jpg")
 	if err != nil {
 		t.Error("upload file error", err)
@@ -50,7 +50,7 @@ func testUploadFile(t *testing.T) {
 }
 
 func testGetPresignedObjectURL(t *testing.T) {
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, 1)
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil, 1)
 	url, err := fs.GetPresignedObjectURL(context.Background(), "test.jpg")
 	if err != nil {
 		t.Error("get presigned url error", err)
@@ -76,7 +76,7 @@ func testGetPresignedObjectURL(t *testing.T) {
 }
 
 func testDeleteFile(t *testing.T) {
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, 1)
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil, 1)
 	err := fs.DeleteFile(context.Background(), "test.jpg")
 	if err != nil {
 		t.Error("delete file error", err)
@@ -103,7 +103,7 @@ func TestParallelGetPresignedObjectURL(t *testing.T) {
 		},
 	}
 
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, 1)
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil, 1)
 
 	data, err := fs.ParallelGetPresignedObjectURL(context.Background(), sample)
 	if err != nil {

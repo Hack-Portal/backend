@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"log"
 	"mime/multipart"
 
 	"github.com/Hack-Portal/backend/src/datastructure/request"
+	_ "github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/labstack/echo/v4"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type HackathonController struct {
@@ -19,16 +20,27 @@ func NewHackathonController(input ports.HackathonInputBoundary) *HackathonContro
 	}
 }
 
+// Hackathon		godoc
+//
+// @Summary			Create Hackathon
+// @Description	Create Hackathon
+// @Tags				Hackathon
+// @Produce			json
+// @Param				CreateHackathonRequest	body			request.CreateHackathon	true			"request body"
+// @Success			200											{object}	response.CreateHackathon					"success response"
+// @Failure			400											{object}	nil																"error response"
+// @Failure			500											{object}	nil																"error response"
+// @Router			/hackathons							[POST]
 func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
+	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("CreateHackathon").End()
+
 	var input request.CreateHackathon
 	if err := ctx.Bind(&input); err != nil {
-		log.Println(err)
 		return echo.ErrBadRequest
 	}
 
 	form, err := ctx.MultipartForm()
 	if err != nil {
-		log.Println(err)
 		return echo.ErrBadRequest
 	}
 	var image *multipart.FileHeader
@@ -39,8 +51,6 @@ func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 	} else {
 		image = imageFiles[0]
 	}
-
-	log.Println("statuses", input.Statuses)
 
 	return ctx.JSON(hc.input.CreateHackathon(ctx.Request().Context(), &ports.InputCreatehackathonData{
 		ImageFile: image,
@@ -54,23 +64,52 @@ func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 	}))
 }
 
-func (hc *HackathonController) GetHackathon(ctx echo.Context) error {
-	var input request.GetHackathon
-	if ctx.Bind(&input) != nil {
-		return echo.ErrBadRequest
-	}
-
-	return ctx.JSON(hc.input.GetHackathon(ctx.Request().Context(), input.HackathonID))
-}
-
+// Hackathon		godoc
+//
+// @Summary			List Hackathons
+// @Description	List Hackathons
+// @Tags				Hackathon
+// @Produce			json
+// @Param				ListHackathonRequest		query			request.ListHackathon		true			"request query"
+// @Success			200											{array}	response.GetHackathon							"success response"
+// @Failure			400											{object}	nil																"error response"
+// @Failure			500											{object}	nil																"error response"
+// @Router			/hackathons							[GET]
 func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
-	var input request.ListHackathon
+	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("ListHackathons").End()
+
+	var input request.ListHackathon = request.ListHackathon{
+		PageSize: 10,
+		PageID:   1,
+		New:      true,
+	}
 	if ctx.Bind(&input) != nil {
 		return echo.ErrBadRequest
 	}
 
 	return ctx.JSON(hc.input.ListHackathon(ctx.Request().Context(),
-		input.PageSize,
-		input.PageID,
+		input,
 	))
+}
+
+// Hackathon		godoc
+//
+// @Summary			Delete Hackathons
+// @Description	Delete Hackathons
+// @Tags				Hackathon
+// @Produce			json
+// @Param				hackathon_id						path			string									true			"request body"
+// @Success			200											{object}	response.DeleteHackathon					"success response"
+// @Failure			400											{object}	nil																"error response"
+// @Failure			500											{object}	nil																"error response"
+// @Router			/hackathons/{hackathon_id}				[DELETE]
+func (hc *HackathonController) DeleteHackathon(ctx echo.Context) error {
+	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("DeleteHackathon").End()
+
+	var input request.DeleteHackathon
+	if ctx.Bind(&input) != nil {
+		return echo.ErrBadRequest
+	}
+
+	return ctx.JSON(hc.input.DeleteHackathon(ctx.Request().Context(), input.HackathonID))
 }

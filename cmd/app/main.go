@@ -3,21 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
-	"log/slog"
-	"os"
-	"time"
+	"log"
 
 	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/cmd/migrations"
 	"github.com/Hack-Portal/backend/src/driver/aws"
-	"github.com/Hack-Portal/backend/src/frameworks/db/gorm"
-	"github.com/Hack-Portal/backend/src/frameworks/echo"
+	"github.com/Hack-Portal/backend/src/driver/redis"
+	"github.com/Hack-Portal/backend/src/router"
 	"github.com/Hack-Portal/backend/src/server"
-	"github.com/murasame29/db-conn/sqldb/postgres"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func init() {
-	config.LoadEnv(".env")
+	config.LoadEnv()
+	//config.LoadEnv(".env")
 }
 
 //	@title						Hack-Portal Backend API
@@ -31,52 +31,31 @@ func init() {
 
 //	@license.name			No-license
 
-// @host							https://hc-dev.seafood-dev.com
+// @host							api-dev.hack-portal.com
 // @BasePath					/v1
 func main() {
-	logger := slog.New(slog.NewJSONHandler(
-		os.Stdout,
-		&slog.HandlerOptions{
-			AddSource: true,
-			Level:     slog.LevelDebug,
-		},
-	))
-
-	postgresConn := postgres.NewConnection(
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
+		config.Config.Database.Host,
 		config.Config.Database.User,
 		config.Config.Database.Password,
-		config.Config.Database.Host,
-		config.Config.Database.Port,
 		config.Config.Database.DBName,
+		config.Config.Database.Port,
 		config.Config.Database.SSLMode,
-		config.Config.Database.ConnectAttempts,
-		config.Config.Database.ConnectWaitTime,
-		config.Config.Database.ConnectBlocks,
+		config.Config.Database.TimeZone,
 	)
+	log.Println(dsn)
 
-	sqlDB, err := postgresConn.Connection()
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		logger.Error(fmt.Sprintf("failed to connect database: %v", err))
-		return
+		log.Println(dsn)
+		log.Fatal(err)
 	}
 
-	// open db connection
-
-	gorm := gorm.New()
-	dbconn, err := gorm.Connection(sqlDB)
-	if err != nil {
-		logger.Error(fmt.Sprintf("failed to connect database: %v", err))
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	defer gorm.Close(ctx)
+	sqlDB, _ := db.DB()
 
 	// migrate
 	m, err := migrations.NewPostgresMigrate(sqlDB, "file://cmd/migrations", nil)
 	if err != nil {
-		logger.Error(fmt.Sprintf("failed create migrate instance: %v", err))
 		return
 	}
 	// migrate up
@@ -88,12 +67,36 @@ func main() {
 		config.Config.Buckets.AccessKeyId,
 		config.Config.Buckets.AccessKeySecret,
 	).Connect(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// app, err := newrelic.Setup()
+	// if err != nil {
+	// 	logger.Error(fmt.Sprintf("failed to setup newrelic: %v", err))
+	// 	return
+	// }
+
+	redisconn := redis.New(
+		fmt.Sprintf("%v:%v", config.Config.Redis.Host, config.Config.Redis.Port),
+		config.Config.Redis.Password,
+		&config.Config.Redis.ConnectTimeout,
+		&config.Config.Redis.ConnectAttempts,
+		&config.Config.Redis.ConnectWaitTime,
+	)
+	defer redisconn.Close()
+
+	redisConn, err := redisconn.Connect(config.Config.Redis.DB)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// start server
-	handler := echo.NewEchoServer(
-		dbconn,
+	handler := router.NewRouter(
+		router.NewDebug(config.Config.Server.Version),
+		db,
+		redisConn,
 		client,
-		logger,
 	)
 
 	server.New().Run(handler)
