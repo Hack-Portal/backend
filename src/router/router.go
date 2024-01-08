@@ -1,8 +1,12 @@
 package router
 
 import (
+	"github.com/Hack-Portal/backend/src/adapters/controllers"
+	"github.com/Hack-Portal/backend/src/adapters/gateways"
+	"github.com/Hack-Portal/backend/src/adapters/presenters"
 	"github.com/Hack-Portal/backend/src/router/middleware"
 	v1 "github.com/Hack-Portal/backend/src/router/v1"
+	"github.com/Hack-Portal/backend/src/usecases/interactors"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/labstack/echo/v4"
 	"github.com/redis/go-redis/v9"
@@ -35,10 +39,17 @@ func NewRouter(config Config, db *gorm.DB, cache *redis.Client, client *s3.Clien
 
 func (r *router) setup() {
 	// di
+	uc := controllers.NewUserController(
+		interactors.NewUserInteractor(
+			gateways.NewUserGateway(r.db),
+			presenters.NewUserPresenter(),
+		),
+	)
 
 	// health check
 	r.engine.GET("/health", func(c echo.Context) error { return c.String(200, "ok") })
 	r.engine.GET("/version", func(c echo.Context) error { return c.String(200, r.config.Version) })
+	r.engine.POST("/init_admin", uc.InitAdmin)
 
 	// status tag
 	middleware := middleware.NewMiddleware(r.db)
