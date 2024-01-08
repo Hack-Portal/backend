@@ -90,11 +90,16 @@ type User struct {
 	UserID    string    `json:"user_id"`
 	Name      string    `json:"name"`
 	Password  string    `json:"password"`
-	Role      int64     `json:"role"`
+	Role      int       `json:"role"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	DeletedAt time.Time `json:"deleted_at"`
 }
+
+const (
+	RoleAdmin = iota + 1
+	RoleHackPortalOperator
+)
 
 /*
 CREATE TABLE "roles" (
