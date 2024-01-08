@@ -39,7 +39,7 @@ jobs:
           images=$(yq '.spec.template.spec.containers[0].image' 'deployment.yaml')
           echo $images
           cd ../product
-          yq eval -i '.spec.template.spec.containers[0].image = strenv(images)' 'deployment.yaml'
+          yq eval -i '.spec.template.spec.containers[0].image = "${images}"' 'deployment.yaml'
 
       - name: push repository
         run: |
