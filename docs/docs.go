@@ -128,39 +128,6 @@ const docTemplate = `{
             }
         },
         "/hackathons/{hackathon_id}": {
-            "get": {
-                "description": "Get Hackathon",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hackathon"
-                ],
-                "summary": "Get Hackathon",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "request body",
-                        "name": "hackathon_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "$ref": "#/definitions/response.GetHackathon"
-                        }
-                    },
-                    "400": {
-                        "description": "error response"
-                    },
-                    "500": {
-                        "description": "error response"
-                    }
-                }
-            },
             "delete": {
                 "description": "Delete Hackathons",
                 "produces": [
@@ -184,6 +151,201 @@ const docTemplate = `{
                         "description": "success response",
                         "schema": {
                             "$ref": "#/definitions/response.DeleteHackathon"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            }
+        },
+        "/init_admin": {
+            "post": {
+                "description": "init admin",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "init admin",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "InitAdmin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.InitAdmin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.User"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            }
+        },
+        "/rbac": {
+            "get": {
+                "description": "List Policies",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RBACPolicy"
+                ],
+                "summary": "List Policies",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "act",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "eft",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "obj",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "sub",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.ListRbacPolicies"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            },
+            "post": {
+                "description": "Create RBACPolicy",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RBACPolicy"
+                ],
+                "summary": "Create RBACPolicy",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "CreatePolicy",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateRbacPolicy"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.CreateRbacPolicy"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            },
+            "delete": {
+                "description": "DeleteAll Policies",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RBACPolicy"
+                ],
+                "summary": "DeleteAll Policies",
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.DeleteAllRbacPolicies"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            }
+        },
+        "/rbac/{policy_id}": {
+            "delete": {
+                "description": "Delete Policies",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RBACPolicy"
+                ],
+                "summary": "Delete Policies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "request query",
+                        "name": "policy_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.DeleteRbacPolicy"
                         }
                     },
                     "400": {
@@ -260,48 +422,6 @@ const docTemplate = `{
             }
         },
         "/status_tags/{id}": {
-            "get": {
-                "description": "Get StatusTag by id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "StatusTag"
-                ],
-                "summary": "Get StatusTag by id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "status tag id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "request body",
-                        "name": "CreateStatusTagRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.GetStatusTagByID"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success response",
-                        "schema": {
-                            "$ref": "#/definitions/response.StatusTag"
-                        }
-                    },
-                    "400": {
-                        "description": "error response"
-                    },
-                    "500": {
-                        "description": "error response"
-                    }
-                }
-            },
             "put": {
                 "description": "Update StatusTag by id",
                 "produces": [
@@ -347,6 +467,49 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.CasbinPolicy": {
+            "type": "object",
+            "properties": {
+                "PType": {
+                    "type": "string"
+                },
+                "V0": {
+                    "type": "string"
+                },
+                "V1": {
+                    "type": "string"
+                },
+                "V2": {
+                    "type": "string"
+                },
+                "V3": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RbacPolicy": {
+            "type": "object",
+            "properties": {
+                "p_type": {
+                    "type": "string"
+                },
+                "policy_id": {
+                    "type": "integer"
+                },
+                "v0": {
+                    "type": "integer"
+                },
+                "v1": {
+                    "type": "string"
+                },
+                "v2": {
+                    "type": "string"
+                },
+                "v3": {
+                    "type": "string"
+                }
+            }
+        },
         "request.CreateHackathon": {
             "type": "object",
             "required": [
@@ -380,6 +543,17 @@ const docTemplate = `{
                 }
             }
         },
+        "request.CreateRbacPolicy": {
+            "type": "object",
+            "properties": {
+                "policies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.CasbinPolicy"
+                    }
+                }
+            }
+        },
         "request.CreateStatusTag": {
             "type": "object",
             "properties": {
@@ -388,11 +562,18 @@ const docTemplate = `{
                 }
             }
         },
-        "request.GetStatusTagByID": {
+        "request.InitAdmin": {
             "type": "object",
+            "required": [
+                "init_admin_token",
+                "name"
+            ],
             "properties": {
-                "id": {
-                    "type": "integer"
+                "init_admin_token": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -439,8 +620,30 @@ const docTemplate = `{
                 }
             }
         },
+        "response.CreateRbacPolicy": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "response.DeleteAllRbacPolicies": {
+            "type": "object"
+        },
         "response.DeleteHackathon": {
             "type": "object"
+        },
+        "response.DeleteRbacPolicy": {
+            "type": "object",
+            "properties": {
+                "policy_id": {
+                    "type": "integer"
+                }
+            }
         },
         "response.GetHackathon": {
             "type": "object",
@@ -474,6 +677,17 @@ const docTemplate = `{
                 }
             }
         },
+        "response.ListRbacPolicies": {
+            "type": "object",
+            "properties": {
+                "policies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RbacPolicy"
+                    }
+                }
+            }
+        },
         "response.StatusTag": {
             "type": "object",
             "properties": {
@@ -481,6 +695,20 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.User": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }

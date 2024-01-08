@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 
 	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/src/driver/aws"
+	"github.com/Hack-Portal/backend/src/driver/redis"
 	"github.com/Hack-Portal/backend/src/router"
 	"github.com/Hack-Portal/backend/src/server"
 	"gorm.io/driver/postgres"
@@ -58,12 +61,15 @@ func main() {
 	// migrate up
 	m.Up()
 
-	// client, err := aws.New(
-	// 	config.Config.Buckets.AccountID,
-	// 	config.Config.Buckets.EndPoint,
-	// 	config.Config.Buckets.AccessKeyId,
-	// 	config.Config.Buckets.AccessKeySecret,
-	// ).Connect(context.Background())
+	client, err := aws.New(
+		config.Config.Buckets.AccountID,
+		config.Config.Buckets.EndPoint,
+		config.Config.Buckets.AccessKeyId,
+		config.Config.Buckets.AccessKeySecret,
+	).Connect(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// app, err := newrelic.Setup()
 	// if err != nil {
@@ -71,24 +77,26 @@ func main() {
 	// 	return
 	// }
 
-	// redisconn := redis.New(
-	// 	fmt.Sprintf("%v:%v", config.Config.Redis.Host, config.Config.Redis.Port),
-	// 	config.Config.Redis.Password,
-	// 	&config.Config.Redis.ConnectTimeout,
-	// 	&config.Config.Redis.ConnectAttempts,
-	// 	&config.Config.Redis.ConnectWaitTime,
-	// )
-	// defer redisconn.Close()
+	redisconn := redis.New(
+		fmt.Sprintf("%v:%v", config.Config.Redis.Host, config.Config.Redis.Port),
+		config.Config.Redis.Password,
+		&config.Config.Redis.ConnectTimeout,
+		&config.Config.Redis.ConnectAttempts,
+		&config.Config.Redis.ConnectWaitTime,
+	)
+	defer redisconn.Close()
 
-	// redisConn, err := redisconn.Connect(config.Config.Redis.DB)
-	// if err != nil {
-	// 	logger.Error(fmt.Sprintf("failed to connect redis: %v", err))
-	// 	return
-	// }
+	redisConn, err := redisconn.Connect(config.Config.Redis.DB)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// start server
 	handler := router.NewRouter(
-		*router.NewDebug(config.Config.Server.Version),
+		router.NewDebug(config.Config.Server.Version),
+		db,
+		redisConn,
+		client,
 	)
 
 	server.New().Run(handler)

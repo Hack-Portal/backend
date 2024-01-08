@@ -66,28 +66,6 @@ func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 
 // Hackathon		godoc
 //
-// @Summary			Get Hackathon
-// @Description	Get Hackathon
-// @Tags				Hackathon
-// @Produce			json
-// @Param				hackathon_id						path			string									true			"request body"
-// @Success			200											{object}	response.GetHackathon							"success response"
-// @Failure			400											{object}	nil																"error response"
-// @Failure			500											{object}	nil																"error response"
-// @Router			/hackathons/{hackathon_id}				[GET]
-func (hc *HackathonController) GetHackathon(ctx echo.Context) error {
-	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("GetHackathon").End()
-
-	var input request.GetHackathon
-	if ctx.Bind(&input) != nil {
-		return echo.ErrBadRequest
-	}
-
-	return ctx.JSON(hc.input.GetHackathon(ctx.Request().Context(), input.HackathonID))
-}
-
-// Hackathon		godoc
-//
 // @Summary			List Hackathons
 // @Description	List Hackathons
 // @Tags				Hackathon
