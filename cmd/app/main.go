@@ -43,10 +43,11 @@ func main() {
 		config.Config.Database.SSLMode,
 		config.Config.Database.TimeZone,
 	)
+	log.Println(dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
 	if err != nil {
+		log.Println(dsn)
 		log.Fatal(err)
 	}
 
