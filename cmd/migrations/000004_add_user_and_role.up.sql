@@ -1,18 +1,17 @@
+CREATE TABLE "roles" (
+  "role_id" serial PRIMARY KEY,
+  "role" varchar NOT NULL
+);
 
 
 CREATE TABLE "users" (
   "user_id" varchar PRIMARY KEY,
   "name" varchar NOT NULL,
   "password" varchar NOT NULL,
-  "role" varchar NOT NULL,
+  "role" int NOT NULL,
   "created_at" timestamptz NOT NULL,
   "updated_at" timestamptz NOT NULL,
   "deleted_at" timestamptz
-);
-
-CREATE TABLE "roles" (
-  "role_id" serial PRIMARY KEY,
-  "role" varchar NOT NULL
 );
 
 CREATE TABLE "applove_user" (
