@@ -34,14 +34,14 @@ func init() {
 // @host							api-dev.hack-portal.com
 // @BasePath					/v1
 func main() {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
-		config.Config.Database.Host,
+	dsn := fmt.Sprintf("%s://%s:%s@%s:%d/%s?sslmode=%s",
+		config.Config.Database.DB,
 		config.Config.Database.User,
 		config.Config.Database.Password,
-		config.Config.Database.DBName,
+		config.Config.Database.Host,
 		config.Config.Database.Port,
+		config.Config.Database.DBName,
 		config.Config.Database.SSLMode,
-		config.Config.Database.TimeZone,
 	)
 	log.Println(dsn)
 
