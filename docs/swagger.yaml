@@ -1,5 +1,33 @@
 basePath: /v1
 definitions:
+  models.CasbinPolicy:
+    properties:
+      PType:
+        type: string
+      V0:
+        type: string
+      V1:
+        type: string
+      V2:
+        type: string
+      V3:
+        type: string
+    type: object
+  models.RbacPolicy:
+    properties:
+      p_type:
+        type: string
+      policy_id:
+        type: integer
+      v0:
+        type: integer
+      v1:
+        type: string
+      v2:
+        type: string
+      v3:
+        type: string
+    type: object
   request.CreateHackathon:
     properties:
       expired:
@@ -23,10 +51,27 @@ definitions:
     - start_date
     - term
     type: object
+  request.CreateRbacPolicy:
+    properties:
+      policies:
+        items:
+          $ref: '#/definitions/models.CasbinPolicy'
+        type: array
+    type: object
   request.CreateStatusTag:
     properties:
       status:
         type: string
+    type: object
+  request.InitAdmin:
+    properties:
+      init_admin_token:
+        type: string
+      name:
+        type: string
+    required:
+    - init_admin_token
+    - name
     type: object
   request.UpdateStatusTag:
     properties:
@@ -56,7 +101,21 @@ definitions:
       term:
         type: integer
     type: object
+  response.CreateRbacPolicy:
+    properties:
+      id:
+        items:
+          type: integer
+        type: array
+    type: object
+  response.DeleteAllRbacPolicies:
+    type: object
   response.DeleteHackathon:
+    type: object
+  response.DeleteRbacPolicy:
+    properties:
+      policy_id:
+        type: integer
     type: object
   response.GetHackathon:
     properties:
@@ -79,11 +138,27 @@ definitions:
       term:
         type: integer
     type: object
+  response.ListRbacPolicies:
+    properties:
+      policies:
+        items:
+          $ref: '#/definitions/models.RbacPolicy'
+        type: array
+    type: object
   response.StatusTag:
     properties:
       id:
         type: integer
       status:
+        type: string
+    type: object
+  response.User:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      user_id:
         type: string
     type: object
 host: api-dev.hack-portal.com
@@ -190,6 +265,134 @@ paths:
       summary: Delete Hackathons
       tags:
       - Hackathon
+  /init_admin:
+    post:
+      description: init admin
+      parameters:
+      - description: request body
+        in: body
+        name: InitAdmin
+        required: true
+        schema:
+          $ref: '#/definitions/request.InitAdmin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.User'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: init admin
+      tags:
+      - User
+  /rbac:
+    delete:
+      description: DeleteAll Policies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.DeleteAllRbacPolicies'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: DeleteAll Policies
+      tags:
+      - RBACPolicy
+    get:
+      description: List Policies
+      parameters:
+      - collectionFormat: csv
+        in: query
+        items:
+          type: string
+        name: act
+        type: array
+      - collectionFormat: csv
+        in: query
+        items:
+          type: string
+        name: eft
+        type: array
+      - collectionFormat: csv
+        in: query
+        items:
+          type: string
+        name: obj
+        type: array
+      - collectionFormat: csv
+        in: query
+        items:
+          type: string
+        name: sub
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.ListRbacPolicies'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: List Policies
+      tags:
+      - RBACPolicy
+    post:
+      description: Create RBACPolicy
+      parameters:
+      - description: request body
+        in: body
+        name: CreatePolicy
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateRbacPolicy'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.CreateRbacPolicy'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Create RBACPolicy
+      tags:
+      - RBACPolicy
+  /rbac/{policy_id}:
+    delete:
+      description: Delete Policies
+      parameters:
+      - description: request query
+        in: path
+        name: policy_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.DeleteRbacPolicy'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Delete Policies
+      tags:
+      - RBACPolicy
   /status_tags:
     get:
       description: Get all StatusTag
