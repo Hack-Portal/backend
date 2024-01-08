@@ -26,5 +26,7 @@ func NewV1Router(e *echo.Group, db *gorm.DB, cache *redis.Client, client *s3.Cli
 
 	router.statusTag()
 	router.hackathon()
+	router.rbacPolicy()
+
 	return
 }
