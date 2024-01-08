@@ -125,7 +125,7 @@ CREATE TABLE "rbac_policies" (
 */
 
 type RbacPolicy struct {
-	PolicyID int64  `json:"policy_id" gorm:"autoIncrement"`
+	PolicyID int    `gorm:"primary_key;autoIncrement:true;unique" json:"policy_id"`
 	PType    string `json:"p_type"`
 	V0       int    `json:"v0"`
 	V1       string `json:"v1"`
