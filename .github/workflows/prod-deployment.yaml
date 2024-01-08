@@ -36,7 +36,7 @@ jobs:
       - name: Copy registries
         run: |
           cd config/stage
-          images=`yq '.spec.template.spec.containers[0].image =' 'deployment.yaml'`
+          images=$(yq '.spec.template.spec.containers[0].image' 'deployment.yaml')
           cd ../product
           yq -i '.spec.template.spec.containers[0].image = "${images}"' 'deployment.yaml'
       - name: push repository
