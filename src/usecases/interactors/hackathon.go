@@ -287,7 +287,9 @@ func (hi *HackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID 
 	}
 
 	return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
-		Error:    nil,
-		Response: &response.DeleteHackathon{},
+		Error: nil,
+		Response: &response.DeleteHackathon{
+			HackathonID: hackathonID,
+		},
 	})
 }

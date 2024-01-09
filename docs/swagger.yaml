@@ -111,6 +111,9 @@ definitions:
   response.DeleteAllRbacPolicies:
     type: object
   response.DeleteHackathon:
+    properties:
+      hackathon_id:
+        type: string
     type: object
   response.DeleteRbacPolicy:
     properties:

@@ -25,4 +25,5 @@ type GetHackathon struct {
 }
 
 type DeleteHackathon struct {
+	HackathonID string `json:"hackathon_id"`
 }

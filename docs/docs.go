@@ -635,7 +635,12 @@ const docTemplate = `{
             "type": "object"
         },
         "response.DeleteHackathon": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "hackathon_id": {
+                    "type": "string"
+                }
+            }
         },
         "response.DeleteRbacPolicy": {
             "type": "object",
