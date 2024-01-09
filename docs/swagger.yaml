@@ -109,6 +109,9 @@ definitions:
         type: array
     type: object
   response.DeleteAllRbacPolicies:
+    properties:
+      message:
+        type: string
     type: object
   response.DeleteHackathon:
     properties:

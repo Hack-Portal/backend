@@ -114,6 +114,8 @@ func (r *RbacPolicyInteractor) DeleteAllRbacPolicies(ctx context.Context) (int, 
 
 	return r.output.PresentDeleteAllRbacPolicies(ctx, ports.NewOutput[*response.DeleteAllRbacPolicies](
 		nil,
-		&response.DeleteAllRbacPolicies{},
+		&response.DeleteAllRbacPolicies{
+			Message: "All policies deleted",
+		},
 	))
 }
