@@ -59,6 +59,10 @@ func (s *HackathonPresenter) PresentListHackathon(ctx context.Context, out *port
 		}
 	}
 
+	if len(out.Response) == 0 {
+		out.Response = []*response.GetHackathon{}
+	}
+
 	return http.StatusOK, out.Response
 }
 
