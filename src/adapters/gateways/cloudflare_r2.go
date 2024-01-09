@@ -31,7 +31,7 @@ func NewCloudflareR2(bucket string, client *s3.Client, cache *redis.Client, pres
 	return &CloudflareR2{
 		bucket:        bucket,
 		client:        client,
-		cacheClient:   NewCache[string](cache, time.Duration(30)*time.Minute),
+		cacheClient:   NewCache[string](cache, time.Duration(5)*time.Minute),
 		PresignClient: s3.NewPresignClient(client),
 		Config: Config{
 			// デフォルト30分のはず

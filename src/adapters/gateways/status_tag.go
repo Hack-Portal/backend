@@ -19,7 +19,7 @@ type StatusTagGateway struct {
 func NewStatusTagGateway(db *gorm.DB, cache *redis.Client) dai.StatusTagDai {
 	return &StatusTagGateway{
 		db:          db,
-		cacheClient: NewCache[[]*models.StatusTag](cache, time.Duration(30)*time.Minute),
+		cacheClient: NewCache[[]*models.StatusTag](cache, time.Duration(5)*time.Minute),
 	}
 }
 

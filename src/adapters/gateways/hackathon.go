@@ -20,7 +20,7 @@ type HackathonGateway struct {
 func NewHackathonGateway(db *gorm.DB, cache *redis.Client) dai.HackathonDai {
 	return &HackathonGateway{
 		db:          db,
-		cacheClient: NewCache[[]*models.Hackathon](cache, time.Duration(30)*time.Minute),
+		cacheClient: NewCache[[]*models.Hackathon](cache, time.Duration(5)*time.Minute),
 	}
 }
 
