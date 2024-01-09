@@ -34,8 +34,7 @@ func init() {
 // @host							api-dev.hack-portal.com
 // @BasePath					/v1
 func main() {
-	dsn := fmt.Sprintf("%s://%s:%s@%s:%d/%s?sslmode=%s",
-		config.Config.Database.DB,
+	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=%s",
 		config.Config.Database.User,
 		config.Config.Database.Password,
 		config.Config.Database.Host,
@@ -47,23 +46,22 @@ func main() {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("gorm open error: ", err)
 	}
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Println(dsn)
-		log.Fatal(err)
+		log.Fatal("db.DB error: ", err)
 	}
 
 	if err := sqlDB.Ping(); err != nil {
-		log.Fatal(err)
+		log.Fatal("db ping error: ", err)
 	}
 
 	// migrate
 	m, err := migrations.NewPostgresMigrate(sqlDB, "file://cmd/migrations", nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("migrate error: ", err)
 	}
 
 	// migrate up

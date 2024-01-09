@@ -12,7 +12,7 @@ type config struct {
 	}
 
 	Database struct {
-		DB       string `env:"DB" envDefault:"postgres"`
+		DB       string `env:"DB_DRIVER" envDefault:"postgres"`
 		Host     string `env:"DB_HOST" envDefault:"localhost"`
 		Port     int    `env:"DB_PORT" envDefault:"5432"`
 		User     string `env:"DB_USER" envDefault:"postgres"`
