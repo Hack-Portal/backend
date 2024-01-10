@@ -35,7 +35,7 @@ func (ug *UserGateway) FindAll(ctx context.Context) (users []*models.User, err e
 }
 
 func (ug *UserGateway) FindById(ctx context.Context, id string) (user *models.User, err error) {
-	result := ug.db.Model(&models.User{}).Where("user_id = ?", id).Scan(&user)
+	result := ug.db.First(&user, "user_id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
