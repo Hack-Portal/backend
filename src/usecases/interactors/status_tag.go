@@ -14,12 +14,14 @@ import (
 
 type StatusTagInteractor struct {
 	StatusTagRepo dai.StatusTagDai
+	discordNotify DiscordNotify
 	Output        ports.StatusTagOutputBoundary
 }
 
-func NewStatusTagInteractor(statusTagRepo dai.StatusTagDai, output ports.StatusTagOutputBoundary) ports.StatusTagInputBoundary {
+func NewStatusTagInteractor(statusTagRepo dai.StatusTagDai, discordNotify DiscordNotify, output ports.StatusTagOutputBoundary) ports.StatusTagInputBoundary {
 	return &StatusTagInteractor{
 		StatusTagRepo: statusTagRepo,
+		discordNotify: discordNotify,
 		Output:        output,
 	}
 }
@@ -37,6 +39,18 @@ func (s *StatusTagInteractor) CreateStatusTag(ctx context.Context, in *request.C
 	id, err := s.StatusTagRepo.Create(ctx, &models.StatusTag{
 		Status: in.Status,
 	})
+
+	if err := s.discordNotify.CreateNewForumTag([]*models.StatusTag{
+		{
+			StatusID: id,
+			Status:   in.Status,
+		},
+	}); err != nil {
+		return s.Output.PresentCreateStatusTag(ctx, &ports.OutputCraeteStatusTagData{
+			Error:    err,
+			Response: nil,
+		})
+	}
 
 	return s.Output.PresentCreateStatusTag(ctx, &ports.OutputCraeteStatusTagData{
 		Error: err,

@@ -24,14 +24,18 @@ type HackathonInteractor struct {
 	Hackathon       dai.HackathonDai
 	HackathonStatus dai.HackathonStatusDai
 	FileStore       dai.FileStore
+
+	discordNotify DiscordNotify
+
 	HackathonOutput ports.HackathonOutputBoundary
 }
 
-func NewHackathonInteractor(hackathonDai dai.HackathonDai, HackathonStatus dai.HackathonStatusDai, filestoreDai dai.FileStore, hackathonOutput ports.HackathonOutputBoundary) ports.HackathonInputBoundary {
+func NewHackathonInteractor(hackathonDai dai.HackathonDai, HackathonStatus dai.HackathonStatusDai, filestoreDai dai.FileStore, discordNotify DiscordNotify, hackathonOutput ports.HackathonOutputBoundary) ports.HackathonInputBoundary {
 	return &HackathonInteractor{
 		Hackathon:       hackathonDai,
 		HackathonStatus: HackathonStatus,
 		FileStore:       filestoreDai,
+		discordNotify:   discordNotify,
 		HackathonOutput: hackathonOutput,
 	}
 }
@@ -98,6 +102,14 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 
 	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
 	if err != nil {
+		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
+	// Discordに通知
+	if err := hi.discordNotify.PushNewForum(hackathon); err != nil {
 		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
 			Error:    err,
 			Response: nil,
@@ -280,6 +292,13 @@ func (hi *HackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID 
 	}
 
 	if err := hi.Hackathon.Delete(ctx, hackathonID); err != nil {
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
+	if err := hi.discordNotify.DeleteForums(hackathonID); err != nil {
 		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
 			Error:    err,
 			Response: nil,
