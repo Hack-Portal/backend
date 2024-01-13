@@ -46,4 +46,8 @@ type config struct {
 		AppName    string `env:"NEWRELIC_APPLICATION_NAME" envDefault:"hack-portal"`
 		LicenseKey string `env:"NEWRELIC_LICENSE_KEY" envDefault:""`
 	}
+
+	Discord struct {
+		Secret string `env:"DISCORD_SECRET" envDefault:"MTE5NTI1MTYxOTMxOTc5MTY0Ng.GXYAqS.A5yL121VzQaJBHXlvWvZjICpzdhHNa1D5i9tNU"`
+	}
 }

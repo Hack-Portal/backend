@@ -37,5 +37,9 @@ func LoadEnv(envPath ...string) {
 		log.Fatalf("env load error: %v", err)
 	}
 
+	if err := env.Parse(&config.Discord); err != nil {
+		log.Fatalf("env load error: %v", err)
+	}
+
 	Config = config
 }
