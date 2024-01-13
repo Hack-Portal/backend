@@ -12,19 +12,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type HackathonStatusGateway struct {
+type hackathonStatusGateway struct {
 	db          *gorm.DB
 	cacheClient dai.Cache[[]*models.JoinedStatusTag]
 }
 
+// NewHackathonStatusGateway はhackathonStatusGatewayのインスタンスを生成する
 func NewHackathonStatusGateway(db *gorm.DB, cache *redis.Client) dai.HackathonStatusDai {
-	return &HackathonStatusGateway{
+	return &hackathonStatusGateway{
 		db:          db,
 		cacheClient: NewCache[[]*models.JoinedStatusTag](cache, time.Duration(5)*time.Minute),
 	}
 }
 
-func (hs *HackathonStatusGateway) FindAll(ctx context.Context, HackathonID []string) ([]*models.JoinedStatusTag, error) {
+// FindAll は全てのhackathonに紐づくstatusを取得する
+func (hs *hackathonStatusGateway) FindAll(ctx context.Context, HackathonID []string) ([]*models.JoinedStatusTag, error) {
 	defer newrelic.FromContext(ctx).StartSegment("FindAllHackathonStatus-gateway").End()
 	key := fmt.Sprintf("hackathon_status_%v", HackathonID)
 	hackathonStatusTags, err := hs.cacheClient.Get(ctx, key, func(ctx context.Context) ([]*models.JoinedStatusTag, error) {
@@ -43,7 +45,8 @@ func (hs *HackathonStatusGateway) FindAll(ctx context.Context, HackathonID []str
 	return hackathonStatusTags, err
 }
 
-func (hs *HackathonStatusGateway) Delete(ctx context.Context, HackathonID string) error {
+// Delete はhackathonに紐づくstatusを削除する
+func (hs *hackathonStatusGateway) Delete(ctx context.Context, HackathonID string) error {
 	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathonStatus-gateway").End()
 
 	result := hs.db.Delete(&models.HackathonStatusTag{}).

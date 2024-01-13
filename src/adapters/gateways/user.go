@@ -8,17 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserGateway struct {
+type userGateway struct {
 	db *gorm.DB
 }
 
+// NewUserGateway はuserGatewayのインスタンスを生成する
 func NewUserGateway(db *gorm.DB) dai.UsersDai {
-	return &UserGateway{
+	return &userGateway{
 		db: db,
 	}
 }
 
-func (ug *UserGateway) Create(ctx context.Context, user *models.User) (id string, err error) {
+// Create はUserを作成する
+func (ug *userGateway) Create(ctx context.Context, user *models.User) (id string, err error) {
 	result := ug.db.Create(&user)
 	if result.Error != nil {
 		return "", result.Error
@@ -26,7 +28,8 @@ func (ug *UserGateway) Create(ctx context.Context, user *models.User) (id string
 	return user.UserID, nil
 }
 
-func (ug *UserGateway) FindAll(ctx context.Context) (users []*models.User, err error) {
+// FindAll は全てのUserを取得する
+func (ug *userGateway) FindAll(ctx context.Context) (users []*models.User, err error) {
 	result := ug.db.Find(&users)
 	if result.Error != nil {
 		return nil, result.Error
@@ -34,7 +37,8 @@ func (ug *UserGateway) FindAll(ctx context.Context) (users []*models.User, err e
 	return users, nil
 }
 
-func (ug *UserGateway) FindById(ctx context.Context, id string) (user *models.User, err error) {
+// FindByID は指定したIDのUserを取得する
+func (ug *userGateway) FindByID(ctx context.Context, id string) (user *models.User, err error) {
 	result := ug.db.First(&user, "user_id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -42,7 +46,8 @@ func (ug *UserGateway) FindById(ctx context.Context, id string) (user *models.Us
 	return user, nil
 }
 
-func (ug *UserGateway) Update(ctx context.Context, user *models.User) (id string, err error) {
+// Update はUserを更新する
+func (ug *userGateway) Update(ctx context.Context, user *models.User) (id string, err error) {
 	result := ug.db.Save(&user)
 	if result.Error != nil {
 		return "", result.Error
@@ -50,7 +55,8 @@ func (ug *UserGateway) Update(ctx context.Context, user *models.User) (id string
 	return user.UserID, nil
 }
 
-func (ug *UserGateway) Delete(ctx context.Context, id string) (err error) {
+// Delete はUserを削除する
+func (ug *userGateway) Delete(ctx context.Context, id string) (err error) {
 	result := ug.db.Delete(&models.User{}, id)
 	if result.Error != nil {
 		return result.Error

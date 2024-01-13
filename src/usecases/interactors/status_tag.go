@@ -12,21 +12,23 @@ import (
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
-type StatusTagInteractor struct {
+type statusTagInteractor struct {
 	StatusTagRepo dai.StatusTagDai
 	discordNotify DiscordNotify
 	Output        ports.StatusTagOutputBoundary
 }
 
+// NewStatusTagInteractor はStatusTagに関するユースケースを生成します
 func NewStatusTagInteractor(statusTagRepo dai.StatusTagDai, discordNotify DiscordNotify, output ports.StatusTagOutputBoundary) ports.StatusTagInputBoundary {
-	return &StatusTagInteractor{
+	return &statusTagInteractor{
 		StatusTagRepo: statusTagRepo,
 		discordNotify: discordNotify,
 		Output:        output,
 	}
 }
 
-func (s *StatusTagInteractor) CreateStatusTag(ctx context.Context, in *request.CreateStatusTag) (int, *response.StatusTag) {
+// CreateStatusTag はStatusTagを作成します
+func (s *statusTagInteractor) CreateStatusTag(ctx context.Context, in *request.CreateStatusTag) (int, *response.StatusTag) {
 	defer newrelic.FromContext(ctx).StartSegment("CreateStatusTag-usecase").End()
 
 	if in.Status == "" {
@@ -61,7 +63,8 @@ func (s *StatusTagInteractor) CreateStatusTag(ctx context.Context, in *request.C
 	})
 }
 
-func (s *StatusTagInteractor) FindAllStatusTag(ctx context.Context) (int, []*response.StatusTag) {
+// FindAllStatusTag はStatusTagを全て取得します
+func (s *statusTagInteractor) FindAllStatusTag(ctx context.Context) (int, []*response.StatusTag) {
 	defer newrelic.FromContext(ctx).StartSegment("FindAllStatusTag-usecase").End()
 
 	statusTags, err := s.StatusTagRepo.FindAll(ctx)
@@ -71,17 +74,19 @@ func (s *StatusTagInteractor) FindAllStatusTag(ctx context.Context) (int, []*res
 	})
 }
 
-func (s *StatusTagInteractor) FindByIdStatusTag(ctx context.Context, in *request.GetStatusTagByID) (int, *response.StatusTag) {
+// FindByIDStatusTag はStatusTagをIDで取得します
+func (s *statusTagInteractor) FindByIDStatusTag(ctx context.Context, in *request.GetStatusTagByID) (int, *response.StatusTag) {
 	defer newrelic.FromContext(ctx).StartSegment("FindByIdStatusTag-usecase").End()
 
-	statusTag, err := s.StatusTagRepo.FindById(ctx, in.ID)
+	statusTag, err := s.StatusTagRepo.FindByID(ctx, in.ID)
 	return s.Output.PresentFindByIdStatusTag(ctx, &ports.OutputFindByIdStatusTagData{
 		Error:    err,
 		Response: statusTag,
 	})
 }
 
-func (s *StatusTagInteractor) UpdateStatusTag(ctx context.Context, in *request.UpdateStatusTag) (int, *response.StatusTag) {
+// UpdateStatusTag はStatusTagを更新します
+func (s *statusTagInteractor) UpdateStatusTag(ctx context.Context, in *request.UpdateStatusTag) (int, *response.StatusTag) {
 	defer newrelic.FromContext(ctx).StartSegment("UpdateStatusTag-usecase").End()
 
 	if in.Status == "" {

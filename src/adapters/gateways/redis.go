@@ -11,17 +11,19 @@ import (
 	"golang.org/x/sync/singleflight"
 )
 
-type RedisGateway struct {
+type redisGateway struct {
 	db *redis.Client
 }
 
+// NewRedisGateway はredisGatewayのインスタンスを生成する
 func NewRedisGateway(db *redis.Client) dai.RedisDai {
-	return &RedisGateway{
+	return &redisGateway{
 		db: db,
 	}
 }
 
-func (r *RedisGateway) Get(ctx context.Context, key string) ([]byte, bool, error) {
+// Get はキャッシュを取得する
+func (r *redisGateway) Get(ctx context.Context, key string) ([]byte, bool, error) {
 	bytes, err := r.db.Get(ctx, key).Bytes()
 	// Cache not found
 	if err == redis.Nil {
@@ -35,29 +37,33 @@ func (r *RedisGateway) Get(ctx context.Context, key string) ([]byte, bool, error
 	return bytes, true, nil
 }
 
-func (r *RedisGateway) Set(ctx context.Context, key string, value []byte, deadline time.Duration) error {
+// Set はキャッシュを設定する
+func (r *redisGateway) Set(ctx context.Context, key string, value []byte, deadline time.Duration) error {
 	return r.db.Set(ctx, key, value, deadline).Err()
 }
 
-type Cache[T any] struct {
+type cache[T any] struct {
 	db         dai.RedisDai
 	expiration time.Duration
 	sfg        *singleflight.Group
 }
 
+// NewCache はcacheのインスタンスを生成する
 func NewCache[T any](db *redis.Client, expiration time.Duration) dai.Cache[T] {
-	return &Cache[T]{
+	return &cache[T]{
 		db:         NewRedisGateway(db),
 		expiration: expiration,
 		sfg:        &singleflight.Group{},
 	}
 }
 
-func (h *Cache[T]) Reset(ctx context.Context, key string) error {
+// Reset はキャッシュをリセットする
+func (h *cache[T]) Reset(ctx context.Context, key string) error {
 	return h.db.Set(ctx, key, nil, 0)
 }
 
-func (h *Cache[T]) Get(ctx context.Context, key string, callback func(ctx context.Context) (T, error)) (T, error) {
+// Get はキャッシュを取得する
+func (h *cache[T]) Get(ctx context.Context, key string, callback func(ctx context.Context) (T, error)) (T, error) {
 	a, err, _ := h.sfg.Do(key, func() (interface{}, error) {
 		bytes, exists, err := h.db.Get(ctx, key)
 		if err != nil {

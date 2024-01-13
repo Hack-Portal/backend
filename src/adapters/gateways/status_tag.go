@@ -11,19 +11,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type StatusTagGateway struct {
+type statusTagGateway struct {
 	db          *gorm.DB
 	cacheClient dai.Cache[[]*models.StatusTag]
 }
 
+// NewStatusTagGateway はstatusTagGatewayのインスタンスを生成する
 func NewStatusTagGateway(db *gorm.DB, cache *redis.Client) dai.StatusTagDai {
-	return &StatusTagGateway{
+	return &statusTagGateway{
 		db:          db,
 		cacheClient: NewCache[[]*models.StatusTag](cache, time.Duration(5)*time.Minute),
 	}
 }
 
-func (stg *StatusTagGateway) Create(ctx context.Context, statusTag *models.StatusTag) (id int64, err error) {
+// Create はStatusTagを作成する
+func (stg *statusTagGateway) Create(ctx context.Context, statusTag *models.StatusTag) (id int64, err error) {
 	defer newrelic.FromContext(ctx).StartSegment("CreateStatusTag-gateway").End()
 
 	result := stg.db.Select("status").Create(&statusTag)
@@ -41,7 +43,8 @@ func (stg *StatusTagGateway) Create(ctx context.Context, statusTag *models.Statu
 	return statusTagID, stg.cacheClient.Reset(ctx, "status_tags")
 }
 
-func (stg *StatusTagGateway) FindAll(ctx context.Context) (statusTags []*models.StatusTag, err error) {
+// FindAll は全てのStatusTagを取得する
+func (stg *statusTagGateway) FindAll(ctx context.Context) (statusTags []*models.StatusTag, err error) {
 	defer newrelic.FromContext(ctx).StartSegment("FindAllStatusTag-gateway").End()
 
 	tags, err := stg.cacheClient.Get(ctx, "status_tags", func(ctx context.Context) ([]*models.StatusTag, error) {
@@ -55,7 +58,8 @@ func (stg *StatusTagGateway) FindAll(ctx context.Context) (statusTags []*models.
 	return tags, nil
 }
 
-func (stg *StatusTagGateway) FindById(ctx context.Context, id int64) (statusTag *models.StatusTag, err error) {
+// FindById は指定したIDのStatusTagを取得する
+func (stg *statusTagGateway) FindByID(ctx context.Context, id int64) (statusTag *models.StatusTag, err error) {
 	defer newrelic.FromContext(ctx).StartSegment("FindByIdStatusTag-gateway").End()
 
 	result := stg.db.First(&statusTag, id)
@@ -66,7 +70,8 @@ func (stg *StatusTagGateway) FindById(ctx context.Context, id int64) (statusTag 
 	return statusTag, nil
 }
 
-func (stg *StatusTagGateway) Update(ctx context.Context, statusTag *models.StatusTag) (id int64, err error) {
+// Update は指定したStatusTagを更新する
+func (stg *statusTagGateway) Update(ctx context.Context, statusTag *models.StatusTag) (id int64, err error) {
 	defer newrelic.FromContext(ctx).StartSegment("UpdateStatusTag-gateway").End()
 
 	result := stg.db.Model(statusTag).Where("status_id = ?", statusTag.StatusID).Updates(statusTag)

@@ -6,19 +6,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type DiscordChannelGateway struct {
+type discordChannelGateway struct {
 	db *gorm.DB
 }
 
+// NewDiscordChannelGateway はdiscordChannelGatewayのインスタンスを生成する
 func NewDiscordChannelGateway(db *gorm.DB) dai.DiscordChannelDai {
-	return &DiscordChannelGateway{db: db}
+	return &discordChannelGateway{db: db}
 }
 
-func (d *DiscordChannelGateway) AddChannel(arg []*models.HackathonDiscordChannel) error {
+// AddChannel はdiscordサーバーに紐づくchannelを作成する
+func (d *discordChannelGateway) AddChannel(arg []*models.HackathonDiscordChannel) error {
 	return d.db.Create(arg).Error
 }
 
-func (d *DiscordChannelGateway) GetChannelIDs(hackathonID string) ([]*models.HackathonDiscordChannel, error) {
+// GetChannelIDs はdiscordサーバーに紐づくchannelを取得する
+func (d *discordChannelGateway) GetChannelIDs(hackathonID string) ([]*models.HackathonDiscordChannel, error) {
 	var channels []*models.HackathonDiscordChannel
 	err := d.db.Where("hackathon_id = ?", hackathonID).Find(&channels).Error
 	if err != nil {
@@ -27,6 +30,7 @@ func (d *DiscordChannelGateway) GetChannelIDs(hackathonID string) ([]*models.Hac
 	return channels, nil
 }
 
-func (d *DiscordChannelGateway) RemoveChannel(hackathonID string) error {
+// RemoveChannel はdiscordサーバーに紐づくchannelを削除する
+func (d *discordChannelGateway) RemoveChannel(hackathonID string) error {
 	return d.db.Where("hackathon_id = ?", hackathonID).Delete(&models.HackathonDiscordChannel{}).Error
 }

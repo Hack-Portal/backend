@@ -6,19 +6,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type DiscordServerRegistryGateways struct {
+type discordServerRegistryGateways struct {
 	db *gorm.DB
 }
 
+// NewDiscordServerRegistryGateways はdiscordServerRegistryGatewaysのインスタンスを生成する
 func NewDiscordServerRegistryGateways(db *gorm.DB) dai.DiscordServerRegistry {
-	return &DiscordServerRegistryGateways{db: db}
+	return &discordServerRegistryGateways{db: db}
 }
 
-func (d *DiscordServerRegistryGateways) AddServer(arg *models.DiscordServerRegistry) error {
+// AddServer はdiscordサーバーを登録する
+func (d *discordServerRegistryGateways) AddServer(arg *models.DiscordServerRegistry) error {
 	return d.db.Create(arg).Error
 }
 
-func (d *DiscordServerRegistryGateways) FindAllServers() ([]*models.DiscordServerRegistry, error) {
+// FindServer はdiscordサーバーを取得する
+func (d *discordServerRegistryGateways) FindAllServers() ([]*models.DiscordServerRegistry, error) {
 	var servers []*models.DiscordServerRegistry
 	err := d.db.Find(&servers).Error
 	if err != nil {
@@ -27,6 +30,7 @@ func (d *DiscordServerRegistryGateways) FindAllServers() ([]*models.DiscordServe
 	return servers, nil
 }
 
-func (d *DiscordServerRegistryGateways) DeleteServer(arg *models.DiscordServerRegistry) error {
+// FindServer はdiscordサーバーを取得する
+func (d *discordServerRegistryGateways) DeleteServer(arg *models.DiscordServerRegistry) error {
 	return d.db.Delete(arg).Error
 }

@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	// HACKATHON_IMAGE_DIR はハッカソンの画像を保存するディレクトリ
-	HACKATHON_IMAGE_DIR = "hackathon/"
+	// HackathonImageDir はハッカソンの画像を保存するディレクトリ
+	HackathonImageDir = "hackathon/"
 )
 
-type HackathonInteractor struct {
+type hackathonInteractor struct {
 	Hackathon       dai.HackathonDai
 	HackathonStatus dai.HackathonStatusDai
 	FileStore       dai.FileStore
@@ -30,8 +30,9 @@ type HackathonInteractor struct {
 	HackathonOutput ports.HackathonOutputBoundary
 }
 
+// NewHackathonInteractor はHackathonに関するユースケースを生成します
 func NewHackathonInteractor(hackathonDai dai.HackathonDai, HackathonStatus dai.HackathonStatusDai, filestoreDai dai.FileStore, discordNotify DiscordNotify, hackathonOutput ports.HackathonOutputBoundary) ports.HackathonInputBoundary {
-	return &HackathonInteractor{
+	return &hackathonInteractor{
 		Hackathon:       hackathonDai,
 		HackathonStatus: HackathonStatus,
 		FileStore:       filestoreDai,
@@ -40,7 +41,8 @@ func NewHackathonInteractor(hackathonDai dai.HackathonDai, HackathonStatus dai.H
 	}
 }
 
-func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.InputCreatehackathonData) (int, *response.CreateHackathon) {
+// CreateHackathon はHackathonを作成します
+func (hi *hackathonInteractor) CreateHackathon(ctx context.Context, in *ports.InputCreatehackathonData) (int, *response.CreateHackathon) {
 	defer newrelic.FromContext(ctx).StartSegment("CreateHackathon-usecase").End()
 
 	// 画像があるときは画像を保存してLinkを追加
@@ -69,7 +71,7 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 		}
 
 		// 画像を保存してLinkを追加
-		links, err := hi.FileStore.UploadFile(ctx, data, fmt.Sprintf("%s%s.%s", HACKATHON_IMAGE_DIR, hackathonID, in.ImageFile.Filename))
+		links, err := hi.FileStore.UploadFile(ctx, data, fmt.Sprintf("%s%s.%s", HackathonImageDir, hackathonID, in.ImageFile.Filename))
 		if err != nil {
 			return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
 				Error:    err,
@@ -132,41 +134,8 @@ func (hi *HackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 	})
 }
 
-func (hi *HackathonInteractor) GetHackathon(ctx context.Context, hackathonID string) (int, *response.GetHackathon) {
-	defer newrelic.FromContext(ctx).StartSegment("GetHackathon-usecase").End()
-
-	if len(hackathonID) == 0 {
-		return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
-			Error:    fmt.Errorf("invalid hackathon id"),
-			Response: nil,
-		})
-	}
-
-	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
-	if err != nil {
-		return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
-			Error:    err,
-			Response: nil,
-		})
-	}
-
-	return hi.HackathonOutput.PresentGetHackathon(ctx, &ports.OutputGetHackathonData{
-		Error: nil,
-		Response: &response.GetHackathon{
-			HackathonID: hackathonID,
-			Name:        hackathon.Name,
-			Icon:        hackathon.Icon,
-			Link:        hackathon.Link,
-			Expired:     hackathon.Expired.Format("2006-01-02"),
-			StartDate:   hackathon.StartDate.Format("2006-01-02"),
-			Term:        hackathon.Term,
-
-			StatusTags: status,
-		},
-	})
-}
-
-func (hi *HackathonInteractor) ListHackathon(ctx context.Context, in request.ListHackathon) (int, []*response.GetHackathon) {
+// ListHackathon はHackathonを全て取得します
+func (hi *hackathonInteractor) ListHackathon(ctx context.Context, in request.ListHackathon) (int, []*response.GetHackathon) {
 	defer newrelic.FromContext(ctx).StartSegment("ListHackathon-usecase").End()
 
 	if in.PageSize <= 0 {
@@ -254,7 +223,8 @@ func (hi *HackathonInteractor) ListHackathon(ctx context.Context, in request.Lis
 	})
 }
 
-func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID string) (*models.Hackathon, []*response.StatusTag, error) {
+// getHackathon はhackathonとstatusを取得する
+func (hi *hackathonInteractor) getHackathon(ctx context.Context, hackathonID string) (*models.Hackathon, []*response.StatusTag, error) {
 	defer newrelic.FromContext(ctx).StartSegment("getHackathon-usecase").End()
 
 	hackathon, err := hi.Hackathon.Find(ctx, hackathonID)
@@ -281,7 +251,8 @@ func (hi *HackathonInteractor) getHackathon(ctx context.Context, hackathonID str
 	return hackathon, status, nil
 }
 
-func (hi *HackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID string) (int, *response.DeleteHackathon) {
+// DeleteHackathon はHackathonを削除します
+func (hi *hackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID string) (int, *response.DeleteHackathon) {
 	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathon-usecase").End()
 
 	if len(hackathonID) == 0 {

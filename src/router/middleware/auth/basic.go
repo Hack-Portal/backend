@@ -35,7 +35,7 @@ func (ba *basicAuth) basic(next echo.HandlerFunc) echo.HandlerFunc {
 			c.Set(RequestRoleID, AuthGuestID)
 			return next(c)
 		}
-		user, err := ba.userRepo.FindById(c.Request().Context(), uid)
+		user, err := ba.userRepo.FindByID(c.Request().Context(), uid)
 		if err != nil {
 			// TODO:ここでログを出力する
 			return echo.ErrInternalServerError

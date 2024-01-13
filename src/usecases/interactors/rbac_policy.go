@@ -12,21 +12,23 @@ import (
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 )
 
-type RbacPolicyInteractor struct {
+type rbacPolicyInteractor struct {
 	policyreRepo dai.RBACPolicyDai
 	roleRepo     dai.RoleDai
 	output       ports.RbacPolicyOutputBoundary
 }
 
+// NewRbacPolicyInteractor はRbacPolicyに関するユースケースを生成します
 func NewRbacPolicyInteractor(policyRepo dai.RBACPolicyDai, roleRepo dai.RoleDai, output ports.RbacPolicyOutputBoundary) ports.RbacPolicyInputBoundary {
-	return &RbacPolicyInteractor{
+	return &rbacPolicyInteractor{
 		policyreRepo: policyRepo,
 		roleRepo:     roleRepo,
 		output:       output,
 	}
 }
 
-func (r *RbacPolicyInteractor) CreateRbacPolicy(ctx context.Context, in *request.CreateRbacPolicy) (int, *response.CreateRbacPolicy) {
+// CreateRbacPolicy はRbacPolicyを作成します
+func (r *rbacPolicyInteractor) CreateRbacPolicy(ctx context.Context, in *request.CreateRbacPolicy) (int, *response.CreateRbacPolicy) {
 	if len(in.Policies) == 0 {
 		return r.output.PresentCreateRbacPolicy(ctx, ports.NewOutput[*response.CreateRbacPolicy](
 			hperror.ErrFieldRequired,
@@ -70,7 +72,8 @@ func (r *RbacPolicyInteractor) CreateRbacPolicy(ctx context.Context, in *request
 	))
 }
 
-func (r *RbacPolicyInteractor) ListRbacPolicies(ctx context.Context, in *request.ListRbacPolicies) (int, *response.ListRbacPolicies) {
+// ListRbacPolicies はRbacPolicyを全て取得します
+func (r *rbacPolicyInteractor) ListRbacPolicies(ctx context.Context, in *request.ListRbacPolicies) (int, *response.ListRbacPolicies) {
 	result, err := r.policyreRepo.FindAll(ctx, in)
 	if err != nil {
 		return r.output.PresentListRbacPolicies(ctx, ports.NewOutput[*response.ListRbacPolicies](
@@ -87,7 +90,8 @@ func (r *RbacPolicyInteractor) ListRbacPolicies(ctx context.Context, in *request
 	))
 }
 
-func (r *RbacPolicyInteractor) DeleteRbacPolicy(ctx context.Context, in *request.DeleteRbacPolicy) (int, *response.DeleteRbacPolicy) {
+// DeleteRbacPolicy はRbacPolicyを削除します
+func (r *rbacPolicyInteractor) DeleteRbacPolicy(ctx context.Context, in *request.DeleteRbacPolicy) (int, *response.DeleteRbacPolicy) {
 
 	if err := r.policyreRepo.DeleteByID(ctx, in.PolicyID); err != nil {
 		return r.output.PresentDeleteRbacPolicy(ctx, ports.NewOutput[*response.DeleteRbacPolicy](
@@ -104,7 +108,8 @@ func (r *RbacPolicyInteractor) DeleteRbacPolicy(ctx context.Context, in *request
 	))
 }
 
-func (r *RbacPolicyInteractor) DeleteAllRbacPolicies(ctx context.Context) (int, *response.DeleteAllRbacPolicies) {
+// DeleteAllRbacPolicies はRbacPolicyを全て削除します
+func (r *rbacPolicyInteractor) DeleteAllRbacPolicies(ctx context.Context) (int, *response.DeleteAllRbacPolicies) {
 	if err := r.policyreRepo.DeleteAll(ctx); err != nil {
 		return r.output.PresentDeleteAllRbacPolicies(ctx, ports.NewOutput[*response.DeleteAllRbacPolicies](
 			err,

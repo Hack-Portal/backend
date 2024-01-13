@@ -8,17 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type RoleGateway struct {
+type roleGateway struct {
 	db *gorm.DB
 }
 
+// NewRoleGateway はroleGatewayのインスタンスを生成する
 func NewRoleGateway(db *gorm.DB) dai.RoleDai {
-	return &RoleGateway{
+	return &roleGateway{
 		db: db,
 	}
 }
 
-func (rg *RoleGateway) Create(ctx context.Context, role *models.Role) (id int64, err error) {
+// Create はRoleを作成する
+func (rg *roleGateway) Create(ctx context.Context, role *models.Role) (id int64, err error) {
 	result := rg.db.Create(role)
 	if result.Error != nil {
 		return 0, result.Error
@@ -26,7 +28,8 @@ func (rg *RoleGateway) Create(ctx context.Context, role *models.Role) (id int64,
 	return role.RoleID, nil
 }
 
-func (rg *RoleGateway) FindAll(ctx context.Context) (roles []*models.Role, err error) {
+// FindAll は全てのRoleを取得する
+func (rg *roleGateway) FindAll(ctx context.Context) (roles []*models.Role, err error) {
 	result := rg.db.Find(&roles)
 	if result.Error != nil {
 		return nil, result.Error
@@ -34,7 +37,8 @@ func (rg *RoleGateway) FindAll(ctx context.Context) (roles []*models.Role, err e
 	return roles, nil
 }
 
-func (rg *RoleGateway) FindById(ctx context.Context, id int64) (role *models.Role, err error) {
+// FindById は指定したIDのRoleを取得する
+func (rg *roleGateway) FindByID(ctx context.Context, id int64) (role *models.Role, err error) {
 	result := rg.db.First(&role, "role_id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -42,7 +46,8 @@ func (rg *RoleGateway) FindById(ctx context.Context, id int64) (role *models.Rol
 	return role, nil
 }
 
-func (rg *RoleGateway) Update(ctx context.Context, role *models.Role) (id int64, err error) {
+// Update はRoleを更新する
+func (rg *roleGateway) Update(ctx context.Context, role *models.Role) (id int64, err error) {
 	result := rg.db.Save(role)
 	if result.Error != nil {
 		return 0, result.Error

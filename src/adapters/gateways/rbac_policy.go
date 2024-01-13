@@ -10,17 +10,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type RbacPolicyGateway struct {
+type rbacPolicyGateway struct {
 	db *gorm.DB
 }
 
+// NewRbacPolicyGateway はrbacPolicyGatewayのインスタンスを生成する
 func NewRbacPolicyGateway(db *gorm.DB) dai.RBACPolicyDai {
-	return &RbacPolicyGateway{
+	return &rbacPolicyGateway{
 		db: db,
 	}
 }
 
-func (r *RbacPolicyGateway) FindRoleByRole(ctx context.Context, role int) ([]*models.CasbinPolicy, error) {
+// FindRoleByRole はroleに紐づくpolicyを取得する
+func (r *rbacPolicyGateway) FindRoleByRole(ctx context.Context, role int) ([]*models.CasbinPolicy, error) {
 	var policies []*models.RbacPolicy
 	if err := r.db.Where("v0 = ?", role).Find(&policies).Error; err != nil {
 		return nil, err
@@ -40,7 +42,8 @@ func (r *RbacPolicyGateway) FindRoleByRole(ctx context.Context, role int) ([]*mo
 	return casbinPolicies, nil
 }
 
-func (r *RbacPolicyGateway) FindRoleByPath(ctx context.Context, path string) ([]*models.CasbinPolicy, error) {
+// FindRoleByPath はpathに紐づくpolicyを取得する
+func (r *rbacPolicyGateway) FindRoleByPath(ctx context.Context, path string) ([]*models.CasbinPolicy, error) {
 	var policies []*models.RbacPolicy
 	if err := r.db.Where("v1 = ?", path).Find(&policies).Error; err != nil {
 		return nil, err
@@ -60,7 +63,8 @@ func (r *RbacPolicyGateway) FindRoleByPath(ctx context.Context, path string) ([]
 	return casbinPolicies, nil
 }
 
-func (r *RbacPolicyGateway) FindRoleByPathAndMethod(ctx context.Context, path, method string) ([]*models.CasbinPolicy, error) {
+// FindRoleByPathAndMethod はpathとmethodに紐づくpolicyを取得する
+func (r *rbacPolicyGateway) FindRoleByPathAndMethod(ctx context.Context, path, method string) ([]*models.CasbinPolicy, error) {
 	var policies []*models.RbacPolicy
 	if err := r.db.Where("v1 = ? AND v2 = ?", path, method).Find(&policies).Error; err != nil {
 		return nil, err
@@ -79,7 +83,8 @@ func (r *RbacPolicyGateway) FindRoleByPathAndMethod(ctx context.Context, path, m
 	return casbinPolicies, nil
 }
 
-func (r *RbacPolicyGateway) Create(ctx context.Context, policy []*models.RbacPolicy) ([]int, error) {
+// FindRoleByPathAndMethodAndRole はpathとmethodとroleに紐づくpolicyを取得する
+func (r *rbacPolicyGateway) Create(ctx context.Context, policy []*models.RbacPolicy) ([]int, error) {
 	if err := r.db.Create(&policy).Error; err != nil {
 		return nil, err
 	}
@@ -90,7 +95,8 @@ func (r *RbacPolicyGateway) Create(ctx context.Context, policy []*models.RbacPol
 	return ids, nil
 }
 
-func (r *RbacPolicyGateway) FindAll(ctx context.Context, arg *request.ListRbacPolicies) ([]*models.RbacPolicy, error) {
+// FindRoleByPathAndMethodAndRole はpathとmethodとroleに紐づくpolicyを取得する
+func (r *rbacPolicyGateway) FindAll(ctx context.Context, arg *request.ListRbacPolicies) ([]*models.RbacPolicy, error) {
 	var policies []*models.RbacPolicy
 	db := r.db
 	if len(arg.Sub) > 0 {
@@ -116,14 +122,16 @@ func (r *RbacPolicyGateway) FindAll(ctx context.Context, arg *request.ListRbacPo
 	return policies, nil
 }
 
-func (r *RbacPolicyGateway) DeleteByID(ctx context.Context, id int64) error {
+// FindRoleByPathAndMethodAndRole はpathとmethodとroleに紐づくpolicyを取得する
+func (r *rbacPolicyGateway) DeleteByID(ctx context.Context, id int64) error {
 	if err := r.db.Where("policy_id = ?", id).Delete(&models.RbacPolicy{}).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *RbacPolicyGateway) DeleteAll(ctx context.Context) error {
+// FindRoleByPathAndMethodAndRole はpathとmethodとroleに紐づくpolicyを取得する
+func (r *rbacPolicyGateway) DeleteAll(ctx context.Context) error {
 	if err := r.db.Delete(&models.RbacPolicy{}).Error; err != nil {
 		return err
 	}

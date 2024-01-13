@@ -11,14 +11,12 @@ import (
 
 type HackathonInputBoundary interface {
 	CreateHackathon(ctx context.Context, in *InputCreatehackathonData) (int, *response.CreateHackathon)
-	GetHackathon(ctx context.Context, hackathonID string) (int, *response.GetHackathon)
 	ListHackathon(ctx context.Context, in request.ListHackathon) (int, []*response.GetHackathon)
 	DeleteHackathon(ctx context.Context, hackathonID string) (int, *response.DeleteHackathon)
 }
 
 type HackathonOutputBoundary interface {
 	PresentCreateHackathon(ctx context.Context, out *OutputCreateHackathonData) (int, *response.CreateHackathon)
-	PresentGetHackathon(ctx context.Context, out *OutputGetHackathonData) (int, *response.GetHackathon)
 	PresentListHackathon(ctx context.Context, out *OutputListHackathonData) (int, []*response.GetHackathon)
 	PresentDeleteHackathon(ctx context.Context, out *OutputDeleteHackathonData) (int, *response.DeleteHackathon)
 }

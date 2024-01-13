@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	NotifyTemplate = `
+	// DiscordNotifyTemplate はdiscordに通知する際のテンプレート
+	DiscordNotifyTemplate = `
 		【Title】		%s
 		【応募リンク】	%s
 		【応募締切】	%s
@@ -16,15 +17,17 @@ const (
 	`
 )
 
-type DiscordNotifyGateway struct {
+type discordNotifyGateway struct {
 	s *discordgo.Session
 }
 
+// NewDiscordNotifyGateway はdiscordNotifyGatewayのインスタンスを生成する
 func NewDiscordNotifyGateway(s *discordgo.Session) dai.DiscordNotify {
-	return &DiscordNotifyGateway{s: s}
+	return &discordNotifyGateway{s: s}
 }
 
-func (d *DiscordNotifyGateway) CreateNewForum(channelID string, arg *models.Hackathon) (forumID string, err error) {
+// CreateNewForum はdiscordサーバーに紐づくforumを作成する
+func (d *discordNotifyGateway) CreateNewForum(channelID string, arg *models.Hackathon) (forumID string, err error) {
 	forum, err := d.s.ForumThreadStartComplex(channelID, &discordgo.ThreadStart{
 		Name:        arg.Name,
 		AppliedTags: []string{},
@@ -38,12 +41,14 @@ func (d *DiscordNotifyGateway) CreateNewForum(channelID string, arg *models.Hack
 	return forum.ID, nil
 }
 
-func (d *DiscordNotifyGateway) DeleteChannel(channlID string) error {
+// DeleteForum はdiscordサーバーに紐づくforumを削除する
+func (d *discordNotifyGateway) DeleteChannel(channlID string) error {
 	_, err := d.s.ChannelDelete(channlID)
 	return err
 }
 
-func (d *DiscordNotifyGateway) AddAvailableTags(channelID string, tags []string) ([]string, error) {
+// AddAvailableTags はdiscordサーバーに紐づくforum tagを作成する
+func (d *discordNotifyGateway) AddAvailableTags(channelID string, tags []string) ([]string, error) {
 	var arg []discordgo.ForumTag
 	for _, tag := range tags {
 		arg = append(arg, discordgo.ForumTag{

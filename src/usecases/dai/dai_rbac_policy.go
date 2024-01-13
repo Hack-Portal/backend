@@ -7,6 +7,7 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/request"
 )
 
+// RBACPolicyDai はRBACPolicyに関するデータアクセスインターフェース
 type RBACPolicyDai interface {
 	FindRoleByRole(ctx context.Context, role int) ([]*models.CasbinPolicy, error)
 	FindRoleByPath(ctx context.Context, path string) ([]*models.CasbinPolicy, error)

@@ -159,28 +159,26 @@ type HackathonDiscordChannel struct {
 
 /*
 CREATE TABLE "discord_server_registries" (
-  "guild_id" varchar PRIMARY KEY,
-  "server_name" varchar NOT NULL,
-  "selected_channel" varchar NOT NULL
+  "channel_id" varchar PRIMARY KEY,
+  "channel_name" varchar NOT NULL
 );
 */
 
 type DiscordServerRegistry struct {
-	GuildID         string `json:"guild_id"`
-	ServerName      string `json:"server_name"`
-	SelectedChannel string `json:"selected_channel"`
+	ChannelID   string `json:"channel_id"`
+	ChannelName string `json:"channel_name"`
 }
 
 /*
 CREATE TABLE "discord_server_forum_tags" (
-  "guild_id" varchar NOT NULL,
-  "status_id" varchar NOT NULL,
+  "channel_id" varchar NOT NULL,
+  "status_id" int NOT NULL,
   "forum_id" varchar NOT NULL
 );
 */
 
 type DiscordServerForumTag struct {
-	GuildID  string `json:"guild_id"`
-	StatusID int64  `json:"status_id"`
-	ForumID  string `json:"forum_id"`
+	ChannelID string `json:"channel_id"`
+	StatusID  int64  `json:"status_id"`
+	ForumID   string `json:"forum_id"`
 }

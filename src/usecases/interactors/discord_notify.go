@@ -13,12 +13,14 @@ type discordNotify struct {
 	discordNotifyRepo  dai.DiscordNotify
 }
 
+// DiscordNotify はDiscordに関するユースケースインターフェース
 type DiscordNotify interface {
 	PushNewForum(arg *models.Hackathon) error
 	DeleteForums(hackathonID string) error
 	CreateNewForumTag(tags []*models.StatusTag) error
 }
 
+// NewDiscordNotifyInteractor はDiscordNotifyの生成
 func NewDiscordNotifyInteractor(discordChannelRepo dai.DiscordChannelDai, discordServerRepo dai.DiscordServerRegistry, discordNotifyRepo dai.DiscordNotify) DiscordNotify {
 	return &discordNotify{
 		discordChannelRepo: discordChannelRepo,
@@ -27,6 +29,7 @@ func NewDiscordNotifyInteractor(discordChannelRepo dai.DiscordChannelDai, discor
 	}
 }
 
+// PushNewForum は新しいフォーラムを作成する
 func (d *discordNotify) PushNewForum(arg *models.Hackathon) error {
 	channels, err := d.discordServerRepo.FindAllServers()
 	if err != nil {
@@ -49,7 +52,7 @@ func (d *discordNotify) PushNewForum(arg *models.Hackathon) error {
 				return
 			}
 			discordForumIDs <- forumID
-		}(channel.SelectedChannel)
+		}(channel.ChannelID)
 	}
 
 	wg.Wait()
@@ -71,6 +74,7 @@ func (d *discordNotify) PushNewForum(arg *models.Hackathon) error {
 	return d.discordChannelRepo.AddChannel(forumIDs)
 }
 
+// DeleteForums はフォーラムを削除する
 func (d *discordNotify) DeleteForums(hackathonID string) error {
 	channels, err := d.discordChannelRepo.GetChannelIDs(hackathonID)
 	if err != nil {
@@ -105,6 +109,7 @@ func (d *discordNotify) DeleteForums(hackathonID string) error {
 	return d.discordChannelRepo.RemoveChannel(hackathonID)
 }
 
+// CreateNewForumTag は新しいフォーラムタグを作成する
 func (d *discordNotify) CreateNewForumTag(tags []*models.StatusTag) error {
 	channels, err := d.discordServerRepo.FindAllServers()
 	if err != nil {
@@ -133,7 +138,7 @@ func (d *discordNotify) CreateNewForumTag(tags []*models.StatusTag) error {
 				return
 			}
 			guildTags <- tag
-		}(channel.SelectedChannel)
+		}(channel.ChannelID)
 	}
 
 	wg.Wait()

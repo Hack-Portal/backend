@@ -17,21 +17,23 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type UserInteractor struct {
+type userInteractor struct {
 	userRepo dai.UsersDai
 	roleRepo dai.RoleDai
 	output   ports.UserOutputBoundary
 }
 
+// NewUserInteractor はUserに関するユースケースを生成します
 func NewUserInteractor(userRepo dai.UsersDai, roleRepo dai.RoleDai, output ports.UserOutputBoundary) ports.UserInputBoundary {
-	return &UserInteractor{
+	return &userInteractor{
 		userRepo: userRepo,
 		roleRepo: roleRepo,
 		output:   output,
 	}
 }
 
-func (u *UserInteractor) InitAdmin(ctx context.Context, in request.InitAdmin) (int, *response.User) {
+// InitAdmin は管理者を初期化します
+func (u *userInteractor) InitAdmin(ctx context.Context, in request.InitAdmin) (int, *response.User) {
 	// Tokenの検証 => 失敗したらTokenを変更して返す TODO:スケールしない構成になっているから、Redisに保存するようにする
 	if in.InitAdminToken != config.Config.Server.AdminInitPassword {
 		config.Config.Server.AdminInitPassword = random.AlphaNumeric(30)
@@ -72,8 +74,9 @@ func (u *UserInteractor) InitAdmin(ctx context.Context, in request.InitAdmin) (i
 	})
 }
 
-func (u *UserInteractor) Login(ctx context.Context, in request.Login) (int, *response.Login) {
-	user, err := u.userRepo.FindById(ctx, in.UserID)
+// Login はログイン用だが、現状はユーザーの情報とロールを返すだけ
+func (u *userInteractor) Login(ctx context.Context, in request.Login) (int, *response.Login) {
+	user, err := u.userRepo.FindByID(ctx, in.UserID)
 	if err != nil {
 		return u.output.PresentLogin(ctx, ports.NewOutput[*response.Login](err, nil))
 	}
@@ -83,7 +86,7 @@ func (u *UserInteractor) Login(ctx context.Context, in request.Login) (int, *res
 		return u.output.PresentLogin(ctx, ports.NewOutput[*response.Login](err, nil))
 	}
 
-	role, err := u.roleRepo.FindById(ctx, int64(user.Role))
+	role, err := u.roleRepo.FindByID(ctx, int64(user.Role))
 	if err != nil {
 		log.Println("find role error", err)
 		return u.output.PresentLogin(ctx, ports.NewOutput[*response.Login](err, nil))

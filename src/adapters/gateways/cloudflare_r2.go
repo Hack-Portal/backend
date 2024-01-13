@@ -59,16 +59,6 @@ func checkContentType(file []byte) string {
 	return http.DetectContentType(file)
 }
 
-// ListObjects は指定したprefixのオブジェクトをすべて取得する
-func (c *cloudflareR2) ListObjects(ctx context.Context, prefix string) (*s3.ListObjectsV2Output, error) {
-	defer newrelic.FromContext(ctx).StartSegment("ListObjects-gateway").End()
-
-	return c.client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-		Bucket: aws.String(c.bucket),
-		Prefix: aws.String(prefix),
-	})
-}
-
 // GetPresignedObjectURL は指定したkeyのオブジェクトのpresignされたURLを取得する
 func (c *cloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (string, error) {
 	defer newrelic.FromContext(ctx).StartSegment("GetPresignedObjectURL-gateway").End()

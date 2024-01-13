@@ -12,19 +12,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type HackathonGateway struct {
+type hackathonGateway struct {
 	db          *gorm.DB
 	cacheClient dai.Cache[[]*models.Hackathon]
 }
 
+// NewHackathonGateway はhackathonGatewayのインスタンスを生成する
 func NewHackathonGateway(db *gorm.DB, cache *redis.Client) dai.HackathonDai {
-	return &HackathonGateway{
+	return &hackathonGateway{
 		db:          db,
 		cacheClient: NewCache[[]*models.Hackathon](cache, time.Duration(5)*time.Minute),
 	}
 }
 
-func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackathon, hackathonStatus []int64) error {
+// Create はhackathonを作成する
+func (h *hackathonGateway) Create(ctx context.Context, hackathon *models.Hackathon, hackathonStatus []int64) error {
 	defer newrelic.FromContext(ctx).StartSegment("CreateHackathon-gateway").End()
 
 	return h.db.Transaction(func(tx *gorm.DB) error {
@@ -41,7 +43,8 @@ func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackath
 	})
 }
 
-func (h *HackathonGateway) createStatusTag(ctx context.Context, HackathonID string, hackathonStatus []int64) error {
+// createStatusTag はhackathonに紐づくstatusを作成する
+func (h *hackathonGateway) createStatusTag(ctx context.Context, HackathonID string, hackathonStatus []int64) error {
 	defer newrelic.FromContext(ctx).StartSegment("CreateHackathonStatus-gateway").End()
 	if len(hackathonStatus) == 0 {
 		return nil
@@ -60,7 +63,8 @@ func (h *HackathonGateway) createStatusTag(ctx context.Context, HackathonID stri
 	return result.Error
 }
 
-func (h *HackathonGateway) Find(ctx context.Context, hackathonID string) (*models.Hackathon, error) {
+// Find はhackathonを取得する
+func (h *hackathonGateway) Find(ctx context.Context, hackathonID string) (*models.Hackathon, error) {
 	defer newrelic.FromContext(ctx).StartSegment("FindHackathon-gateway").End()
 
 	var hackathon models.Hackathon
@@ -71,7 +75,8 @@ func (h *HackathonGateway) Find(ctx context.Context, hackathonID string) (*model
 	return &hackathon, nil
 }
 
-func (h *HackathonGateway) FindAll(ctx context.Context, arg dai.FindAllParams) ([]*models.Hackathon, error) {
+// FindAll は全てのhackathonを取得する
+func (h *hackathonGateway) FindAll(ctx context.Context, arg dai.FindAllParams) ([]*models.Hackathon, error) {
 	defer newrelic.FromContext(ctx).StartSegment("FindAllHackathon-gateway").End()
 
 	var key string = "hackathons"
@@ -110,7 +115,8 @@ func (h *HackathonGateway) FindAll(ctx context.Context, arg dai.FindAllParams) (
 	return hackathons, err
 }
 
-func (h *HackathonGateway) Delete(ctx context.Context, hackathonID string) error {
+// Delete はhackathonを更新する
+func (h *hackathonGateway) Delete(ctx context.Context, hackathonID string) error {
 	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathon-gateway").End()
 
 	result := h.db.Delete(&models.Hackathon{}, "hackathon_id = ?", hackathonID)
