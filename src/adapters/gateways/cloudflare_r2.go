@@ -14,37 +14,46 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type CloudflareR2 struct {
-	client        *s3.Client
-	PresignClient *s3.PresignClient
-	bucket        string
-	Config        Config
+type cloudflareR2 struct {
+	client             *s3.Client
+	presignClient      *s3.PresignClient
+	bucket             string
+	presignLinkExpired time.Duration
 
 	cacheClient dai.Cache[string]
 }
 
-type Config struct {
-	PresignLinkExpired time.Duration
+// CloudflareR2Option はcloudflareR2のオプションを設定するための関数を定義した型
+type CloudflareR2Option func(*cloudflareR2)
+
+// WithPresignLinkExpired はpresignされたリンクの有効期限を設定する
+func WithPresignLinkExpired(d time.Duration) CloudflareR2Option {
+	return func(c *cloudflareR2) {
+		c.presignLinkExpired = d
+	}
 }
 
-func NewCloudflareR2(bucket string, client *s3.Client, cache *redis.Client, presignLinkExpired int) dai.FileStore {
-	return &CloudflareR2{
+// NewCloudflareR2 はcloudflareR2のインスタンスを生成する
+func NewCloudflareR2(bucket string, client *s3.Client, cache *redis.Client, opts ...CloudflareR2Option) dai.FileStore {
+	cloudflare := &cloudflareR2{
 		bucket:        bucket,
 		client:        client,
 		cacheClient:   NewCache[string](cache, time.Duration(5)*time.Minute),
-		PresignClient: s3.NewPresignClient(client),
-		Config: Config{
-			// デフォルト30分のはず
-			PresignLinkExpired: time.Duration(presignLinkExpired) * time.Minute,
-		},
+		presignClient: s3.NewPresignClient(client),
 	}
+
+	for _, opt := range opts {
+		opt(cloudflare)
+	}
+
+	return cloudflare
 }
 
 func checkContentType(file []byte) string {
 	return http.DetectContentType(file)
 }
 
-func (c *CloudflareR2) ListObjects(ctx context.Context, key string) (*s3.ListObjectsV2Output, error) {
+func (c *cloudflareR2) ListObjects(ctx context.Context, key string) (*s3.ListObjectsV2Output, error) {
 	defer newrelic.FromContext(ctx).StartSegment("ListObjects-gateway").End()
 
 	return c.client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
@@ -53,13 +62,13 @@ func (c *CloudflareR2) ListObjects(ctx context.Context, key string) (*s3.ListObj
 	})
 }
 
-func (c *CloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (string, error) {
+func (c *cloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (string, error) {
 	defer newrelic.FromContext(ctx).StartSegment("GetPresignedObjectURL-gateway").End()
 	url, err := c.cacheClient.Get(ctx, key, func(ctx context.Context) (string, error) {
-		object, err := c.PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
+		object, err := c.presignClient.PresignGetObject(ctx, &s3.GetObjectInput{
 			Bucket:          aws.String(c.bucket),
 			Key:             aws.String(key),
-			ResponseExpires: aws.Time(time.Now().Add(c.Config.PresignLinkExpired * time.Hour)),
+			ResponseExpires: aws.Time(time.Now().Add(c.presignLinkExpired * time.Hour)),
 		})
 		if err != nil {
 			return "", err
@@ -70,7 +79,7 @@ func (c *CloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (s
 	return url, err
 }
 
-func (c *CloudflareR2) UploadFile(ctx context.Context, file []byte, key string) (string, error) {
+func (c *cloudflareR2) UploadFile(ctx context.Context, file []byte, key string) (string, error) {
 	defer newrelic.FromContext(ctx).StartSegment("UploadFile-gateway").End()
 
 	_, err := c.client.PutObject(ctx, &s3.PutObjectInput{
@@ -84,7 +93,7 @@ func (c *CloudflareR2) UploadFile(ctx context.Context, file []byte, key string) 
 	return key, err
 }
 
-func (c *CloudflareR2) DeleteFile(ctx context.Context, fileName string) error {
+func (c *cloudflareR2) DeleteFile(ctx context.Context, fileName string) error {
 	defer newrelic.FromContext(ctx).StartSegment("DeleteFile-gateway").End()
 
 	_, err := c.client.DeleteObject(ctx, &s3.DeleteObjectInput{
@@ -94,7 +103,7 @@ func (c *CloudflareR2) DeleteFile(ctx context.Context, fileName string) error {
 	return err
 }
 
-func (c *CloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input []dai.ParallelGetPresignedObjectURLInput) (map[string]string, error) {
+func (c *cloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input []dai.ParallelGetPresignedObjectURLInput) (map[string]string, error) {
 	defer newrelic.FromContext(ctx).StartSegment("ParallelGetPresignedObjectURL-gateway").End()
 
 	type resultCh struct {
