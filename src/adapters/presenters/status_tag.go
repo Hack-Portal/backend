@@ -5,24 +5,25 @@ import (
 	"net/http"
 
 	"github.com/Hack-Portal/backend/src/datastructure/hperror"
+	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"gorm.io/gorm"
 )
 
-type StatusTagPresenter struct {
-}
+type statusTagPresenter struct{}
 
+// NewStatusTagPresenter はStatusTagPresenterを返す
 func NewStatusTagPresenter() ports.StatusTagOutputBoundary {
-	return &StatusTagPresenter{}
+	return &statusTagPresenter{}
 }
 
-func (s *StatusTagPresenter) PresentCreateStatusTag(ctx context.Context, out *ports.OutputCraeteStatusTagData) (int, *response.StatusTag) {
+// PresentCreateStatusTag はStatusTagの作成をpresenterする
+func (s *statusTagPresenter) PresentCreateStatusTag(ctx context.Context, out ports.OutputBoundary[*models.StatusTag]) (int, *response.StatusTag) {
 	defer newrelic.FromContext(ctx).StartSegment("PresentCreateStatusTag-presenter").End()
 
-	if out.Error != nil {
-		switch out.Error {
+	if err := out.Error(); err != nil {
+		switch out.Error() {
 		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil
 		default:
@@ -30,26 +31,28 @@ func (s *StatusTagPresenter) PresentCreateStatusTag(ctx context.Context, out *po
 		}
 	}
 
+	resp := out.Response()
+
 	return http.StatusCreated, &response.StatusTag{
-		ID:     out.Response.StatusID,
-		Status: out.Response.Status,
+		ID:     resp.StatusID,
+		Status: resp.Status,
 	}
 }
 
-func (s *StatusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out *ports.OutputFindAllStatusTagData) (int, []*response.StatusTag) {
+// PresentFindAllStatusTag はStatusTagの取得をpresenterする
+func (s *statusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out ports.OutputBoundary[[]*models.StatusTag]) (int, []*response.StatusTag) {
 	defer newrelic.FromContext(ctx).StartSegment("PresentFindAllStatusTag-presenter").End()
 
-	if out.Error != nil {
-		switch out.Error {
-		case gorm.ErrRecordNotFound:
+	if err := out.Error(); err != nil {
+		switch out.Error() {
+		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil
 		default:
 			return http.StatusInternalServerError, nil
 		}
 	}
-
 	var resp []*response.StatusTag
-	for _, statusTag := range out.Response {
+	for _, statusTag := range out.Response() {
 		resp = append(resp, &response.StatusTag{
 			ID:     statusTag.StatusID,
 			Status: statusTag.Status,
@@ -59,42 +62,44 @@ func (s *StatusTagPresenter) PresentFindAllStatusTag(ctx context.Context, out *p
 	return http.StatusOK, resp
 }
 
-func (s *StatusTagPresenter) PresentFindByIdStatusTag(ctx context.Context, out *ports.OutputFindByIdStatusTagData) (int, *response.StatusTag) {
+// PresentFindByIDStatusTag はStatusTagの取得をpresenterする
+func (s *statusTagPresenter) PresentFindByIDStatusTag(ctx context.Context, out ports.OutputBoundary[*models.StatusTag]) (int, *response.StatusTag) {
 	defer newrelic.FromContext(ctx).StartSegment("PresentFindByIdStatusTag-presenter").End()
 
-	if out.Error != nil {
-		switch out.Error {
-		case gorm.ErrRecordNotFound:
-			return http.StatusBadRequest, nil
-		default:
-
-			return http.StatusInternalServerError, nil
-		}
-	}
-
-	return http.StatusOK, &response.StatusTag{
-		ID:     out.Response.StatusID,
-		Status: out.Response.Status,
-	}
-}
-
-func (s *StatusTagPresenter) PresentUpdateStatusTag(ctx context.Context, out *ports.OutputUpdateStatusTagData) (int, *response.StatusTag) {
-	defer newrelic.FromContext(ctx).StartSegment("PresentUpdateStatusTag-presenter").End()
-
-	if out.Error != nil {
-		switch out.Error {
-		case gorm.ErrRecordNotFound:
-			return http.StatusBadRequest, nil
+	if err := out.Error(); err != nil {
+		switch out.Error() {
 		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil
 		default:
-			// TODO: ここにエラーの種類を追加していく
 			return http.StatusInternalServerError, nil
 		}
 	}
 
+	resp := out.Response()
+
 	return http.StatusOK, &response.StatusTag{
-		ID:     out.Response.StatusID,
-		Status: out.Response.Status,
+		ID:     resp.StatusID,
+		Status: resp.Status,
+	}
+}
+
+// PresentDeleteStatusTag はStatusTagの削除をpresenterする
+func (s *statusTagPresenter) PresentUpdateStatusTag(ctx context.Context, out ports.OutputBoundary[*models.StatusTag]) (int, *response.StatusTag) {
+	defer newrelic.FromContext(ctx).StartSegment("PresentUpdateStatusTag-presenter").End()
+
+	if err := out.Error(); err != nil {
+		switch out.Error() {
+		case hperror.ErrFieldRequired:
+			return http.StatusBadRequest, nil
+		default:
+			return http.StatusInternalServerError, nil
+		}
+	}
+
+	resp := out.Response()
+
+	return http.StatusOK, &response.StatusTag{
+		ID:     resp.StatusID,
+		Status: resp.Status,
 	}
 }

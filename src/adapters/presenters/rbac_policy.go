@@ -9,13 +9,15 @@ import (
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 )
 
-type RbacPolicyPresenter struct{}
+type rbacPolicyPresenter struct{}
 
+// NewRbacPolicyPresenter はRbacPolicyPresenterを返す
 func NewRbacPolicyPresenter() ports.RbacPolicyOutputBoundary {
-	return &RbacPolicyPresenter{}
+	return &rbacPolicyPresenter{}
 }
 
-func (r *RbacPolicyPresenter) PresentCreateRbacPolicy(ctx context.Context, out ports.OutputBoundary[*response.CreateRbacPolicy]) (int, *response.CreateRbacPolicy) {
+// PresentCreateRbacPolicy はRbacPolicyの作成をpresenterする
+func (r *rbacPolicyPresenter) PresentCreateRbacPolicy(ctx context.Context, out ports.OutputBoundary[*response.CreateRbacPolicy]) (int, *response.CreateRbacPolicy) {
 	if err := out.Error(); err != nil {
 		switch out.Error() {
 		case hperror.ErrFieldRequired:
@@ -28,7 +30,8 @@ func (r *RbacPolicyPresenter) PresentCreateRbacPolicy(ctx context.Context, out p
 	return http.StatusCreated, out.Response()
 }
 
-func (r *RbacPolicyPresenter) PresentListRbacPolicies(ctx context.Context, out ports.OutputBoundary[*response.ListRbacPolicies]) (int, *response.ListRbacPolicies) {
+// PresentListRbacPolicies はRbacPolicyの取得をpresenterする
+func (r *rbacPolicyPresenter) PresentListRbacPolicies(ctx context.Context, out ports.OutputBoundary[*response.ListRbacPolicies]) (int, *response.ListRbacPolicies) {
 	if err := out.Error(); err != nil {
 		switch out.Error() {
 		case hperror.ErrFieldRequired:
@@ -41,7 +44,8 @@ func (r *RbacPolicyPresenter) PresentListRbacPolicies(ctx context.Context, out p
 	return http.StatusCreated, out.Response()
 }
 
-func (r *RbacPolicyPresenter) PresentDeleteRbacPolicy(ctx context.Context, out ports.OutputBoundary[*response.DeleteRbacPolicy]) (int, *response.DeleteRbacPolicy) {
+// PresentDeleteRbacPolicy はRbacPolicyの削除をpresenterする
+func (r *rbacPolicyPresenter) PresentDeleteRbacPolicy(ctx context.Context, out ports.OutputBoundary[*response.DeleteRbacPolicy]) (int, *response.DeleteRbacPolicy) {
 	if err := out.Error(); err != nil {
 		switch out.Error() {
 		case hperror.ErrFieldRequired:
@@ -54,7 +58,8 @@ func (r *RbacPolicyPresenter) PresentDeleteRbacPolicy(ctx context.Context, out p
 	return http.StatusCreated, out.Response()
 }
 
-func (r *RbacPolicyPresenter) PresentDeleteAllRbacPolicies(ctx context.Context, out ports.OutputBoundary[*response.DeleteAllRbacPolicies]) (int, *response.DeleteAllRbacPolicies) {
+// PresentDeleteAllRbacPolicies はRbacPolicyの全削除をpresenterする
+func (r *rbacPolicyPresenter) PresentDeleteAllRbacPolicies(ctx context.Context, out ports.OutputBoundary[*response.DeleteAllRbacPolicies]) (int, *response.DeleteAllRbacPolicies) {
 	if err := out.Error(); err != nil {
 		switch out.Error() {
 		case hperror.ErrFieldRequired:

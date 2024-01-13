@@ -9,15 +9,17 @@ import (
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 )
 
-type UserPresenter struct{}
+type userPresenter struct{}
 
+// NewUserPresenter はUserPresenterを返す
 func NewUserPresenter() ports.UserOutputBoundary {
-	return &UserPresenter{}
+	return &userPresenter{}
 }
 
-func (up *UserPresenter) PresentInitAdmin(ctx context.Context, out *ports.OutputInitAdminData) (int, *response.User) {
-	if out.Error != nil {
-		switch out.Error {
+// PresentInitAdmin はUserの作成をpresenterする
+func (up *userPresenter) PresentInitAdmin(ctx context.Context, out ports.OutputBoundary[*response.User]) (int, *response.User) {
+	if err := out.Error(); err != nil {
+		switch out.Error() {
 		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil
 		default:
@@ -25,10 +27,11 @@ func (up *UserPresenter) PresentInitAdmin(ctx context.Context, out *ports.Output
 		}
 	}
 
-	return http.StatusCreated, out.Response
+	return http.StatusOK, out.Response()
 }
 
-func (up *UserPresenter) PresentLogin(ctx context.Context, out ports.OutputBoundary[*response.Login]) (int, *response.Login) {
+// PresentLogin はUserのログインをpresenterする
+func (up *userPresenter) PresentLogin(ctx context.Context, out ports.OutputBoundary[*response.Login]) (int, *response.Login) {
 	if err := out.Error(); err != nil {
 		switch out.Error() {
 		case hperror.ErrFieldRequired:

@@ -79,7 +79,7 @@ func (s *statusTagInteractor) FindByIDStatusTag(ctx context.Context, in *request
 	defer newrelic.FromContext(ctx).StartSegment("FindByIdStatusTag-usecase").End()
 
 	statusTag, err := s.StatusTagRepo.FindByID(ctx, in.ID)
-	return s.Output.PresentFindByIdStatusTag(ctx, ports.NewOutput[*models.StatusTag](
+	return s.Output.PresentFindByIDStatusTag(ctx, ports.NewOutput[*models.StatusTag](
 		err,
 		statusTag,
 	))

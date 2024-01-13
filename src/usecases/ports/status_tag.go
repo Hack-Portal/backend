@@ -22,7 +22,7 @@ type StatusTagInputBoundary interface {
 type StatusTagOutputBoundary interface {
 	PresentCreateStatusTag(ctx context.Context, out OutputBoundary[*models.StatusTag]) (int, *response.StatusTag)
 	PresentFindAllStatusTag(ctx context.Context, out OutputBoundary[[]*models.StatusTag]) (int, []*response.StatusTag)
-	PresentFindByIdStatusTag(ctx context.Context, out OutputBoundary[*models.StatusTag]) (int, *response.StatusTag)
+	PresentFindByIDStatusTag(ctx context.Context, out OutputBoundary[*models.StatusTag]) (int, *response.StatusTag)
 	PresentUpdateStatusTag(ctx context.Context, out OutputBoundary[*models.StatusTag]) (int, *response.StatusTag)
 
 	// TODO: Deleteする際にすでに割り当てられているStatusTagがある場合の一貫性をどうするかを検討する必要があるため保留
