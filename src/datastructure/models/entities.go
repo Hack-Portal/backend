@@ -4,8 +4,10 @@ import "time"
 
 /*
 CREATE TABLE "status_tags" (
-  "status_id" serial PRIMARY KEY,
-  "status" varchar NOT NULL
+
+	"status_id" serial PRIMARY KEY,
+	"status" varchar NOT NULL
+
 );
 */
 type StatusTag struct {
@@ -17,17 +19,19 @@ type StatusTag struct {
 
 /*
 CREATE TABLE "hackathons" (
-  "hackathon_id" varchar PRIMARY KEY,
-  "name" varchar NOT NULL,
-  "icon" text NOT NULL,
-  "link" varchar NOT NULL,
-  "expired" date NOT NULL,
-  "start_date" date NOT NULL,
-  "term" int NOT NULL,
 
-  "created_at" timestamptz NOT NULL,
-  "updated_at" timestamptz NOT NULL,
-  "deleted_at" timestamptz
+	"hackathon_id" varchar PRIMARY KEY,
+	"name" varchar NOT NULL,
+	"icon" text NOT NULL,
+	"link" varchar NOT NULL,
+	"expired" date NOT NULL,
+	"start_date" date NOT NULL,
+	"term" int NOT NULL,
+
+	"created_at" timestamptz NOT NULL,
+	"updated_at" timestamptz NOT NULL,
+	"deleted_at" timestamptz
+
 );
 */
 type Hackathon struct {
@@ -139,4 +143,44 @@ type CasbinPolicy struct {
 	V1    string `json:"V1"`
 	V2    string `json:"V2"`
 	V3    string `json:"V3"`
+}
+
+/*
+CREATE TABLE "hackathon_discord_channels" (
+  "hackathon_id" varchar NOT NULL,
+  "channel_id" varchar NOT NULL
+);
+*/
+
+type HackathonDiscordChannel struct {
+	HackathonID string `json:"hackathon_id"`
+	ChannelID   string `json:"channel_id"`
+}
+
+/*
+CREATE TABLE "discord_server_registries" (
+  "guild_id" varchar PRIMARY KEY,
+  "server_name" varchar NOT NULL,
+  "selected_channel" varchar NOT NULL
+);
+*/
+
+type DiscordServerRegistry struct {
+	GuildID         string `json:"guild_id"`
+	ServerName      string `json:"server_name"`
+	SelectedChannel string `json:"selected_channel"`
+}
+
+/*
+CREATE TABLE "discord_server_forum_tags" (
+  "guild_id" varchar NOT NULL,
+  "status_id" varchar NOT NULL,
+  "forum_id" varchar NOT NULL
+);
+*/
+
+type DiscordServerForumTag struct {
+	GuildID  string `json:"guild_id"`
+	StatusID int64  `json:"status_id"`
+	ForumID  string `json:"forum_id"`
 }
