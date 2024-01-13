@@ -8,28 +8,30 @@ import (
 	v1 "github.com/Hack-Portal/backend/src/router/v1"
 	"github.com/Hack-Portal/backend/src/usecases/interactors"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/bwmarrin/discordgo"
 	"github.com/labstack/echo/v4"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type router struct {
-	engine *echo.Echo
-	db     *gorm.DB
-	cache  *redis.Client
-	client *s3.Client
+	engine  *echo.Echo
+	db      *gorm.DB
+	cache   *redis.Client
+	client  *s3.Client
+	session *discordgo.Session
 
 	config Config
 }
 
-func NewRouter(config Config, db *gorm.DB, cache *redis.Client, client *s3.Client) *echo.Echo {
+func NewRouter(config Config, db *gorm.DB, cache *redis.Client, session *discordgo.Session, client *s3.Client) *echo.Echo {
 	router := &router{
-		engine: echo.New(),
-		db:     db,
-		cache:  cache,
-		client: client,
-
-		config: config,
+		engine:  echo.New(),
+		db:      db,
+		cache:   cache,
+		client:  client,
+		session: session,
+		config:  config,
 	}
 
 	router.setup()
@@ -62,6 +64,6 @@ func (r *router) setup() {
 			middleware.RBACPermission(),
 		)
 
-		v1.NewV1Router(v1group, r.db, r.cache, r.client)
+		v1.NewV1Router(v1group, r.db, r.cache, r.client, r.session)
 	}
 }

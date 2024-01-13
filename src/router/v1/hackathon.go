@@ -23,6 +23,11 @@ func (r *v1router) hackathon() {
 				r.cache,
 				config.Config.Buckets.Expired,
 			),
+			interactors.NewDiscordNotifyInteractor(
+				gateways.NewDiscordChannelGateway(r.db),
+				gateways.NewDiscordServerRegistryGateways(r.db),
+				gateways.NewDiscordNotifyGateway(r.session),
+			),
 			presenters.NewHackathonPresenter(),
 		),
 	)

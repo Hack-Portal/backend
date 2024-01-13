@@ -11,13 +11,14 @@ import (
 	"github.com/Hack-Portal/backend/src/driver/redis"
 	"github.com/Hack-Portal/backend/src/router"
 	"github.com/Hack-Portal/backend/src/server"
+	"github.com/bwmarrin/discordgo"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func init() {
-	config.LoadEnv()
-	//config.LoadEnv(".env")
+	// config.LoadEnv()
+	config.LoadEnv(".env")
 }
 
 //	@title						Hack-Portal Backend API
@@ -97,13 +98,25 @@ func main() {
 		log.Fatal(err)
 	}
 
+	discordSession, err := discordgo.New("Bot " + config.Config.Discord.Secret)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// start server
 	handler := router.NewRouter(
 		router.NewDebug(config.Config.Server.Version),
 		db,
 		redisConn,
+		discordSession,
 		client,
 	)
 
-	server.New().Run(handler)
+	server := server.New()
+	go server.Run(handler)
+	go server.RunDiscordBot(discordSession)
+
+	// graceful shutdown
+	server.GracefulShutdown()
+	discordSession.Close()
 }

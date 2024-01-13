@@ -2,6 +2,7 @@ package presenters
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/Hack-Portal/backend/src/datastructure/hperror"
@@ -21,6 +22,7 @@ func (s *HackathonPresenter) PresentCreateHackathon(ctx context.Context, out *po
 	defer newrelic.FromContext(ctx).StartSegment("PresentCreateHackathon-presenter").End()
 
 	if out.Error != nil {
+		log.Println(out.Error)
 		switch out.Error {
 		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil

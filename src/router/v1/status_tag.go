@@ -14,6 +14,11 @@ func (r *v1router) statusTag() {
 	sc := controllers.NewStatusTagController(
 		interactors.NewStatusTagInteractor(
 			gateways.NewStatusTagGateway(r.db, r.cache),
+			interactors.NewDiscordNotifyInteractor(
+				gateways.NewDiscordChannelGateway(r.db),
+				gateways.NewDiscordServerRegistryGateways(r.db),
+				gateways.NewDiscordNotifyGateway(r.session),
+			),
 			presenters.NewStatusTagPresenter(),
 		),
 	)
