@@ -6,6 +6,7 @@ import (
 	"io"
 	"time"
 
+	"github.com/Hack-Portal/backend/src/datastructure/hperror"
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/datastructure/request"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
@@ -55,28 +56,28 @@ func (hi *hackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 	if in.ImageFile != nil {
 		src, err := in.ImageFile.Open()
 		if err != nil {
-			return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-				Error:    err,
-				Response: nil,
-			})
+			return hi.HackathonOutput.PresentCreateHackathon(ctx, ports.NewOutput[*response.CreateHackathon](
+				err,
+				nil,
+			))
 		}
 		defer src.Close()
 
 		data, err := io.ReadAll(src)
 		if err != nil {
-			return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-				Error:    err,
-				Response: nil,
-			})
+			return hi.HackathonOutput.PresentCreateHackathon(ctx, ports.NewOutput[*response.CreateHackathon](
+				err,
+				nil,
+			))
 		}
 
 		// 画像を保存してLinkを追加
 		links, err := hi.FileStore.UploadFile(ctx, data, fmt.Sprintf("%s%s.%s", HackathonImageDir, hackathonID, in.ImageFile.Filename))
 		if err != nil {
-			return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-				Error:    err,
-				Response: nil,
-			})
+			return hi.HackathonOutput.PresentCreateHackathon(ctx, ports.NewOutput[*response.CreateHackathon](
+				err,
+				nil,
+			))
 		}
 
 		imageLinks = links
@@ -96,31 +97,31 @@ func (hi *hackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 		UpdatedAt: time.Now(),
 		DeletedAt: nil,
 	}, in.Statuses); err != nil {
-		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-			Error:    err,
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentCreateHackathon(ctx, ports.NewOutput[*response.CreateHackathon](
+			err,
+			nil,
+		))
 	}
 
 	hackathon, status, err := hi.getHackathon(ctx, hackathonID)
 	if err != nil {
-		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-			Error:    err,
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentCreateHackathon(ctx, ports.NewOutput[*response.CreateHackathon](
+			err,
+			nil,
+		))
 	}
 
 	// Discordに通知
 	if err := hi.discordNotify.PushNewForum(hackathon); err != nil {
-		return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-			Error:    err,
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentCreateHackathon(ctx, ports.NewOutput[*response.CreateHackathon](
+			err,
+			nil,
+		))
 	}
 
-	return hi.HackathonOutput.PresentCreateHackathon(ctx, &ports.OutputCreateHackathonData{
-		Error: nil,
-		Response: &response.CreateHackathon{
+	return hi.HackathonOutput.PresentCreateHackathon(ctx, ports.NewOutput[*response.CreateHackathon](
+		err,
+		&response.CreateHackathon{
 			HackathonID: hackathonID,
 			Name:        hackathon.Name,
 			Icon:        hackathon.Icon,
@@ -131,7 +132,7 @@ func (hi *hackathonInteractor) CreateHackathon(ctx context.Context, in *ports.In
 
 			StatusTags: status,
 		},
-	})
+	))
 }
 
 // ListHackathon はHackathonを全て取得します
@@ -156,10 +157,10 @@ func (hi *hackathonInteractor) ListHackathon(ctx context.Context, in request.Lis
 		NearDeadline: in.NearDeadline,
 	})
 	if err != nil {
-		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
-			Error:    err,
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentListHackathon(ctx, ports.NewOutput[[]*response.GetHackathon](
+			err,
+			nil,
+		))
 	}
 
 	var parallelGetPresignedObjectURLInput []dai.ParallelGetPresignedObjectURLInput
@@ -171,10 +172,10 @@ func (hi *hackathonInteractor) ListHackathon(ctx context.Context, in request.Lis
 	}
 	icons, err := hi.FileStore.ParallelGetPresignedObjectURL(ctx, parallelGetPresignedObjectURLInput)
 	if err != nil {
-		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
-			Error:    err,
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentListHackathon(ctx, ports.NewOutput[[]*response.GetHackathon](
+			err,
+			nil,
+		))
 	}
 
 	for _, hackathon := range hackathons {
@@ -188,10 +189,10 @@ func (hi *hackathonInteractor) ListHackathon(ctx context.Context, in request.Lis
 
 	statuses, err := hi.HackathonStatus.FindAll(ctx, hackathonIDs)
 	if err != nil {
-		return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
-			Error:    err,
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentListHackathon(ctx, ports.NewOutput[[]*response.GetHackathon](
+			err,
+			nil,
+		))
 	}
 
 	var statusMap = make(map[string][]*response.StatusTag)
@@ -217,10 +218,10 @@ func (hi *hackathonInteractor) ListHackathon(ctx context.Context, in request.Lis
 		})
 	}
 
-	return hi.HackathonOutput.PresentListHackathon(ctx, &ports.OutputListHackathonData{
-		Error:    nil,
-		Response: responseHackathons,
-	})
+	return hi.HackathonOutput.PresentListHackathon(ctx, ports.NewOutput[[]*response.GetHackathon](
+		nil,
+		responseHackathons,
+	))
 }
 
 // getHackathon はhackathonとstatusを取得する
@@ -256,30 +257,30 @@ func (hi *hackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID 
 	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathon-usecase").End()
 
 	if len(hackathonID) == 0 {
-		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
-			Error:    fmt.Errorf("invalid hackathon id"),
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, ports.NewOutput[*response.DeleteHackathon](
+			hperror.ErrFieldRequired,
+			nil,
+		))
 	}
 
 	if err := hi.Hackathon.Delete(ctx, hackathonID); err != nil {
-		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
-			Error:    err,
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, ports.NewOutput[*response.DeleteHackathon](
+			err,
+			nil,
+		))
 	}
 
 	if err := hi.discordNotify.DeleteForums(hackathonID); err != nil {
-		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
-			Error:    err,
-			Response: nil,
-		})
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, ports.NewOutput[*response.DeleteHackathon](
+			err,
+			nil,
+		))
 	}
 
-	return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
-		Error: nil,
-		Response: &response.DeleteHackathon{
+	return hi.HackathonOutput.PresentDeleteHackathon(ctx, ports.NewOutput[*response.DeleteHackathon](
+		nil,
+		&response.DeleteHackathon{
 			HackathonID: hackathonID,
 		},
-	})
+	))
 }

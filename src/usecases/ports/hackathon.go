@@ -9,18 +9,21 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 )
 
+// HackathonInputBoundary はHackathonのInputBoundary
 type HackathonInputBoundary interface {
 	CreateHackathon(ctx context.Context, in *InputCreatehackathonData) (int, *response.CreateHackathon)
 	ListHackathon(ctx context.Context, in request.ListHackathon) (int, []*response.GetHackathon)
 	DeleteHackathon(ctx context.Context, hackathonID string) (int, *response.DeleteHackathon)
 }
 
+// HackathonOutputBoundary はHackathonのOutputBoundary
 type HackathonOutputBoundary interface {
-	PresentCreateHackathon(ctx context.Context, out *OutputCreateHackathonData) (int, *response.CreateHackathon)
-	PresentListHackathon(ctx context.Context, out *OutputListHackathonData) (int, []*response.GetHackathon)
-	PresentDeleteHackathon(ctx context.Context, out *OutputDeleteHackathonData) (int, *response.DeleteHackathon)
+	PresentCreateHackathon(ctx context.Context, out OutputBoundary[*response.CreateHackathon]) (int, *response.CreateHackathon)
+	PresentListHackathon(ctx context.Context, out OutputBoundary[[]*response.GetHackathon]) (int, []*response.GetHackathon)
+	PresentDeleteHackathon(ctx context.Context, out OutputBoundary[*response.DeleteHackathon]) (int, *response.DeleteHackathon)
 }
 
+// InputCreatehackathonData はHackathonのCreateHackathonのInputData
 type InputCreatehackathonData struct {
 	ImageFile *multipart.FileHeader
 
@@ -30,24 +33,4 @@ type InputCreatehackathonData struct {
 	StartDate time.Time
 	Term      int
 	Statuses  []int64
-}
-
-type OutputCreateHackathonData struct {
-	Error    error
-	Response *response.CreateHackathon
-}
-
-type OutputGetHackathonData struct {
-	Error    error
-	Response *response.GetHackathon
-}
-
-type OutputListHackathonData struct {
-	Error    error
-	Response []*response.GetHackathon
-}
-
-type OutputDeleteHackathonData struct {
-	Error    error
-	Response *response.DeleteHackathon
 }

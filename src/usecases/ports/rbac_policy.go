@@ -7,6 +7,7 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 )
 
+// RbacPolicyInputBoundary はRbacPolicyのInputBoundary
 type RbacPolicyInputBoundary interface {
 	CreateRbacPolicy(ctx context.Context, in *request.CreateRbacPolicy) (int, *response.CreateRbacPolicy)
 	ListRbacPolicies(ctx context.Context, in *request.ListRbacPolicies) (int, *response.ListRbacPolicies)
@@ -14,6 +15,7 @@ type RbacPolicyInputBoundary interface {
 	DeleteAllRbacPolicies(ctx context.Context) (int, *response.DeleteAllRbacPolicies)
 }
 
+// RbacPolicyOutputBoundary はRbacPolicyのOutputBoundary
 type RbacPolicyOutputBoundary interface {
 	PresentCreateRbacPolicy(ctx context.Context, out OutputBoundary[*response.CreateRbacPolicy]) (int, *response.CreateRbacPolicy)
 	PresentListRbacPolicies(ctx context.Context, out OutputBoundary[*response.ListRbacPolicies]) (int, *response.ListRbacPolicies)

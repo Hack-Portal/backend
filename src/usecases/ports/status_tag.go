@@ -8,6 +8,7 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 )
 
+// StatusTagInputBoundary はStatusTagのInputBoundary
 type StatusTagInputBoundary interface {
 	CreateStatusTag(ctx context.Context, in *request.CreateStatusTag) (int, *response.StatusTag)
 	FindAllStatusTag(ctx context.Context) (int, []*response.StatusTag)
@@ -17,31 +18,13 @@ type StatusTagInputBoundary interface {
 	// DeleteStatusTag(input *DeleteStatusTagInputData) (*DeleteStatusTagOutputData, error)
 }
 
+// StatusTagOutputBoundary はStatusTagのOutputBoundary
 type StatusTagOutputBoundary interface {
-	PresentCreateStatusTag(ctx context.Context, out *OutputCraeteStatusTagData) (int, *response.StatusTag)
-	PresentFindAllStatusTag(ctx context.Context, out *OutputFindAllStatusTagData) (int, []*response.StatusTag)
-	PresentFindByIdStatusTag(ctx context.Context, out *OutputFindByIdStatusTagData) (int, *response.StatusTag)
-	PresentUpdateStatusTag(ctx context.Context, out *OutputUpdateStatusTagData) (int, *response.StatusTag)
+	PresentCreateStatusTag(ctx context.Context, out OutputBoundary[*models.StatusTag]) (int, *response.StatusTag)
+	PresentFindAllStatusTag(ctx context.Context, out OutputBoundary[[]*models.StatusTag]) (int, []*response.StatusTag)
+	PresentFindByIdStatusTag(ctx context.Context, out OutputBoundary[*models.StatusTag]) (int, *response.StatusTag)
+	PresentUpdateStatusTag(ctx context.Context, out OutputBoundary[*models.StatusTag]) (int, *response.StatusTag)
 
 	// TODO: Deleteする際にすでに割り当てられているStatusTagがある場合の一貫性をどうするかを検討する必要があるため保留
 	// PresentDeleteStatusTag(ctx context.Context, out *outputDeleteStatusTagData) (int, *response.StatusTagResponse)
-}
-
-type OutputCraeteStatusTagData struct {
-	Error    error
-	Response *models.StatusTag
-}
-
-type OutputFindAllStatusTagData struct {
-	Error    error
-	Response []*models.StatusTag
-}
-
-type OutputFindByIdStatusTagData struct {
-	Error    error
-	Response *models.StatusTag
-}
-type OutputUpdateStatusTagData struct {
-	Error    error
-	Response *models.StatusTag
 }

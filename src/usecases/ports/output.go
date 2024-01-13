@@ -1,28 +1,34 @@
 package ports
 
+// OutputBoundary はユースケースの出力インターフェース
 type OutputBoundary[T any] interface {
 	Unwrap() (T, error)
 	Error() error
 	Response() T
 }
 
-type Output[T any] struct {
+// output はユースケースの出力
+type output[T any] struct {
 	err      error
 	response T
 }
 
+// NewOutput はユースケースの出力を生成する
 func NewOutput[T any](err error, response T) OutputBoundary[T] {
-	return &Output[T]{err: err, response: response}
+	return &output[T]{err: err, response: response}
 }
 
-func (o *Output[T]) Unwrap() (T, error) {
+// Unwrap はユースケースの出力を取得する
+func (o *output[T]) Unwrap() (T, error) {
 	return o.response, o.err
 }
 
-func (o *Output[T]) Error() error {
+// Error はユースケースのエラーを取得する
+func (o *output[T]) Error() error {
 	return o.err
 }
 
-func (o *Output[T]) Response() T {
+// Response はユースケースのレスポンスを取得する
+func (o *output[T]) Response() T {
 	return o.response
 }
