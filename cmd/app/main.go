@@ -71,7 +71,7 @@ func main() {
 	client, err := aws.New(
 		config.Config.Buckets.AccountID,
 		config.Config.Buckets.EndPoint,
-		config.Config.Buckets.AccessKeyId,
+		config.Config.Buckets.AccessKeyID,
 		config.Config.Buckets.AccessKeySecret,
 	).Connect(context.Background())
 	if err != nil {

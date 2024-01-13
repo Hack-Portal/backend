@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 var Config *config
 
 type config struct {
@@ -34,12 +36,12 @@ type config struct {
 	}
 
 	Buckets struct {
-		EndPoint        string `env:"BUCKETS_ENDPOINT" envDefault:""`
-		AccountID       string `env:"BUCKETS_ACCOUNT_ID" envDefault:""`
-		AccessKeyId     string `env:"BUCKETS_ACCESS_KEY_ID" envDefault:""`
-		AccessKeySecret string `env:"BUCKETS_ACCESS_KEY_SECRET" envDefault:""`
-		Bucket          string `env:"CLOUDFLARE_BUCKET" envDefault:""`
-		Expired         int    `env:"BUCKETS_EXPIRED" envDefault:"30"`
+		EndPoint        string        `env:"BUCKETS_ENDPOINT" envDefault:""`
+		AccountID       string        `env:"BUCKETS_ACCOUNT_ID" envDefault:""`
+		AccessKeyID     string        `env:"BUCKETS_ACCESS_KEY_ID" envDefault:""`
+		AccessKeySecret string        `env:"BUCKETS_ACCESS_KEY_SECRET" envDefault:""`
+		Bucket          string        `env:"CLOUDFLARE_BUCKET" envDefault:""`
+		Expired         time.Duration `env:"BUCKETS_EXPIRED" envDefault:"30m"`
 	}
 
 	NewRelic struct {

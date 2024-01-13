@@ -21,7 +21,7 @@ func (r *v1router) hackathon() {
 				config.Config.Buckets.Bucket,
 				r.client,
 				r.cache,
-				config.Config.Buckets.Expired,
+				gateways.WithPresignLinkExpired(config.Config.Buckets.Expired),
 			),
 			interactors.NewDiscordNotifyInteractor(
 				gateways.NewDiscordChannelGateway(r.db),
