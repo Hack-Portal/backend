@@ -43,6 +43,9 @@ func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackath
 
 func (h *HackathonGateway) createStatusTag(ctx context.Context, HackathonID string, hackathonStatus []int64) error {
 	defer newrelic.FromContext(ctx).StartSegment("CreateHackathonStatus-gateway").End()
+	if len(hackathonStatus) == 0 {
+		return nil
+	}
 
 	var hackathonStatusTags []*models.HackathonStatusTag
 	for _, status := range hackathonStatus {
@@ -111,6 +114,11 @@ func (h *HackathonGateway) Delete(ctx context.Context, hackathonID string) error
 	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathon-gateway").End()
 
 	result := h.db.Delete(&models.Hackathon{}, "hackathon_id = ?", hackathonID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	result = h.db.Delete(&models.HackathonStatusTag{}, "hackathon_id = ?", hackathonID)
 	if result.Error != nil {
 		return result.Error
 	}
