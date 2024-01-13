@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/Hack-Portal/backend/cmd/config"
-	"github.com/Hack-Portal/backend/src/usecases/dai"
 )
 
 var accessLink string
@@ -36,7 +35,7 @@ func testUploadFile(t *testing.T) {
 		t.Fatal("file is empty")
 	}
 
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil, 1)
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil)
 	key, err := fs.UploadFile(context.Background(), file, "test.jpg")
 	if err != nil {
 		t.Error("upload file error", err)
@@ -50,7 +49,7 @@ func testUploadFile(t *testing.T) {
 }
 
 func testGetPresignedObjectURL(t *testing.T) {
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil, 1)
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil)
 	url, err := fs.GetPresignedObjectURL(context.Background(), "test.jpg")
 	if err != nil {
 		t.Error("get presigned url error", err)
@@ -76,41 +75,9 @@ func testGetPresignedObjectURL(t *testing.T) {
 }
 
 func testDeleteFile(t *testing.T) {
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil, 1)
+	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil)
 	err := fs.DeleteFile(context.Background(), "test.jpg")
 	if err != nil {
 		t.Error("delete file error", err)
-	}
-}
-
-func TestParallelGetPresignedObjectURL(t *testing.T) {
-	sample := []dai.ParallelGetPresignedObjectURLInput{
-		{
-			HackathonID: "d7415564-928b-4c82-8c1a-80727a0ad0b9",
-			Key:         "hackathon/d7415564-928b-4c82-8c1a-80727a0ad0b9.actions.png",
-		},
-		{
-			HackathonID: "20fc5177-4067-49b3-bed4-8aa3655a1b9b",
-			Key:         "hackathon/20fc5177-4067-49b3-bed4-8aa3655a1b9b.actions.png",
-		},
-		{
-			HackathonID: "97ad9bc4-c0ac-46d0-a9a8-44fd21004613",
-			Key:         "hackathon/97ad9bc4-c0ac-46d0-a9a8-44fd21004613.actions.png",
-		},
-		{
-			HackathonID: "2d7f714b-02ae-41eb-a72f-9486247bbbe6",
-			Key:         "hackathon/2d7f714b-02ae-41eb-a72f-9486247bbbe6.actions.png",
-		},
-	}
-
-	fs := NewCloudflareR2(config.Config.Buckets.Bucket, client, nil, 1)
-
-	data, err := fs.ParallelGetPresignedObjectURL(context.Background(), sample)
-	if err != nil {
-		t.Error("parallel get presigned url error", err)
-	}
-
-	for i, v := range data {
-		t.Log(i, v)
 	}
 }

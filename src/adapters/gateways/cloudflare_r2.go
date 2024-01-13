@@ -46,22 +46,30 @@ func NewCloudflareR2(bucket string, client *s3.Client, cache *redis.Client, opts
 		opt(cloudflare)
 	}
 
+	// デフォルト値を設定
+	if cloudflare.presignLinkExpired == 0 {
+		cloudflare.presignLinkExpired = time.Duration(1) * time.Hour
+	}
+
 	return cloudflare
 }
 
+// checkContentType はファイルのContent-Typeをチェックする
 func checkContentType(file []byte) string {
 	return http.DetectContentType(file)
 }
 
-func (c *cloudflareR2) ListObjects(ctx context.Context, key string) (*s3.ListObjectsV2Output, error) {
+// ListObjects は指定したprefixのオブジェクトをすべて取得する
+func (c *cloudflareR2) ListObjects(ctx context.Context, prefix string) (*s3.ListObjectsV2Output, error) {
 	defer newrelic.FromContext(ctx).StartSegment("ListObjects-gateway").End()
 
 	return c.client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: aws.String(c.bucket),
-		Prefix: aws.String(key),
+		Prefix: aws.String(prefix),
 	})
 }
 
+// GetPresignedObjectURL は指定したkeyのオブジェクトのpresignされたURLを取得する
 func (c *cloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (string, error) {
 	defer newrelic.FromContext(ctx).StartSegment("GetPresignedObjectURL-gateway").End()
 	url, err := c.cacheClient.Get(ctx, key, func(ctx context.Context) (string, error) {
@@ -79,6 +87,7 @@ func (c *cloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (s
 	return url, err
 }
 
+// UploadFile はファイルをアップロードする
 func (c *cloudflareR2) UploadFile(ctx context.Context, file []byte, key string) (string, error) {
 	defer newrelic.FromContext(ctx).StartSegment("UploadFile-gateway").End()
 
@@ -93,6 +102,7 @@ func (c *cloudflareR2) UploadFile(ctx context.Context, file []byte, key string) 
 	return key, err
 }
 
+// DeleteFile はファイルを削除する
 func (c *cloudflareR2) DeleteFile(ctx context.Context, fileName string) error {
 	defer newrelic.FromContext(ctx).StartSegment("DeleteFile-gateway").End()
 
@@ -103,6 +113,7 @@ func (c *cloudflareR2) DeleteFile(ctx context.Context, fileName string) error {
 	return err
 }
 
+// ParallelGetPresignedObjectURL は複数のファイルのpresignされたURLを取得する
 func (c *cloudflareR2) ParallelGetPresignedObjectURL(ctx context.Context, input []dai.ParallelGetPresignedObjectURLInput) (map[string]string, error) {
 	defer newrelic.FromContext(ctx).StartSegment("ParallelGetPresignedObjectURL-gateway").End()
 
