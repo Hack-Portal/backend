@@ -2,18 +2,27 @@ package controllers
 
 import (
 	"github.com/Hack-Portal/backend/src/datastructure/request"
+	// swaggerのために読み込んでる
 	_ "github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/labstack/echo/v4"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
-type StatusTagController struct {
+type statusTagController struct {
 	inputPort ports.StatusTagInputBoundary
 }
 
-func NewStatusTagController(inputPort ports.StatusTagInputBoundary) *StatusTagController {
-	return &StatusTagController{
+// StatusTagController はStatusTagControllerのインターフェース
+type StatusTagController interface {
+	CreateStatusTag(ctx echo.Context) error
+	FindAllStatusTag(ctx echo.Context) error
+	UpdateStatusTag(ctx echo.Context) error
+}
+
+// NewStatusTagController はStatusTagControllerを返す
+func NewStatusTagController(inputPort ports.StatusTagInputBoundary) StatusTagController {
+	return &statusTagController{
 		inputPort: inputPort,
 	}
 }
@@ -29,7 +38,7 @@ func NewStatusTagController(inputPort ports.StatusTagInputBoundary) *StatusTagCo
 // @Failure			400											{object}	nil																"error response"
 // @Failure			500											{object}	nil																"error response"
 // @Router			/status_tags						[POST]
-func (stc *StatusTagController) CreateStatusTag(ctx echo.Context) error {
+func (stc *statusTagController) CreateStatusTag(ctx echo.Context) error {
 	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("CreateStatusTag").End()
 	var req request.CreateStatusTag
 	if err := ctx.Bind(&req); err != nil {
@@ -49,7 +58,7 @@ func (stc *StatusTagController) CreateStatusTag(ctx echo.Context) error {
 // @Failure			400											{object}	nil																"error response"
 // @Failure			500											{object}	nil																"error response"
 // @Router			/status_tags						[GET]
-func (stc *StatusTagController) FindAllStatusTag(ctx echo.Context) error {
+func (stc *statusTagController) FindAllStatusTag(ctx echo.Context) error {
 	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("FindAllStatusTag").End()
 	return ctx.JSON(stc.inputPort.FindAllStatusTag(ctx.Request().Context()))
 }
@@ -66,7 +75,7 @@ func (stc *StatusTagController) FindAllStatusTag(ctx echo.Context) error {
 // @Failure			400											{object}	nil																"error response"
 // @Failure			500											{object}	nil																"error response"
 // @Router			/status_tags/{id}				[PUT]
-func (stc *StatusTagController) UpdateStatusTag(ctx echo.Context) error {
+func (stc *statusTagController) UpdateStatusTag(ctx echo.Context) error {
 	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("UpdateStatusTag").End()
 	var req request.UpdateStatusTag
 	if err := ctx.Bind(&req); err != nil {

@@ -6,12 +6,19 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type UserController struct {
+type userController struct {
 	inputPort ports.UserInputBoundary
 }
 
-func NewUserController(inputPort ports.UserInputBoundary) *UserController {
-	return &UserController{
+// UserController はUserControllerのインターフェース
+type UserController interface {
+	InitAdmin(ctx echo.Context) error
+	Login(ctx echo.Context) error
+}
+
+// NewUserController はUserControllerを返す
+func NewUserController(inputPort ports.UserInputBoundary) UserController {
+	return &userController{
 		inputPort: inputPort,
 	}
 }
@@ -27,7 +34,7 @@ func NewUserController(inputPort ports.UserInputBoundary) *UserController {
 // @Failure			400											{object}	nil																"error response"
 // @Failure			500											{object}	nil																"error response"
 // @Router			/init_admin							[POST]
-func (uc *UserController) InitAdmin(ctx echo.Context) error {
+func (uc *userController) InitAdmin(ctx echo.Context) error {
 	var req request.InitAdmin
 	if err := ctx.Bind(&req); err != nil {
 		return echo.ErrBadRequest
@@ -36,7 +43,7 @@ func (uc *UserController) InitAdmin(ctx echo.Context) error {
 	return ctx.JSON(uc.inputPort.InitAdmin(ctx.Request().Context(), req))
 }
 
-func (uc *UserController) Login(ctx echo.Context) error {
+func (uc *userController) Login(ctx echo.Context) error {
 	var req request.Login
 	if err := ctx.Bind(&req); err != nil {
 		return echo.ErrBadRequest

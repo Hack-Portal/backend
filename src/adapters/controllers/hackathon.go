@@ -4,18 +4,28 @@ import (
 	"mime/multipart"
 
 	"github.com/Hack-Portal/backend/src/datastructure/request"
+
+	// swaggerのために読み込んでる
 	_ "github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/labstack/echo/v4"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
-type HackathonController struct {
+type hackathonController struct {
 	input ports.HackathonInputBoundary
 }
 
-func NewHackathonController(input ports.HackathonInputBoundary) *HackathonController {
-	return &HackathonController{
+// HackathonController はHackathonControllerのインターフェース
+type HackathonController interface {
+	CreateHackathon(ctx echo.Context) error
+	ListHackathons(ctx echo.Context) error
+	DeleteHackathon(ctx echo.Context) error
+}
+
+// NewHackathonController はHackathonControllerを返す
+func NewHackathonController(input ports.HackathonInputBoundary) HackathonController {
+	return &hackathonController{
 		input: input,
 	}
 }
@@ -31,7 +41,7 @@ func NewHackathonController(input ports.HackathonInputBoundary) *HackathonContro
 // @Failure			400											{object}	nil																"error response"
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons							[POST]
-func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
+func (hc *hackathonController) CreateHackathon(ctx echo.Context) error {
 	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("CreateHackathon").End()
 
 	var input request.CreateHackathon
@@ -75,7 +85,7 @@ func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 // @Failure			400											{object}	nil																"error response"
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons							[GET]
-func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
+func (hc *hackathonController) ListHackathons(ctx echo.Context) error {
 	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("ListHackathons").End()
 
 	var input request.ListHackathon = request.ListHackathon{
@@ -103,7 +113,7 @@ func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
 // @Failure			400											{object}	nil																"error response"
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons/{hackathon_id}				[DELETE]
-func (hc *HackathonController) DeleteHackathon(ctx echo.Context) error {
+func (hc *hackathonController) DeleteHackathon(ctx echo.Context) error {
 	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("DeleteHackathon").End()
 
 	var input request.DeleteHackathon
