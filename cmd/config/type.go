@@ -50,6 +50,6 @@ type config struct {
 	}
 
 	Discord struct {
-		Secret string `env:"DISCORD_SECRET" envDefault:"MTE5NTI1MTYxOTMxOTc5MTY0Ng.GXYAqS.A5yL121VzQaJBHXlvWvZjICpzdhHNa1D5i9tNU"`
+		Secret string `env:"DISCORD_SECRET" envDefault:""`
 	}
 }
