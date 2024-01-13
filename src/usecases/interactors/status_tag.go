@@ -41,6 +41,12 @@ func (s *statusTagInteractor) CreateStatusTag(ctx context.Context, in *request.C
 	id, err := s.StatusTagRepo.Create(ctx, &models.StatusTag{
 		Status: in.Status,
 	})
+	if err != nil {
+		return s.Output.PresentCreateStatusTag(ctx, ports.NewOutput[*models.StatusTag](
+			err,
+			nil,
+		))
+	}
 
 	if err := s.discordNotify.CreateNewForumTag([]*models.StatusTag{
 		{
@@ -55,7 +61,7 @@ func (s *statusTagInteractor) CreateStatusTag(ctx context.Context, in *request.C
 	}
 
 	return s.Output.PresentCreateStatusTag(ctx, ports.NewOutput[*models.StatusTag](
-		err,
+		nil,
 		&models.StatusTag{
 			StatusID: id,
 			Status:   in.Status,

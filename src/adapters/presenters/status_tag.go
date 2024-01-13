@@ -2,6 +2,7 @@ package presenters
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/Hack-Portal/backend/src/datastructure/hperror"
@@ -23,6 +24,7 @@ func (s *statusTagPresenter) PresentCreateStatusTag(ctx context.Context, out por
 	defer newrelic.FromContext(ctx).StartSegment("PresentCreateStatusTag-presenter").End()
 
 	if err := out.Error(); err != nil {
+		log.Println(err)
 		switch out.Error() {
 		case hperror.ErrFieldRequired:
 			return http.StatusBadRequest, nil

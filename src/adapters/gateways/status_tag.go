@@ -40,7 +40,7 @@ func (stg *statusTagGateway) Create(ctx context.Context, statusTag *models.Statu
 		return 0, err
 	}
 
-	return statusTagID, stg.cacheClient.Reset(ctx, "status_tags")
+	return statusTagID, nil
 }
 
 // FindAll は全てのStatusTagを取得する

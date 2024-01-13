@@ -64,6 +64,7 @@ func New(address, password string, connectTimeout, connectAttempts, connectWaitT
 }
 
 func (rc *redisClient) Connect(db int) (*redis.Client, error) {
+	log.Println("redis connect :", rc.address, rc.password, db)
 	rc.client = redis.NewClient(&redis.Options{
 		Addr:        rc.address,
 		Password:    rc.password, // no password set

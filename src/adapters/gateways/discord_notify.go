@@ -1,6 +1,8 @@
 package gateways
 
 import (
+	"fmt"
+
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/bwmarrin/discordgo"
@@ -8,13 +10,7 @@ import (
 
 const (
 	// DiscordNotifyTemplate はdiscordに通知する際のテンプレート
-	DiscordNotifyTemplate = `
-		【Title】		%s
-		【応募リンク】	%s
-		【応募締切】	%s
-		【開催日時】	%s
-		【タグ】
-	`
+	DiscordNotifyTemplate = "【Title】%s\n【応募締切】%s\n【開催日時】%s\n【応募リンク】%s\n"
 )
 
 type discordNotifyGateway struct {
@@ -32,7 +28,7 @@ func (d *discordNotifyGateway) CreateNewForum(channelID string, arg *models.Hack
 		Name:        arg.Name,
 		AppliedTags: []string{},
 	}, &discordgo.MessageSend{
-		Content: arg.Name + arg.Link,
+		Content: fmt.Sprintf(DiscordNotifyTemplate, arg.Name, arg.Expired.Format("2006-01-02"), arg.StartDate.Format("2006-01-02"), arg.Link),
 	})
 	if err != nil {
 		return "", err
