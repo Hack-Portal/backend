@@ -12,7 +12,6 @@ import (
 	"github.com/Hack-Portal/backend/src/driver/redis"
 	"github.com/Hack-Portal/backend/src/router"
 	"github.com/Hack-Portal/backend/src/server"
-	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
