@@ -8,9 +8,11 @@ import (
 	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/cmd/migrations"
 	"github.com/Hack-Portal/backend/src/driver/aws"
+	"github.com/Hack-Portal/backend/src/driver/newrelic"
 	"github.com/Hack-Portal/backend/src/driver/redis"
 	"github.com/Hack-Portal/backend/src/router"
 	"github.com/Hack-Portal/backend/src/server"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -77,11 +79,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// app, err := newrelic.Setup()
-	// if err != nil {
-	// 	logger.Error(fmt.Sprintf("failed to setup newrelic: %v", err))
-	// 	return
-	// }
+	nrapp, err := newrelic.Setup()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 
 	redisconn := redis.New(
 		fmt.Sprintf("%v:%v", config.Config.Redis.Host, config.Config.Redis.Port),
@@ -102,6 +104,7 @@ func main() {
 		router.NewDebug(config.Config.Server.Version),
 		db,
 		redisConn,
+		nrapp,
 		client,
 	)
 
