@@ -7,6 +7,7 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/datastructure/request"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/gorm"
 )
 
@@ -21,6 +22,7 @@ func NewRbacPolicyGateway(db *gorm.DB) dai.RBACPolicyDai {
 }
 
 func (r *RbacPolicyGateway) FindRoleByRole(ctx context.Context, role int) ([]*models.CasbinPolicy, error) {
+	defer newrelic.FromContext(ctx).StartSegment("FindRoleByRole-gateway").End()
 	var policies []*models.RbacPolicy
 	if err := r.db.Where("v0 = ?", role).Find(&policies).Error; err != nil {
 		return nil, err
@@ -41,6 +43,8 @@ func (r *RbacPolicyGateway) FindRoleByRole(ctx context.Context, role int) ([]*mo
 }
 
 func (r *RbacPolicyGateway) FindRoleByPath(ctx context.Context, path string) ([]*models.CasbinPolicy, error) {
+	defer newrelic.FromContext(ctx).StartSegment("FindRoleByPath-gateway").End()
+
 	var policies []*models.RbacPolicy
 	if err := r.db.Where("v1 = ?", path).Find(&policies).Error; err != nil {
 		return nil, err
@@ -61,6 +65,8 @@ func (r *RbacPolicyGateway) FindRoleByPath(ctx context.Context, path string) ([]
 }
 
 func (r *RbacPolicyGateway) FindRoleByPathAndMethod(ctx context.Context, path, method string) ([]*models.CasbinPolicy, error) {
+	defer newrelic.FromContext(ctx).StartSegment("FindRoleByPathAndMethod-gateway").End()
+
 	var policies []*models.RbacPolicy
 	if err := r.db.Where("v1 = ? AND v2 = ?", path, method).Find(&policies).Error; err != nil {
 		return nil, err
@@ -80,6 +86,8 @@ func (r *RbacPolicyGateway) FindRoleByPathAndMethod(ctx context.Context, path, m
 }
 
 func (r *RbacPolicyGateway) Create(ctx context.Context, policy []*models.RbacPolicy) ([]int, error) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateRbacPolicy-gateway").End()
+
 	if err := r.db.Create(&policy).Error; err != nil {
 		return nil, err
 	}
@@ -91,6 +99,8 @@ func (r *RbacPolicyGateway) Create(ctx context.Context, policy []*models.RbacPol
 }
 
 func (r *RbacPolicyGateway) FindAll(ctx context.Context, arg *request.ListRbacPolicies) ([]*models.RbacPolicy, error) {
+	defer newrelic.FromContext(ctx).StartSegment("ListRbacPolicies-gateway").End()
+
 	var policies []*models.RbacPolicy
 	db := r.db
 	if len(arg.Sub) > 0 {
@@ -117,6 +127,8 @@ func (r *RbacPolicyGateway) FindAll(ctx context.Context, arg *request.ListRbacPo
 }
 
 func (r *RbacPolicyGateway) DeleteByID(ctx context.Context, id int64) error {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteRbacPolicy-gateway").End()
+
 	if err := r.db.Where("policy_id = ?", id).Delete(&models.RbacPolicy{}).Error; err != nil {
 		return err
 	}
@@ -124,6 +136,7 @@ func (r *RbacPolicyGateway) DeleteByID(ctx context.Context, id int64) error {
 }
 
 func (r *RbacPolicyGateway) DeleteAll(ctx context.Context) error {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteAllRbacPolicy-gateway").End()
 	if err := r.db.Delete(&models.RbacPolicy{}).Error; err != nil {
 		return err
 	}

@@ -7,7 +7,7 @@ import (
 	_ "github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/labstack/echo/v4"
-	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/newrelic/go-agent/v3/integrations/nrecho-v4"
 )
 
 type HackathonController struct {
@@ -32,7 +32,7 @@ func NewHackathonController(input ports.HackathonInputBoundary) *HackathonContro
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons							[POST]
 func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
-	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("CreateHackathon").End()
+	defer nrecho.FromContext(ctx).StartSegment("CreateHackathon").End()
 
 	var input request.CreateHackathon
 	if err := ctx.Bind(&input); err != nil {
@@ -76,7 +76,7 @@ func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons							[GET]
 func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
-	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("ListHackathons").End()
+	defer nrecho.FromContext(ctx).StartSegment("ListHackathons").End()
 
 	var input request.ListHackathon = request.ListHackathon{
 		PageSize: 10,
@@ -104,7 +104,7 @@ func (hc *HackathonController) ListHackathons(ctx echo.Context) error {
 // @Failure			500											{object}	nil																"error response"
 // @Router			/hackathons/{hackathon_id}				[DELETE]
 func (hc *HackathonController) DeleteHackathon(ctx echo.Context) error {
-	defer newrelic.FromContext(ctx.Request().Context()).StartSegment("DeleteHackathon").End()
+	defer nrecho.FromContext(ctx).StartSegment("DeleteHackathon").End()
 
 	var input request.DeleteHackathon
 	if ctx.Bind(&input) != nil {

@@ -10,6 +10,7 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type RbacPolicyInteractor struct {
@@ -27,6 +28,7 @@ func NewRbacPolicyInteractor(policyRepo dai.RBACPolicyDai, roleRepo dai.RoleDai,
 }
 
 func (r *RbacPolicyInteractor) CreateRbacPolicy(ctx context.Context, in *request.CreateRbacPolicy) (int, *response.CreateRbacPolicy) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateRbacPolicy-interactor").End()
 	if len(in.Policies) == 0 {
 		return r.output.PresentCreateRbacPolicy(ctx, ports.NewOutput[*response.CreateRbacPolicy](
 			hperror.ErrFieldRequired,
@@ -71,6 +73,7 @@ func (r *RbacPolicyInteractor) CreateRbacPolicy(ctx context.Context, in *request
 }
 
 func (r *RbacPolicyInteractor) ListRbacPolicies(ctx context.Context, in *request.ListRbacPolicies) (int, *response.ListRbacPolicies) {
+	defer newrelic.FromContext(ctx).StartSegment("ListRbacPolicies-interactor").End()
 	result, err := r.policyreRepo.FindAll(ctx, in)
 	if err != nil {
 		return r.output.PresentListRbacPolicies(ctx, ports.NewOutput[*response.ListRbacPolicies](
@@ -88,6 +91,7 @@ func (r *RbacPolicyInteractor) ListRbacPolicies(ctx context.Context, in *request
 }
 
 func (r *RbacPolicyInteractor) DeleteRbacPolicy(ctx context.Context, in *request.DeleteRbacPolicy) (int, *response.DeleteRbacPolicy) {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteRbacPolicy-interactor").End()
 
 	if err := r.policyreRepo.DeleteByID(ctx, in.PolicyID); err != nil {
 		return r.output.PresentDeleteRbacPolicy(ctx, ports.NewOutput[*response.DeleteRbacPolicy](
@@ -105,6 +109,8 @@ func (r *RbacPolicyInteractor) DeleteRbacPolicy(ctx context.Context, in *request
 }
 
 func (r *RbacPolicyInteractor) DeleteAllRbacPolicies(ctx context.Context) (int, *response.DeleteAllRbacPolicies) {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteAllRbacPolicies-interactor").End()
+
 	if err := r.policyreRepo.DeleteAll(ctx); err != nil {
 		return r.output.PresentDeleteAllRbacPolicies(ctx, ports.NewOutput[*response.DeleteAllRbacPolicies](
 			err,

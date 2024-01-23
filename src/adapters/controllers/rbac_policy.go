@@ -4,6 +4,7 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/request"
 	_ "github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
+	"github.com/newrelic/go-agent/v3/integrations/nrecho-v4"
 
 	"github.com/labstack/echo/v4"
 )
@@ -30,6 +31,8 @@ func NewRbacPolicyController(inputPort ports.RbacPolicyInputBoundary) *RbacPolic
 // @Failure			500											{object}	nil																"error response"
 // @Router			/rbac										[POST]
 func (r *RbacPolicyController) Create(ctx echo.Context) error {
+	defer nrecho.FromContext(ctx).StartSegment("CreateRbacPolicy").End()
+
 	var req request.CreateRbacPolicy
 	if err := ctx.Bind(&req); err != nil {
 		return echo.ErrBadRequest
@@ -50,6 +53,8 @@ func (r *RbacPolicyController) Create(ctx echo.Context) error {
 // @Failure			500											{object}	nil																"error response"
 // @Router			/rbac										[GET]
 func (r *RbacPolicyController) ReadAll(ctx echo.Context) error {
+	defer nrecho.FromContext(ctx).StartSegment("ListRbacPolicies").End()
+
 	var req request.ListRbacPolicies
 	if err := ctx.Bind(&req); err != nil {
 		return echo.ErrBadRequest
@@ -89,5 +94,6 @@ func (r *RbacPolicyController) Delete(ctx echo.Context) error {
 // @Failure			500											{object}	nil																"error response"
 // @Router			/rbac										[DELETE]
 func (r *RbacPolicyController) DeleteAll(ctx echo.Context) error {
+	defer nrecho.FromContext(ctx).StartSegment("DeleteAllRbacPolicies").End()
 	return ctx.JSON(r.inputPort.DeleteAllRbacPolicies(ctx.Request().Context()))
 }

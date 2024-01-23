@@ -15,6 +15,7 @@ import (
 	"github.com/Hack-Portal/backend/src/utils/password"
 	"github.com/Hack-Portal/backend/src/utils/random"
 	"github.com/labstack/echo/v4"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type UserInteractor struct {
@@ -32,6 +33,7 @@ func NewUserInteractor(userRepo dai.UsersDai, roleRepo dai.RoleDai, output ports
 }
 
 func (u *UserInteractor) InitAdmin(ctx context.Context, in request.InitAdmin) (int, *response.User) {
+	defer newrelic.FromContext(ctx).StartSegment("InitAdmin-interactor").End()
 	// Tokenの検証 => 失敗したらTokenを変更して返す TODO:スケールしない構成になっているから、Redisに保存するようにする
 	if in.InitAdminToken != config.Config.Server.AdminInitPassword {
 		config.Config.Server.AdminInitPassword = random.AlphaNumeric(30)
@@ -73,6 +75,8 @@ func (u *UserInteractor) InitAdmin(ctx context.Context, in request.InitAdmin) (i
 }
 
 func (u *UserInteractor) Login(ctx context.Context, in request.Login) (int, *response.Login) {
+	defer newrelic.FromContext(ctx).StartSegment("Login-interactor").End()
+
 	user, err := u.userRepo.FindById(ctx, in.UserID)
 	if err != nil {
 		return u.output.PresentLogin(ctx, ports.NewOutput[*response.Login](err, nil))
