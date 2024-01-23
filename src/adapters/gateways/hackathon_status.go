@@ -46,8 +46,7 @@ func (hs *HackathonStatusGateway) FindAll(ctx context.Context, HackathonID []str
 func (hs *HackathonStatusGateway) Delete(ctx context.Context, HackathonID string) error {
 	defer newrelic.FromContext(ctx).StartSegment("DeleteHackathonStatus-gateway").End()
 
-	result := hs.db.Delete(&models.HackathonStatusTag{}).
-		Where("hackathon_id = ?", HackathonID)
+	result := hs.db.Delete(&models.HackathonStatusTag{}, "hackathon_id = ?", HackathonID)
 	if result.Error != nil {
 		return result.Error
 	}
