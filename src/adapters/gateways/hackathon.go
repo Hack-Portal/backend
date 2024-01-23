@@ -33,8 +33,10 @@ func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackath
 			return result.Error
 		}
 
-		if err := h.createStatusTag(ctx, hackathon.HackathonID, hackathonStatus); err != nil {
-			return err
+		if len(hackathonStatus) > 0 {
+			if err := h.createStatusTag(ctx, hackathon.HackathonID, hackathonStatus); err != nil {
+				return err
+			}
 		}
 
 		return h.cacheClient.Reset(ctx, "hackathons")
