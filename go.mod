@@ -18,6 +18,7 @@ require (
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/lib/pq v1.10.9
 	github.com/newrelic/go-agent/v3 v3.29.0
+	github.com/newrelic/go-agent/v3/integrations/nrecho-v4 v1.0.4
 	github.com/redis/go-redis/v9 v9.3.1
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/swag v1.16.2

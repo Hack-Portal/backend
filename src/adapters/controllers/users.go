@@ -4,6 +4,7 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/request"
 	"github.com/Hack-Portal/backend/src/usecases/ports"
 	"github.com/labstack/echo/v4"
+	"github.com/newrelic/go-agent/v3/integrations/nrecho-v4"
 )
 
 type UserController struct {
@@ -28,6 +29,7 @@ func NewUserController(inputPort ports.UserInputBoundary) *UserController {
 // @Failure			500											{object}	nil																"error response"
 // @Router			/init_admin							[POST]
 func (uc *UserController) InitAdmin(ctx echo.Context) error {
+	defer nrecho.FromContext(ctx).StartSegment("InitAdmin").End()
 	var req request.InitAdmin
 	if err := ctx.Bind(&req); err != nil {
 		return echo.ErrBadRequest
@@ -37,6 +39,8 @@ func (uc *UserController) InitAdmin(ctx echo.Context) error {
 }
 
 func (uc *UserController) Login(ctx echo.Context) error {
+	defer nrecho.FromContext(ctx).StartSegment("Login").End()
+
 	var req request.Login
 	if err := ctx.Bind(&req); err != nil {
 		return echo.ErrBadRequest
