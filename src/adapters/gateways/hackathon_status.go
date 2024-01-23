@@ -20,7 +20,7 @@ type HackathonStatusGateway struct {
 func NewHackathonStatusGateway(db *gorm.DB, cache *redis.Client) dai.HackathonStatusDai {
 	return &HackathonStatusGateway{
 		db:          db,
-		cacheClient: NewCache[[]*models.JoinedStatusTag](cache, time.Duration(30)*time.Minute),
+		cacheClient: NewCache[[]*models.JoinedStatusTag](cache, time.Duration(5)*time.Minute),
 	}
 }
 

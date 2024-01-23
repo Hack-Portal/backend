@@ -2,6 +2,8 @@ package interactors
 
 import (
 	"context"
+	"encoding/base64"
+	"fmt"
 	"log"
 
 	"github.com/Hack-Portal/backend/cmd/config"
@@ -17,12 +19,14 @@ import (
 
 type UserInteractor struct {
 	userRepo dai.UsersDai
+	roleRepo dai.RoleDai
 	output   ports.UserOutputBoundary
 }
 
-func NewUserInteractor(userRepo dai.UsersDai, output ports.UserOutputBoundary) ports.UserInputBoundary {
+func NewUserInteractor(userRepo dai.UsersDai, roleRepo dai.RoleDai, output ports.UserOutputBoundary) ports.UserInputBoundary {
 	return &UserInteractor{
 		userRepo: userRepo,
+		roleRepo: roleRepo,
 		output:   output,
 	}
 }
@@ -66,4 +70,31 @@ func (u *UserInteractor) InitAdmin(ctx context.Context, in request.InitAdmin) (i
 		Error:    nil,
 		Response: &response.User{UserID: arg.UserID, Name: arg.Name, Password: pass},
 	})
+}
+
+func (u *UserInteractor) Login(ctx context.Context, in request.Login) (int, *response.Login) {
+	user, err := u.userRepo.FindById(ctx, in.UserID)
+	if err != nil {
+		return u.output.PresentLogin(ctx, ports.NewOutput[*response.Login](err, nil))
+	}
+
+	if err := password.CheckPassword(in.Password, user.Password); err != nil {
+		log.Println("password check error", err)
+		return u.output.PresentLogin(ctx, ports.NewOutput[*response.Login](err, nil))
+	}
+
+	role, err := u.roleRepo.FindById(ctx, int64(user.Role))
+	if err != nil {
+		log.Println("find role error", err)
+		return u.output.PresentLogin(ctx, ports.NewOutput[*response.Login](err, nil))
+	}
+
+	token := base64.RawStdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", user.UserID, in.Password)))
+
+	return u.output.PresentLogin(ctx, ports.NewOutput[*response.Login](nil, &response.Login{
+		UserID: user.UserID,
+		Name:   user.Name,
+		Role:   role.Role,
+		Token:  string(token),
+	}))
 }

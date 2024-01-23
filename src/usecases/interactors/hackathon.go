@@ -279,6 +279,13 @@ func (hi *HackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID 
 		})
 	}
 
+	if err := hi.HackathonStatus.Delete(ctx, hackathonID); err != nil {
+		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
+			Error:    err,
+			Response: nil,
+		})
+	}
+
 	if err := hi.Hackathon.Delete(ctx, hackathonID); err != nil {
 		return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
 			Error:    err,
@@ -287,7 +294,9 @@ func (hi *HackathonInteractor) DeleteHackathon(ctx context.Context, hackathonID 
 	}
 
 	return hi.HackathonOutput.PresentDeleteHackathon(ctx, &ports.OutputDeleteHackathonData{
-		Error:    nil,
-		Response: &response.DeleteHackathon{},
+		Error: nil,
+		Response: &response.DeleteHackathon{
+			HackathonID: hackathonID,
+		},
 	})
 }

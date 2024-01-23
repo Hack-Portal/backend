@@ -42,6 +42,7 @@ func (r *router) setup() {
 	uc := controllers.NewUserController(
 		interactors.NewUserInteractor(
 			gateways.NewUserGateway(r.db),
+			gateways.NewRoleGateway(r.db),
 			presenters.NewUserPresenter(),
 		),
 	)
@@ -50,6 +51,7 @@ func (r *router) setup() {
 	r.engine.GET("/health", func(c echo.Context) error { return c.String(200, "ok") })
 	r.engine.GET("/version", func(c echo.Context) error { return c.String(200, r.config.Version) })
 	r.engine.POST("/init_admin", uc.InitAdmin)
+	r.engine.POST("/login", uc.Login)
 
 	// status tag
 	middleware := middleware.NewMiddleware(r.db)

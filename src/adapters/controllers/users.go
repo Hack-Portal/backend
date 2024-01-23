@@ -35,3 +35,12 @@ func (uc *UserController) InitAdmin(ctx echo.Context) error {
 
 	return ctx.JSON(uc.inputPort.InitAdmin(ctx.Request().Context(), req))
 }
+
+func (uc *UserController) Login(ctx echo.Context) error {
+	var req request.Login
+	if err := ctx.Bind(&req); err != nil {
+		return echo.ErrBadRequest
+	}
+
+	return ctx.JSON(uc.inputPort.Login(ctx.Request().Context(), req))
+}

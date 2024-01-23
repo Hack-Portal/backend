@@ -632,10 +632,20 @@ const docTemplate = `{
             }
         },
         "response.DeleteAllRbacPolicies": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
         },
         "response.DeleteHackathon": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "hackathon_id": {
+                    "type": "string"
+                }
+            }
         },
         "response.DeleteRbacPolicy": {
             "type": "object",

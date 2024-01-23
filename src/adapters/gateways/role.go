@@ -35,7 +35,7 @@ func (rg *RoleGateway) FindAll(ctx context.Context) (roles []*models.Role, err e
 }
 
 func (rg *RoleGateway) FindById(ctx context.Context, id int64) (role *models.Role, err error) {
-	result := rg.db.First(role, id)
+	result := rg.db.First(&role, "role_id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}

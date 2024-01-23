@@ -15,4 +15,5 @@ type DeleteRbacPolicy struct {
 }
 
 type DeleteAllRbacPolicies struct {
+	Message string `json:"message"`
 }
