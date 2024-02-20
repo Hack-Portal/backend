@@ -1,15 +1,18 @@
 version: "2"
 sql:
-  - queries: "./pkg/adapter/gateways/datasource/"
-    schema: "./cmd/migrations/"
-    engine: "postgresql"
-    gen:
-      go:
-        package: "repository"
-        out: "./pkg/adapter/gateways/repository/datasource/"
-        emit_json_tags: true
-        emit_prepared_queries: false
-        emit_interface: true
-        emit_exact_table_names: false
-        emit_empty_slices: true
-        emit_pointers_for_null_types: true
+- schema: "cmd/migrations"
+  queries: "pkg/repository/datasource"
+  engine: "postgresql"
+  gen:
+    go: 
+      package: "repository"
+      out: "pkg/repository"
+      sql_package: "pgx/v5"
+      emit_json_tags: true
+      emit_interface: true
+      emit_empty_slices: true
+      overrides:
+        - db_type: "timestamptz"
+          go_type: "time.Time"
+        - db_type: "uuid"
+          go_type: "github.com/google/uuid.UUID"
