@@ -23,17 +23,23 @@ func NewHackathonProposalGateway(db *gorm.DB, cache *redis.Client) dai.Hackathon
 	}
 }
 
-func (h *HackathonProposalGateway) Create(ctx context.Context, url string) (*models.HackathonProposal, error) {
+func (hpg *HackathonProposalGateway) Create(ctx context.Context, url string) (id int64, err error) {
 	defer newrelic.FromContext(ctx).StartSegment("CreateHackathonProposal-gateway").End()
 
-	return h.db.Transaction(func(tx *gorm.DB) (*models.HackathonProposal, error) {
-		result := h.db.Create(url)
-		if result.Error != nil {
-			return result.Error
-		}
-
-		return h.cacheClient.Reset(ctx, "hackathon_proposals")
+	result := hpg.db.Create(&models.HackathonProposal{
+		URL: url,
 	})
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	var hackathonProposalID int64
+	err = hpg.db.Raw("SELECT currval(pg_get_serial_sequence('hackathon_proposals', 'hackathon_proposal_id'))").Scan(&hackathonProposalID).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return hackathonProposalID, hpg.cacheClient.Reset(ctx, "hackathon_proposals")
 }
 
 // func (h *HackathonProposalGateway) FindAll(ctx context.Context, arg request.ListHackathonProposal) ([]*models.HackathonProposal, error) {

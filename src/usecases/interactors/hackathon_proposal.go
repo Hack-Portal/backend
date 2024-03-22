@@ -3,7 +3,6 @@ package interactors
 import (
 	"context"
 
-	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/datastructure/request"
 	"github.com/Hack-Portal/backend/src/datastructure/response"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
@@ -23,26 +22,19 @@ func NewHackathonProposalInteractor(hackathonProposalDai dai.HackathonProposalDa
 	}
 }
 
-func (hi *HackathonProposalInteractor) CreateHackathonProposal(ctx context.Context, in *request.CreateHackathonProposal) (int, *ports.OutputCreateHackathonProposalData) {
+func (hi *HackathonInteractor) CreateHackathonProposal(ctx context.Context, in request.CreateHackathonProposal) (int, *response.CreateHackathonProposal) {
 	defer newrelic.FromContext(ctx).StartSegment("CreateHackathonProposal-usecase").End()
 
 	// ハッカソン提案を作成
-	if err := hi.HackathonProposal.Create(ctx, &models.HackathonProposal{
-		URL: in.URL,
-	}); err != nil {
-		return hi.HackathonProposalOutput.PresentCreateHackathonProposal(ctx, &ports.OutputCreateHackathonProposalData{
-			Error:    err,
-			Response: nil,
-		})
+	id, err := hi.HackathonProposalOutput.Create(ctx, in.URL)
+	if err != nil {
 	}
-	// hackathon, err := hi.GetHackathonProposal(ctx, &models.HackathonProposal{
-	// 	URL: in.URL,
-	// })
 
 	return hi.HackathonProposalOutput.PresentCreateHackathonProposal(ctx, &ports.OutputCreateHackathonProposalData{
-		Error:    nil,
+		Error: nil,
 		Response: &response.CreateHackathonProposal{
-			// HackathonProposalID: ,
+			HackathonProposalID: id,
+			URL:                 in.URL,
 		},
 	})
 }
