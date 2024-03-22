@@ -1,1 +1,1 @@
-DROP TABLE hackathon_proposals;
+DROP TABLE "hackathon_proposals";
