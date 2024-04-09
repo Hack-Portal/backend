@@ -41,7 +41,7 @@ make migrateup
 
 ## memo
 
-app.env を作り
+app.env を作り、
 DB_DRIVER=postgres
 DB_SOURSE=DB接続用URI
 を記述する必要あり
