@@ -17,6 +17,17 @@ func NewHackathonProposalController(input ports.HackathonProposalInputBoundary) 
 	}
 }
 
+// HackathonProposal		godoc
+//
+// @Summary			Create Hackathon Proposal
+// @Description	Create Hackathon Proposal
+// @Tags				HackathonProposal
+// @Produce			json
+// @Param				CreateHackathonProposalRequest	body			request.CreateHackathonProposal	true			"request body"
+// @Success			200											{object}	response.CreateHackathonProposal					"success response"
+// @Failure			400											{object}	nil																"error response"
+// @Failure			500											{object}	nil																"error response"
+// @Router			/hackathon-proposals							[POST]
 func (hc *HackathonProposalController) CreateHackathonProposal(ctx echo.Context) error {
 	defer nrecho.FromContext(ctx).StartSegment("CreateHackathonProposal").End()
 
