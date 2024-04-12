@@ -51,6 +51,11 @@ definitions:
     - start_date
     - term
     type: object
+  request.CreateHackathonProposal:
+    properties:
+      url:
+        type: string
+    type: object
   request.CreateRbacPolicy:
     properties:
       policies:
@@ -100,6 +105,13 @@ definitions:
         type: array
       term:
         type: integer
+    type: object
+  response.CreateHackathonProposal:
+    properties:
+      hackathon_proposal_id:
+        type: integer
+      url:
+        type: string
     type: object
   response.CreateRbacPolicy:
     properties:
@@ -180,6 +192,30 @@ info:
   title: Hack-Portal Backend API
   version: 0.1.0
 paths:
+  /hackathon-proposals:
+    post:
+      description: Create Hackathon Proposal
+      parameters:
+      - description: request body
+        in: body
+        name: CreateHackathonProposalRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateHackathonProposal'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: '#/definitions/response.CreateHackathonProposal'
+        "400":
+          description: error response
+        "500":
+          description: error response
+      summary: Create Hackathon Proposal
+      tags:
+      - HackathonProposal
   /hackathons:
     get:
       description: List Hackathons
