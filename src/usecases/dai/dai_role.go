@@ -7,8 +7,8 @@ import (
 )
 
 type RoleDai interface {
-	Create(ctx context.Context, roleStore *models.Role) (id int64, err error)
+	Create(ctx context.Context, roleStore *models.Role) (id int, err error)
 	FindAll(ctx context.Context) (roleStores []*models.Role, err error)
 	FindById(ctx context.Context, id int64) (roleStore *models.Role, err error)
-	Update(ctx context.Context, roleStore *models.Role) (id int64, err error)
+	Update(ctx context.Context, roleStore *models.Role) (id int, err error)
 }

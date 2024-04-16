@@ -24,7 +24,7 @@ func init() {
 //	@title						Hack-Portal Backend API
 //	@version					0.1.0
 //	@description			Hack-Portal Backend API serice
-//	@termsOfService	　https://hc-dev.seafood-dev.com
+//	@termsOfService		https://hc-dev.seafood-dev.com
 
 //	@contact.name			murasame29
 //	@contact.url			https://twitter.com/fresh_salmon256
@@ -35,11 +35,11 @@ func init() {
 // @host							api-dev.hack-portal.com
 // @BasePath					/v1
 func main() {
-	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=%s",
-		config.Config.Database.User,
-		config.Config.Database.Password,
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		config.Config.Database.Host,
 		config.Config.Database.Port,
+		config.Config.Database.User,
+		config.Config.Database.Password,
 		config.Config.Database.DBName,
 		config.Config.Database.SSLMode,
 	)

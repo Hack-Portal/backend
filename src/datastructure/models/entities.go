@@ -4,8 +4,10 @@ import "time"
 
 /*
 CREATE TABLE "status_tags" (
-  "status_id" serial PRIMARY KEY,
-  "status" varchar NOT NULL
+
+	"status_id" serial PRIMARY KEY,
+	"status" varchar NOT NULL
+
 );
 */
 type StatusTag struct {
@@ -17,17 +19,19 @@ type StatusTag struct {
 
 /*
 CREATE TABLE "hackathons" (
-  "hackathon_id" varchar PRIMARY KEY,
-  "name" varchar NOT NULL,
-  "icon" text NOT NULL,
-  "link" varchar NOT NULL,
-  "expired" date NOT NULL,
-  "start_date" date NOT NULL,
-  "term" int NOT NULL,
 
-  "created_at" timestamptz NOT NULL,
-  "updated_at" timestamptz NOT NULL,
-  "deleted_at" timestamptz
+	"hackathon_id" varchar PRIMARY KEY,
+	"name" varchar NOT NULL,
+	"icon" text NOT NULL,
+	"link" varchar NOT NULL,
+	"expired" date NOT NULL,
+	"start_date" date NOT NULL,
+	"term" int NOT NULL,
+
+	"created_at" timestamptz NOT NULL,
+	"updated_at" timestamptz NOT NULL,
+	"deleted_at" timestamptz
+
 );
 */
 type Hackathon struct {
@@ -109,7 +113,7 @@ CREATE TABLE "roles" (
 */
 
 type Role struct {
-	RoleID int64  `json:"role_id" gorm:"autoIncrement"`
+	RoleID int    `json:"role_id" gorm:"autoIncrement"`
 	Role   string `json:"role"`
 }
 

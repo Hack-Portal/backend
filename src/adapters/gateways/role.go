@@ -19,7 +19,7 @@ func NewRoleGateway(db *gorm.DB) dai.RoleDai {
 	}
 }
 
-func (rg *RoleGateway) Create(ctx context.Context, role *models.Role) (id int64, err error) {
+func (rg *RoleGateway) Create(ctx context.Context, role *models.Role) (id int, err error) {
 	defer newrelic.FromContext(ctx).StartSegment("CreateRole-gateway").End()
 	result := rg.db.Create(role)
 	if result.Error != nil {
@@ -46,7 +46,7 @@ func (rg *RoleGateway) FindById(ctx context.Context, id int64) (role *models.Rol
 	return role, nil
 }
 
-func (rg *RoleGateway) Update(ctx context.Context, role *models.Role) (id int64, err error) {
+func (rg *RoleGateway) Update(ctx context.Context, role *models.Role) (id int, err error) {
 	defer newrelic.FromContext(ctx).StartSegment("UpdateRole-gateway").End()
 	result := rg.db.Save(role)
 	if result.Error != nil {

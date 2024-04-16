@@ -1,0 +1,12 @@
+{
+    "role":[
+        {"role_id":1,"role":"admin"},
+        {"role_id":2,"role":"hack-portal-operator"},
+        {"role_id":3,"role":"guest"}
+    ],
+    "rbacPolicies":[
+        {"policy_id":1,"p_type":"p","v0":1,"v1":"*","v2":"*","v3":"allow"},
+        {"policy_id":2,"p_type":"p","v0":3,"v1":"/v1/hackathons","v2":"GET","v3":"allow"},
+        {"policy_id":3,"p_type":"p","v0":3,"v1":"/v1/status_tags","v2":"GET","v3":"allow"}
+    ]
+}

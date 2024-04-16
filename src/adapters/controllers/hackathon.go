@@ -24,12 +24,12 @@ func NewHackathonController(input ports.HackathonInputBoundary) *HackathonContro
 //
 // @Summary			Create Hackathon
 // @Description	Create Hackathon
-// @Tags				Hackathon
+// @Tags			Hackathon
 // @Produce			json
-// @Param				CreateHackathonRequest	body			request.CreateHackathon	true			"request body"
-// @Success			200											{object}	response.CreateHackathon					"success response"
-// @Failure			400											{object}	nil																"error response"
-// @Failure			500											{object}	nil																"error response"
+// @Param			CreateHackathonRequest	body		equest.CreateHackathon	true			"request body"
+// @Success			200									{object}	response.CreateHackathon	"success response"
+// @Failure			400									{object}	nil							"error response"
+// @Failure			500									{object}	nil							"error response"
 // @Router			/hackathons							[POST]
 func (hc *HackathonController) CreateHackathon(ctx echo.Context) error {
 	defer nrecho.FromContext(ctx).StartSegment("CreateHackathon").End()
