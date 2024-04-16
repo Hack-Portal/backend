@@ -15,14 +15,37 @@ services:
     volumes:
       - .docker/postgres/data:/var/lib/postgresql/data
 
-  # hackportal-backend:
-  #   build:
-  #     context: .docker/app
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   ports:
-  #     - 8080:8080
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - hackportal-develop-network
+  migrate:
+    build:
+      context: .
+      dockerfile: .docker/migrate/Dockerfile
+    restart: "no"
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=hack_portal
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    build:
+      context: .docker/redis
+      dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
+    volumes:
+      - ".docker/redis/data:/data"
+
+  hackportal-backend:
+    build:
+      context: .
+      dockerfile: .docker/app/local.Dockerfile
+    restart: always
+    volumes:
+      - ./:/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - migrate

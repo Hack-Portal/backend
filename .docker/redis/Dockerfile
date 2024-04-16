@@ -1,0 +1,1 @@
+FROM redis:latest AS db

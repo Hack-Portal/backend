@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/Hack-Portal/backend/cmd/config"
-	"github.com/Hack-Portal/backend/cmd/migrations"
 	"github.com/Hack-Portal/backend/src/driver/aws"
 	"github.com/Hack-Portal/backend/src/driver/newrelic"
 	"github.com/Hack-Portal/backend/src/driver/redis"
@@ -16,9 +17,26 @@ import (
 	"gorm.io/gorm"
 )
 
+type envFlag []string
+
+func (e *envFlag) String() string {
+	return strings.Join(*e, ",")
+}
+
+func (e *envFlag) Set(v string) error {
+	*e = append(*e, v)
+	return nil
+}
+
 func init() {
-	config.LoadEnv()
-	//config.LoadEnv(".env")
+	// Usage: eg. go run main.go -e .env -e hoge.env -e fuga.env ...
+	var envFile envFlag
+	flag.Var(&envFile, "e", "path to .env file \n eg. -e .env -e another.env . ")
+	flag.Parse()
+
+	if err := config.LoadEnv(envFile...); err != nil {
+		log.Fatal("Error loading .env file")
+	}
 }
 
 //	@title						Hack-Portal Backend API
@@ -35,15 +53,14 @@ func init() {
 // @host							api-dev.hack-portal.com
 // @BasePath					/v1
 func main() {
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		config.Config.Database.Host,
-		config.Config.Database.Port,
+	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=%s",
 		config.Config.Database.User,
 		config.Config.Database.Password,
+		config.Config.Database.Host,
+		config.Config.Database.Port,
 		config.Config.Database.DBName,
 		config.Config.Database.SSLMode,
 	)
-	log.Println(dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -58,15 +75,6 @@ func main() {
 	if err := sqlDB.Ping(); err != nil {
 		log.Fatal("db ping error: ", err)
 	}
-
-	// migrate
-	m, err := migrations.NewPostgresMigrate(sqlDB, "file://cmd/migrations", nil)
-	if err != nil {
-		log.Fatal("migrate error: ", err)
-	}
-
-	// migrate up
-	log.Println(m.Up())
 
 	client, err := aws.New(
 		config.Config.Buckets.AccountID,

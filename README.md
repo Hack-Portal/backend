@@ -31,13 +31,9 @@ git clone https://github.com/Hack-Hack-geek-Vol6/backend
 3. 以下のコマンドを実行する  
 
 ```bash
-make postgresRun
-make postgresStart
-make resetdb
-make migrateup
+make rund #docker-compose経由で起動する
+make seed #seedを投入する
 ```
-
-4. app.env を記述する
 
 ## memo
 

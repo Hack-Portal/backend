@@ -14,7 +14,6 @@ WORKDIR /app
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /build/casbin_model.conf .
-COPY --from=builder /build/cmd/migrations ./cmd/migrations
 COPY --from=builder /build/app .
 
 ENV PORT=8080
