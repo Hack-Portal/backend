@@ -23,9 +23,9 @@ type redisClient struct {
 	address  string
 	password string
 
-	connectTimeout  int
+	connectTimeout  time.Duration
+	conenctWaitTime time.Duration
 	connectAttempts int
-	conenctWaitTime int
 
 	client *redis.Client
 }
@@ -35,31 +35,17 @@ type RedisClient interface {
 	Close()
 }
 
-func New(address, password string, connectTimeout, connectAttempts, connectWaitTime *int) RedisClient {
-	var (
-		_connectTimeout  int = DefaultConnectTimeout
-		_connectAttempts int = DefaultConnectAttempt
-		_connectWaitTime int = DefaultConnectWait
-	)
-
-	if connectTimeout != nil {
-		_connectTimeout = *connectTimeout
-	}
-
-	if connectAttempts != nil {
-		_connectAttempts = *connectAttempts
-	}
-
-	if connectWaitTime != nil {
-		_connectWaitTime = *connectWaitTime
-	}
-
+func New(
+	address, password string,
+	connectTimeout, connectWaitTime time.Duration,
+	connectAttempts int,
+) RedisClient {
 	return &redisClient{
 		address:         address,
 		password:        password,
-		connectTimeout:  _connectTimeout,
-		connectAttempts: _connectAttempts,
-		conenctWaitTime: _connectWaitTime,
+		connectTimeout:  connectTimeout,
+		conenctWaitTime: connectWaitTime,
+		connectAttempts: connectAttempts,
 	}
 }
 

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/Hack-Portal/backend/cmd/config"
-	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/cmd/migrate/migrations"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

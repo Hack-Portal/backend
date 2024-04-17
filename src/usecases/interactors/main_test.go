@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/Hack-Portal/backend/cmd/config"
-	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/cmd/migrate/migrations"
 	gormComm "github.com/Hack-Portal/backend/src/frameworks/db/gorm"
 	"github.com/golang-migrate/migrate/v4"
 	"gorm.io/driver/postgres"

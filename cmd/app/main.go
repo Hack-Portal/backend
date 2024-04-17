@@ -79,7 +79,7 @@ func main() {
 	client, err := aws.New(
 		config.Config.Buckets.AccountID,
 		config.Config.Buckets.EndPoint,
-		config.Config.Buckets.AccessKeyId,
+		config.Config.Buckets.AccessKeyID,
 		config.Config.Buckets.AccessKeySecret,
 	).Connect(context.Background())
 	if err != nil {
@@ -95,13 +95,13 @@ func main() {
 	redisconn := redis.New(
 		fmt.Sprintf("%v:%v", config.Config.Redis.Host, config.Config.Redis.Port),
 		config.Config.Redis.Password,
-		&config.Config.Redis.ConnectTimeout,
-		&config.Config.Redis.ConnectAttempts,
-		&config.Config.Redis.ConnectWaitTime,
+		config.Config.Redis.ConnectTimeout,
+		config.Config.Redis.ConnectWaitTime,
+		config.Config.Redis.ConnectAttempts,
 	)
 	defer redisconn.Close()
 
-	redisConn, err := redisconn.Connect(config.Config.Redis.DB)
+	redisConn, err := redisconn.Connect(config.Config.Redis.DBName)
 	if err != nil {
 		log.Fatal(err)
 	}

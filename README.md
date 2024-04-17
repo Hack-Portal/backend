@@ -1,23 +1,12 @@
 # HackPortalBackend
 
-https://api-test.seafood-dev.com/v1/docs/index.html
-
 ## 動作環境
 
 ### 必須環境
 
 - docker
-- go 1.20
-- go-migrations
-
-### 推奨環境
-
-- docker
-- go 1.20.7
-- go-migrations
-- gin
-- swag
-- make
+- docker-compose
+- go 1.22.2
 
 ## ローカルでのセットアップ
 
@@ -34,10 +23,3 @@ git clone https://github.com/Hack-Hack-geek-Vol6/backend
 make rund #docker-compose経由で起動する
 make seed #seedを投入する
 ```
-
-## memo
-
-app.env を作り、
-DB_DRIVER=postgres
-DB_SOURSE=DB接続用URI
-を記述する必要あり

@@ -13,7 +13,7 @@ import (
 )
 
 func NewPostgresMigrate(db *sql.DB, file string, arg any) (*migrate.Migrate, error) {
-	switch config.Config.Database.DB {
+	switch config.Config.Database.DBName {
 	case "postgres":
 		if arg == nil {
 			arg = &postgres.Config{}
@@ -25,7 +25,7 @@ func NewPostgresMigrate(db *sql.DB, file string, arg any) (*migrate.Migrate, err
 		}
 		return migrateCockroachdb(db, file, arg.(*cockroachdb.Config))
 	default:
-		return nil, fmt.Errorf("invalid database driver: %s", config.Config.Database.DB)
+		return nil, fmt.Errorf("invalid database driver: %s", config.Config.Database.DBName)
 	}
 }
 

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/Hack-Portal/backend/cmd/config"
-	"github.com/Hack-Portal/backend/cmd/migrations"
+	"github.com/Hack-Portal/backend/cmd/migrate/migrations"
 	"github.com/Hack-Portal/backend/src/driver/aws"
 	gormComm "github.com/Hack-Portal/backend/src/frameworks/db/gorm"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -64,7 +64,7 @@ func setup() {
 	client, err = aws.New(
 		config.Config.Buckets.AccountID,
 		config.Config.Buckets.EndPoint,
-		config.Config.Buckets.AccessKeyId,
+		config.Config.Buckets.AccessKeyID,
 		config.Config.Buckets.AccessKeySecret,
 	).Connect(context.Background())
 	if err != nil {
