@@ -3,18 +3,16 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"strings"
 
 	"github.com/Hack-Portal/backend/cmd/config"
 	"github.com/Hack-Portal/backend/src/driver/aws"
+	"github.com/Hack-Portal/backend/src/driver/db"
 	"github.com/Hack-Portal/backend/src/driver/newrelic"
-	"github.com/Hack-Portal/backend/src/driver/redis"
 	"github.com/Hack-Portal/backend/src/router"
 	"github.com/Hack-Portal/backend/src/server"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/Hack-Portal/backend/src/utils/otel"
 )
 
 type envFlag []string
@@ -53,28 +51,13 @@ func init() {
 // @host							api-dev.hack-portal.com
 // @BasePath					/v1
 func main() {
-	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=%s",
-		config.Config.Database.User,
-		config.Config.Database.Password,
-		config.Config.Database.Host,
-		config.Config.Database.Port,
-		config.Config.Database.DBName,
-		config.Config.Database.SSLMode,
-	)
+	shutdown := otel.InitProvider(context.Background())
+	defer shutdown()
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("gorm open error: ", err)
-	}
+	sqlDB := db.ConnectDBWithOtelSQL()
+	defer sqlDB.Close()
 
-	sqlDB, err := db.DB()
-	if err != nil {
-		log.Fatal("db.DB error: ", err)
-	}
-
-	if err := sqlDB.Ping(); err != nil {
-		log.Fatal("db ping error: ", err)
-	}
+	gorm := db.NewGORM(sqlDB)
 
 	client, err := aws.New(
 		config.Config.Buckets.AccountID,
@@ -92,25 +75,10 @@ func main() {
 		return
 	}
 
-	redisconn := redis.New(
-		fmt.Sprintf("%v:%v", config.Config.Redis.Host, config.Config.Redis.Port),
-		config.Config.Redis.Password,
-		config.Config.Redis.ConnectTimeout,
-		config.Config.Redis.ConnectWaitTime,
-		config.Config.Redis.ConnectAttempts,
-	)
-	defer redisconn.Close()
-
-	redisConn, err := redisconn.Connect(config.Config.Redis.DBName)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// start server
 	handler := router.NewRouter(
 		router.NewDebug(config.Config.Server.Version),
-		db,
-		redisConn,
+		gorm,
 		nrapp,
 		client,
 	)

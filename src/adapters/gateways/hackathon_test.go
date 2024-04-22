@@ -60,7 +60,7 @@ func testCreateHackathon(t *testing.T) {
 			errCode: pgerrcode.DuplicateColumn,
 		},
 	}
-	hg := NewHackathonGateway(dbconn, nil)
+	hg := NewHackathonGateway(dbconn)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

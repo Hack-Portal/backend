@@ -13,7 +13,7 @@ func (r *v1router) statusTag() {
 	// DI
 	sc := controllers.NewStatusTagController(
 		interactors.NewStatusTagInteractor(
-			gateways.NewStatusTagGateway(r.db, r.cache),
+			gateways.NewStatusTagGateway(r.db),
 			presenters.NewStatusTagPresenter(),
 		),
 	)

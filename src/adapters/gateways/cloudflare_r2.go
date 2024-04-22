@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/redis/go-redis/v9"
 )
 
 type CloudflareR2 struct {
@@ -19,19 +18,16 @@ type CloudflareR2 struct {
 	PresignClient *s3.PresignClient
 	bucket        string
 	Config        Config
-
-	cacheClient dai.Cache[string]
 }
 
 type Config struct {
 	PresignLinkExpired time.Duration
 }
 
-func NewCloudflareR2(bucket string, client *s3.Client, cache *redis.Client, presignLinkExpired int) dai.FileStore {
+func NewCloudflareR2(bucket string, client *s3.Client, presignLinkExpired int) dai.FileStore {
 	return &CloudflareR2{
 		bucket:        bucket,
 		client:        client,
-		cacheClient:   NewCache[string](cache, time.Duration(5)*time.Minute),
 		PresignClient: s3.NewPresignClient(client),
 		Config: Config{
 			// デフォルト30分のはず
@@ -55,19 +51,15 @@ func (c *CloudflareR2) ListObjects(ctx context.Context, key string) (*s3.ListObj
 
 func (c *CloudflareR2) GetPresignedObjectURL(ctx context.Context, key string) (string, error) {
 	defer newrelic.FromContext(ctx).StartSegment("GetPresignedObjectURL-gateway").End()
-	url, err := c.cacheClient.Get(ctx, key, func(ctx context.Context) (string, error) {
-		object, err := c.PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
-			Bucket:          aws.String(c.bucket),
-			Key:             aws.String(key),
-			ResponseExpires: aws.Time(time.Now().Add(c.Config.PresignLinkExpired * time.Hour)),
-		})
-		if err != nil {
-			return "", err
-		}
-		return object.URL, nil
+	object, err := c.PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
+		Bucket:          aws.String(c.bucket),
+		Key:             aws.String(key),
+		ResponseExpires: aws.Time(time.Now().Add(c.Config.PresignLinkExpired * time.Hour)),
 	})
-
-	return url, err
+	if err != nil {
+		return "", err
+	}
+	return object.URL, nil
 }
 
 func (c *CloudflareR2) UploadFile(ctx context.Context, file []byte, key string) (string, error) {

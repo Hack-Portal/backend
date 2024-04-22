@@ -1,5 +1,4 @@
 .env
 test
 tmp
-.docker/redis/data
-.docker/postgres/data
+.docker/data

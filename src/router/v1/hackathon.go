@@ -15,12 +15,11 @@ func (r *v1router) hackathon() {
 	// DI
 	hc := controllers.NewHackathonController(
 		interactors.NewHackathonInteractor(
-			gateways.NewHackathonGateway(r.db, r.cache),
-			gateways.NewHackathonStatusGateway(r.db, r.cache),
+			gateways.NewHackathonGateway(r.db),
+			gateways.NewHackathonStatusGateway(r.db),
 			gateways.NewCloudflareR2(
 				config.Config.Buckets.Bucket,
 				r.client,
-				r.cache,
 				config.Config.Buckets.Expired,
 			),
 			presenters.NewHackathonPresenter(),

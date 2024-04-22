@@ -1,0 +1,27 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+
+# processors:
+#   attributes:
+#     actions:
+#       - key: collector
+#         value: otel-cllector
+#         actions: insert
+
+exporters:
+  otlp:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers:
+        - otlp
+      exporters:
+        - otlp
+      # processors:
+      #   - attributes

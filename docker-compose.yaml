@@ -13,7 +13,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - .docker/postgres/data:/var/lib/postgresql/data
+      - .docker/data/postgres:/var/lib/postgresql/data
 
   migrate:
     build:
@@ -36,13 +36,67 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ".docker/redis/data:/data"
+      - ".docker/data/redis:/data"
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.86.0
+    command:
+      - "--config"
+      - /etc/otel/config.yaml
+    ports:
+      - 4317:4317
+    volumes:
+      - ./.docker/metrics/otel-collector.yaml:/etc/otel/config.yaml
+    
+  jaeger:
+    image: jaegertracing/all-in-one:1.48
+    expose:
+      - 14250
+    ports:
+      - 16686:16686
+  
+  # tempo:
+  #   image: grafana/tempo:latest
+  #   command: 
+  #     - "-config.file=/etc/tempo.yaml"
+  #   volumes:
+  #     - ./.docker/metrics/tempo.yaml:/etc/tempo.yaml
+  #     - ./.docker/data/tempo:/tmp/tempo
+  #   ports:
+  #     - 3200:3200 # tempo
+  #     - 4318:4318 # otel http
+  
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   command:
+  #     - --config.file=/etc/prometheus.yaml
+  #     - --web.enable-remote-write-receiver
+  #     - --enable-feature=exemplar-storage
+  #   volumes:
+  #     - ./.docker/metrics/tempo.yaml:/etc/tempo.yaml
+  #   ports:
+  #     - 9090:9090
+
+  # grafana:
+  #   image: grafana/grafana:10.1.1
+  #   volumes:
+  #     - ./.docker/metrics/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+  #   environment:
+  #     - GF_AUTH_ANONYMOUS_ENABLED=true
+  #     - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+  #     - GF_AUTH_DISABLE_LOGIN_FORM=true
+  #     - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+  #   ports:
+  #     - 3000:3000
 
   hackportal-backend:
     build:
       context: .
       dockerfile: .docker/app/local.Dockerfile
     restart: always
+    environment:
+      - OTEL_GO_X_EXEMPLAR=true
+      - OTEL_METRICS_EXEMPLAR_FILTER=always_on
     volumes:
       - ./:/app
     ports:

@@ -21,7 +21,7 @@ jobs:
       
       - name: build docker image
         run: |
-          docker build -t ${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }} .
+          docker build -t ${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }} -f .docker/app/Dockerfile .
       
       - name: login to harbor registry
         uses: docker/login-action@v1
@@ -52,7 +52,7 @@ jobs:
       
       - name: change manifest file
         run: |
-          cd config/stage
+          cd manifest/stage
           yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }}"' 'deployment.yaml'
 
       - name: push repository

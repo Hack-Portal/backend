@@ -8,19 +8,16 @@ import (
 	"github.com/Hack-Portal/backend/src/datastructure/models"
 	"github.com/Hack-Portal/backend/src/usecases/dai"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type HackathonGateway struct {
-	db          *gorm.DB
-	cacheClient dai.Cache[[]*models.Hackathon]
+	db *gorm.DB
 }
 
-func NewHackathonGateway(db *gorm.DB, cache *redis.Client) dai.HackathonDai {
+func NewHackathonGateway(db *gorm.DB) dai.HackathonDai {
 	return &HackathonGateway{
-		db:          db,
-		cacheClient: NewCache[[]*models.Hackathon](cache, time.Duration(5)*time.Minute),
+		db: db,
 	}
 }
 
@@ -39,7 +36,7 @@ func (h *HackathonGateway) Create(ctx context.Context, hackathon *models.Hackath
 			}
 		}
 
-		return h.cacheClient.Reset(ctx, "hackathons")
+		return nil
 	})
 }
 
@@ -97,16 +94,12 @@ func (h *HackathonGateway) FindAll(ctx context.Context, arg dai.FindAllParams) (
 		key = fmt.Sprintf("%s-neardeadline", key)
 	}
 
-	hackathons, err := h.cacheClient.Get(ctx, key, func(ctx context.Context) ([]*models.Hackathon, error) {
-		var hackathons []*models.Hackathon
-		result := chain.Select("DISTINCT (hackathons.hackathon_id)", "name", "icon", "link", "expired", "start_date", "term", "created_at").Where("expired > ?", time.Now()).Find(&hackathons)
-		if result.Error != nil {
-			return nil, result.Error
-		}
-		return hackathons, nil
-	})
-
-	return hackathons, err
+	var hackathons []*models.Hackathon
+	result := chain.Select("DISTINCT (hackathons.hackathon_id)", "name", "icon", "link", "expired", "start_date", "term", "created_at").Where("expired > ?", time.Now()).Find(&hackathons)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return hackathons, nil
 }
 
 func (h *HackathonGateway) Delete(ctx context.Context, hackathonID string) error {
@@ -117,5 +110,5 @@ func (h *HackathonGateway) Delete(ctx context.Context, hackathonID string) error
 		return result.Error
 	}
 
-	return h.cacheClient.Reset(ctx, "hackathons")
+	return nil
 }

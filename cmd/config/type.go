@@ -26,16 +26,6 @@ type config struct {
 		ConnectAttempts int           `env:"POSTGRES_CONNECT_ATTEMPTS" envDefault:"3"`
 	}
 
-	Redis struct {
-		Host            string        `env:"REDIS_HOST" envDefault:"redis"`
-		Port            int           `env:"REDIS_PORT" envDefault:"6379"`
-		Password        string        `env:"REDIS_PASSWORD" envDefault:""`
-		DBName          int           `env:"REDIS_DB_NAME" envDefault:"0"`
-		ConnectTimeout  time.Duration `env:"REDIS_CONNECT_TIMEOUT" envDefault:"10s"`
-		ConnectWaitTime time.Duration `env:"REDIS_CONNECT_WAIT_TIME" envDefault:"10s"`
-		ConnectAttempts int           `env:"REDIS_CONNECT_ATTEMPTS" envDefault:"3"`
-	}
-
 	Buckets struct {
 		EndPoint        string `env:"BUCKETS_ENDPOINT" envDefault:""`
 		AccountID       string `env:"BUCKETS_ACCOUNT_ID" envDefault:""`
@@ -43,6 +33,11 @@ type config struct {
 		AccessKeySecret string `env:"BUCKETS_ACCESS_KEY_SECRET" envDefault:""`
 		Bucket          string `env:"CLOUDFLARE_BUCKET" envDefault:""`
 		Expired         int    `env:"BUCKETS_EXPIRED" envDefault:"30"`
+	}
+
+	Otel struct {
+		EndPoint  string `env:"OTEL_ENDPOINT" envDefault:"localhost:4317"`
+		ProjectID string `env:"OTEL_PROJECT_ID" envDefault:"hack-portal"`
 	}
 
 	NewRelic struct {

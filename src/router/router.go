@@ -11,25 +11,23 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/newrelic/go-agent/v3/integrations/nrecho-v4"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"gorm.io/gorm"
 )
 
 type router struct {
 	engine *echo.Echo
 	db     *gorm.DB
-	cache  *redis.Client
 	client *s3.Client
 	nrApp  *newrelic.Application
 
 	config Config
 }
 
-func NewRouter(config Config, db *gorm.DB, cache *redis.Client, nrApp *newrelic.Application, client *s3.Client) *echo.Echo {
+func NewRouter(config Config, db *gorm.DB, nrApp *newrelic.Application, client *s3.Client) *echo.Echo {
 	router := &router{
 		engine: echo.New(),
 		db:     db,
-		cache:  cache,
 		client: client,
 		nrApp:  nrApp,
 
@@ -61,6 +59,7 @@ func (r *router) setup() {
 
 	// status tag
 	middleware := middleware.NewMiddleware(r.db)
+	r.engine.Use(otelecho.Middleware("echo-server"))
 	{
 		v1group := r.engine.Group("/v1")
 		v1group.Use(
@@ -68,6 +67,6 @@ func (r *router) setup() {
 			middleware.RBACPermission(),
 		)
 
-		v1.NewV1Router(v1group, r.db, r.cache, r.client)
+		v1.NewV1Router(v1group, r.db, r.client)
 	}
 }

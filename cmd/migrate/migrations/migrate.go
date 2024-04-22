@@ -13,7 +13,7 @@ import (
 )
 
 func NewPostgresMigrate(db *sql.DB, file string, arg any) (*migrate.Migrate, error) {
-	switch config.Config.Database.DBName {
+	switch config.Config.Database.Driver {
 	case "postgres":
 		if arg == nil {
 			arg = &postgres.Config{}

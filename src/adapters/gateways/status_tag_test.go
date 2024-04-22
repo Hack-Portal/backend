@@ -28,7 +28,7 @@ func testCreateStatusTag(t *testing.T) {
 		},
 	}
 
-	sg := NewStatusTagGateway(dbconn, nil)
+	sg := NewStatusTagGateway(dbconn)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -55,7 +55,7 @@ func TestGetAllStatusTag(t *testing.T) {
 		},
 	}
 
-	sg := NewStatusTagGateway(dbconn, nil)
+	sg := NewStatusTagGateway(dbconn)
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			statuses, err := sg.FindAll(context.Background())
@@ -88,7 +88,7 @@ func TestGetStatusTagByID(t *testing.T) {
 		},
 	}
 
-	sg := NewStatusTagGateway(dbconn, nil)
+	sg := NewStatusTagGateway(dbconn)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -122,7 +122,7 @@ func TestUpdateStatusTag(t *testing.T) {
 		},
 	}
 
-	sg := NewStatusTagGateway(dbconn, nil)
+	sg := NewStatusTagGateway(dbconn)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

@@ -1,4 +1,4 @@
-FROM golang:1.22.0 AS app
+FROM golang:1.22.2 AS app
 WORKDIR /app
 
 RUN go install github.com/cosmtrek/air@latest
