@@ -53,7 +53,7 @@ jobs:
       - name: change manifest file
         run: |
           cd manifest/stage
-          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }}"' 'deployment.yaml'
+          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }}"' 'backend.yaml'
 
       - name: push repository
         run: |
