@@ -33,7 +33,7 @@ jobs:
 
       - name: sign docker image
         run: |
-          docker trust sign ${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }}
+          docker trust sign --local ${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }}
 
       - name: push to harbor registry
         run: |
