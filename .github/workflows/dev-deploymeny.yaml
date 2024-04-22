@@ -23,6 +23,10 @@ jobs:
         run: |
           docker build -t ${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }} -f .docker/app/Dockerfile .
       
+      - name: sign docker image
+        run: |
+          docker trust sign ${{ secrets.HARBOR_REGISTRY }}/hack-portal/hack-portal-backend:${{ github.sha }}
+
       - name: login to harbor registry
         uses: docker/login-action@v1
         with:
