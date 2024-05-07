@@ -66,6 +66,13 @@ type JoinedStatusTag struct {
 	Status      string `json:"status"`
 }
 
+type HackathonProposal struct {
+	ID         int64     `json:"id"`
+	URL        string    `json:"url"`
+	IsApproved bool      `json:"isApproved"`
+	CreatedAt  time.Time `json:"createdAt"`
+}
+
 /*
 CREATE TABLE "applove_user" (
   "hackathon_id" varchar NOT NULL,

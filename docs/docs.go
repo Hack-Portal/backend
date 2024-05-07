@@ -23,6 +23,43 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/hackathon-proposals": {
+            "post": {
+                "description": "Create Hackathon Proposal",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "HackathonProposal"
+                ],
+                "summary": "Create Hackathon Proposal",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "CreateHackathonProposalRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateHackathonProposal"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response",
+                        "schema": {
+                            "$ref": "#/definitions/response.CreateHackathonProposal"
+                        }
+                    },
+                    "400": {
+                        "description": "error response"
+                    },
+                    "500": {
+                        "description": "error response"
+                    }
+                }
+            }
+        },
         "/hackathons": {
             "get": {
                 "description": "List Hackathons",
@@ -543,6 +580,14 @@ const docTemplate = `{
                 }
             }
         },
+        "request.CreateHackathonProposal": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "request.CreateRbacPolicy": {
             "type": "object",
             "properties": {
@@ -617,6 +662,17 @@ const docTemplate = `{
                 },
                 "term": {
                     "type": "integer"
+                }
+            }
+        },
+        "response.CreateHackathonProposal": {
+            "type": "object",
+            "properties": {
+                "hackathon_proposal_id": {
+                    "type": "integer"
+                },
+                "url": {
+                    "type": "string"
                 }
             }
         },
